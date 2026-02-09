@@ -1,150 +1,97 @@
 # ρ-POMDP Active Inference Framework
 
-A research implementation exploring the intersection of active inference and ρ-POMDPs (rho-Partially Observable Markov Decision Processes) for epistemic foraging in partially observable environments.
+Research exploring whether **variational free energy** (VFE) as a belief-state utility function in ρ-POMDPs produces superior epistemic foraging behavior compared to standard reward-maximizing and information gain approaches.
 
-## Research Overview
+**Collaboration**: Patrick Cooper (Implementation) & David Baines (Theory)
 
-This project investigates whether **variational free energy** (VFE), when used as the generalized utility function in ρ-POMDPs, produces superior epistemic foraging behavior compared to standard reward-maximizing POMDP policies and alternative belief-state utility functions.
+---
 
-### Core Research Question
+## Research Question
 
-**Does variational free energy as ρ produce measurably different and superior epistemic foraging behavior in partially observable environments requiring active information gathering?**
+Does VFE as ρ produce measurably different and superior epistemic foraging behavior in partially observable environments requiring active information gathering?
 
-We evaluate this across three key metrics:
-- Policy quality
-- Sample efficiency  
-- Belief convergence rate
+**Evaluation Metrics**: Policy quality, sample efficiency, belief convergence rate
 
-## Theoretical Background
+---
 
-### ρ-POMDPs (Rho-POMDPs)
+## Current Status - Minimal Testbed Complete
 
-Rho-POMDPs extend traditional POMDPs by incorporating a **belief-state utility function** (ρ) that allows agents to value belief states themselves, not just states of the world. This enables explicit optimization over uncertainty reduction and information-seeking behavior.
+### Experiment: Two-State Observation Problem (1,000 episodes each)
 
-### Active Inference
+**Environment**: 2 hidden states, noisy observations (75% accuracy), observe costs 0.1
 
-Active inference frames perception and action as unified processes of minimizing variational free energy. Agents don't just infer the state of the world—they actively sample observations to reduce uncertainty about their environment, leading naturally to epistemic foraging (information-seeking) behavior.
+**Agents Tested**:
+1. Myopic (one-step lookahead baseline)
+2. Information Gain (ρ = entropy reduction)
+3. VFE (ρ = epistemic_weight × entropy reduction)
 
-### Epistemic Foraging
+### Results
 
-The strategic exploration and information-gathering behavior exhibited by agents seeking to reduce uncertainty about their environment. This project examines whether VFE provides a principled measure for guiding such behavior in partially observable settings.
+| Agent | Observations | Success Rate | Mean Reward |
+|-------|--------------|--------------|-------------|
+| Myopic | 1.00 | 75.4% | +0.408 |
+| **Info Gain** | **3.17** | **89.8%** | **+0.479** |
+| VFE | 1.00 | 76.0% | +0.420 |
 
-## Experimental Design
+**Key Finding**: Information Gain agent significantly outperforms baseline (p < 0.001)
+- 217% more exploration
+- 19% higher success rate  
+- 17% higher reward
 
-### Phase 1: Tiger Problem Baseline
+**VFE Status**: Currently identical to Myopic (epistemic weight too low, needs tuning)
 
-We begin with a **controlled comparison** using the classic Tiger problem variant, which provides a minimal testbed for isolating epistemic foraging behavior.
+---
 
-#### Three Agent Conditions
+## Next Steps
 
-1. **Standard POMDP Agent**
-   - Reward-maximizing policy
-   - No explicit belief-state utility
-   - Baseline for comparison
+1. VFE parameter sweep (epistemic_weight: 0.5 → 2.0)
+2. Tiger problem implementation
+3. Scale to extended POMDP benchmarks
 
-2. **ρ-POMDP Agent with Information Gain**
-   - Uses information gain as belief-state utility (ρ)
-   - Explicitly values uncertainty reduction
-   - Comparison to standard information-theoretic approaches
+---
 
-3. **ρ-POMDP Agent with Variational Free Energy**
-   - Uses VFE as belief-state utility (ρ)
-   - Active inference approach
-   - **Primary experimental condition**
+## Quick Start
 
-#### Evaluation Metrics
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-- **Belief convergence speed**: How quickly agents arrive at correct beliefs about hidden states
-- **Information-seeking efficiency**: Quality of observation actions chosen
-- **Task performance**: Ultimate reward obtained
-- **Sample efficiency**: Learning speed and data requirements
+# Run minimal testbed experiment
+python run_experiment.py
+```
 
-### Phase 2: Extended POMDP Benchmarks
-
-Following successful Tiger problem validation, we will scale to more complex partially observable environments including:
-- Multi-armed bandit variants with hidden structure
-- Partially observable navigation tasks
-- Sequential decision problems with layered uncertainty
+---
 
 ## Project Structure
 
 ```
 rho_aif/
-├── README.md                    # This file
-├── Guidance_Documents/          # Research plan and design documentation
-├── src/                         # Core implementation
-│   ├── agents/                  # Agent implementations
-│   │   ├── standard_pomdp.py
-│   │   ├── rho_pomdp_ig.py     # Information gain ρ
-│   │   └── rho_pomdp_vfe.py    # VFE ρ
-│   ├── environments/            # Problem environments
-│   │   ├── tiger.py
-│   │   └── ...
-│   ├── inference/               # Belief updating and inference
-│   ├── planning/                # Policy optimization
-│   └── utils/                   # Shared utilities
-├── experiments/                 # Experimental scripts and configurations
-├── tests/                       # Unit and integration tests
-├── notebooks/                   # Analysis and visualization notebooks
-└── results/                     # Experimental outputs
+├── README.md                           # This file
+├── Guidance_Documents/                 # Detailed research plan
+├── minimal_epistemic_foraging.ipynb    # Notebook implementation
+├── run_experiment.py                   # Production experiment script
+├── debug_vfe.py                        # Agent debugging tools
+└── requirements.txt                    # Dependencies
 ```
 
-## Research Collaboration
+---
 
-This project is a collaboration between:
-- **Patrick Cooper** - Implementation and experimental design
-- **David Baines** - POMDP and ρ-POMDP model development, theoretical framework
+## Theoretical Background
 
-## Implementation Roadmap
+**ρ-POMDPs**: Extend POMDPs with belief-state utility function (ρ) enabling explicit optimization over uncertainty reduction
 
-### Immediate Priorities
+**Active Inference**: Frames perception and action as unified processes minimizing variational free energy, leading naturally to epistemic foraging
 
-1. Implement Tiger problem environment
-2. Develop standard POMDP baseline agent
-3. Create ρ-POMDP framework with pluggable utility functions
-4. Implement information gain and VFE utility functions
-5. Design comprehensive evaluation suite
+**Epistemic Foraging**: Strategic information-gathering to reduce environmental uncertainty
 
-### Future Extensions
-
-- Additional POMDP benchmark problems
-- Scalability analysis for larger state/observation spaces
-- Theoretical analysis of convergence properties
-- Comparative analysis with other belief-space planning approaches
-
-## Getting Started
-
-```bash
-# Clone repository
-git clone git@github.com:PatrickAllenCooper/rho_aif.git
-cd rho_aif
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run Tiger problem baseline
-python experiments/tiger_baseline.py
-
-# Run comparative analysis
-python experiments/compare_agents.py
-```
+---
 
 ## References
 
-### Active Inference
+- Araya, M., et al. (2010). A POMDP extension with belief-dependent rewards. *NIPS*
 - Friston, K. (2010). The free-energy principle: a unified brain theory? *Nature Reviews Neuroscience*
 - Parr, T., & Friston, K. J. (2019). Generalised free energy and active inference. *Biological Cybernetics*
 
-### ρ-POMDPs
-- Araya, M., et al. (2010). A POMDP extension with belief-dependent rewards. *NIPS*
+---
 
-### Epistemic Foraging
-- Friston, K., et al. (2015). Active inference and epistemic value. *Cognitive Neuroscience*
-
-## License
-
-[To be determined]
-
-## Contact
-
-For questions or collaboration inquiries, contact Patrick Cooper.
+**Next Meeting**: Thursday, February 13, 2026 at 11:30 AM
