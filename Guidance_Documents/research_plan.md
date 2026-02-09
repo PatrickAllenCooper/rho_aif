@@ -82,34 +82,34 @@ The Tiger problem provides a minimal, well-understood testbed that isolates epis
 - Robustness to prior misspecification
 - Exploration vs. exploitation balance
 
-### Implementation Timeline
+### Implementation Components
 
-**Week 1-2: Environment and Infrastructure**
+#### Environment and Infrastructure
 - Implement Tiger problem environment
 - Create evaluation framework
 - Establish metrics logging and visualization
 
-**Week 3: Standard POMDP Baseline**
+#### Standard POMDP Baseline
 - Implement standard POMDP solver
 - Validate against known Tiger problem solutions
 - Establish performance baseline
 
-**Week 4: ρ-POMDP Framework**
+#### ρ-POMDP Framework
 - Create modular ρ-POMDP architecture
 - Implement pluggable utility function interface
 - Develop belief-space planning algorithms
 
-**Week 5: Information Gain Agent**
+#### Information Gain Agent
 - Implement information gain utility
 - Run comparative experiments
 - Analyze belief dynamics
 
-**Week 6: VFE Agent**
+#### VFE Agent
 - Implement variational free energy utility
 - Integrate active inference planning
 - Full comparative analysis
 
-**Week 7-8: Analysis and Iteration**
+#### Analysis and Iteration
 - Statistical analysis of results
 - Refinement based on findings
 - Documentation and visualization
