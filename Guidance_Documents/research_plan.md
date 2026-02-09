@@ -225,9 +225,13 @@ Upon successful Phase 1 completion, we will extend to:
 
 ## Current Status
 
-**Project Phase**: Initialization  
+**Project Phase**: Initial Experimentation  
+**Completed**:
+1. Project structure and repository setup
+2. Minimal Information-Seeking Testbed implemented (notebook)
+
 **Next Steps**:
-1. Create project structure and repository setup
+1. Run and analyze Minimal Information-Seeking Testbed results
 2. Implement Tiger problem environment
 3. Develop standard POMDP baseline
 
