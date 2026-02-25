@@ -1,85 +1,52 @@
 #!/usr/bin/env python3
-"""Debug VFE agent to find the issue."""
+"""Debug and profile VFE agent behavior step-by-step."""
 
-import numpy as np
-from run_experiment import (
-    MinimalInfoSeekingEnv, EnvConfig, VFEAgent, 
-    MyopicAgent, InformationGainAgent, run_episode
-)
 import sys
-
-np.random.seed(42)
-
-# Create environment
-config = EnvConfig()
-env = MinimalInfoSeekingEnv(config)
-
-print("Testing VFE agent with verbose output...")
-print("=" * 80)
-
-# Test single episode with VFE
-vfe_agent = VFEAgent(env)
-env.reset()
-vfe_agent.reset()
-
-print(f"True state: {env.true_state}")
-print(f"Initial belief: {vfe_agent.belief.belief}")
-print()
-
-episode_count = 0
-max_steps = 20  # Safety limit
-
-while not env.done and episode_count < max_steps:
-    episode_count += 1
-    print(f"Step {episode_count}:")
-    print(f"  Current belief: {vfe_agent.belief.belief}")
-    print(f"  Current entropy: {vfe_agent.belief.entropy():.4f}")
-    
-    # Time the action selection
-    import time
-    start = time.time()
-    action = vfe_agent.select_action()
-    elapsed = time.time() - start
-    
-    print(f"  Action selected: {action.name} (took {elapsed:.4f}s)")
-    
-    if elapsed > 2.0:
-        print(f"  WARNING: Action selection taking too long!")
-        print(f"  Debugging EFE calculation...")
-        commit_efe = vfe_agent._expected_free_energy_commit()
-        print(f"    Commit EFE: {commit_efe:.4f}")
-        sys.stdout.flush()
-        observe_efe = vfe_agent._expected_free_energy_observe()
-        print(f"    Observe EFE: {observe_efe:.4f}")
-        break
-    
-    obs, reward, done = env.step(action)
-    print(f"  Observation: {obs}, Reward: {reward:.2f}, Done: {done}")
-    
-    if not done:
-        vfe_agent.update_belief(obs)
-    
-    print()
-    sys.stdout.flush()
-
-if episode_count >= max_steps:
-    print("Reached maximum steps without termination")
-else:
-    print(f"Episode completed in {episode_count} steps")
-    print(f"Total reward: {env.total_reward:.2f}")
-    print(f"Success: {env.true_state == vfe_agent.belief.most_likely_state()}")
-
-print("\n" + "=" * 80)
-print("Now testing 10 full episodes to measure speed...")
-print("=" * 80)
-
 import time
-start_time = time.time()
+import numpy as np
 
-for i in range(10):
-    result = run_episode(vfe_agent, env)
-    elapsed = time.time() - start_time
-    print(f"Episode {i+1}/10: {result.num_observations} obs, {result.success}, {elapsed:.2f}s total", flush=True)
+from environments.info_seeking import InfoSeekingEnv
+from environments.tiger import TigerEnv
+from agents.vfe import VFEAgent
+from run_experiment import make_agent, run_episode
 
-print(f"\nAverage time per episode: {elapsed/10:.3f}s")
-print("If this is slow, there's a performance issue with VFE agent.")
+
+def debug_episode(env, agent_kwargs=None, label=""):
+    agent_kwargs = agent_kwargs or {}
+    agent = make_agent(VFEAgent, env, **agent_kwargs)
+    obs, info = env.reset(seed=42)
+    agent.reset()
+
+    print(f"{'=' * 60}")
+    print(f"VFE Debug: {label}")
+    print(f"{'=' * 60}")
+    print(f"True state: {info}")
+    print(f"Initial belief: {agent.belief.belief}")
+    print()
+
+    total_reward = 0.0
+    for step in range(30):
+        t0 = time.time()
+        action = agent.select_action()
+        dt = time.time() - t0
+
+        print(f"Step {step + 1}:")
+        print(f"  Belief: {agent.belief.belief}  (H={agent.belief.entropy():.3f})")
+        print(f"  Action: {action}  ({dt:.4f}s)")
+
+        obs, reward, terminated, truncated, info = env.step(action)
+        total_reward += reward
+        print(f"  Obs: {obs}  Reward: {reward:+.1f}")
+
+        if terminated:
+            print(f"\nEpisode done. Total reward: {total_reward:+.1f}")
+            print(f"Correct: {info.get('correct', 'N/A')}")
+            return
+        agent.update_belief(obs)
+        print()
+
+
+if __name__ == "__main__":
+    debug_episode(InfoSeekingEnv(), {"planning_horizon": 4}, "Info-Seeking")
+    print("\n\n")
+    debug_episode(TigerEnv(), {"planning_horizon": 6}, "Tiger Problem")
