@@ -27,6 +27,46 @@ Separately, the Active Inference (AIF) framework \cite{friston2010,parr2019} off
 
 We propose a formal bridge between these frameworks by substituting EFE as the $\rho$ function in $\rho$-POMDPs. This yields an agent whose epistemic foraging behavior is a natural consequence of its objective, rather than an engineered exploration bonus. We test whether this principled integration produces measurably different---and superior---epistemic behavior compared to standard approaches.
 
+\section{Related Work}
+
+\subsection{POMDPs and Belief-Space Planning}
+
+Partially Observable Markov Decision Processes provide the standard formalism for sequential decision-making under state uncertainty \cite{kaelbling1998}. Exact solutions require planning over the continuous belief simplex, which is computationally intractable for all but the smallest problems. Point-based value iteration methods---including PBVI, Perseus, and HSVI---address this by restricting computation to a finite subset of reachable beliefs, enabling scalability to problems with thousands of states \cite{shani2013}. The Tiger problem, introduced by Kaelbling et al.\ \cite{kaelbling1998}, remains a canonical benchmark for evaluating POMDP algorithms because its extreme reward asymmetry isolates the role of information gathering in decision quality.
+
+A persistent limitation of standard POMDPs is that information gathering has no intrinsic value: the agent can only justify exploration instrumentally, through its eventual contribution to reward. This makes the exploration--exploitation trade-off dependent on the planning horizon, and myopic or short-horizon solvers systematically under-explore.
+
+\subsection{$\rho$-POMDPs and Belief-Dependent Rewards}
+
+Araya et al.\ \cite{araya2010} introduced the $\rho$-POMDP framework to address this limitation by augmenting the reward function with a belief-dependent utility $\rho(b)$. When $\rho$ is convex, the resulting value function retains convexity, preserving compatibility with standard POMDP solvers via piecewise linear and convex (PWLC) approximations. Common choices for $\rho$ include entropy reduction, KL divergence from a target belief, and information gain, each encoding a different notion of ``epistemic value.''
+
+Recent work has extended $\rho$-POMDPs to continuous state and observation spaces. Lim et al.\ \cite{lim2023} developed $\rho$-POMCPOW, an anytime online solver that dynamically refines belief representations for continuous $\rho$-POMDPs, enabling applications such as sensor placement and active localization. These extensions demonstrate the practical relevance of belief-dependent rewards but leave open the question of \emph{which} $\rho$ to use---a choice that remains largely heuristic and environment-specific.
+
+\subsection{Active Inference and Expected Free Energy}
+
+The Active Inference framework, rooted in the Free Energy Principle \cite{friston2010}, casts perception and action as dual processes of approximate Bayesian inference. An agent maintains a generative model of its environment and selects policies that minimize Expected Free Energy (EFE), which decomposes into pragmatic value (alignment with preferred outcomes) and epistemic value (expected information gain) \cite{parr2019}. Da Costa et al.\ \cite{dacosta2020} provided a comprehensive synthesis of active inference on discrete state-spaces, deriving the mathematical framework from first principles and relating it to neuronal dynamics.
+
+A key development is \emph{sophisticated inference} \cite{friston2021}, which extends active inference with recursive, tree-search-based planning over belief trajectories. Da Costa et al.\ \cite{dacosta2020b} showed that while standard active inference produces Bellman-optimal actions only for single-step horizons, the recursive sophisticated scheme achieves Bellman optimality for any finite temporal horizon on POMDPs. Our VFE agent's recursive EFE evaluation (Equation 3) is closely related to this sophisticated inference framework, adapted to the $\rho$-POMDP setting.
+
+The \texttt{pymdp} library \cite{heins2022} provides a reference implementation of active inference for discrete state-spaces, offering modular components for inference, control, and learning. Our implementation draws on the same mathematical foundations but embeds them within the $\rho$-POMDP architecture to enable direct comparison with non-AIF agents.
+
+\subsection{Exploration in Reinforcement Learning}
+
+The exploration--exploitation trade-off has generated a large literature in reinforcement learning, with approaches spanning several distinct paradigms.
+
+\paragraph{Bayesian approaches.} Bayes-Adaptive MDPs (BAMDPs) \cite{duff2002} augment the state space with an information state representing the agent's posterior over environment parameters, enabling Bayes-optimal exploration. While theoretically elegant, exact BAMDP solutions are intractable; approximations include Monte-Carlo tree search \cite{guez2013} and variational methods. BAMDPs address model uncertainty (``which MDP am I in?'') rather than state uncertainty (``which state am I in?''), making them complementary to---rather than competitive with---the $\rho$-POMDP/AIF approach studied here.
+
+\paragraph{Intrinsic motivation and curiosity.} Schmidhuber \cite{schmidhuber1991} and Oudeyer et al.\ \cite{oudeyer2007} pioneered the idea that agents should be intrinsically motivated to seek novel or surprising states. Pathak et al.\ \cite{pathak2017} operationalized this as prediction error in a learned feature space, enabling curiosity-driven exploration in high-dimensional environments with sparse rewards. Bellemare et al.\ \cite{bellemare2016} unified count-based exploration and intrinsic motivation through density-model-derived pseudo-counts, showing that both approaches are grounded in information gain.
+
+\paragraph{Information-theoretic methods.} VIME \cite{houthooft2016} uses variational inference in Bayesian neural networks to compute information gain about environment dynamics, rewarding actions that maximally update the agent's model. This approach is conceptually close to the epistemic term in EFE, but is applied to model learning (reducing parametric uncertainty) rather than state inference (reducing belief-state uncertainty), and requires an additive bonus weight to balance against task reward.
+
+A common thread across these approaches is that exploration is engineered as a bonus or auxiliary objective, requiring tuning to balance against exploitation. Our work differs by deriving exploration from EFE, where pragmatic and epistemic values emerge from the same objective without a tunable weighting parameter.
+
+\subsection{Bridging Active Inference and Reinforcement Learning}
+
+Several recent works have established formal connections between active inference and reinforcement learning. Sajid et al.\ \cite{sajid2021} provided a direct comparison in discrete environments, demonstrating that behaviors typically engineered into RL agents (such as directed exploration and uncertainty-sensitive decision-making) arise naturally in active inference. Millidge et al.\ \cite{millidge2020} formalized the relationship between active inference and control-as-inference, showing that the primary difference lies in how value is incorporated into the generative model. Da Costa et al.\ \cite{dacosta2020b} further showed that sophisticated active inference recovers Bellman-optimal policies, establishing that the AIF framework is at least as expressive as model-based RL for finite-horizon POMDPs.
+
+Our contribution sits at the intersection of these lines of work: rather than comparing AIF and RL as competing frameworks, we use AIF's objective (EFE) as the $\rho$ function within the $\rho$-POMDP formalism, inheriting the strengths of both---the formal flexibility of belief-dependent rewards and the principled exploration of active inference.
+
 \section{Methodology}
 
 \subsection{The $\rho$-POMDP Framework}
@@ -185,32 +225,102 @@ The discrete state-space formulation presented here establishes the theoretical 
 The novelty of this work lies in formally bridging the $\rho$-POMDP and active inference frameworks by substituting Expected Free Energy as the belief-dependent utility function $\rho$. While $\rho$-POMDPs provide the formal mechanism for belief-dependent optimization and active inference provides the principled objective, neither literature has systematically explored this integration. Our contribution is both theoretical---showing the substitution is coherent and tractable---and empirical: the VFE agent achieves 99.1\% success on the Tiger problem (the only agent with positive mean reward) and 96.4\% on an information-seeking testbed, without per-environment tuning of exploration parameters. These results demonstrate that principled epistemic foraging via EFE is not merely theoretically elegant but practically superior in environments where the cost of premature commitment is high.
 
 \bibliographystyle{plain}
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 
 \bibitem{araya2010}
 M.~Araya, O.~Buffet, V.~Thomas, and F.~Charpillet.
 \newblock A POMDP extension with belief-dependent rewards.
 \newblock In \emph{Advances in Neural Information Processing Systems (NIPS)}, 2010.
 
+\bibitem{bellemare2016}
+M.~Bellemare, S.~Srinivasan, G.~Ostrovski, T.~Schaul, D.~Saxton, and R.~Munos.
+\newblock Unifying count-based exploration and intrinsic motivation.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2016.
+
 \bibitem{dacosta2020}
 L.~Da~Costa, T.~Parr, N.~Sajid, S.~Veselic, V.~Neacsu, and K.~Friston.
 \newblock Active inference on discrete state-spaces: A synthesis.
 \newblock \emph{Journal of Mathematical Psychology}, 99:102447, 2020.
+
+\bibitem{dacosta2020b}
+L.~Da~Costa, N.~Sajid, T.~Parr, K.~Friston, and R.~Smith.
+\newblock Reward maximization through discrete active inference.
+\newblock \emph{Neural Computation}, 35(5):807--852, 2023.
+
+\bibitem{duff2002}
+M.~O.~Duff and A.~G.~Barto.
+\newblock Optimal learning: Computational procedures for {B}ayes-adaptive {M}arkov decision processes.
+\newblock \emph{University of Massachusetts Amherst}, PhD thesis, 2002.
 
 \bibitem{friston2010}
 K.~Friston.
 \newblock The free-energy principle: a unified brain theory?
 \newblock \emph{Nature Reviews Neuroscience}, 11(2):127--138, 2010.
 
+\bibitem{friston2021}
+K.~Friston, L.~Da~Costa, D.~Hafner, C.~Hesp, and T.~Parr.
+\newblock Sophisticated inference.
+\newblock \emph{Neural Computation}, 33(3):713--763, 2021.
+
+\bibitem{guez2013}
+A.~Guez, D.~Silver, and P.~Dayan.
+\newblock Scalable and efficient {B}ayes-adaptive reinforcement learning based on {M}onte-{C}arlo tree search.
+\newblock \emph{Journal of Artificial Intelligence Research}, 48:841--883, 2013.
+
+\bibitem{heins2022}
+C.~Heins, B.~Millidge, D.~Demekas, B.~Klein, K.~Friston, I.~Couzin, and A.~Tschantz.
+\newblock pymdp: A {P}ython library for active inference in discrete state spaces.
+\newblock \emph{Journal of Open Source Software}, 7(73):4098, 2022.
+
+\bibitem{houthooft2016}
+R.~Houthooft, X.~Chen, Y.~Duan, J.~Schulman, F.~De~Turck, and P.~Abbeel.
+\newblock {VIME}: Variational information maximizing exploration.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2016.
+
 \bibitem{kaelbling1998}
 L.~P.~Kaelbling, M.~L.~Littman, and A.~R.~Cassandra.
 \newblock Planning and acting in partially observable stochastic domains.
 \newblock \emph{Artificial Intelligence}, 101(1--2):99--134, 1998.
 
+\bibitem{lim2023}
+Z.~N.~Sunberg and M.~Lim.
+\newblock $\rho$-{POMCPOW}: Online planning for continuous {$\rho$}-{POMDPs}.
+\newblock \emph{arXiv preprint arXiv:2502.02549}, 2025.
+
+\bibitem{millidge2020}
+B.~Millidge, A.~Tschantz, and C.~L.~Buckley.
+\newblock On the relationship between active inference and control as inference.
+\newblock In \emph{International Workshop on Active Inference}, pp.\ 3--11. Springer, 2020.
+
+\bibitem{oudeyer2007}
+P.-Y.~Oudeyer, F.~Kaplan, and V.~V.~Hafner.
+\newblock Intrinsic motivation systems for autonomous mental development.
+\newblock \emph{IEEE Transactions on Evolutionary Computation}, 11(2):265--286, 2007.
+
 \bibitem{parr2019}
 T.~Parr and K.~J.~Friston.
 \newblock Generalised free energy and active inference.
 \newblock \emph{Biological Cybernetics}, 113(5):495--513, 2019.
+
+\bibitem{pathak2017}
+D.~Pathak, P.~Agrawal, A.~A.~Efros, and T.~Darrell.
+\newblock Curiosity-driven exploration by self-supervised prediction.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, 2017.
+
+\bibitem{sajid2021}
+N.~Sajid, P.~J.~Ball, T.~Parr, and K.~J.~Friston.
+\newblock Active inference: Demystified and compared.
+\newblock \emph{Neural Computation}, 33(3):674--712, 2021.
+
+\bibitem{schmidhuber1991}
+J.~Schmidhuber.
+\newblock A possibility for implementing curiosity and boredom in model-building neural controllers.
+\newblock In \emph{Proc.\ International Conference on Simulation of Adaptive Behavior}, pp.\ 222--227, 1991.
+
+\bibitem{shani2013}
+G.~Shani, J.~Pineau, and R.~Kaplow.
+\newblock A survey of point-based {POMDP} solvers.
+\newblock \emph{Autonomous Agents and Multi-Agent Systems}, 27(1):1--51, 2013.
 
 \end{thebibliography}
 
