@@ -234,6 +234,39 @@ Upon successful Phase 1 completion, we will extend to:
 
 All VFE vs baseline comparisons: p < 0.001 on both environments.
 
+### Diagnosis (1,000 episodes, N=4, +10/-50, 80% test accuracy, cost 1.0)
+
+| Agent | Tests | Success | Reward |
+|---|---|---|---|
+| Myopic | 2.00 | 64.0% | -13.60 |
+| InfoGain | 2.00 | 65.1% | -12.94 |
+| VFE | 9.54 | **96.9%** | **-1.40** |
+
+### Bandit (1,000 episodes, K=4 arms, +10/+1, 80% inspect accuracy, cost 0.5)
+
+| Agent | Inspections | Success | Reward |
+|---|---|---|---|
+| Myopic | 2.05 | 64.3% | +5.76 |
+| InfoGain | 1.99 | 63.1% | +5.69 |
+| VFE | 5.05 | **84.5%** | **+6.08** |
+
+### Navigation (500 episodes, 3x3 grid, +20 goal, -0.5 step cost)
+
+| Agent | Steps | Success | Reward |
+|---|---|---|---|
+| NavVFE | 40.66 | **84.8%** | -3.37 |
+
+### Scaling Analysis (Diagnosis N=2,4,8,16)
+
+| N | VFE Success | Myopic Success | VFE Advantage |
+|---|---|---|---|
+| 2 | 94.2% | 79.4% | +14.8 pts |
+| 4 | 88.2% | 62.6% | +25.6 pts |
+| 8 | 85.2% | 50.2% | +35.0 pts |
+| 16 | 76.6% | 39.4% | +37.2 pts |
+
+VFE's advantage grows with state space size. At N=16, VFE outperforms Myopic by 37.2 percentage points.
+
 ### What These Results Mean for the Paper
 
 **RQ1 (VFE as rho -- tractability)**: Supported. The EFE substitution is coherent, tractable via recursive Bayesian evaluation, and produces well-defined policies on both environments.
@@ -255,22 +288,23 @@ All VFE vs baseline comparisons: p < 0.001 on both environments.
 
 ## Current Status
 
-**Project Phase**: Core Experiments Complete  
-**Date**: February 25, 2026
+**Project Phase**: Phase 2 Complete  
+**Date**: February 26, 2026
 
 **Completed**:
-1. Modular codebase: environments/, agents/, belief.py, run_experiment.py
-2. Gymnasium-wrapped environments: InfoSeekingEnv, TigerEnv
-3. Three agents: Myopic, InformationGain, VFE (proper recursive EFE)
-4. Full experiments on both environments (1,000 episodes each, statistical analysis)
-5. Comprehensive test suite (69 tests, all passing)
-6. Paper draft with results, related works (20 references), hypothesis evaluations
-7. Guidance document aligned with email thread and research questions
+1. Modular codebase with generalized multi-observation-action agent architecture
+2. Five Gymnasium environments: InfoSeeking, Tiger, Diagnosis, Bandit, Navigation
+3. Four agent types: Myopic, InformationGain, VFE, NavigationVFE
+4. Full experiments on all environments (500-1000 episodes each)
+5. Scaling analysis: Diagnosis N=2,4,8,16
+6. Comprehensive test suite (107 tests, all passing)
+7. Paper draft with Phase 1+2 results, related works (20 references), scaling analysis
+8. Guidance document aligned with all experimental findings
 
 **Awaiting**:
 - NeurIPS paper formatting (David)
-- POMDP use cases for extended benchmarks (David)
 - Feedback from Ashutosh on methodology
+- Computational scaling improvements (MCTS or amortized planning for deeper horizons)
 
 ---
 

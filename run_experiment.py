@@ -13,12 +13,18 @@ from scipy import stats
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional, Type
 
+import time
+
 from environments.info_seeking import InfoSeekingEnv
 from environments.tiger import TigerEnv
+from environments.diagnosis import DiagnosisEnv
+from environments.bandit import BanditEnv
+from environments.navigation import NavigationEnv
 from agents.base import BaseAgent
 from agents.myopic import MyopicAgent
 from agents.info_gain import InformationGainAgent
 from agents.vfe import VFEAgent
+from agents.navigation_vfe import NavigationVFEAgent
 
 
 @dataclass
@@ -262,14 +268,182 @@ def run_tiger_experiment(num_episodes: int = 1000, seed: int = 42):
     return all_results, all_raw
 
 
+def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1000, csv_name: str = None):
+    """Run a standard experiment with multiple agents on a given environment."""
+    print("=" * 72)
+    print(f"{label}")
+    print("=" * 72)
+    print(f"  Episodes: {num_episodes}")
+    print()
+
+    all_results = {}
+    all_raw = {}
+
+    for agent_label, agent_class, kwargs, make_fn in agent_configs:
+        print(f"Running {agent_label}...")
+        t0 = time.time()
+        if make_fn:
+            agent = make_fn()
+        else:
+            agent = make_agent(agent_class, env, **kwargs)
+        results = []
+        log_interval = max(1, num_episodes // 10)
+        for i in range(num_episodes):
+            result = run_episode(agent, env)
+            results.append(result)
+            if (i + 1) % log_interval == 0:
+                print(f"    {i+1}/{num_episodes} ({(i+1)/num_episodes*100:.0f}%)", flush=True)
+        dt = time.time() - t0
+        all_raw[agent_label] = results
+        all_results[agent_label] = summarize_results(results)
+        all_results[agent_label]["time_s"] = dt
+        s = all_results[agent_label]
+        print(
+            f"  -> obs={s['mean_observations']:.2f}  "
+            f"success={s['success_rate']:.1%}  "
+            f"reward={s['mean_reward']:+.3f}  "
+            f"({dt:.1f}s)\n"
+        )
+
+    print("-" * 72)
+    print("STATISTICAL COMPARISONS")
+    print("-" * 72)
+    labels = list(all_raw.keys())
+    for i in range(len(labels)):
+        for j in range(i + 1, len(labels)):
+            print_statistical_comparison(
+                labels[i], labels[j], all_raw[labels[i]], all_raw[labels[j]]
+            )
+    print()
+
+    if csv_name:
+        summary_df = pd.DataFrame(all_results).T
+        summary_df.to_csv(csv_name)
+        print(f"Results saved to {csv_name}")
+    return all_results, all_raw
+
+
+def run_diagnosis_experiment(num_conditions: int = 4, num_episodes: int = 1000, seed: int = 42):
+    np.random.seed(seed)
+    env = DiagnosisEnv(num_conditions=num_conditions, test_accuracy=0.80, test_cost=1.0,
+                       correct_reward=10.0, incorrect_penalty=-50.0)
+    horizon = 3
+    configs = [
+        ("Myopic", MyopicAgent, {}, None),
+        ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}, None),
+        ("VFE", VFEAgent, {"planning_horizon": horizon}, None),
+    ]
+    return run_generic_experiment(
+        env, f"DIAGNOSIS EXPERIMENT (N={num_conditions})", configs,
+        num_episodes, f"results_diagnosis_n{num_conditions}.csv"
+    )
+
+
+def run_bandit_experiment(num_arms: int = 4, num_episodes: int = 1000, seed: int = 42):
+    np.random.seed(seed)
+    env = BanditEnv(num_arms=num_arms, inspect_accuracy=0.80, inspect_cost=0.5,
+                    correct_reward=10.0, small_reward=1.0)
+    configs = [
+        ("Myopic", MyopicAgent, {}, None),
+        ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}, None),
+        ("VFE", VFEAgent, {"planning_horizon": 2}, None),
+    ]
+    return run_generic_experiment(
+        env, f"BANDIT EXPERIMENT (K={num_arms})", configs,
+        num_episodes, "results_bandit.csv"
+    )
+
+
+def run_navigation_experiment(grid_size: int = 3, num_episodes: int = 500, seed: int = 42):
+    np.random.seed(seed)
+    env = NavigationEnv(grid_size=grid_size, max_steps=grid_size * grid_size * 2)
+
+    def make_nav_vfe():
+        return NavigationVFEAgent(env, planning_horizon=2)
+
+    configs = [
+        ("NavVFE", None, {}, make_nav_vfe),
+    ]
+    return run_generic_experiment(
+        env, f"NAVIGATION EXPERIMENT ({grid_size}x{grid_size})", configs,
+        num_episodes, "results_navigation.csv"
+    )
+
+
+def run_scaling_analysis(seed: int = 42):
+    """Run the Diagnosis env at N=2,4,8,16 and report scaling curves."""
+    print("=" * 72)
+    print("SCALING ANALYSIS: DIAGNOSIS N=2,4,8,16")
+    print("=" * 72)
+    print()
+
+    scaling_data = []
+    for n in [2, 4, 8, 16]:
+        print(f"--- N = {n} ---")
+        np.random.seed(seed)
+        env = DiagnosisEnv(num_conditions=n, test_accuracy=0.80, test_cost=1.0,
+                           correct_reward=10.0, incorrect_penalty=-50.0)
+        horizon = 2
+        episodes = 500
+
+        for agent_label, agent_class, kwargs in [
+            ("Myopic", MyopicAgent, {}),
+            ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}),
+            ("VFE", VFEAgent, {"planning_horizon": horizon}),
+        ]:
+            agent = make_agent(agent_class, env, **kwargs)
+            t0 = time.time()
+            results = []
+            for _ in range(episodes):
+                results.append(run_episode(agent, env))
+            dt = time.time() - t0
+            s = summarize_results(results)
+            s["N"] = n
+            s["time_s"] = dt
+            scaling_data.append(s)
+            print(
+                f"  {agent_label:10s}: obs={s['mean_observations']:.2f}  "
+                f"success={s['success_rate']:.1%}  "
+                f"reward={s['mean_reward']:+.3f}  "
+                f"({dt:.1f}s)"
+            )
+        print()
+
+    df = pd.DataFrame(scaling_data)
+    df.to_csv("results_scaling.csv", index=False)
+    print("Scaling results saved to results_scaling.csv")
+    return df
+
+
 if __name__ == "__main__":
     import sys
 
-    if len(sys.argv) > 1 and sys.argv[1] == "tiger":
+    cmd = sys.argv[1] if len(sys.argv) > 1 else "info"
+    if cmd == "tiger":
         run_tiger_experiment()
-    elif len(sys.argv) > 1 and sys.argv[1] == "all":
+    elif cmd == "diagnosis":
+        run_diagnosis_experiment()
+    elif cmd == "bandit":
+        run_bandit_experiment()
+    elif cmd == "navigation":
+        run_navigation_experiment()
+    elif cmd == "scaling":
+        run_scaling_analysis()
+    elif cmd == "phase2":
+        run_diagnosis_experiment()
+        print("\n\n")
+        run_bandit_experiment()
+        print("\n\n")
+        run_navigation_experiment()
+    elif cmd == "all":
         run_info_seeking_experiment()
         print("\n\n")
         run_tiger_experiment()
+        print("\n\n")
+        run_diagnosis_experiment()
+        print("\n\n")
+        run_bandit_experiment()
+        print("\n\n")
+        run_navigation_experiment()
     else:
         run_info_seeking_experiment()
