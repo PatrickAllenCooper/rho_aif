@@ -5,17 +5,14 @@ Selects actions by minimizing Expected Free Energy (EFE), which decomposes
 into pragmatic value (goal alignment) and epistemic value (information gain)
 without any tunable weight parameter. Uses recursive multi-step planning.
 
-The key distinction from InformationGainAgent:
-  - No hand-tuned epistemic weight: both pragmatic and epistemic terms emerge
-    from the same EFE objective.
-  - Multi-step planning horizon: recursively evaluates observation sequences
-    rather than one-step lookahead.
-  - Pragmatic value uses log-preferences derived from the reward structure,
-    not raw expected reward.
+Supports multiple observation actions, each with its own observation model
+and cost. The agent evaluates EFE for every observation action and every
+commit action, selecting the global argmin.
 """
 
 import numpy as np
 from scipy.stats import entropy as scipy_entropy
+from typing import Union, List
 from belief import BeliefState
 from agents.base import BaseAgent
 
@@ -24,25 +21,21 @@ class VFEAgent(BaseAgent):
     """
     rho-POMDP agent minimizing Expected Free Energy.
 
-    G(a) = pragmatic_cost(a) - info_gain(a) + E[continuation(a)]
+    For each observation action k:
+      G(obs_k) = cost_k - info_gain_k + E_o[min_a G(a, posterior)]
+    For each commit action i:
+      G(commit_i) = -E_b[reward_i]
 
-    For OBSERVE:  G = obs_cost - info_gain + E_o[min_a' G(a', posterior)]
-    For COMMIT_X: G = -E_b[reward(X)]   (log-preferences proportional to reward)
-
-    The agent recursively evaluates action sequences up to a planning horizon,
-    choosing the action that minimizes total expected free energy. Information
-    seeking emerges naturally: high belief entropy drives high info_gain,
-    reducing G(observe) relative to G(commit), incentivizing exploration.
-    As beliefs sharpen, info_gain decays and pragmatic commit value dominates.
+    The agent selects argmin over all actions.
     """
 
     def __init__(
         self,
-        observation_model: np.ndarray,
+        observation_models: Union[np.ndarray, List[np.ndarray]],
         env_config: dict,
         planning_horizon: int = 4,
     ):
-        super().__init__(observation_model, env_config)
+        super().__init__(observation_models, env_config)
         self.planning_horizon = planning_horizon
 
     def select_action(self) -> int:
@@ -52,58 +45,56 @@ class VFEAgent(BaseAgent):
     def _evaluate(self, belief: np.ndarray, depth: int):
         """
         Recursively evaluate EFE for all available actions at a given belief.
-
         Returns (best_action, best_G).
         """
         if depth >= self.planning_horizon:
-            return self._best_commit(belief)
+            return self._best_commit_efe(belief)
 
-        best_commit_action, best_commit_g = self._best_commit(belief)
-        observe_g = self._efe_observe(belief, depth)
+        best_commit_action, best_commit_g = self._best_commit_efe(belief)
 
-        if observe_g < best_commit_g:
-            return 0, observe_g
+        best_obs_action = None
+        best_obs_g = float("inf")
+        for k in range(self.num_observe_actions):
+            g = self._efe_observe(k, belief, depth)
+            if g < best_obs_g:
+                best_obs_g = g
+                best_obs_action = k
+
+        if best_obs_g < best_commit_g:
+            return best_obs_action, best_obs_g
         return best_commit_action, best_commit_g
 
-    def _best_commit(self, belief: np.ndarray):
-        """
-        Find the commit action with lowest EFE (highest expected reward).
-
-        Uses the commit reward matrix to compute expected reward for each
-        commit action, then returns G = -expected_reward.
-        """
+    def _best_commit_efe(self, belief: np.ndarray):
+        """Find the commit action with lowest EFE (highest expected reward)."""
         best_g = float("inf")
-        best_action = 1
+        best_action = self.num_observe_actions
 
         for i in range(self.num_commit_actions):
             expected_reward = float(np.dot(belief, self.commit_rewards[i]))
             g = -expected_reward
             if g < best_g:
                 best_g = g
-                best_action = i + 1
+                best_action = self.num_observe_actions + i
         return best_action, best_g
 
-    def _efe_observe(self, belief: np.ndarray, depth: int) -> float:
+    def _efe_observe(self, obs_action: int, belief: np.ndarray, depth: int) -> float:
         """
-        Compute EFE for the observe action with recursive planning.
+        Compute EFE for a specific observation action with recursive planning.
 
-        G(observe) = obs_cost - info_gain(belief) + E_o[min_a G(a, posterior, depth+1)]
-
-        The info_gain term captures intrinsic epistemic value (uncertainty
-        reduction valued for its own sake). The continuation term captures
-        instrumental value (better decisions from better beliefs). Together
-        they produce principled exploration without a tunable weight.
+        G(obs_k) = cost_k - info_gain_k(belief) + E_o[min_a G(a, posterior, depth+1)]
         """
+        model = self.obs_models[obs_action]
+        num_outcomes = model.shape[1]
         prior_entropy = scipy_entropy(belief, base=2)
         expected_posterior_entropy = 0.0
         expected_continuation = 0.0
 
-        for obs_idx in range(self.num_obs):
-            prob_obs = float(np.dot(belief, self.obs_model[:, obs_idx]))
+        for obs_idx in range(num_outcomes):
+            prob_obs = float(np.dot(belief, model[:, obs_idx]))
             if prob_obs < 1e-10:
                 continue
 
-            posterior = self.obs_model[:, obs_idx] * belief
+            posterior = model[:, obs_idx] * belief
             posterior = posterior / posterior.sum()
 
             expected_posterior_entropy += prob_obs * scipy_entropy(posterior, base=2)
@@ -113,4 +104,4 @@ class VFEAgent(BaseAgent):
 
         info_gain = prior_entropy - expected_posterior_entropy
 
-        return self.config["observation_cost"] - info_gain + expected_continuation
+        return self.obs_costs[obs_action] - info_gain + expected_continuation

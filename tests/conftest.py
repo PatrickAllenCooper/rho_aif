@@ -14,32 +14,28 @@ from belief import BeliefState
 
 @pytest.fixture
 def info_env():
-    env = InfoSeekingEnv(
+    return InfoSeekingEnv(
         observation_accuracy=0.75,
         observation_cost=0.1,
         correct_reward=1.0,
         incorrect_penalty=-1.0,
     )
-    return env
 
 
 @pytest.fixture
 def tiger_env():
-    env = TigerEnv(
+    return TigerEnv(
         listen_accuracy=0.85,
         listen_cost=1.0,
         correct_reward=10.0,
         incorrect_penalty=-100.0,
     )
-    return env
 
 
 @pytest.fixture
 def info_config():
     return {
-        "observation_cost": 0.1,
-        "correct_reward": 1.0,
-        "incorrect_penalty": -1.0,
+        "observation_costs": [0.1],
         "commit_reward_matrix": np.array([
             [1.0, -1.0],
             [-1.0, 1.0],
@@ -50,9 +46,7 @@ def info_config():
 @pytest.fixture
 def tiger_config():
     return {
-        "observation_cost": 1.0,
-        "correct_reward": 10.0,
-        "incorrect_penalty": -100.0,
+        "observation_costs": [1.0],
         "commit_reward_matrix": np.array([
             [-100.0, 10.0],
             [10.0, -100.0],
@@ -62,12 +56,12 @@ def tiger_config():
 
 @pytest.fixture
 def info_obs_model():
-    return np.array([[0.75, 0.25], [0.25, 0.75]])
+    return [np.array([[0.75, 0.25], [0.25, 0.75]])]
 
 
 @pytest.fixture
 def tiger_obs_model():
-    return np.array([[0.85, 0.15], [0.15, 0.85]])
+    return [np.array([[0.85, 0.15], [0.15, 0.85]])]
 
 
 @pytest.fixture

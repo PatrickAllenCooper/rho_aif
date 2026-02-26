@@ -59,17 +59,18 @@ class InfoSeekingEnv(gym.Env):
         self._total_reward = 0.0
 
     def get_observation_model(self) -> np.ndarray:
-        """
-        P(obs | state) matrix, shape (num_states, num_obs).
-
-        Rows = states (A, B), columns = observations (SIGNAL_A, SIGNAL_B).
-        Only the two real signals; NULL_OBS is structural, not probabilistic.
-        """
+        """Single observation model (backward compat)."""
         acc = self.observation_accuracy
         return np.array([
             [acc, 1.0 - acc],
             [1.0 - acc, acc],
         ])
+
+    def get_observation_models(self):
+        return [self.get_observation_model()]
+
+    def get_observation_costs(self):
+        return [self.observation_cost]
 
     def get_commit_reward_matrix(self) -> np.ndarray:
         """

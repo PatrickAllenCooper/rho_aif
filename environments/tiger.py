@@ -68,17 +68,18 @@ class TigerEnv(gym.Env):
         return self.listen_cost
 
     def get_observation_model(self) -> np.ndarray:
-        """
-        P(obs | state) matrix, shape (2, 2).
-
-        Rows = tiger location (LEFT, RIGHT).
-        Columns = heard signal (HEAR_LEFT, HEAR_RIGHT).
-        """
+        """Single observation model (backward compat)."""
         acc = self.listen_accuracy
         return np.array([
             [acc, 1.0 - acc],
             [1.0 - acc, acc],
         ])
+
+    def get_observation_models(self):
+        return [self.get_observation_model()]
+
+    def get_observation_costs(self):
+        return [self.listen_cost]
 
     def get_commit_reward_matrix(self) -> np.ndarray:
         """

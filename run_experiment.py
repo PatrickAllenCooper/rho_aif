@@ -34,12 +34,21 @@ class EpisodeResult:
 
 def make_env_config(env) -> dict:
     """Extract agent-facing config from any environment."""
+    if hasattr(env, "get_observation_costs"):
+        costs = env.get_observation_costs()
+    else:
+        costs = [env.observation_cost]
     return {
-        "observation_cost": env.observation_cost,
-        "correct_reward": env.correct_reward,
-        "incorrect_penalty": env.incorrect_penalty,
+        "observation_costs": costs,
         "commit_reward_matrix": env.get_commit_reward_matrix(),
     }
+
+
+def get_obs_models(env):
+    """Get observation models from an environment (single or multi)."""
+    if hasattr(env, "get_observation_models"):
+        return env.get_observation_models()
+    return [env.get_observation_model()]
 
 
 def make_agent(
@@ -47,18 +56,18 @@ def make_agent(
     env,
     **kwargs,
 ) -> BaseAgent:
-    obs_model = env.get_observation_model()
+    obs_models = get_obs_models(env)
     config = make_env_config(env)
-    return agent_class(obs_model, config, **kwargs)
+    return agent_class(obs_models, config, **kwargs)
 
 
-def run_episode(agent: BaseAgent, env) -> EpisodeResult:
+def run_episode(agent: BaseAgent, env, max_steps: int = 200) -> EpisodeResult:
     obs, info = env.reset()
     agent.reset()
     total_reward = 0.0
     observation_count = 0
 
-    for _ in range(200):
+    for _ in range(max_steps):
         action = agent.select_action()
         obs, reward, terminated, truncated, info = env.step(action)
         total_reward += reward
@@ -74,7 +83,7 @@ def run_episode(agent: BaseAgent, env) -> EpisodeResult:
                 belief_history=[b.copy() for b in agent.belief.history],
             )
 
-        agent.update_belief(obs)
+        agent.update_belief(obs, obs_action=action)
         observation_count += 1
 
     return EpisodeResult(
