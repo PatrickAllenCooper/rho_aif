@@ -7,14 +7,14 @@
 
 \title{Variational Free Energy as a Generalized Utility Function for $\rho$-POMDPs: Principled Epistemic Foraging via Active Inference}
 \author{Patrick Cooper \and David Baines}
-\date{February 25, 2026}
+\date{March 4, 2026}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-We investigate whether variational free energy (VFE), cast as the generalized utility function $\rho$ in $\rho$-POMDPs, produces superior epistemic foraging behavior compared to same-horizon reward-only planning, per-environment tuned information gain, and pymdp's reference active inference agent. By substituting Expected Free Energy (EFE) from the active inference literature as $\rho$, we obtain an agent whose exploration--exploitation balance arises from a single, principled objective rather than hand-tuned information bonuses. Across five discrete POMDP environments with six baselines, we find that VFE's advantage is \emph{environment-dependent}: on simple observe-then-commit problems (Tiger), same-horizon reward-only planning matches VFE's 99\% success rate; on multi-observation-action environments requiring \emph{which}-information-to-gather decisions (Diagnosis, Bandit), VFE significantly outperforms same-horizon planning ($+9.1$ pp and $+20.6$ pp respectively, $p < 0.05$). Per-environment tuned information gain achieves high success rates but requires weights varying from $w=20$ to $w=100$ across environments and systematically over-explores relative to VFE. VFE achieves competitive or superior performance across all environments with zero per-environment tuning, identifying structured uncertainty as the regime where principled epistemic foraging is most valuable.
+We investigate whether variational free energy (VFE), cast as the generalized utility function $\rho$ in $\rho$-POMDPs, produces superior epistemic foraging behavior compared to same-horizon reward-only planning, per-environment tuned information gain, and pymdp's reference active inference agent. By substituting Expected Free Energy (EFE) from the active inference literature as $\rho$, we obtain an agent whose exploration--exploitation balance arises from a single, principled objective rather than hand-tuned information bonuses. Across five discrete POMDP environments with six baselines, we find that VFE's advantage is \emph{environment-dependent} and \emph{horizon-dependent}: on simple observe-then-commit problems (Tiger), same-horizon reward-only planning matches VFE's 99\% success rate; on multi-observation-action environments requiring \emph{which}-information-to-gather decisions, VFE significantly outperforms same-horizon planning when given sufficient recursive depth ($+9.1$ pp on Diagnosis at $H=3$, $+20.6$ pp on Bandit at $H=2$; $p < 0.05$), but matches Planning at shallower horizons. Per-environment tuned information gain achieves high success rates but requires weights varying from $w=20$ to $w=100$ across environments and systematically over-explores relative to VFE. VFE achieves competitive or superior performance across all environments with zero per-environment tuning, identifying structured uncertainty combined with sufficient planning depth as the regime where principled epistemic foraging is most valuable.
 \end{abstract}
 
 \section{Introduction}
@@ -137,37 +137,39 @@ where $c_{\text{obs}}$ is the observation cost, $I(b) = H(b) - \mathbb{E}_o[H(b'
 
 \section{Experiments}
 
+All environments are implemented as OpenAI Gymnasium environments for standardization and reproducibility. Each environment follows the observe-then-commit structure: the agent selects between one or more observation actions (gathering noisy information) and one or more commit actions (terminating the episode with a reward or penalty determined by the hidden state).
+
 \subsection{Tiger Problem}
 
-The Tiger problem \cite{kaelbling1998} is a canonical POMDP benchmark that isolates epistemic foraging behavior. An agent faces two doors, behind one of which is a tiger (penalty) and behind the other a reward. The agent can listen (receiving a noisy observation about the tiger's location) or open a door (terminating the episode).
-
-\begin{itemize}
-    \item States: $\{$tiger\_left, tiger\_right$\}$
-    \item Actions: $\{$listen, open\_left, open\_right$\}$
-    \item Observations: $\{$hear\_left, hear\_right$\}$
-    \item Listen accuracy: 0.85
-    \item Rewards: correct door $+10$, wrong door $-100$, listen cost $-1$
-\end{itemize}
-
-The extreme reward asymmetry ($+10$ vs.\ $-100$) makes information gathering critical: committing prematurely is catastrophic. This amplifies behavioral differences between agents with different epistemic strategies.
+The Tiger problem \cite{kaelbling1998} is a canonical POMDP benchmark that isolates epistemic foraging behavior. An agent faces two doors, behind one of which is a tiger (penalty) and behind the other a reward. The agent can listen (receiving a noisy observation about the tiger's location) or open a door (terminating the episode). States: $\{$tiger\_left, tiger\_right$\}$; actions: $\{$listen, open\_left, open\_right$\}$; observations: $\{$hear\_left, hear\_right$\}$; listen accuracy: 0.85; rewards: correct door $+10$, wrong door $-100$, listen cost $-1$. The extreme reward asymmetry makes information gathering critical: committing prematurely is catastrophic.
 
 \subsection{Two-State Information-Seeking Testbed}
 
-A minimal environment with two hidden states, noisy observations (75\% accuracy), and symmetric reward structure (correct $+1$, incorrect $-1$, observation cost $-0.1$). Serves as a simpler validation testbed.
+A minimal environment with two hidden states, noisy observations (75\% accuracy), and symmetric reward structure (correct $+1$, incorrect $-1$, observation cost $-0.1$). This environment isolates the over-exploration phenomenon: with mild penalty for incorrect commitment, excessive information gathering is costly relative to the benefit.
 
-Both environments are implemented as OpenAI Gymnasium environments for standardization and reproducibility.
+\subsection{Sequential Diagnosis}
+
+Generalizes the Tiger problem to $N$ hidden conditions with $K = \lceil \log_2 N \rceil$ binary diagnostic tests. Each test provides noisy information about a different partition of the state space (80\% accuracy, test cost $-1$). After running any number of tests, the agent selects from $N$ diagnose actions (correct $+10$, incorrect $-50$). The critical feature distinguishing Diagnosis from Tiger is that the agent must choose \emph{which} test to run at each step---each test is informative about a different set of conditions---not merely whether to test.
+
+\subsection{Multi-Armed Bandit with Hidden Structure}
+
+A structured bandit with $K = 4$ arms, one of which is the ``best'' (pull reward $+10$, others $+1$). The hidden state determines which arm is best. The agent can inspect any arm (80\% accuracy, cost $-0.5$) to receive a noisy signal about whether that arm is the best, or pull any arm to terminate the episode. As with Diagnosis, the agent must choose \emph{which} information source to query, but the action space is larger: $K$ inspection actions plus $K$ pull actions.
+
+\subsection{Partially Observable Navigation}
+
+A $3 \times 3$ grid world with a hidden goal location (one of 9 cells). The agent starts at $(0,0)$ and receives proximity-based observations (warm/cold signals with accuracy depending on Manhattan distance to the goal) after each movement. The episode ends when the agent enters the goal cell (reward $+20$) or exceeds the step limit (step cost $-0.5$). Unlike the other environments, navigation has no explicit commit action---the agent's movement both gathers information and brings it closer to (or further from) the goal. This tests whether EFE-based planning extends to environments with state transitions and position-dependent observation models.
 
 \subsection{Evaluation Metrics}
 
 \begin{enumerate}
-    \item \textbf{Belief Convergence Rate}: Steps to reach a belief confidence threshold; belief entropy reduction curve.
-    \item \textbf{Sample Efficiency}: Number of observations required before committing; variance across trials.
-    \item \textbf{Policy Quality}: Expected cumulative reward; success rate; statistical significance via t-tests.
+    \item \textbf{Sample efficiency}: Number of observations (listens, tests, inspections, steps) before committing; variance across trials.
+    \item \textbf{Policy quality}: Success rate (fraction of episodes where the agent commits correctly); mean cumulative reward; statistical significance via independent two-sample $t$-tests.
+    \item \textbf{Cross-environment robustness}: Whether a single agent formulation achieves competitive performance across all environments without per-environment parameter tuning.
 \end{enumerate}
 
-\section{Results}
+All experiments use 1{,}000 episodes per agent (500 for navigation and scaling). Each experiment includes the Planning agent at the same horizon $H$ as VFE, the untuned and per-environment tuned Information Gain agents, and the PyMDP reference agent where applicable. The Information Gain weight is tuned via grid search over $\{0.1, 0.5, 1, 2, 5, 10, 20, 50, 100\}$ on 200 tuning episodes, maximizing success rate.
 
-All experiments were run for 1{,}000 episodes per agent (500 for navigation and scaling). Statistical significance was assessed via independent two-sample $t$-tests. Each experiment includes the Planning agent at the same horizon $H$ as VFE, the untuned Information Gain agent ($w = 1.0$), the per-environment tuned Information Gain agent, and the PyMDP reference agent where applicable.
+\section{Results}
 
 \subsection{Tiger Problem}
 
@@ -338,7 +340,7 @@ The expanded baselines reveal a more nuanced picture than VFE uniformly dominati
 
 \paragraph{H1 (Tractability) --- Supported.} VFE serves as an effective generalized utility function for $\rho$-POMDPs across all five environments, including multi-action observation spaces (diagnosis with $K$ tests, bandit with $K$ arms) and spatial domains (navigation). Computational cost scales as $\mathcal{O}(K \cdot |\mathcal{O}|^H)$ in the number of observation actions $K$, observation outcomes $|\mathcal{O}|$, and planning horizon $H$, which necessitates modest horizons ($H=2$--$3$) for environments with $K \geq 3$ observation actions. Validation against the \texttt{pymdp} reference implementation confirms mathematical consistency of our EFE computation.
 
-\paragraph{H2 (Epistemic Superiority) --- Supported with Important Qualifications.} The inclusion of a same-horizon Planning baseline and per-environment tuned Info Gain reveals that VFE's advantage is \emph{environment-dependent}. On simple observe-then-commit problems (Tiger, testbed), Planning at the same horizon achieves equivalent success: the reward structure alone provides sufficient gradient for exploration. VFE's genuine advantage appears in multi-observation-action environments (Diagnosis: 97.0\% vs.\ Planning's 87.9\%, $p = 0.022$; Bandit: 88.1\% and $+6.46$ reward vs.\ Planning's 67.5\% and $+5.44$, $p < 0.001$), where the agent must decide \emph{which} information to gather. In these settings, EFE's information gain term provides action-selection guidance that reward-only planning cannot replicate. On very small spatial environments (3$\times$3 navigation), VFE over-explores relative to a greedy baseline. The scaling analysis confirms that VFE's advantage over Planning \emph{grows} with state space size: from $+7.6$ pp at $N=2$ to $+30.3$ pp at $N=16$.
+\paragraph{H2 (Epistemic Superiority) --- Supported with Important Qualifications.} The inclusion of a same-horizon Planning baseline and per-environment tuned Info Gain reveals that VFE's advantage is \emph{environment-dependent} and \emph{horizon-dependent}. On simple observe-then-commit problems (Tiger, testbed), Planning at the same horizon achieves equivalent success: the reward structure alone provides sufficient gradient for exploration. VFE's genuine advantage appears in multi-observation-action environments \emph{with sufficient planning depth} (Diagnosis at $H=3$: 97.0\% vs.\ Planning's 87.9\%, $p = 0.022$; Bandit at $H=2$: 88.1\% and $+6.46$ reward vs.\ Planning's 67.5\% and $+5.44$, $p < 0.001$), where the agent must decide \emph{which} information to gather. At $H=2$, the scaling analysis shows VFE and Planning performing equivalently---the EFE advantage requires sufficient recursive depth to differentiate among observation actions. On very small spatial environments (3$\times$3 navigation), VFE over-explores relative to a greedy baseline. Both VFE and Planning show growing advantage over Myopic as state spaces scale: from $+15.0$ pp at $N=2$ to $+38.8$ pp at $N=16$ for VFE, confirming that deeper planning of any kind is increasingly valuable.
 
 \paragraph{H3 (Constitutive Epistemics) --- Supported, with Boundary Conditions.} The VFE agent exhibits constitutive epistemic drive: it gathers more information than baselines, adapts its exploration depth to environmental structure, and requires no per-environment tuning. Critically, this constitutive epistemics is most valuable when the agent faces \emph{structured uncertainty}---multiple observation modalities, asymmetric information content across actions, or large state spaces. In environments where exhaustive search is cheap (small grids) or reward structure naturally incentivizes exploration (Tiger), the constitutive epistemic drive provides no advantage and can be counterproductive. The tuned Info Gain results further illuminate this: weights that achieve high success on one environment ($w = 20$ for Tiger) are inappropriate on others ($w = 100$ for Diagnosis, $w = 50$ for Bandit), whereas VFE achieves competitive performance across all environments with the same objective function.
 
@@ -368,7 +370,7 @@ The experiments presented here validate EFE-as-$\rho$ across five structurally d
 
 The novelty of this work lies in formally bridging the $\rho$-POMDP and active inference frameworks by substituting Expected Free Energy as the belief-dependent utility function $\rho$, and in rigorously characterizing \emph{where} this substitution helps and where it does not. While $\rho$-POMDPs provide the formal mechanism for belief-dependent optimization and active inference provides the principled objective, neither literature has systematically explored this integration with controlled baselines.
 
-Our contribution is both theoretical---showing the substitution is coherent, tractable, and consistent with the pymdp reference implementation---and empirical. Through comparison against five baselines (Myopic, same-horizon Planning, untuned and tuned Information Gain, and pymdp's standard AIF agent), we establish that: (1) on simple observe-then-commit environments, VFE matches the best tuned alternatives without requiring per-environment weight selection; (2) on multi-observation-action environments requiring \emph{which}-information-to-gather decisions, VFE significantly outperforms same-horizon reward-only planning ($+20.6$ pp on Bandit, $+9.1$ pp on Diagnosis); and (3) on very small state spaces, VFE's constitutive epistemic drive can over-explore. The scaling analysis confirms that VFE's advantage over the Planning baseline \emph{grows} with state space size (from $+7.6$ pp at $N=2$ to $+30.3$ pp at $N=16$), identifying structured uncertainty as the regime where principled epistemic foraging is most valuable.
+Our contribution is both theoretical---showing the substitution is coherent, tractable, and consistent with the pymdp reference implementation---and empirical. Through comparison against five baselines (Myopic, same-horizon Planning, untuned and tuned Information Gain, and pymdp's standard AIF agent), we establish that: (1) on simple observe-then-commit environments, VFE matches the best tuned alternatives without requiring per-environment weight selection; (2) on multi-observation-action environments requiring \emph{which}-information-to-gather decisions with sufficient planning depth, VFE significantly outperforms same-horizon reward-only planning ($+20.6$ pp on Bandit, $+9.1$ pp on Diagnosis at $H=3$); and (3) on very small state spaces, VFE's constitutive epistemic drive can over-explore. The scaling analysis confirms that both VFE and Planning provide growing advantage over myopic baselines as state spaces increase (from $+15.0$ pp at $N=2$ to $+38.8$ pp at $N=16$ for VFE over Myopic), while VFE's advantage over Planning specifically requires sufficient recursive depth ($H \geq 3$) to manifest---identifying structured uncertainty combined with deep planning as the regime where principled epistemic foraging is most valuable.
 
 \bibliographystyle{plain}
 \begin{thebibliography}{99}

@@ -301,9 +301,10 @@ At H=2, Planning and VFE are equivalent. VFE's advantage over Planning requires 
 
 **RQ1 (Tractability)**: Fully supported. EFE substitution is coherent, tractable, validated against pymdp.
 
-**RQ2 (Epistemic superiority)**: Environment-dependent:
+**RQ2 (Epistemic superiority)**: Environment-dependent AND horizon-dependent:
 - Simple observe-then-commit: VFE matches tuned alternatives without tuning
-- Multi-observation-action environments: VFE significantly outperforms same-horizon Planning (Diagnosis +9.1 pp, Bandit +20.6 pp)
+- Multi-observation-action environments with sufficient depth: VFE significantly outperforms same-horizon Planning (Diagnosis +9.1 pp at H=3, Bandit +20.6 pp at H=2)
+- At H=2, VFE and Planning perform equivalently on scaling analysis -- EFE advantage requires sufficient recursive depth
 - Very small state spaces: VFE over-explores
 
 **RQ3 (Constitutive epistemics)**: Supported with boundary conditions. Most valuable under structured uncertainty (multiple observation types, large state spaces). Can be counterproductive in very small/simple environments.
@@ -340,10 +341,13 @@ At H=2, Planning and VFE are equivalent. VFE's advantage over Planning requires 
 ## References
 
 - Araya, M., et al. (2010). A POMDP extension with belief-dependent rewards. *NIPS*
+- Benchetrit, Y., et al. (2025). rho-POMCPOW: Online planning for continuous rho-POMDPs. *arXiv:2502.02549*
 - Da Costa, L., et al. (2020). Active inference on discrete state-spaces: A synthesis. *Journal of Mathematical Psychology*
 - Da Costa, L., et al. (2023). Reward maximization through discrete active inference. *Neural Computation*
+- Fehr, R., et al. (2018). rho-POMDPs have Lipschitz-continuous epsilon-optimal value functions. *NeurIPS*
 - Friston, K. (2010). The free-energy principle: a unified brain theory? *Nature Reviews Neuroscience*
 - Friston, K., et al. (2021). Sophisticated inference. *Neural Computation*
+- Millidge, B., et al. (2020). On the relationship between active inference and control as inference. *IWAI*
 - Parr, T., & Friston, K. J. (2019). Generalised free energy and active inference. *Biological Cybernetics*
 - Sajid, N., et al. (2021). Active inference: Demystified and compared. *Neural Computation*
 
