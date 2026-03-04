@@ -1,480 +1,457 @@
 \documentclass{article}
-\usepackage{graphicx}
+
+\usepackage{neurips_2025}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{amsthm}
-\usepackage{booktabs}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{multirow}
 
-\title{Variational Free Energy as a Generalized Utility Function for $\rho$-POMDPs: Principled Epistemic Foraging via Active Inference}
-\author{Patrick Cooper \and David Baines}
-\date{March 4, 2026}
+\title{Variational Free Energy as a Generalized Utility Function\\ for $\rho$-POMDPs: Principled Epistemic Foraging\\ via Active Inference}
+
+\author{%
+  Anonymous Author(s)
+}
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-We investigate whether variational free energy (VFE), cast as the generalized utility function $\rho$ in $\rho$-POMDPs, produces superior epistemic foraging behavior compared to same-horizon reward-only planning, per-environment tuned information gain, and pymdp's reference active inference agent. By substituting Expected Free Energy (EFE) from the active inference literature as $\rho$, we obtain an agent whose exploration--exploitation balance arises from a single, principled objective rather than hand-tuned information bonuses. Across five discrete POMDP environments with six baselines, we find that VFE's advantage is \emph{environment-dependent} and \emph{horizon-dependent}: on simple observe-then-commit problems (Tiger), same-horizon reward-only planning matches VFE's 99\% success rate; on multi-observation-action environments requiring \emph{which}-information-to-gather decisions, VFE significantly outperforms same-horizon planning when given sufficient recursive depth ($+9.1$ pp on Diagnosis at $H=3$, $+20.6$ pp on Bandit at $H=2$; $p < 0.05$), but matches Planning at shallower horizons. Per-environment tuned information gain achieves high success rates but requires weights varying from $w=20$ to $w=100$ across environments and systematically over-explores relative to VFE. VFE achieves competitive or superior performance across all environments with zero per-environment tuning, identifying structured uncertainty combined with sufficient planning depth as the regime where principled epistemic foraging is most valuable.
+We investigate whether Expected Free Energy (EFE), cast as the belief-dependent utility $\rho$ in $\rho$-POMDPs, produces principled epistemic foraging without per-environment parameter tuning. We compare the resulting VFE agent against five baselines---myopic reward maximization, same-horizon reward-only planning, untuned and per-environment tuned information gain, and a \texttt{pymdp} reference active inference agent---across five discrete POMDP environments. VFE's advantage is both environment- and horizon-dependent: on simple observe-then-commit problems, same-horizon reward-only planning matches VFE; on multi-observation-action environments requiring the agent to choose \emph{which} information to gather, VFE significantly outperforms same-horizon planning ($+9.1$ pp on sequential diagnosis at $H=3$, $+20.6$ pp on a structured bandit; $p < 0.05$). Per-environment tuned information gain achieves high accuracy but requires weights varying from $w=20$ to $w=100$ and systematically over-explores. VFE achieves competitive or superior performance across all environments with zero tuning, identifying structured uncertainty with sufficient planning depth as the regime where EFE-as-$\rho$ is most valuable.
 \end{abstract}
 
 \section{Introduction}
 
-Decision-making under partial observability requires agents to balance two competing demands: exploiting current knowledge to maximize reward, and gathering information to reduce uncertainty about the hidden state of the world. In standard POMDPs, information gathering has no intrinsic value; it is only instrumentally useful insofar as it leads to higher expected reward. This creates a well-known difficulty: the exploration--exploitation trade-off must be resolved either by the planning horizon (which is often intractable) or by heuristic exploration bonuses.
+Decision-making under partial observability requires agents to balance exploiting current knowledge against gathering information to reduce uncertainty about hidden states. In standard POMDPs, information gathering has no intrinsic value; it is only instrumentally useful insofar as it leads to higher expected reward. This creates a well-known difficulty: the exploration--exploitation trade-off must be resolved either by the planning horizon or by heuristic exploration bonuses.
 
-The $\rho$-POMDP framework \cite{araya2010} addresses this by extending POMDPs with a belief-dependent utility function $\rho(b)$ that allows the agent to derive value directly from properties of its belief state. This enables explicit optimization over uncertainty reduction, information gain, or other belief-state properties alongside task reward.
+The $\rho$-POMDP framework \citep{araya2010} addresses this by extending POMDPs with a belief-dependent utility $\rho(b)$ that allows the agent to derive value directly from properties of its belief state. This enables explicit optimization over uncertainty reduction, information gain, or other belief-state properties alongside task reward. However, the choice of $\rho$ remains largely heuristic and environment-specific.
 
-Separately, the Active Inference (AIF) framework \cite{friston2010,parr2019} offers a unified account of perception and action as processes that minimize variational free energy. Under AIF, an agent selects policies that minimize Expected Free Energy (EFE), which naturally decomposes into a \emph{pragmatic} term (goal-seeking) and an \emph{epistemic} term (information-seeking). Crucially, this decomposition is not hand-tuned: both terms arise from the same objective function.
+Separately, the Active Inference (AIF) framework \citep{friston2010, parr2019} casts perception and action as approximate Bayesian inference, selecting policies that minimize Expected Free Energy (EFE). EFE naturally decomposes into a pragmatic term (goal-seeking) and an epistemic term (information-seeking), with both arising from the same variational objective without tunable weights.
 
-We propose a formal bridge between these frameworks by substituting EFE as the $\rho$ function in $\rho$-POMDPs. This yields an agent whose epistemic foraging behavior is a natural consequence of its objective, rather than an engineered exploration bonus. We test whether this principled integration produces measurably different---and superior---epistemic behavior compared to standard approaches.
+We propose substituting EFE as $\rho$ in $\rho$-POMDPs, yielding an agent whose epistemic foraging is a consequence of its objective rather than an engineered bonus. Our contributions are:
+\begin{enumerate}
+    \item A formal bridge between $\rho$-POMDPs and active inference, embedding EFE within the $\rho$-POMDP architecture via recursive tree search derived from sophisticated inference \citep{friston2021}.
+    \item Controlled comparison against five baselines---including a same-horizon reward-only planner that isolates the effect of EFE from planning depth, and per-environment tuned information gain that gives the strongest possible alternative.
+    \item Characterization of the regimes where EFE-as-$\rho$ provides genuine advantage: multi-observation-action environments with structured uncertainty and sufficient planning depth.
+\end{enumerate}
 
-\section{Related Work}
+\section{Related work}
 
-\subsection{POMDPs and Belief-Space Planning}
+\paragraph{POMDPs and belief-space planning.}
+POMDPs provide the standard formalism for sequential decision-making under state uncertainty \citep{kaelbling1998}. Exact solutions over the continuous belief simplex are PSPACE-complete; point-based methods \citep{shani2013} approximate the piecewise-linear-convex value function on reachable beliefs. A persistent limitation is that information gathering has no intrinsic value: exploration is justified only instrumentally through eventual reward, making myopic solvers systematically under-explore.
 
-Partially Observable Markov Decision Processes provide the standard formalism for sequential decision-making under state uncertainty \cite{kaelbling1998}. A POMDP is defined by a tuple $\langle S, A, O, T, \Omega, R, \gamma \rangle$, where the agent cannot observe the true state $s \in S$ but must maintain a belief distribution $b \in \Delta(S)$ over states, updated via Bayes' rule as observations arrive. Exact solutions require planning over the continuous belief simplex, which is PSPACE-complete for finite horizons and undecidable in the infinite-horizon case. Point-based value iteration methods---including PBVI, Perseus, and HSVI---address this by restricting computation to a finite subset of reachable beliefs, exploiting the piecewise linearity and convexity of the value function to provide bounded approximations \cite{shani2013}. These methods have enabled scaling to problems with thousands of states, but a fundamental structural limitation remains.
+\paragraph{$\rho$-POMDPs.}
+\citet{araya2010} introduced $\rho$-POMDPs, augmenting the reward with a belief-dependent utility $\rho : \Delta(S) \to \mathbb{R}$, so the objective becomes $\max_\pi \mathbb{E}_\pi[\sum_t \gamma^t (R(s_t,a_t) + \rho(b_t))]$. When $\rho$ is convex, the value function retains PWLC structure, preserving compatibility with standard solvers. \citet{fehr2018} extended this to Lipschitz-continuous non-convex $\rho$, and \citet{lim2023} developed $\rho$-POMCPOW for continuous-space $\rho$-POMDPs. Common choices for $\rho$---entropy reduction, KL divergence from a target belief, information gain---each encode a different notion of epistemic value, but the choice remains heuristic and environment-specific.
 
-In standard POMDPs, information gathering has no intrinsic value: the agent can only justify exploration instrumentally, through its eventual contribution to expected cumulative reward. The value of information is implicit in the value function but never appears as a term the agent explicitly optimizes. This creates a well-known difficulty: the exploration--exploitation trade-off is resolved entirely by the planning horizon. Myopic or short-horizon solvers systematically under-explore because they cannot foresee the downstream reward benefits of information gathering. The Tiger problem, introduced by Kaelbling et al.\ \cite{kaelbling1998}, remains a canonical benchmark precisely because its extreme reward asymmetry ($+10$ vs.\ $-100$) makes this limitation observable: a myopic solver commits after a single observation despite the catastrophic cost of doing so.
+\paragraph{Active inference and EFE.}
+The Active Inference framework \citep{friston2010} casts perception and action as variational inference. \citet{dacosta2020} synthesized discrete-state AIF from first principles, showing that the posterior over policies takes the form $Q(\pi) \propto \exp(-\mathcal{G}(\pi))$ where $\mathcal{G}$ is the Expected Free Energy. \citet{parr2019} showed that EFE decomposes into pragmatic value (divergence from preferred observations) and epistemic value (expected information gain), with both arising from a single variational bound---no tunable exploration weight. Despite different constructions, EFE and Generalised Free Energy produce identical policy posteriors.
 
-\subsection{$\rho$-POMDPs and Belief-Dependent Rewards}
+\paragraph{Sophisticated inference.}
+Standard AIF evaluates policies myopically. \citet{friston2021} introduced \emph{sophisticated inference}, a recursive extension implementing deep tree search over belief trajectories rather than states. Sophistication---maintaining beliefs about future beliefs---enables counterfactual reasoning about the downstream epistemic consequences of actions. \citet{dacosta2020b} proved that this recursive scheme recovers Bellman-optimal policies for any finite horizon, whereas standard AIF achieves optimality only for single-step planning. Our recursive VFE agent (Equation~\ref{eq:efe_recursive}) is derived from this framework, adapted to the $\rho$-POMDP commit-action structure.
 
-Araya et al.\ \cite{araya2010} introduced the $\rho$-POMDP framework to address this limitation by augmenting the reward function with a belief-dependent utility $\rho : \Delta(S) \to \mathbb{R}$, so the agent's objective becomes $\max_\pi \mathbb{E}_\pi[\sum_t \gamma^t (R(s_t, a_t) + \rho(b_t))]$. This formalization enables the agent to derive value directly from properties of its belief state---its uncertainty, its distance from a target distribution, or its informativeness---rather than only from state-action rewards. Araya et al.\ established a key structural result: when $\rho$ is convex in the belief simplex, the resulting value function retains convexity, preserving the piecewise linear and convex (PWLC) representation that standard POMDP solvers exploit. This means existing algorithms---including point-based methods and their variants---can be adapted with limited modification to solve $\rho$-POMDPs. Common choices for $\rho$ include entropy reduction ($\rho(b) = H(b) - \mathbb{E}[H(b')]$), KL divergence from a target belief ($\rho(b) = -D_{\mathrm{KL}}[b \| b_{\text{target}}]$), and information gain, each encoding a different notion of epistemic value.
+\paragraph{Exploration in RL.}
+Bayes-Adaptive MDPs \citep{duff2002, guez2013} address model uncertainty rather than state uncertainty. Intrinsic motivation methods \citep{schmidhuber1991, oudeyer2007, pathak2017, bellemare2016} drive agents toward novel states via prediction error or pseudo-counts, operating on model parameters rather than belief states. VIME \citep{houthooft2016} computes information gain about dynamics via Bayesian neural networks but requires a tunable bonus weight. All these approaches engineer exploration as an auxiliary objective; our work derives it from EFE.
 
-Fehr et al.\ \cite{fehr2018} extended the theoretical foundations by proving that $\rho$-POMDPs have Lipschitz-continuous $\epsilon$-optimal value functions when $\rho$ is Lipschitz-continuous, even when $\rho$ is \emph{non-convex}. This generalization is significant because many practically relevant belief-dependent rewards---such as thresholded certainty requirements in target localization or privacy-constrained data collection---are non-convex. Their HSVI-derived algorithms use sets of upward and downward cones rather than hyperplanes to provide uniformly improvable bounds, extending the class of tractable $\rho$-POMDPs beyond the convex case.
-
-More recently, Benchetrit et al.\ \cite{lim2023} developed $\rho$-POMCPOW, an anytime online solver that extends Monte-Carlo tree search to continuous-space $\rho$-POMDPs. By combining weighted particle filtering with dynamic belief refinement and incremental reward computation, $\rho$-POMCPOW enables practical application to problems such as autonomous driving, sensor placement, and active localization, where both the state and observation spaces are continuous and belief-dependent rewards capture the explicit goal of information gathering.
-
-These extensions demonstrate the practical relevance and growing scope of $\rho$-POMDPs, but they leave open a central design question: \emph{which} $\rho$ to use. The choice remains largely heuristic and environment-specific, with no principled method for selecting among entropy reduction, KL divergence, information gain, or other candidates. Our work addresses this gap by proposing Expected Free Energy as a theoretically grounded choice of $\rho$ that jointly encodes pragmatic and epistemic value without requiring per-environment weight tuning.
-
-\subsection{Active Inference and Expected Free Energy}
-
-The Active Inference (AIF) framework, rooted in the Free Energy Principle \cite{friston2010}, offers a unified account of perception, action, and planning as processes of approximate Bayesian inference. Under AIF, an agent maintains a generative model $P(o, s, \pi)$ of its environment and selects policies that minimize a quantity called Expected Free Energy (EFE). The framework's central claim is that a single objective---variational free energy minimization---subsumes perception (state estimation), action (policy selection), and learning (model updating), providing a normative account of how autonomous agents should operate in partially observable, non-stationary environments.
-
-\paragraph{Foundational formalism.} Da Costa et al.\ \cite{dacosta2020} provided the definitive synthesis of active inference on discrete state-spaces, deriving the mathematical framework from first principles. Starting from the imperative to minimize surprise (equivalently, to maximize model evidence), they show how variational inference over a factorized posterior $Q(s, \pi) = Q(s|\pi)Q(\pi)$ produces both a state estimation scheme (perception) and a policy selection scheme (action). The posterior over policies takes the form $Q(\pi) \propto \exp(-\mathcal{G}(\pi))$, where $\mathcal{G}(\pi)$ is the Expected Free Energy of policy $\pi$. This synthesis serves as the mathematical foundation for our VFE agent and provides the inference and control equations that we embed within the $\rho$-POMDP architecture.
-
-\paragraph{Expected Free Energy and its decomposition.} Parr and Friston \cite{parr2019} provided a detailed analysis of two free energy functionals for active inference: Expected Free Energy and Generalised Free Energy. EFE decomposes into a \emph{pragmatic} term---measuring the divergence between expected and preferred observations, thereby driving goal-directed behavior---and an \emph{epistemic} term---measuring expected information gain about hidden states, thereby driving exploration. Crucially, these two terms are not independently weighted: both arise from a single variational bound, so the balance between exploration and exploitation is determined by the belief state rather than by a tunable parameter. Parr and Friston further showed that despite fundamental differences in their construction (EFE absorbs prior preferences into the policy prior, while Generalised Free Energy treats future observations as hidden states), both formulations produce identical posterior beliefs about policies and identical belief updating procedures. This mathematical equivalence provides theoretical grounding for our use of EFE as a well-defined objective function.
-
-\paragraph{Sophisticated inference.} A key limitation of standard active inference is that policy evaluation via EFE is \emph{myopic}: the agent evaluates each policy's EFE independently over a fixed horizon without conditioning future decisions on future observations. Friston et al.\ \cite{friston2021} addressed this with \emph{sophisticated inference}, a recursive extension that implements deep tree search over sequences of belief states rather than states themselves. The central insight is that sophistication---the degree to which an agent maintains beliefs about its own future beliefs---enables counterfactual reasoning: not merely ``what would happen if I did that?'' but ``what would I \emph{believe} about what would happen if I did that?'' Formally, the recursive EFE at depth $d$ evaluates $\mathcal{G}_d(\pi) = \mathcal{G}_0(\pi) + \mathbb{E}_{Q(o|\pi)}[\min_{\pi'} \mathcal{G}_{d-1}(\pi' | b'_o)]$, where each level of recursion conditions on the posterior beliefs that would result from hypothetical observations. This scheme replaces the flat policy enumeration of standard AIF with a branching tree of belief trajectories, enabling the agent to reason about the downstream epistemic consequences of its actions over arbitrary finite horizons.
-
-Our VFE agent's recursive EFE evaluation (Equation 3) is directly derived from this sophisticated inference framework, adapted to the $\rho$-POMDP setting. The key adaptation is that where sophisticated inference evaluates policies as sequences of actions, our agent evaluates individual actions at each node of the belief tree and recurses over the resulting posteriors, enabling integration with the $\rho$-POMDP's commit-action structure.
-
-\paragraph{Bellman optimality.} Da Costa et al.\ \cite{dacosta2020b} established the formal relationship between active inference and optimal control by proving two results. First, standard (non-sophisticated) active inference produces Bellman-optimal actions for planning horizons of exactly one step on POMDPs, but not beyond---because the flat EFE evaluation cannot account for the value of future information. Second, sophisticated inference recovers Bellman-optimal policies for any finite temporal horizon, because the recursive tree search implicitly computes the full Bellman backup over belief states. This result is significant for our work because it establishes that the recursive EFE scheme we employ is not merely a heuristic but is provably optimal in the class of policies considered.
-
-\paragraph{Reference implementation.} The \texttt{pymdp} library \cite{heins2022} provides the first open-source Python implementation of active inference on discrete state-spaces, offering modular components for generative model specification, variational inference, EFE-based policy selection, and parameter learning. Our implementation draws on the same mathematical foundations---and we validate consistency against pymdp (Section 5.1)---but embeds them within the $\rho$-POMDP architecture rather than pymdp's policy-enumeration framework, enabling direct comparison with non-AIF agents under identical decision-making conditions.
-
-\subsection{Exploration in Reinforcement Learning}
-
-The exploration--exploitation trade-off has generated a large literature in reinforcement learning, with approaches spanning several distinct paradigms.
-
-\paragraph{Bayesian approaches.} Bayes-Adaptive MDPs (BAMDPs) \cite{duff2002} augment the state space with a hyper-state representing the agent's posterior over environment parameters (transition and reward functions), enabling Bayes-optimal exploration that balances the value of learning the environment against the cost of suboptimal actions during learning. While theoretically elegant, exact BAMDP solutions are intractable because the augmented state space grows combinatorially; practical approximations include Monte-Carlo tree search over the hyper-state space \cite{guez2013} and variational methods. A key distinction from our work: BAMDPs address \emph{model uncertainty} (``which MDP am I in?'') rather than \emph{state uncertainty} (``which state am I in?''). Our $\rho$-POMDP/AIF agents assume a known generative model and optimize information gathering about hidden states, making the two approaches complementary rather than competitive.
-
-\paragraph{Intrinsic motivation and curiosity.} Schmidhuber \cite{schmidhuber1991} and Oudeyer et al.\ \cite{oudeyer2007} pioneered the idea that agents should be intrinsically motivated to seek novel or surprising states, introducing artificial curiosity as a learning signal independent of external reward. Pathak et al.\ \cite{pathak2017} operationalized this as prediction error in a learned feature space (an inverse dynamics model), enabling curiosity-driven exploration in high-dimensional environments with sparse or absent rewards. Bellemare et al.\ \cite{bellemare2016} unified count-based exploration and intrinsic motivation by deriving pseudo-counts from density models, showing that both approaches are fundamentally grounded in information gain about state visitation. These methods share conceptual affinity with the epistemic term in EFE---both drive the agent toward states where its model is uncertain---but they operate at the level of \emph{model parameters} (learning which states exist) rather than \emph{belief states} (inferring which state is current).
-
-\paragraph{Information-theoretic methods.} VIME \cite{houthooft2016} uses variational inference over Bayesian neural network parameters to compute information gain about environment dynamics, rewarding actions that maximally update the agent's transition model. This approach is conceptually the closest RL analogue to EFE's epistemic term, but differs in two important respects. First, VIME targets \emph{parametric} uncertainty (how well the agent knows the environment model) rather than \emph{state} uncertainty (how well the agent knows its current state), placing it in the BAMDP rather than POMDP category. Second, VIME adds the information gain as a weighted bonus to the task reward, requiring a tunable coefficient $\eta$ that controls the exploration--exploitation balance---precisely the kind of hand-tuning that EFE's joint objective avoids.
-
-A common thread across these approaches is that exploration is engineered as a bonus or auxiliary objective, requiring tuning to balance against exploitation. Our work differs by deriving exploration from EFE, where pragmatic and epistemic values emerge from the same variational bound without a tunable weighting parameter.
-
-\subsection{Bridging Active Inference and Reinforcement Learning}
-
-Several recent works have established formal connections between active inference and reinforcement learning, clarifying how two superficially different paradigms relate.
-
-\paragraph{Active inference demystified.} The most comprehensive empirical comparison is Sajid et al.\ \cite{sajid2021}, who provide both an accessible tutorial of discrete-state active inference and a direct experimental comparison with Q-learning and Bayesian model-based RL on the OpenAI Gym FrozenLake environment. Their paper makes three contributions relevant to our work. First, they demonstrate that behaviors typically \emph{engineered} into RL agents---directed exploration, uncertainty-sensitive decision-making, and robustness to environmental non-stationarity---arise \emph{naturally} in active inference from the EFE objective alone, without requiring epsilon-greedy schedules, optimistic initialization, or exploration bonuses. Second, they show that the reliance on an explicit reward signal in RL is not necessary under AIF: reward can be treated as another observation modality, and agents can learn appropriate behavior even in reward-free environments through \emph{preference learning}---inferring the prior preferences $C$ that best explain observed behavior. They demonstrate this in two scenarios: placing zero prior preferences over rewards (producing pure epistemic exploration) and learning preferences from reward-correlated observations. Third, they provide a side-by-side comparison showing that the AIF agent achieves comparable or superior sample efficiency to Q-learning and Bayesian model-based RL, while exhibiting more robust exploration in the presence of stochastic transitions. Sajid et al.\ ask whether AIF is a viable \emph{alternative} to RL; our work takes their affirmative answer as a starting point and asks a different question: what happens when EFE is embedded as the belief-dependent utility $\rho$ within the $\rho$-POMDP formalism?
-
-\paragraph{Control as inference.} Millidge et al.\ \cite{millidge2020} formalized the relationship between active inference and the \emph{control-as-inference} (CAI) framework from RL, which also casts action selection as a variational inference problem. Both AIF and CAI minimize a variational bound, but they differ in how value is incorporated into the generative model: CAI introduces an auxiliary ``optimality'' variable conditioned on reward, while AIF encodes goals through prior preferences over observations. Millidge et al.\ showed that the two frameworks are formally equivalent under specific generative model choices, with the primary distinction being architectural rather than mathematical. This equivalence is relevant to our work because it establishes that the EFE objective is not an idiosyncratic construction specific to AIF but is a member of a broader family of inference-based control objectives, lending it theoretical legitimacy as a general-purpose $\rho$ function.
-
-\paragraph{Bellman optimality of sophisticated inference.} Da Costa et al.\ \cite{dacosta2020b} provided the most rigorous formal bridge by proving that sophisticated active inference---the recursive EFE scheme described in Section 2.3---recovers Bellman-optimal policies for any finite temporal horizon on POMDPs. Standard (non-recursive) AIF achieves optimality only for single-step planning, because flat EFE evaluation cannot propagate the value of future information backward through time. The sophisticated scheme resolves this by computing the expected free energy at each node of a belief tree, conditioning each evaluation on the posterior that would result from the preceding observation. This result has two implications for our work. First, it establishes that our recursive VFE agent (which implements this scheme within the $\rho$-POMDP architecture) is provably optimal in the relevant sense, not merely heuristically effective. Second, it explains our empirical finding that VFE's advantage over the Planning baseline requires sufficient planning depth ($H \geq 3$ on the Diagnosis environment): at shallow depths, the recursive EFE evaluation has too few levels for the information gain term to distinguish among observation actions, and the sophisticated scheme reduces to the standard (myopic) one.
-
-\paragraph{Distinction from prior work.} Our work is complementary to, but distinct from, this line of research in three respects. First, by embedding EFE within the $\rho$-POMDP formalism, we enable controlled comparison of different $\rho$ functions (myopic reward, information gain, EFE) within the \emph{same} decision architecture, isolating the effect of the utility function rather than confounding it with architectural differences between AIF and RL. Second, the $\rho$-POMDP framing inherits formal properties---convexity conditions, compatibility with point-based solvers, Lipschitz continuity results---that the standalone AIF literature does not address. Third, our expanded baselines (same-horizon reward-only planning, per-environment tuned information gain) enable a more nuanced evaluation of EFE's contribution than the AIF-vs-RL comparisons in prior work, revealing that VFE's advantage is environment-dependent and most pronounced in multi-observation-action settings with structured uncertainty.
+\paragraph{Bridging AIF and RL.}
+\citet{sajid2021} demonstrated that behaviors typically engineered into RL agents---directed exploration, uncertainty-sensitive decisions, reward-free learning via preference learning---arise naturally under EFE on FrozenLake, establishing AIF as a viable alternative to RL. \citet{millidge2020} showed formal equivalence between AIF and control-as-inference under specific generative model choices. Our work takes AIF's viability as established and asks a different question: what happens when EFE is used as $\rho$ within the $\rho$-POMDP formalism? This reframing enables controlled comparison of different $\rho$ functions within the same architecture, inherits formal properties of $\rho$-POMDPs (convexity, Lipschitz continuity), and yields a more nuanced evaluation than prior AIF-vs-RL comparisons.
 
 \section{Methodology}
 
-\subsection{The $\rho$-POMDP Framework}
+\subsection{The $\rho$-POMDP framework}
 
-A $\rho$-POMDP extends the standard POMDP tuple $\langle S, A, O, T, \Omega, R, \gamma \rangle$ with a belief-dependent utility function $\rho : \Delta(S) \rightarrow \mathbb{R}$, where $\Delta(S)$ is the belief simplex over states. The agent's objective becomes:
-
+A $\rho$-POMDP extends the standard POMDP with a belief-dependent utility $\rho : \Delta(S) \rightarrow \mathbb{R}$. The agent's objective becomes:
 \begin{equation}
     \pi^* = \arg\max_\pi \mathbb{E}_\pi \left[ \sum_{t=0}^{H} \gamma^t \left( R(s_t, a_t) + \rho(b_t) \right) \right]
 \end{equation}
-
-The choice of $\rho$ determines the agent's epistemic character. When $\rho = 0$, we recover the standard POMDP. When $\rho$ encodes information gain, the agent is explicitly rewarded for reducing uncertainty.
+When $\rho = 0$, we recover the standard POMDP. When $\rho$ encodes information gain, the agent is explicitly rewarded for reducing uncertainty.
 
 \subsection{Expected Free Energy as $\rho$}
 
-We define $\rho$ via the Expected Free Energy (EFE) from active inference. For a policy $\pi$ at future time $\tau$, the EFE is:
-
+We define $\rho$ via the EFE from active inference. For a policy $\pi$ at future time $\tau$:
 \begin{equation}
-    \mathcal{G}(\pi) = \underbrace{- \mathbb{E}_{Q(o_\tau|\pi)}[\ln P(o_\tau|C)]}_{\text{Pragmatic Value}} - \underbrace{\mathbb{E}_{Q(o_\tau|\pi)}\left[D_{\mathrm{KL}}\left[Q(s_\tau|o_\tau, \pi) \,\|\, Q(s_\tau|\pi)\right]\right]}_{\text{Epistemic Value}}
+    \mathcal{G}(\pi) = \underbrace{- \mathbb{E}_{Q(o_\tau|\pi)}[\ln P(o_\tau|C)]}_{\text{Pragmatic value}} - \underbrace{\mathbb{E}_{Q(o_\tau|\pi)}\left[D_{\mathrm{KL}}\left[Q(s_\tau|o_\tau, \pi) \,\|\, Q(s_\tau|\pi)\right]\right]}_{\text{Epistemic value}}
 \end{equation}
+where $Q(s_\tau|\pi)$ and $Q(s_\tau|o_\tau,\pi)$ are the prior and posterior beliefs, $P(o_\tau|C)$ encodes preferred outcomes, and $D_{\mathrm{KL}}$ measures expected information gain. The pragmatic term drives goal-seeking; the epistemic term drives uncertainty reduction. Both emerge from the same variational bound with no tunable weight.
 
-\noindent where:
-\begin{itemize}
-    \item $Q(s_\tau|\pi)$ is the prior predictive belief over states given policy $\pi$
-    \item $Q(s_\tau|o_\tau, \pi)$ is the posterior belief after observing $o_\tau$
-    \item $P(o_\tau|C)$ is the preferred outcome distribution encoding the agent's goals
-    \item $D_{\mathrm{KL}}[\cdot \| \cdot]$ is the Kullback--Leibler divergence, measuring expected information gain
-\end{itemize}
-
-The pragmatic term drives the agent toward goal-consistent observations. The epistemic term drives the agent toward actions that maximally resolve uncertainty about hidden states. Both terms emerge from the same variational objective; there are no tunable weights balancing exploration against exploitation.
-
-For discrete state-spaces, we compute EFE exactly via Bayesian belief updates over the generative model, following the standard approach in the AIF literature \cite{dacosta2020}.
-
-\subsection{Agent Specifications}
-
-We compare five agents, the first four of which share the same $\rho$-POMDP architecture and differ only in their objective function and planning depth:
-
-\paragraph{Myopic Reward-Maximizing Agent.} Selects actions via one-step lookahead over expected reward. Equivalent to a $\rho$-POMDP with $\rho = 0$, $H = 1$. Serves as the weakest baseline.
-
-\paragraph{Planning Agent.} A multi-step reward-only agent ($\rho = 0$, $H > 1$) using the same recursive tree-search structure as the VFE agent but optimizing only cumulative expected reward---no information gain, no EFE. This baseline controls for planning depth: any difference between VFE and Planning is attributable to the EFE objective, not to deeper lookahead.
-
-\paragraph{Information Gain Agent.} A $\rho$-POMDP agent with $\rho(b) = w \cdot (H(b) - \mathbb{E}[H(b')])$, where $w$ is an environment-specific weight. We report both untuned ($w = 1.0$) and tuned results, where $w$ is selected via grid search over $\{0.1, 0.5, 1, 2, 5, 10, 20, 50, 100\}$ to maximize success rate on 200 tuning episodes.
-
-\paragraph{VFE Agent.} Selects actions by minimizing EFE (Equation 2) over a recursive planning horizon. At each decision point, the agent evaluates:
+Following the sophisticated inference scheme of \citet{friston2021}, our VFE agent evaluates actions recursively:
 \begin{equation}
-    \mathcal{G}(\text{observe}) = c_{\text{obs}} - I(b) + \mathbb{E}_{o}\!\left[\min_a \mathcal{G}(a \mid b'_o)\right]
+    \mathcal{G}(\text{observe}_k) = c_k - I_k(b) + \mathbb{E}_{o}\!\left[\min_a \mathcal{G}(a \mid b'_o)\right]
+    \label{eq:efe_recursive}
 \end{equation}
-where $c_{\text{obs}}$ is the observation cost, $I(b) = H(b) - \mathbb{E}_o[H(b'_o)]$ is the expected information gain at the current belief, and the expectation recurses over posterior beliefs $b'_o$ up to a planning horizon $H$. For commit actions, $\mathcal{G}(\text{commit}_i) = -\mathbb{E}_b[R_i]$, the negative expected reward under the current belief. The agent selects $\arg\min_a \mathcal{G}(a)$. No explicit information-seeking bonus is required; epistemic foraging emerges from the intrinsic information gain term $I(b)$ combined with the recursive evaluation of improved future decisions.
+where $c_k$ is the cost of observation action $k$, $I_k(b)$ is its expected information gain, and the expectation recurses over posterior beliefs up to planning horizon $H$. For commit actions, $\mathcal{G}(\text{commit}_i) = -\mathbb{E}_b[R_i]$.
 
-\paragraph{PyMDP Reference Agent.} A wrapper around the \texttt{pymdp} library's standard active inference Agent class \cite{heins2022}, using single-step (myopic) policy evaluation with the same observation model and prior preferences. This provides an independent implementation for validating mathematical consistency of our EFE computation. Both implementations agree on observe-vs-commit decisions across tested belief states.
+\subsection{Agents}
+
+We compare five agents sharing the same $\rho$-POMDP architecture, differing only in objective and planning depth:
+
+\begin{table}[h]
+\centering
+\caption{Agent specifications. All use exact Bayesian belief updates.}
+\label{tab:agents}
+\begin{small}
+\begin{tabular}{lccl}
+\toprule
+Agent & $\rho$ function & Horizon & Key property \\
+\midrule
+Myopic & $\rho = 0$ & $H=1$ & Weakest baseline \\
+Planning & $\rho = 0$ & $H > 1$ & Controls for planning depth \\
+Info Gain & $w \cdot \Delta H(b)$ & $H=1$ & Additive epistemic bonus \\
+Info Gain (tuned) & $w^* \cdot \Delta H(b)$ & $H=1$ & Per-env.\ weight via grid search \\
+VFE & EFE (Eq.~\ref{eq:efe_recursive}) & $H > 1$ & No tunable weight \\
+\bottomrule
+\end{tabular}
+\end{small}
+\end{table}
+
+A sixth agent---a wrapper around the \texttt{pymdp} library \citep{heins2022}---validates mathematical consistency of our EFE computation against an independent implementation.
 
 \section{Experiments}
 
-All environments are implemented as OpenAI Gymnasium environments for standardization and reproducibility. Each environment follows the observe-then-commit structure: the agent selects between one or more observation actions (gathering noisy information) and one or more commit actions (terminating the episode with a reward or penalty determined by the hidden state).
+All environments follow an observe-then-commit structure implemented as OpenAI Gymnasium environments. The agent selects among observation actions (gathering noisy information) and commit actions (terminating the episode). All experiments use 1{,}000 episodes (500 for navigation/scaling); statistical significance is assessed via independent two-sample $t$-tests. Full environment specifications are in Appendix~\ref{app:envs}.
 
-\subsection{Tiger Problem}
+\paragraph{Tiger} \citep{kaelbling1998}. Two states, one observation action (listen, accuracy 0.85), two commit actions. Rewards: correct $+10$, incorrect $-100$, listen cost $-1$. Tests whether agents gather sufficient evidence under extreme reward asymmetry.
 
-The Tiger problem \cite{kaelbling1998} is a canonical POMDP benchmark that isolates epistemic foraging behavior. An agent faces two doors, behind one of which is a tiger (penalty) and behind the other a reward. The agent can listen (receiving a noisy observation about the tiger's location) or open a door (terminating the episode). States: $\{$tiger\_left, tiger\_right$\}$; actions: $\{$listen, open\_left, open\_right$\}$; observations: $\{$hear\_left, hear\_right$\}$; listen accuracy: 0.85; rewards: correct door $+10$, wrong door $-100$, listen cost $-1$. The extreme reward asymmetry makes information gathering critical: committing prematurely is catastrophic.
+\paragraph{Two-state testbed.} Two states, one observation action (accuracy 0.75), two commit actions. Rewards: correct $+1$, incorrect $-1$, observation cost $-0.1$. Isolates over-exploration under mild penalty.
 
-\subsection{Two-State Information-Seeking Testbed}
+\paragraph{Sequential diagnosis.} $N{=}4$ conditions, $K{=}2$ binary tests (accuracy 0.80), $N$ diagnose actions. Rewards: correct $+10$, incorrect $-50$, test cost $-1$. The agent must choose \emph{which} test to run.
 
-A minimal environment with two hidden states, noisy observations (75\% accuracy), and symmetric reward structure (correct $+1$, incorrect $-1$, observation cost $-0.1$). This environment isolates the over-exploration phenomenon: with mild penalty for incorrect commitment, excessive information gathering is costly relative to the benefit.
+\paragraph{Structured bandit.} $K{=}4$ arms, $K$ inspect actions (accuracy 0.80, cost $-0.5$), $K$ pull actions. Best arm $+10$, others $+1$. The agent must choose \emph{which} arm to inspect.
 
-\subsection{Sequential Diagnosis}
-
-Generalizes the Tiger problem to $N$ hidden conditions with $K = \lceil \log_2 N \rceil$ binary diagnostic tests. Each test provides noisy information about a different partition of the state space (80\% accuracy, test cost $-1$). After running any number of tests, the agent selects from $N$ diagnose actions (correct $+10$, incorrect $-50$). The critical feature distinguishing Diagnosis from Tiger is that the agent must choose \emph{which} test to run at each step---each test is informative about a different set of conditions---not merely whether to test.
-
-\subsection{Multi-Armed Bandit with Hidden Structure}
-
-A structured bandit with $K = 4$ arms, one of which is the ``best'' (pull reward $+10$, others $+1$). The hidden state determines which arm is best. The agent can inspect any arm (80\% accuracy, cost $-0.5$) to receive a noisy signal about whether that arm is the best, or pull any arm to terminate the episode. As with Diagnosis, the agent must choose \emph{which} information source to query, but the action space is larger: $K$ inspection actions plus $K$ pull actions.
-
-\subsection{Partially Observable Navigation}
-
-A $3 \times 3$ grid world with a hidden goal location (one of 9 cells). The agent starts at $(0,0)$ and receives proximity-based observations (warm/cold signals with accuracy depending on Manhattan distance to the goal) after each movement. The episode ends when the agent enters the goal cell (reward $+20$) or exceeds the step limit (step cost $-0.5$). Unlike the other environments, navigation has no explicit commit action---the agent's movement both gathers information and brings it closer to (or further from) the goal. This tests whether EFE-based planning extends to environments with state transitions and position-dependent observation models.
-
-\subsection{Evaluation Metrics}
-
-\begin{enumerate}
-    \item \textbf{Sample efficiency}: Number of observations (listens, tests, inspections, steps) before committing; variance across trials.
-    \item \textbf{Policy quality}: Success rate (fraction of episodes where the agent commits correctly); mean cumulative reward; statistical significance via independent two-sample $t$-tests.
-    \item \textbf{Cross-environment robustness}: Whether a single agent formulation achieves competitive performance across all environments without per-environment parameter tuning.
-\end{enumerate}
-
-All experiments use 1{,}000 episodes per agent (500 for navigation and scaling). Each experiment includes the Planning agent at the same horizon $H$ as VFE, the untuned and per-environment tuned Information Gain agents, and the PyMDP reference agent where applicable. The Information Gain weight is tuned via grid search over $\{0.1, 0.5, 1, 2, 5, 10, 20, 50, 100\}$ on 200 tuning episodes, maximizing success rate.
+\paragraph{Navigation.} $3{\times}3$ grid, hidden goal, proximity-based observations. Goal reward $+20$, step cost $-0.5$. Movement both gathers information and changes position.
 
 \section{Results}
 
-\subsection{Tiger Problem}
+\subsection{Tiger problem}
 
 \begin{table}[h]
 \centering
-\caption{Tiger Problem results (1{,}000 episodes, $H=6$). Reward asymmetry: $+10$ / $-100$.}
+\caption{Tiger problem (1{,}000 episodes, $H{=}6$). Reward asymmetry $+10 / {-}100$.}
 \label{tab:tiger}
-\begin{tabular}{lcccc}
+\begin{small}
+\begin{tabular}{lccc}
 \toprule
-Agent & Listens & Success & Mean Reward \\
+Agent & Listens & Success & Reward \\
 \midrule
-Myopic         & $1.00$ & 84.4\% & $-8.16$ \\
-Planning ($H\!=\!6$) & $4.20$ & 99.3\% & $+5.03$ \\
-Info Gain ($w\!=\!1$) & $1.00$ & 85.4\% & $-7.06$ \\
-Info Gain ($w\!=\!20$) & $4.20$ & 99.6\% & $+5.36$ \\
-\textbf{VFE} ($H\!=\!6$) & $\mathbf{4.29}$ & $\mathbf{99.5\%}$ & $\mathbf{+5.16}$ \\
-PyMDP-AIF   & $2.68$ & 97.5\% & $+4.57$ \\
+Myopic & $1.00$ & 84.4\% & $-8.16$ \\
+Planning ($H{=}6$) & $4.20$ & 99.3\% & $+5.03$ \\
+Info Gain ($w{=}1$) & $1.00$ & 85.4\% & $-7.06$ \\
+Info Gain ($w{=}20$) & $4.20$ & 99.6\% & $+5.36$ \\
+\textbf{VFE} ($H{=}6$) & $\mathbf{4.29}$ & $\mathbf{99.5\%}$ & $\mathbf{+5.16}$ \\
+PyMDP-AIF & $2.68$ & 97.5\% & $+4.57$ \\
 \bottomrule
 \end{tabular}
+\end{small}
 \end{table}
 
-The Tiger problem's extreme reward asymmetry ($+10$ vs.\ $-100$) makes it a test of whether agents gather sufficient evidence before committing. Myopic and untuned Info Gain both listen exactly once and achieve only 84--85\% success with large negative rewards.
+VFE and Planning at the same horizon ($H{=}6$) both achieve ${\sim}99\%$ success with positive reward; the differences are not statistically significant ($p = 0.29$ for observations, $p = 0.75$ for reward). On Tiger, multi-step reward planning alone discovers the value of listening because the reward structure penalizes premature commitment. Tuned Info Gain ($w{=}20$) performs equivalently. The implication: on simple observe-then-commit environments, VFE achieves parity with tuned alternatives without per-environment weight selection.
 
-The critical comparison is between VFE and Planning at the \emph{same} horizon ($H=6$). Both achieve $\sim$99\% success with positive mean reward, and the differences are not statistically significant ($p = 0.29$ for observations, $p = 0.75$ for reward). This establishes that on Tiger, multi-step reward planning alone suffices to discover the value of listening---the reward structure naturally penalizes premature commitment. Per-environment tuned Info Gain ($w = 20$) performs equivalently.
-
-The PyMDP reference agent, using pymdp's standard single-step active inference, achieves 97.5\% success with only 2.68 listens, confirming that EFE-based exploration is effective even without recursive planning.
-
-The key implication for simple observe-then-commit environments: VFE achieves performance equivalent to a tuned alternative \emph{without requiring per-environment weight selection}.
-
-\subsection{Two-State Information-Seeking Testbed}
+\subsection{Two-state testbed}
 
 \begin{table}[h]
 \centering
-\caption{Information-seeking testbed results (1{,}000 episodes, $H=4$). Symmetric rewards: $+1$ / $-1$.}
+\caption{Information-seeking testbed (1{,}000 episodes, $H{=}4$). Symmetric rewards $+1 / {-}1$.}
 \label{tab:infoseek}
-\begin{tabular}{lcccc}
+\begin{small}
+\begin{tabular}{lccc}
 \toprule
-Agent & Observations & Success & Mean Reward \\
+Agent & Obs. & Success & Reward \\
 \midrule
-Myopic           & $1.00$ & 73.3\% & $+0.37$ \\
-Planning ($H\!=\!4$)  & $3.22$ & 89.2\% & $\mathbf{+0.46}$ \\
-Info Gain ($w\!=\!1$) & $3.27$ & 89.1\% & $+0.46$ \\
-Info Gain ($w\!=\!50$) & $12.08$ & 99.9\% & $-0.21$ \\
-\textbf{VFE} ($H\!=\!4$) & $5.50$ & $\mathbf{95.6\%}$ & $+0.36$ \\
-PyMDP-AIF        & $3.36$ & 91.5\% & $+0.49$ \\
+Myopic & $1.00$ & 73.3\% & $+0.37$ \\
+Planning ($H{=}4$) & $3.22$ & 89.2\% & $\mathbf{+0.46}$ \\
+Info Gain ($w{=}1$) & $3.27$ & 89.1\% & $+0.46$ \\
+Info Gain ($w{=}50$) & $12.08$ & 99.9\% & $-0.21$ \\
+\textbf{VFE} ($H{=}4$) & $5.50$ & $\mathbf{95.6\%}$ & $+0.36$ \\
+PyMDP-AIF & $3.36$ & 91.5\% & $+0.49$ \\
 \bottomrule
 \end{tabular}
+\end{small}
 \end{table}
 
-The testbed's symmetric, mild reward structure ($+1$ / $-1$) isolates the over-exploration phenomenon. Planning and untuned Info Gain both observe $\sim$3.2 times and achieve $\sim$89\% success with the highest reward ($+0.46$). VFE observes 5.50 times, achieving 95.6\% success but slightly lower reward ($+0.36$, $p < 0.001$ vs.\ Planning). The tuned Info Gain agent ($w = 50$) massively over-explores: 12.08 observations for 99.9\% success but \emph{negative} reward ($-0.21$), demonstrating the fragility of weight tuning---optimizing for accuracy produces the opposite of reward optimality.
+Under mild reward asymmetry, VFE gathers more information than is instrumentally optimal ($+0.36$ vs.\ Planning's $+0.46$, $p < 0.001$) because uncertainty reduction has intrinsic value under EFE. Tuned Info Gain ($w{=}50$) over-explores catastrophically: 99.9\% success but negative reward. Whether VFE's constitutive epistemic drive is beneficial depends on the cost-of-error regime.
 
-VFE occupies a natural intermediate position: it gathers more information than is instrumentally justified ($+0.36$ vs.\ $+0.46$) because uncertainty reduction has intrinsic value under EFE. Whether this constitutive epistemic drive is a strength or a weakness depends on the cost-of-error regime.
-
-\subsection{Sequential Diagnosis (N=4 Conditions)}
+\subsection{Sequential diagnosis}
 
 \begin{table}[h]
 \centering
-\caption{Diagnosis results (1{,}000 episodes, $N=4$ conditions, $K=2$ tests, $H=3$).}
+\caption{Diagnosis ($N{=}4$, $K{=}2$ tests, $H{=}3$, 1{,}000 episodes).}
 \label{tab:diagnosis}
-\begin{tabular}{lcccc}
+\begin{small}
+\begin{tabular}{lccc}
 \toprule
-Agent & Tests Run & Success & Mean Reward \\
+Agent & Tests & Success & Reward \\
 \midrule
-Myopic            & $2.00$ & 64.2\% & $-13.48$ \\
-Planning ($H\!=\!3$) & $5.90$ & 87.9\% & $-3.16$ \\
-Info Gain ($w\!=\!1$) & $2.00$ & 62.4\% & $-14.56$ \\
-Info Gain ($w\!=\!100$) & $13.24$ & 98.7\% & $-4.02$ \\
-\textbf{VFE} ($H\!=\!3$) & $\mathbf{9.73}$ & $\mathbf{97.0\%}$ & $\mathbf{-1.53}$ \\
+Myopic & $2.00$ & 64.2\% & $-13.48$ \\
+Planning ($H{=}3$) & $5.90$ & 87.9\% & $-3.16$ \\
+Info Gain ($w{=}1$) & $2.00$ & 62.4\% & $-14.56$ \\
+Info Gain ($w{=}100$) & $13.24$ & 98.7\% & $-4.02$ \\
+\textbf{VFE} ($H{=}3$) & $\mathbf{9.73}$ & $\mathbf{97.0\%}$ & $\mathbf{-1.53}$ \\
 \bottomrule
 \end{tabular}
+\end{small}
 \end{table}
 
-The Diagnosis environment generalizes Tiger to $N$ conditions with $K = \lceil \log_2 N \rceil$ diagnostic tests, each providing noisy information about a different partition of the state space. This introduces a problem absent from Tiger: the agent must choose \emph{which} test to run, not merely whether to test.
+Here, VFE significantly outperforms Planning at the same horizon: $97.0\%$ vs.\ $87.9\%$ success ($p = 0.022$). The 9.1 pp gap demonstrates that EFE's information gain term provides genuine value in multi-observation-action environments by guiding the agent toward the most informative test. VFE also achieves the best reward ($-1.53$), outperforming tuned Info Gain ($-4.02$), which over-explores with 13.24 tests.
 
-Here, VFE significantly outperforms Planning at the same horizon: 97.0\% vs.\ 87.9\% success ($p = 0.022$ for reward). The 9.1 percentage point gap demonstrates that on multi-observation-action environments, EFE's information gain term provides genuine value beyond what deeper reward-only planning achieves---it guides the agent toward the most informative test at each step.
-
-VFE also achieves the best mean reward ($-1.53$), outperforming even the tuned Info Gain agent ($-4.02$), which over-explores with 13.24 tests to reach 98.7\% success. VFE strikes the better balance: fewer tests (9.73) with nearly equivalent accuracy and substantially better net reward.
-
-\subsection{Multi-Armed Bandit with Hidden Structure (K=4 Arms)}
+\subsection{Structured bandit}
 
 \begin{table}[h]
 \centering
-\caption{Structured bandit results (1{,}000 episodes, $K=4$ arms, $H=2$).}
+\caption{Structured bandit ($K{=}4$ arms, $H{=}2$, 1{,}000 episodes).}
 \label{tab:bandit}
-\begin{tabular}{lcccc}
+\begin{small}
+\begin{tabular}{lccc}
 \toprule
-Agent & Inspections & Success & Mean Reward \\
+Agent & Inspections & Success & Reward \\
 \midrule
-Myopic            & $2.09$ & 64.6\% & $+5.77$ \\
-Planning ($H\!=\!2$) & $3.26$ & 67.5\% & $+5.44$ \\
-Info Gain ($w\!=\!1$) & $2.04$ & 60.5\% & $+5.43$ \\
-Info Gain ($w\!=\!50$) & $10.90$ & 99.7\% & $+4.52$ \\
-\textbf{VFE} ($H\!=\!2$) & $\mathbf{4.94}$ & $\mathbf{88.1\%}$ & $\mathbf{+6.46}$ \\
+Myopic & $2.09$ & 64.6\% & $+5.77$ \\
+Planning ($H{=}2$) & $3.26$ & 67.5\% & $+5.44$ \\
+Info Gain ($w{=}1$) & $2.04$ & 60.5\% & $+5.43$ \\
+Info Gain ($w{=}50$) & $10.90$ & 99.7\% & $+4.52$ \\
+\textbf{VFE} ($H{=}2$) & $\mathbf{4.94}$ & $\mathbf{88.1\%}$ & $\mathbf{+6.46}$ \\
 \bottomrule
 \end{tabular}
+\end{small}
 \end{table}
 
-The structured bandit tests whether VFE extends to settings where the agent must choose \emph{which} information source to query. VFE achieves the highest mean reward ($+6.46$, $p < 0.001$ vs.\ all others) \emph{and} the highest success rate among reward-positive agents (88.1\%). Planning barely improves over Myopic (67.5\% vs.\ 64.6\%, n.s.\ for reward), confirming that the bandit's symmetric reward structure (best arm $+10$, others $+1$) provides insufficient gradient for pure reward-based exploration.
+VFE achieves the highest reward ($+6.46$, $p < 0.001$ vs.\ all others) \emph{and} highest success among reward-positive agents. Planning barely improves over Myopic ($67.5\%$ vs.\ $64.6\%$, n.s.), confirming that the bandit's symmetric reward structure provides insufficient gradient for pure reward-based exploration. VFE is the only agent that simultaneously achieves high success and high reward, demonstrating the value of intrinsic epistemic drive when the agent must decide \emph{which} information to gather.
 
-The tuned Info Gain agent ($w = 50$) achieves 99.7\% success but at the lowest reward ($+4.52$), over-investing in certainty. VFE is the only agent that simultaneously achieves high success \emph{and} high reward, demonstrating the value of intrinsic epistemic drive in environments where the agent must actively decide which information to gather.
+\subsection{Summary of findings}
 
-\subsection{Partially Observable Navigation (3$\times$3 Grid)}
+The results reveal a consistent pattern across environments:
+
+\begin{itemize}
+    \item \textbf{Simple observe-then-commit} (Tiger, testbed): VFE, Planning, and tuned Info Gain achieve equivalent success. VFE's advantage is tuning-free robustness.
+    \item \textbf{Multi-observation-action} (Diagnosis, Bandit): VFE significantly outperforms Planning at the same horizon ($p < 0.05$). EFE's epistemic term guides \emph{which} observation action to take.
+    \item \textbf{Very small spatial environments} (Navigation; see Appendix~\ref{app:navigation}): VFE over-explores. A greedy agent outperforms when exhaustive search is cheap.
+    \item \textbf{Tuned Info Gain}: Achieves high accuracy but over-explores, with required weights varying from $w{=}20$ to $w{=}100$, demonstrating the fragility VFE avoids.
+    \item \textbf{Horizon dependence}: At $H{=}2$, VFE and Planning perform equivalently on the scaling analysis (Appendix~\ref{app:scaling}). VFE's advantage requires $H \geq 3$---sufficient depth for the information gain term to differentiate among observation actions.
+\end{itemize}
+
+\section{Discussion}
+
+\paragraph{When does EFE-as-$\rho$ help?}
+The central finding is that VFE's advantage is not uniform but emerges under specific conditions: (1)~the environment offers multiple observation actions with differential informativeness, requiring the agent to choose \emph{which} information to gather; and (2)~the planning horizon is sufficient for the recursive EFE evaluation to propagate epistemic value through the belief tree. When either condition fails---single observation action (Tiger), or shallow horizon ($H{=}2$ in the scaling analysis)---reward-only planning achieves equivalent performance because the reward structure alone provides sufficient gradient for exploration.
+
+\paragraph{The intrinsic exploration--exploitation balance.}
+EFE resolves the exploration--exploitation trade-off dynamically: at high belief entropy, the information gain term $I(b)$ dominates, favoring observation; as beliefs sharpen, $I(b)$ decays and the pragmatic commit value takes over. This transition requires no scheduling or hyperparameter adjustment. On Tiger, both VFE and Planning achieve ${\sim}99\%$ success with ${\sim}4.2$ listens, but for different reasons: VFE is driven by information gain, Planning by the downstream reward penalty. The mechanistic distinction surfaces on the Bandit, where VFE's information gain term directs inspection toward uncertain arms while Planning lacks such guidance, producing a 20.6 pp success gap.
+
+\paragraph{Weight fragility of additive bonuses.}
+Tuned Info Gain achieves 99+\% success on multiple environments but at the cost of the lowest reward, systematically over-investing in certainty. The required weight varies from $w{=}20$ (Tiger) to $w{=}100$ (Diagnosis), with no principled method for selection. A fixed weight cannot be simultaneously appropriate across environments with different reward scales. EFE avoids this because both pragmatic and epistemic terms arise from the same variational bound, scaling naturally with the environment's information structure.
+
+\paragraph{Limitations.}
+Our environments are small discrete state-spaces ($N \leq 16$). The recursive EFE evaluation has cost $\mathcal{O}(K \cdot |\mathcal{O}|^H)$, limiting practical horizons to $H{=}2$--$3$ for environments with $K \geq 3$ observation actions. The VFE agent assumes a known generative model; extending to model learning settings (where AIF and BAMDPs converge) remains future work. On very small spatial domains (3${\times}$3 grid), VFE's epistemic drive is counterproductive, suggesting that constitutive epistemics has a minimum useful problem scale. We do not yet provide a systematic rho-function landscape comparison or visualizations of the EFE decomposition dynamics, which would more fully characterize the $\rho$-POMDP design space.
+
+\section{Conclusion}
+
+We have shown that Expected Free Energy serves as a coherent, tractable, and empirically effective belief-dependent utility function $\rho$ for $\rho$-POMDPs. By embedding EFE within the $\rho$-POMDP architecture, we enable controlled comparison against same-horizon reward-only planning and per-environment tuned information gain---baselines that isolate the contribution of the EFE objective from planning depth and weight sensitivity respectively. The resulting picture is nuanced: VFE provides no absolute advantage on simple environments where reward structure alone incentivizes exploration, but significantly outperforms alternatives on multi-observation-action environments where the agent must choose which information to gather. The required planning depth for this advantage ($H \geq 3$) connects directly to the sophisticated inference result that recursive EFE evaluation is necessary for Bellman optimality beyond single-step horizons. Validation against \texttt{pymdp} confirms mathematical consistency. These findings identify structured uncertainty as the regime where principled epistemic foraging via EFE is most valuable, and provide a concrete bridge between the $\rho$-POMDP and active inference literatures.
+
+\begin{ack}
+Removed for anonymous submission.
+\end{ack}
+
+{\small
+\bibliographystyle{plainnat}
+\begin{thebibliography}{20}
+
+\bibitem[Araya et~al.(2010)]{araya2010}
+M.~Araya, O.~Buffet, V.~Thomas, and F.~Charpillet.
+\newblock A {POMDP} extension with belief-dependent rewards.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2010.
+
+\bibitem[Bellemare et~al.(2016)]{bellemare2016}
+M.~Bellemare, S.~Srinivasan, G.~Ostrovski, T.~Schaul, D.~Saxton, and R.~Munos.
+\newblock Unifying count-based exploration and intrinsic motivation.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2016.
+
+\bibitem[Benchetrit et~al.(2025)]{lim2023}
+Y.~Benchetrit, O.~Lev-Yehudi, A.~Zhitnikov, and V.~Indelman.
+\newblock $\rho$-{POMCPOW}: Online planning for continuous $\rho$-{POMDP}s.
+\newblock \emph{arXiv preprint arXiv:2502.02549}, 2025.
+
+\bibitem[Da~Costa et~al.(2020)]{dacosta2020}
+L.~Da~Costa, T.~Parr, N.~Sajid, S.~Veselic, V.~Neacsu, and K.~Friston.
+\newblock Active inference on discrete state-spaces: A synthesis.
+\newblock \emph{Journal of Mathematical Psychology}, 99:102447, 2020.
+
+\bibitem[Da~Costa et~al.(2023)]{dacosta2020b}
+L.~Da~Costa, N.~Sajid, T.~Parr, K.~Friston, and R.~Smith.
+\newblock Reward maximization through discrete active inference.
+\newblock \emph{Neural Computation}, 35(5):807--852, 2023.
+
+\bibitem[Duff and Barto(2002)]{duff2002}
+M.~O. Duff and A.~G. Barto.
+\newblock Optimal learning: Computational procedures for {B}ayes-adaptive {M}arkov decision processes.
+\newblock PhD thesis, University of Massachusetts Amherst, 2002.
+
+\bibitem[Fehr et~al.(2018)]{fehr2018}
+R.~Fehr, O.~Buffet, V.~Thomas, and J.~Dibangoye.
+\newblock $\rho$-{POMDP}s have {L}ipschitz-continuous $\epsilon$-optimal value functions.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2018.
+
+\bibitem[Friston(2010)]{friston2010}
+K.~Friston.
+\newblock The free-energy principle: a unified brain theory?
+\newblock \emph{Nature Reviews Neuroscience}, 11(2):127--138, 2010.
+
+\bibitem[Friston et~al.(2021)]{friston2021}
+K.~Friston, L.~Da~Costa, D.~Hafner, C.~Hesp, and T.~Parr.
+\newblock Sophisticated inference.
+\newblock \emph{Neural Computation}, 33(3):713--763, 2021.
+
+\bibitem[Guez et~al.(2013)]{guez2013}
+A.~Guez, D.~Silver, and P.~Dayan.
+\newblock Scalable and efficient {B}ayes-adaptive reinforcement learning based on {M}onte-{C}arlo tree search.
+\newblock \emph{Journal of Artificial Intelligence Research}, 48:841--883, 2013.
+
+\bibitem[Heins et~al.(2022)]{heins2022}
+C.~Heins, B.~Millidge, D.~Demekas, B.~Klein, K.~Friston, I.~Couzin, and A.~Tschantz.
+\newblock pymdp: A {P}ython library for active inference in discrete state spaces.
+\newblock \emph{Journal of Open Source Software}, 7(73):4098, 2022.
+
+\bibitem[Houthooft et~al.(2016)]{houthooft2016}
+R.~Houthooft, X.~Chen, Y.~Duan, J.~Schulman, F.~De~Turck, and P.~Abbeel.
+\newblock {VIME}: Variational information maximizing exploration.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2016.
+
+\bibitem[Kaelbling et~al.(1998)]{kaelbling1998}
+L.~P. Kaelbling, M.~L. Littman, and A.~R. Cassandra.
+\newblock Planning and acting in partially observable stochastic domains.
+\newblock \emph{Artificial Intelligence}, 101(1--2):99--134, 1998.
+
+\bibitem[Millidge et~al.(2020)]{millidge2020}
+B.~Millidge, A.~Tschantz, and C.~L. Buckley.
+\newblock On the relationship between active inference and control as inference.
+\newblock In \emph{International Workshop on Active Inference}, pp.\ 3--11. Springer, 2020.
+
+\bibitem[Oudeyer et~al.(2007)]{oudeyer2007}
+P.-Y. Oudeyer, F.~Kaplan, and V.~V. Hafner.
+\newblock Intrinsic motivation systems for autonomous mental development.
+\newblock \emph{IEEE Transactions on Evolutionary Computation}, 11(2):265--286, 2007.
+
+\bibitem[Parr and Friston(2019)]{parr2019}
+T.~Parr and K.~J. Friston.
+\newblock Generalised free energy and active inference.
+\newblock \emph{Biological Cybernetics}, 113(5):495--513, 2019.
+
+\bibitem[Pathak et~al.(2017)]{pathak2017}
+D.~Pathak, P.~Agrawal, A.~A. Efros, and T.~Darrell.
+\newblock Curiosity-driven exploration by self-supervised prediction.
+\newblock In \emph{International Conference on Machine Learning}, 2017.
+
+\bibitem[Sajid et~al.(2021)]{sajid2021}
+N.~Sajid, P.~J. Ball, T.~Parr, and K.~J. Friston.
+\newblock Active inference: Demystified and compared.
+\newblock \emph{Neural Computation}, 33(3):674--712, 2021.
+
+\bibitem[Schmidhuber(1991)]{schmidhuber1991}
+J.~Schmidhuber.
+\newblock A possibility for implementing curiosity and boredom in model-building neural controllers.
+\newblock In \emph{Proc.\ International Conference on Simulation of Adaptive Behavior}, pp.\ 222--227, 1991.
+
+\bibitem[Shani et~al.(2013)]{shani2013}
+G.~Shani, J.~Pineau, and R.~Kaplow.
+\newblock A survey of point-based {POMDP} solvers.
+\newblock \emph{Autonomous Agents and Multi-Agent Systems}, 27(1):1--51, 2013.
+
+\end{thebibliography}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+
+\section{Environment specifications}
+\label{app:envs}
 
 \begin{table}[h]
 \centering
-\caption{Navigation results (500 episodes, $3 \times 3$ grid).}
-\label{tab:navigation}
-\begin{tabular}{lcccc}
+\caption{Full environment specifications.}
+\begin{small}
+\begin{tabular}{lccccccc}
 \toprule
-Agent & Steps & Success & Mean Reward \\
+Environment & $|S|$ & Obs.\ actions & Commit actions & Accuracy & Obs.\ cost & Correct & Incorrect \\
 \midrule
-\textbf{NavMyopic}   & $\mathbf{28.03}$ & $\mathbf{92.0\%}$ & $\mathbf{+4.38}$ \\
-NavInfoGain   & $41.13$ & 83.6\% & $-3.84$ \\
-NavVFE ($H\!=\!2$) & $45.55$ & 82.8\% & $-6.22$ \\
+Tiger & 2 & 1 & 2 & 0.85 & $-1.0$ & $+10$ & $-100$ \\
+Testbed & 2 & 1 & 2 & 0.75 & $-0.1$ & $+1$ & $-1$ \\
+Diagnosis ($N{=}4$) & 4 & 2 & 4 & 0.80 & $-1.0$ & $+10$ & $-50$ \\
+Bandit ($K{=}4$) & 4 & 4 & 4 & 0.80 & $-0.5$ & $+10$ & $+1$ \\
+Navigation & 9 & 4 (move) & 0 (implicit) & var. & $-0.5$ & $+20$ & --- \\
 \bottomrule
 \end{tabular}
+\end{small}
 \end{table}
 
-The navigation environment produces an instructive counterexample: the greedy NavMyopic agent---which simply moves toward the highest-belief cell---outperforms both NavInfoGain and NavVFE on success rate and reward. On a $3 \times 3$ grid (9 cells, max 18 steps), random-seeming movement under uniform belief naturally covers the grid, rendering deliberate information-gathering detours wasteful. The VFE agent's 45.55 steps and negative reward ($-6.22$) reflect the overhead of recursive EFE computation producing exploration-oriented movement in a space too small to benefit from it. This result delimits VFE's applicability: in very small state spaces where exhaustive search is cheap, the computational cost and exploration bias of EFE-based planning can be counterproductive.
+All environments are implemented as OpenAI Gymnasium environments with standard \texttt{reset}/\texttt{step} API. The Diagnosis environment uses $K = \lceil \log_2 N \rceil$ binary tests, each providing noisy information about a different partition of the state space. The Navigation environment uses proximity-based warm/cold signals with accuracy depending on Manhattan distance to the hidden goal.
 
-\subsection{Scaling Analysis}
+\section{Navigation results}
+\label{app:navigation}
 
 \begin{table}[h]
 \centering
-\caption{Scaling analysis: Diagnosis environment, $N = 2$ to $16$ (500 episodes each, $H=2$). Planning agent included at same horizon.}
-\label{tab:scaling}
-\begin{tabular}{clcccc}
+\caption{Navigation ($3{\times}3$ grid, 500 episodes).}
+\begin{small}
+\begin{tabular}{lccc}
 \toprule
-$N$ & Agent & Tests & Success & Mean Reward \\
+Agent & Steps & Success & Reward \\
+\midrule
+\textbf{NavMyopic} & $\mathbf{28.03}$ & $\mathbf{92.0\%}$ & $\mathbf{+4.38}$ \\
+NavInfoGain & $41.13$ & 83.6\% & $-3.84$ \\
+NavVFE ($H{=}2$) & $45.55$ & 82.8\% & $-6.22$ \\
+\bottomrule
+\end{tabular}
+\end{small}
+\end{table}
+
+The greedy NavMyopic agent outperforms both NavInfoGain and NavVFE. On a $3{\times}3$ grid, movement under uniform belief naturally covers the space, making deliberate information-gathering detours wasteful. This delimits VFE's applicability: in very small state spaces where exhaustive search is cheap, EFE-based planning is counterproductive.
+
+\section{Scaling analysis}
+\label{app:scaling}
+
+\begin{table}[h]
+\centering
+\caption{Scaling analysis: Diagnosis $N = 2$ to $16$ (500 episodes, $H{=}2$).}
+\begin{small}
+\begin{tabular}{clccc}
+\toprule
+$N$ & Agent & Tests & Success & Reward \\
 \midrule
 \multirow{4}{*}{2}  & Myopic    & 1.00 & 80.2\% & $-2.88$ \\
                      & Planning  & 2.99 & 93.8\% & $+3.29$ \\
                      & Info Gain & 1.00 & 79.0\% & $-3.60$ \\
                      & \textbf{VFE} & \textbf{2.89} & \textbf{95.2\%} & $\mathbf{+4.23}$ \\
 \midrule
-\multirow{4}{*}{4}  & Myopic    & 2.00 & 67.0\% & $-11.80$ \\
-                     & Planning  & 5.96 & 88.8\% & $-2.68$ \\
+\multirow{4}{*}{4}  & Myopic & 2.00 & 67.0\% & $-11.80$ \\
+                     & Planning & 5.96 & 88.8\% & $-2.68$ \\
                      & Info Gain & 2.00 & 65.0\% & $-13.00$ \\
-                     & VFE       & 5.95 & 87.6\% & $-3.39$ \\
+                     & VFE & 5.95 & 87.6\% & $-3.39$ \\
 \midrule
-\multirow{4}{*}{8}  & Myopic    & 3.00 & 50.0\% & $-23.00$ \\
-                     & Planning  & 8.73 & 84.6\% & $-7.97$ \\
+\multirow{4}{*}{8}  & Myopic & 3.00 & 50.0\% & $-23.00$ \\
+                     & Planning & 8.73 & 84.6\% & $-7.97$ \\
                      & Info Gain & 3.00 & 53.4\% & $-20.96$ \\
-                     & VFE       & 9.03 & 83.8\% & $-8.75$ \\
+                     & VFE & 9.03 & 83.8\% & $-8.75$ \\
 \midrule
-\multirow{4}{*}{16} & Myopic    & 4.00 & 38.8\% & $-30.72$ \\
-                     & Planning  & 11.58 & \textbf{81.2\%} & $\mathbf{-12.86}$ \\
+\multirow{4}{*}{16} & Myopic & 4.00 & 38.8\% & $-30.72$ \\
+                     & Planning & 11.58 & \textbf{81.2\%} & $\mathbf{-12.86}$ \\
                      & Info Gain & 4.00 & 40.4\% & $-29.76$ \\
-                     & VFE       & 11.67 & 77.6\% & $-15.11$ \\
+                     & VFE & 11.67 & 77.6\% & $-15.11$ \\
 \bottomrule
 \end{tabular}
+\end{small}
 \end{table}
 
-At $H=2$, VFE and Planning perform \emph{similarly} across all state space sizes, with both substantially outperforming Myopic and untuned Info Gain. At $N=2$, VFE has a small advantage ($+1.4$ pp); at $N=4$--$16$, the agents are within 4 pp of each other. This contrasts sharply with the $H=3$ Diagnosis result (Table~\ref{tab:diagnosis}), where VFE outperformed Planning by 9.1 pp. The implication is that VFE's advantage over reward-only planning requires \emph{sufficient planning depth} to manifest: at $H=2$, the recursive EFE evaluation has too few levels for the information gain term to differentiate across tests. At $H=3$, the additional planning depth allows VFE to reason about the downstream value of choosing the most informative test. Both agents' VFE-over-Myopic advantage grows with $N$: from $+15.0$ pp at $N=2$ to $+38.8$ pp at $N=16$ for VFE, confirming that deeper planning of any kind is increasingly valuable as state spaces grow.
+At $H{=}2$, VFE and Planning perform similarly across all $N$, both substantially outperforming Myopic and untuned Info Gain. This contrasts with the $H{=}3$ Diagnosis result (Table~\ref{tab:diagnosis}), where VFE outperformed Planning by 9.1 pp, confirming that EFE's advantage requires sufficient recursive depth. VFE-over-Myopic advantage grows from $+15.0$ pp at $N{=}2$ to $+38.8$ pp at $N{=}16$, confirming that deeper planning is increasingly valuable as state spaces grow.
 
-\subsection{Cross-Environment Summary}
+\section{PyMDP validation}
+\label{app:pymdp}
 
-The expanded baselines reveal a more nuanced picture than VFE uniformly dominating:
-
-\begin{itemize}
-    \item \textbf{Simple observe-then-commit} (Tiger, testbed): VFE, Planning, and tuned Info Gain achieve equivalent success. VFE's advantage is zero-tuning robustness, not absolute performance.
-    \item \textbf{Multi-observation-action environments} (Diagnosis, Bandit): VFE significantly outperforms Planning at the same horizon ($p < 0.05$). EFE's information gain term provides genuine value by guiding \emph{which} observation action to take.
-    \item \textbf{Very small spatial environments} (3$\times$3 navigation): VFE over-explores. A greedy agent outperforms because exhaustive search is cheap.
-    \item \textbf{Tuned Info Gain}: Consistently achieves high success but over-explores (and the required weight varies from $w=20$ to $w=100$ across environments), demonstrating the fragility that VFE avoids.
-\end{itemize}
-
-\section{Hypotheses}
-
-\paragraph{H1 (Tractability) --- Supported.} VFE serves as an effective generalized utility function for $\rho$-POMDPs across all five environments, including multi-action observation spaces (diagnosis with $K$ tests, bandit with $K$ arms) and spatial domains (navigation). Computational cost scales as $\mathcal{O}(K \cdot |\mathcal{O}|^H)$ in the number of observation actions $K$, observation outcomes $|\mathcal{O}|$, and planning horizon $H$, which necessitates modest horizons ($H=2$--$3$) for environments with $K \geq 3$ observation actions. Validation against the \texttt{pymdp} reference implementation confirms mathematical consistency of our EFE computation.
-
-\paragraph{H2 (Epistemic Superiority) --- Supported with Important Qualifications.} The inclusion of a same-horizon Planning baseline and per-environment tuned Info Gain reveals that VFE's advantage is \emph{environment-dependent} and \emph{horizon-dependent}. On simple observe-then-commit problems (Tiger, testbed), Planning at the same horizon achieves equivalent success: the reward structure alone provides sufficient gradient for exploration. VFE's genuine advantage appears in multi-observation-action environments \emph{with sufficient planning depth} (Diagnosis at $H=3$: 97.0\% vs.\ Planning's 87.9\%, $p = 0.022$; Bandit at $H=2$: 88.1\% and $+6.46$ reward vs.\ Planning's 67.5\% and $+5.44$, $p < 0.001$), where the agent must decide \emph{which} information to gather. At $H=2$, the scaling analysis shows VFE and Planning performing equivalently---the EFE advantage requires sufficient recursive depth to differentiate among observation actions. On very small spatial environments (3$\times$3 navigation), VFE over-explores relative to a greedy baseline. Both VFE and Planning show growing advantage over Myopic as state spaces scale: from $+15.0$ pp at $N=2$ to $+38.8$ pp at $N=16$ for VFE, confirming that deeper planning of any kind is increasingly valuable.
-
-\paragraph{H3 (Constitutive Epistemics) --- Supported, with Boundary Conditions.} The VFE agent exhibits constitutive epistemic drive: it gathers more information than baselines, adapts its exploration depth to environmental structure, and requires no per-environment tuning. Critically, this constitutive epistemics is most valuable when the agent faces \emph{structured uncertainty}---multiple observation modalities, asymmetric information content across actions, or large state spaces. In environments where exhaustive search is cheap (small grids) or reward structure naturally incentivizes exploration (Tiger), the constitutive epistemic drive provides no advantage and can be counterproductive. The tuned Info Gain results further illuminate this: weights that achieve high success on one environment ($w = 20$ for Tiger) are inappropriate on others ($w = 100$ for Diagnosis, $w = 50$ for Bandit), whereas VFE achieves competitive performance across all environments with the same objective function.
-
-\section{Intrinsic Exploration--Exploitation Balancing}
-
-A key theoretical claim of this framework is that the exploration--exploitation trade-off resolves itself dynamically. When the belief state $Q(s)$ has high entropy (high uncertainty), the information gain term $I(b)$ in Equation 3 is large, reducing $\mathcal{G}(\text{observe})$ and favoring information-seeking actions. As observations accumulate and beliefs sharpen, $I(b)$ decays toward zero and the pragmatic commit value dominates, shifting behavior toward goal realization. This transition requires no scheduling, annealing, or hyperparameter adjustment.
-
-Our expanded baselines sharpen this claim. On the Tiger problem, both VFE and the same-horizon Planning agent achieve $\sim$99\% success with $\sim$4.2 listens. Here, the dynamic balance is matched by the reward structure itself: the $+10$ / $-100$ asymmetry makes premature commitment so costly that even a reward-only planner ``discovers'' the value of listening. The VFE mechanism produces the same behavior \emph{for different reasons}---the information gain term, rather than the reward penalty, drives continued listening.
-
-The behavioral equivalence on Tiger obscures a deeper difference that emerges on multi-observation-action environments. On the Bandit ($K=4$ arms), VFE inspects 4.94 times and achieves $+6.46$ reward, while the same-horizon Planning agent inspects 3.26 times for only $+5.44$. The Planning agent lacks guidance on \emph{which} arm to inspect, whereas VFE's information gain term naturally directs inspection toward the most uncertain arms. This demonstrates that intrinsic exploration--exploitation balancing is most valuable when the action space includes multiple information-gathering options with differential informativeness.
-
-The tuned Info Gain results expose a complementary pathology: when the exploration weight is optimized per environment, the agent systematically \emph{over-explores}, achieving 99+\% success but lowest reward on multiple environments. A fixed weight cannot simultaneously be appropriate across environments with different reward scales, demonstrating that additive exploration bonuses are fundamentally mismatched to the problem structure in ways that the EFE objective avoids.
-
-\section{Future Work}
-
-The experiments presented here validate EFE-as-$\rho$ across five structurally distinct environments with state spaces up to $N=16$. Several directions remain:
-
-\begin{itemize}
-    \item \textbf{Continuous state spaces}: Variational message passing or particle filter-based inference to extend beyond discrete state spaces, enabling application to robotics and continuous control.
-    \item \textbf{LLM integration}: Using large language models as generative world models to parameterize transition dynamics and observation likelihoods, enabling EFE computation in semantic state spaces.
-    \item \textbf{Computational scaling}: The recursive EFE evaluation has exponential cost in the planning horizon. Monte-Carlo tree search or amortized policy networks could enable deeper planning in larger state spaces.
-    \item \textbf{Hierarchical generative models}: Nested models with beliefs at multiple levels of abstraction, enabling epistemic foraging over both low-level states and high-level structure.
-    \item \textbf{Multi-agent settings}: Whether constitutive epistemics produces beneficial properties (cooperation, communication) when multiple VFE agents interact.
-\end{itemize}
-
-\section*{Novelty Statement}
-
-The novelty of this work lies in formally bridging the $\rho$-POMDP and active inference frameworks by substituting Expected Free Energy as the belief-dependent utility function $\rho$, and in rigorously characterizing \emph{where} this substitution helps and where it does not. While $\rho$-POMDPs provide the formal mechanism for belief-dependent optimization and active inference provides the principled objective, neither literature has systematically explored this integration with controlled baselines.
-
-Our contribution is both theoretical---showing the substitution is coherent, tractable, and consistent with the pymdp reference implementation---and empirical. Through comparison against five baselines (Myopic, same-horizon Planning, untuned and tuned Information Gain, and pymdp's standard AIF agent), we establish that: (1) on simple observe-then-commit environments, VFE matches the best tuned alternatives without requiring per-environment weight selection; (2) on multi-observation-action environments requiring \emph{which}-information-to-gather decisions with sufficient planning depth, VFE significantly outperforms same-horizon reward-only planning ($+20.6$ pp on Bandit, $+9.1$ pp on Diagnosis at $H=3$); and (3) on very small state spaces, VFE's constitutive epistemic drive can over-explore. The scaling analysis confirms that both VFE and Planning provide growing advantage over myopic baselines as state spaces increase (from $+15.0$ pp at $N=2$ to $+38.8$ pp at $N=16$ for VFE over Myopic), while VFE's advantage over Planning specifically requires sufficient recursive depth ($H \geq 3$) to manifest---identifying structured uncertainty combined with deep planning as the regime where principled epistemic foraging is most valuable.
-
-\bibliographystyle{plain}
-\begin{thebibliography}{99}
-
-\bibitem{araya2010}
-M.~Araya, O.~Buffet, V.~Thomas, and F.~Charpillet.
-\newblock A POMDP extension with belief-dependent rewards.
-\newblock In \emph{Advances in Neural Information Processing Systems (NIPS)}, 2010.
-
-\bibitem{bellemare2016}
-M.~Bellemare, S.~Srinivasan, G.~Ostrovski, T.~Schaul, D.~Saxton, and R.~Munos.
-\newblock Unifying count-based exploration and intrinsic motivation.
-\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2016.
-
-\bibitem{dacosta2020}
-L.~Da~Costa, T.~Parr, N.~Sajid, S.~Veselic, V.~Neacsu, and K.~Friston.
-\newblock Active inference on discrete state-spaces: A synthesis.
-\newblock \emph{Journal of Mathematical Psychology}, 99:102447, 2020.
-
-\bibitem{dacosta2020b}
-L.~Da~Costa, N.~Sajid, T.~Parr, K.~Friston, and R.~Smith.
-\newblock Reward maximization through discrete active inference.
-\newblock \emph{Neural Computation}, 35(5):807--852, 2023.
-
-\bibitem{duff2002}
-M.~O.~Duff and A.~G.~Barto.
-\newblock Optimal learning: Computational procedures for {B}ayes-adaptive {M}arkov decision processes.
-\newblock \emph{University of Massachusetts Amherst}, PhD thesis, 2002.
-
-\bibitem{fehr2018}
-R.~Fehr, O.~Buffet, V.~Thomas, and J.~Dibangoye.
-\newblock $\rho$-{POMDP}s have {L}ipschitz-continuous $\epsilon$-optimal value functions.
-\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2018.
-
-\bibitem{friston2010}
-K.~Friston.
-\newblock The free-energy principle: a unified brain theory?
-\newblock \emph{Nature Reviews Neuroscience}, 11(2):127--138, 2010.
-
-\bibitem{friston2021}
-K.~Friston, L.~Da~Costa, D.~Hafner, C.~Hesp, and T.~Parr.
-\newblock Sophisticated inference.
-\newblock \emph{Neural Computation}, 33(3):713--763, 2021.
-
-\bibitem{guez2013}
-A.~Guez, D.~Silver, and P.~Dayan.
-\newblock Scalable and efficient {B}ayes-adaptive reinforcement learning based on {M}onte-{C}arlo tree search.
-\newblock \emph{Journal of Artificial Intelligence Research}, 48:841--883, 2013.
-
-\bibitem{heins2022}
-C.~Heins, B.~Millidge, D.~Demekas, B.~Klein, K.~Friston, I.~Couzin, and A.~Tschantz.
-\newblock pymdp: A {P}ython library for active inference in discrete state spaces.
-\newblock \emph{Journal of Open Source Software}, 7(73):4098, 2022.
-
-\bibitem{houthooft2016}
-R.~Houthooft, X.~Chen, Y.~Duan, J.~Schulman, F.~De~Turck, and P.~Abbeel.
-\newblock {VIME}: Variational information maximizing exploration.
-\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, 2016.
-
-\bibitem{kaelbling1998}
-L.~P.~Kaelbling, M.~L.~Littman, and A.~R.~Cassandra.
-\newblock Planning and acting in partially observable stochastic domains.
-\newblock \emph{Artificial Intelligence}, 101(1--2):99--134, 1998.
-
-\bibitem{lim2023}
-Y.~Benchetrit, O.~Lev-Yehudi, A.~Zhitnikov, and V.~Indelman.
-\newblock $\rho$-{POMCPOW}: Online planning for continuous {$\rho$}-{POMDPs}.
-\newblock \emph{arXiv preprint arXiv:2502.02549}, 2025.
-
-\bibitem{millidge2020}
-B.~Millidge, A.~Tschantz, and C.~L.~Buckley.
-\newblock On the relationship between active inference and control as inference.
-\newblock In \emph{International Workshop on Active Inference}, pp.\ 3--11. Springer, 2020.
-
-\bibitem{oudeyer2007}
-P.-Y.~Oudeyer, F.~Kaplan, and V.~V.~Hafner.
-\newblock Intrinsic motivation systems for autonomous mental development.
-\newblock \emph{IEEE Transactions on Evolutionary Computation}, 11(2):265--286, 2007.
-
-\bibitem{parr2019}
-T.~Parr and K.~J.~Friston.
-\newblock Generalised free energy and active inference.
-\newblock \emph{Biological Cybernetics}, 113(5):495--513, 2019.
-
-\bibitem{pathak2017}
-D.~Pathak, P.~Agrawal, A.~A.~Efros, and T.~Darrell.
-\newblock Curiosity-driven exploration by self-supervised prediction.
-\newblock In \emph{International Conference on Machine Learning (ICML)}, 2017.
-
-\bibitem{sajid2021}
-N.~Sajid, P.~J.~Ball, T.~Parr, and K.~J.~Friston.
-\newblock Active inference: Demystified and compared.
-\newblock \emph{Neural Computation}, 33(3):674--712, 2021.
-
-\bibitem{schmidhuber1991}
-J.~Schmidhuber.
-\newblock A possibility for implementing curiosity and boredom in model-building neural controllers.
-\newblock In \emph{Proc.\ International Conference on Simulation of Adaptive Behavior}, pp.\ 222--227, 1991.
-
-\bibitem{shani2013}
-G.~Shani, J.~Pineau, and R.~Kaplow.
-\newblock A survey of point-based {POMDP} solvers.
-\newblock \emph{Autonomous Agents and Multi-Agent Systems}, 27(1):1--51, 2013.
-
-\end{thebibliography}
+We validated our EFE computation against the \texttt{pymdp} library \citep{heins2022} by wrapping pymdp's standard Agent class as a baseline (PyMDP-AIF in Tables~\ref{tab:tiger}--\ref{tab:infoseek}). Both implementations agree on observe-vs-commit decisions across all tested belief states (uniform, intermediate, and confident beliefs on the two-state environments). Information gain values computed by our recursive scheme and pymdp's \texttt{control} module agree qualitatively, with differences attributable to our recursive multi-step evaluation vs.\ pymdp's single-step policy enumeration.
 
 \end{document}
