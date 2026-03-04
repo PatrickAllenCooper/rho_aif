@@ -24,7 +24,10 @@ from agents.base import BaseAgent
 from agents.myopic import MyopicAgent
 from agents.info_gain import InformationGainAgent
 from agents.vfe import VFEAgent
+from agents.planning import PlanningAgent
 from agents.navigation_vfe import NavigationVFEAgent
+from agents.navigation_baselines import NavigationMyopicAgent, NavigationInfoGainAgent
+from agents.pymdp_agent import PyMDPAgent
 
 
 @dataclass
@@ -152,6 +155,36 @@ def print_statistical_comparison(
         print(f"  {metric_name:12s}: {name_a} vs {name_b}  t={t_stat:+.3f}  p={p_val:.6f}  {sig}")
 
 
+def tune_info_gain_weight(
+    env,
+    candidate_weights: List[float] = None,
+    tune_episodes: int = 200,
+    metric: str = "success_rate",
+) -> float:
+    """Find the best info_gain_weight for InformationGainAgent on a given env.
+
+    Runs a grid search over candidate weights using a smaller number of
+    tuning episodes, returning the weight that maximizes the chosen metric.
+    """
+    if candidate_weights is None:
+        candidate_weights = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0]
+
+    best_weight = 1.0
+    best_score = -float("inf")
+
+    for w in candidate_weights:
+        results = run_experiment(
+            InformationGainAgent, env, tune_episodes, info_gain_weight=w
+        )
+        summary = summarize_results(results)
+        score = summary[metric]
+        if score > best_score:
+            best_score = score
+            best_weight = w
+
+    return best_weight
+
+
 def run_info_seeking_experiment(num_episodes: int = 1000, seed: int = 42):
     """Run the full experiment on the two-state info-seeking environment."""
     np.random.seed(seed)
@@ -172,10 +205,18 @@ def run_info_seeking_experiment(num_episodes: int = 1000, seed: int = 42):
     print(f"  Rewards:  +{env.correct_reward} / {env.incorrect_penalty}")
     print()
 
+    print("Tuning InfoGain weight...")
+    best_w = tune_info_gain_weight(env, tune_episodes=200)
+    print(f"  Best InfoGain weight: {best_w}\n")
+
+    horizon = 4
     agent_configs = [
         ("Myopic", MyopicAgent, {}),
+        ("Planning", PlanningAgent, {"planning_horizon": horizon}),
         ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}),
-        ("VFE", VFEAgent, {"planning_horizon": 4}),
+        ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
+        ("VFE", VFEAgent, {"planning_horizon": horizon}),
+        ("PyMDP-AIF", PyMDPAgent, {}),
     ]
 
     all_results = {}
@@ -230,10 +271,18 @@ def run_tiger_experiment(num_episodes: int = 1000, seed: int = 42):
     print(f"  Rewards:   +{env.correct_reward} / {env.incorrect_penalty}")
     print()
 
+    print("Tuning InfoGain weight...")
+    best_w = tune_info_gain_weight(env, tune_episodes=200)
+    print(f"  Best InfoGain weight: {best_w}\n")
+
+    horizon = 6
     agent_configs = [
         ("Myopic", MyopicAgent, {}),
+        ("Planning", PlanningAgent, {"planning_horizon": horizon}),
         ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}),
-        ("VFE", VFEAgent, {"planning_horizon": 6}),
+        ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
+        ("VFE", VFEAgent, {"planning_horizon": horizon}),
+        ("PyMDP-AIF", PyMDPAgent, {}),
     ]
 
     all_results = {}
@@ -327,10 +376,15 @@ def run_diagnosis_experiment(num_conditions: int = 4, num_episodes: int = 1000, 
     np.random.seed(seed)
     env = DiagnosisEnv(num_conditions=num_conditions, test_accuracy=0.80, test_cost=1.0,
                        correct_reward=10.0, incorrect_penalty=-50.0)
+    print(f"Tuning InfoGain weight for Diagnosis N={num_conditions}...")
+    best_w = tune_info_gain_weight(env, tune_episodes=200)
+    print(f"  Best InfoGain weight: {best_w}\n")
     horizon = 3
     configs = [
         ("Myopic", MyopicAgent, {}, None),
+        ("Planning", PlanningAgent, {"planning_horizon": horizon}, None),
         ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}, None),
+        ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}, None),
         ("VFE", VFEAgent, {"planning_horizon": horizon}, None),
     ]
     return run_generic_experiment(
@@ -343,10 +397,16 @@ def run_bandit_experiment(num_arms: int = 4, num_episodes: int = 1000, seed: int
     np.random.seed(seed)
     env = BanditEnv(num_arms=num_arms, inspect_accuracy=0.80, inspect_cost=0.5,
                     correct_reward=10.0, small_reward=1.0)
+    print(f"Tuning InfoGain weight for Bandit K={num_arms}...")
+    best_w = tune_info_gain_weight(env, tune_episodes=200)
+    print(f"  Best InfoGain weight: {best_w}\n")
+    horizon = 2
     configs = [
         ("Myopic", MyopicAgent, {}, None),
+        ("Planning", PlanningAgent, {"planning_horizon": horizon}, None),
         ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}, None),
-        ("VFE", VFEAgent, {"planning_horizon": 2}, None),
+        ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}, None),
+        ("VFE", VFEAgent, {"planning_horizon": horizon}, None),
     ]
     return run_generic_experiment(
         env, f"BANDIT EXPERIMENT (K={num_arms})", configs,
@@ -358,10 +418,18 @@ def run_navigation_experiment(grid_size: int = 3, num_episodes: int = 500, seed:
     np.random.seed(seed)
     env = NavigationEnv(grid_size=grid_size, max_steps=grid_size * grid_size * 2)
 
+    def make_nav_myopic():
+        return NavigationMyopicAgent(env)
+
+    def make_nav_infogain():
+        return NavigationInfoGainAgent(env, info_gain_weight=1.0)
+
     def make_nav_vfe():
         return NavigationVFEAgent(env, planning_horizon=2)
 
     configs = [
+        ("NavMyopic", None, {}, make_nav_myopic),
+        ("NavInfoGain", None, {}, make_nav_infogain),
         ("NavVFE", None, {}, make_nav_vfe),
     ]
     return run_generic_experiment(
@@ -388,6 +456,7 @@ def run_scaling_analysis(seed: int = 42):
 
         for agent_label, agent_class, kwargs in [
             ("Myopic", MyopicAgent, {}),
+            ("Planning", PlanningAgent, {"planning_horizon": horizon}),
             ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}),
             ("VFE", VFEAgent, {"planning_horizon": horizon}),
         ]:

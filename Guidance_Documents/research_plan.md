@@ -216,95 +216,124 @@ Upon successful Phase 1 completion, we will extend to:
 
 ## Experimental Results and Implications for the Paper
 
-### Info-Seeking Testbed (1,000 episodes, +1/-1 rewards, 75% accuracy, obs cost 0.1)
+### Expanded Baselines (March 2026)
 
-| Agent | Obs | Success | Reward | Confidence |
-|---|---|---|---|---|
-| Myopic | 1.00 | 74.6% | +0.39 | 0.750 |
-| InfoGain | 3.24 | 91.8% | **+0.51** | 0.900 |
-| VFE | 5.51 | **96.4%** | +0.38 | **0.964** |
+All experiments now include six agent types for controlled comparison:
+1. **Myopic** (1-step, reward only) -- weakest baseline
+2. **Planning** (H-step, reward only) -- controls for planning depth
+3. **InfoGain** (1-step, w=1.0) -- untuned epistemic baseline
+4. **InfoGain-Tuned** (1-step, per-env optimal w) -- best-case InfoGain
+5. **VFE** (H-step, EFE) -- our method
+6. **PyMDP-AIF** (pymdp library reference) -- independent implementation
 
-### Tiger Problem (1,000 episodes, +10/-100 rewards, 85% accuracy, listen cost 1.0)
+### Tiger Problem (1,000 episodes, H=6, +10/-100)
 
-| Agent | Listens | Success | Reward | Confidence |
-|---|---|---|---|---|
-| Myopic | 1.00 | 86.5% | -5.85 | 0.850 |
-| InfoGain | 1.00 | 83.5% | -9.15 | 0.850 |
-| VFE | 4.31 | **99.1%** | **+4.70** | **0.995** |
+| Agent | Listens | Success | Reward |
+|---|---|---|---|
+| Myopic | 1.00 | 84.4% | -8.16 |
+| Planning (H=6) | 4.20 | 99.3% | +5.03 |
+| InfoGain (w=1) | 1.00 | 85.4% | -7.06 |
+| InfoGain-Tuned (w=20) | 4.20 | **99.6%** | **+5.36** |
+| VFE (H=6) | 4.29 | 99.5% | +5.16 |
+| PyMDP-AIF | 2.68 | 97.5% | +4.57 |
 
-All VFE vs baseline comparisons: p < 0.001 on both environments.
+Planning, Tuned InfoGain, and VFE are statistically equivalent. VFE advantage = no tuning.
 
-### Diagnosis (1,000 episodes, N=4, +10/-50, 80% test accuracy, cost 1.0)
+### Info-Seeking Testbed (1,000 episodes, H=4, +1/-1)
+
+| Agent | Obs | Success | Reward |
+|---|---|---|---|
+| Myopic | 1.00 | 73.3% | +0.37 |
+| Planning (H=4) | 3.22 | 89.2% | **+0.46** |
+| InfoGain (w=1) | 3.27 | 89.1% | +0.46 |
+| InfoGain-Tuned (w=50) | 12.08 | **99.9%** | -0.21 |
+| VFE (H=4) | 5.50 | 95.6% | +0.36 |
+| PyMDP-AIF | 3.36 | 91.5% | +0.49 |
+
+VFE over-explores in low-stakes env. Best reward = Planning/PyMDP.
+
+### Diagnosis (1,000 episodes, N=4, H=3, +10/-50)
 
 | Agent | Tests | Success | Reward |
 |---|---|---|---|
-| Myopic | 2.00 | 64.0% | -13.60 |
-| InfoGain | 2.00 | 65.1% | -12.94 |
-| VFE | 9.54 | **96.9%** | **-1.40** |
+| Myopic | 2.00 | 64.2% | -13.48 |
+| Planning (H=3) | 5.90 | 87.9% | -3.16 |
+| InfoGain (w=1) | 2.00 | 62.4% | -14.56 |
+| InfoGain-Tuned (w=100) | 13.24 | **98.7%** | -4.02 |
+| **VFE (H=3)** | **9.73** | **97.0%** | **-1.53** |
 
-### Bandit (1,000 episodes, K=4 arms, +10/+1, 80% inspect accuracy, cost 0.5)
+VFE significantly outperforms Planning (p=0.022). Best reward and near-best success.
+
+### Bandit (1,000 episodes, K=4, H=2, +10/+1)
 
 | Agent | Inspections | Success | Reward |
 |---|---|---|---|
-| Myopic | 2.05 | 64.3% | +5.76 |
-| InfoGain | 1.99 | 63.1% | +5.69 |
-| VFE | 5.05 | **84.5%** | **+6.08** |
+| Myopic | 2.09 | 64.6% | +5.77 |
+| Planning (H=2) | 3.26 | 67.5% | +5.44 |
+| InfoGain (w=1) | 2.04 | 60.5% | +5.43 |
+| InfoGain-Tuned (w=50) | 10.90 | **99.7%** | +4.52 |
+| **VFE (H=2)** | **4.94** | **88.1%** | **+6.46** |
+
+VFE dominates on BOTH reward AND success. Planning barely improves over Myopic.
 
 ### Navigation (500 episodes, 3x3 grid, +20 goal, -0.5 step cost)
 
 | Agent | Steps | Success | Reward |
 |---|---|---|---|
-| NavVFE | 40.66 | **84.8%** | -3.37 |
+| **NavMyopic** | **28.03** | **92.0%** | **+4.38** |
+| NavInfoGain | 41.13 | 83.6% | -3.84 |
+| NavVFE (H=2) | 45.55 | 82.8% | -6.22 |
 
-### Scaling Analysis (Diagnosis N=2,4,8,16)
+VFE over-explores on small grids. Greedy agent wins.
 
-| N | VFE Success | Myopic Success | VFE Advantage |
-|---|---|---|---|
-| 2 | 94.2% | 79.4% | +14.8 pts |
-| 4 | 88.2% | 62.6% | +25.6 pts |
-| 8 | 85.2% | 50.2% | +35.0 pts |
-| 16 | 76.6% | 39.4% | +37.2 pts |
+### Scaling Analysis (Diagnosis N=2,4,8,16, H=2)
 
-VFE's advantage grows with state space size. At N=16, VFE outperforms Myopic by 37.2 percentage points.
+| N | Myopic | Planning | VFE | VFE vs Myopic |
+|---|---|---|---|---|
+| 2 | 80.2% | 93.8% | 95.2% | +15.0 pp |
+| 4 | 67.0% | 88.8% | 87.6% | +20.6 pp |
+| 8 | 50.0% | 84.6% | 83.8% | +33.8 pp |
+| 16 | 38.8% | 81.2% | 77.6% | +38.8 pp |
 
-### What These Results Mean for the Paper
+At H=2, Planning and VFE are equivalent. VFE's advantage over Planning requires H>=3.
 
-**RQ1 (VFE as rho -- tractability)**: Supported. The EFE substitution is coherent, tractable via recursive Bayesian evaluation, and produces well-defined policies on both environments.
+### Key Findings
 
-**RQ2 (epistemic superiority)**: Partially supported, with a nuance that strengthens the paper. VFE achieves the highest success rates everywhere and is the only agent with positive reward on Tiger. But on the low-stakes testbed, InfoGain gets higher reward because VFE "over-explores." This is not a weakness of the framework -- it is a feature that the paper should foreground. The VFE agent gathers more information than is instrumentally necessary because EFE assigns intrinsic value to uncertainty reduction. In high-stakes settings (Tiger), this conservatism is exactly what prevents catastrophe. The paper should frame this as a spectrum: VFE dominates when cost-of-error is high relative to cost-of-observation.
+**RQ1 (Tractability)**: Fully supported. EFE substitution is coherent, tractable, validated against pymdp.
 
-**RQ3 (constitutive epistemics)**: Supported, and this is the most distinctive contribution. The VFE agent is not just quantitatively different; it exhibits a qualitatively different kind of epistemic behavior. Its reward variance on Tiger (10.55) is 4x lower than baselines (37--41), meaning its behavior is far more predictable and consistent. Agents whose utility is defined over their own beliefs are constitutively cautious -- they degrade gracefully under uncertainty rather than gambling. This has direct alignment implications: such agents are more interpretable and less likely to take catastrophic actions under distributional shift.
+**RQ2 (Epistemic superiority)**: Environment-dependent:
+- Simple observe-then-commit: VFE matches tuned alternatives without tuning
+- Multi-observation-action environments: VFE significantly outperforms same-horizon Planning (Diagnosis +9.1 pp, Bandit +20.6 pp)
+- Very small state spaces: VFE over-explores
 
-**InfoGain fragility as a control finding**: The InfoGain agent's failure on Tiger (weight=1.0 is insufficient for Tiger's reward scale, causing it to listen only once) is itself a key result. It demonstrates that hand-tuned epistemic weights are fragile across environments. The VFE agent requires no such tuning, working across both environments with the same formulation.
+**RQ3 (Constitutive epistemics)**: Supported with boundary conditions. Most valuable under structured uncertainty (multiple observation types, large state spaces). Can be counterproductive in very small/simple environments.
 
-### Remaining Gaps for the Paper
-
-- NeurIPS formatting (David's responsibility)
-- Extended benchmarks (Phase 2: multi-armed bandits, navigation, diagnosis)
-- Scaling analysis to larger state spaces
-- Formal convergence analysis of the recursive EFE scheme
+**InfoGain fragility**: Tuned weights vary from w=20 (Tiger) to w=100 (Diagnosis), confirming per-environment brittleness. Tuned InfoGain systematically over-explores.
 
 ---
 
 ## Current Status
 
-**Project Phase**: Phase 2 Complete  
-**Date**: February 26, 2026
+**Project Phase**: Phase 3 -- Expanded Baselines Complete  
+**Date**: March 4, 2026
 
 **Completed**:
 1. Modular codebase with generalized multi-observation-action agent architecture
 2. Five Gymnasium environments: InfoSeeking, Tiger, Diagnosis, Bandit, Navigation
-3. Four agent types: Myopic, InformationGain, VFE, NavigationVFE
-4. Full experiments on all environments (500-1000 episodes each)
-5. Scaling analysis: Diagnosis N=2,4,8,16
-6. Comprehensive test suite (107 tests, all passing)
-7. Paper draft with Phase 1+2 results, related works (20 references), scaling analysis
-8. Guidance document aligned with all experimental findings
+3. Seven agent types: Myopic, Planning, InformationGain, VFE, NavigationVFE, NavigationMyopic, NavigationInfoGain, PyMDP-AIF
+4. Per-environment InfoGain weight tuning via grid search
+5. Full experiments on all environments with all baselines (500-1000 episodes each)
+6. Scaling analysis: Diagnosis N=2,4,8,16 with Planning baseline
+7. pymdp integration: reference agent + EFE consistency validation
+8. Comprehensive test suite (128 tests, all passing)
+9. Paper draft with expanded results, honest comparative analysis
+10. Guidance document aligned with all experimental findings
 
 **Awaiting**:
 - NeurIPS paper formatting (David)
 - Feedback from Ashutosh on methodology
 - Computational scaling improvements (MCTS or amortized planning for deeper horizons)
+- Formal convergence analysis of the recursive EFE scheme
 
 ---
 

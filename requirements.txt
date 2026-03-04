@@ -5,6 +5,9 @@ scipy>=1.10.0
 # Environment Framework
 gymnasium>=0.29.0
 
+# Active Inference Reference Implementation
+inferactively-pymdp>=0.0.7
+
 # Automatic Differentiation (for VFE gradients)
 jax>=0.4.0
 jaxlib>=0.4.0

@@ -6,6 +6,7 @@ import pytest
 from agents.myopic import MyopicAgent
 from agents.info_gain import InformationGainAgent
 from agents.vfe import VFEAgent
+from agents.planning import PlanningAgent
 
 
 class TestMyopicAgent:
@@ -97,6 +98,54 @@ class TestVFEAgent:
         myopic_action = myopic.select_action()
         vfe_action = vfe.select_action()
         if myopic_action != 0:
+            assert vfe_action == 0
+
+
+class TestPlanningAgent:
+    """Multi-step reward-only agent -- controls for planning depth vs VFE."""
+
+    def test_observes_at_uniform_on_tiger(self, tiger_obs_model, tiger_config):
+        """With multi-step planning on Tiger, the agent should see that
+        observing first leads to higher expected reward."""
+        agent = PlanningAgent(tiger_obs_model, tiger_config, planning_horizon=6)
+        action = agent.select_action()
+        assert action == 0  # LISTEN
+
+    def test_commits_when_very_confident(self, info_obs_model, info_config):
+        agent = PlanningAgent(info_obs_model, info_config, planning_horizon=4)
+        agent.belief.reset(initial_belief=np.array([0.99, 0.01]))
+        action = agent.select_action()
+        assert action == 1  # COMMIT_A
+
+    def test_same_horizon_as_vfe(self, info_obs_model, info_config):
+        """PlanningAgent accepts the same planning_horizon parameter as VFE."""
+        for h in [2, 4, 6]:
+            agent = PlanningAgent(info_obs_model, info_config, planning_horizon=h)
+            assert agent.planning_horizon == h
+
+    def test_no_epistemic_weight(self, info_obs_model, info_config):
+        """PlanningAgent should not accept epistemic_weight."""
+        with pytest.raises(TypeError):
+            PlanningAgent(info_obs_model, info_config, epistemic_weight=0.5)
+
+    def test_commit_direction_matches_belief(self, info_obs_model, info_config):
+        agent = PlanningAgent(info_obs_model, info_config, planning_horizon=4)
+        agent.belief.reset(initial_belief=np.array([0.01, 0.99]))
+        action = agent.select_action()
+        if action != 0:
+            assert action == 2  # COMMIT_B
+
+    def test_explores_less_than_vfe_on_tiger(self, tiger_obs_model, tiger_config):
+        """At intermediate belief on Tiger, PlanningAgent should commit
+        sooner than VFE because it lacks intrinsic epistemic value."""
+        planning = PlanningAgent(tiger_obs_model, tiger_config, planning_horizon=6)
+        vfe = VFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
+        belief = np.array([0.85, 0.15])
+        planning.belief.reset(initial_belief=belief)
+        vfe.belief.reset(initial_belief=belief)
+        planning_action = planning.select_action()
+        vfe_action = vfe.select_action()
+        if planning_action != 0:
             assert vfe_action == 0
 
 

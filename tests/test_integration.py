@@ -8,18 +8,19 @@ from environments.tiger import TigerEnv
 from agents.myopic import MyopicAgent
 from agents.info_gain import InformationGainAgent
 from agents.vfe import VFEAgent
+from agents.planning import PlanningAgent
 from run_experiment import make_agent, run_episode, run_experiment, summarize_results
 
 
 class TestFullEpisodes:
     """Verify that full episodes run without errors."""
 
-    @pytest.mark.parametrize("AgentClass", [MyopicAgent, InformationGainAgent, VFEAgent])
+    @pytest.mark.parametrize("AgentClass", [MyopicAgent, InformationGainAgent, VFEAgent, PlanningAgent])
     def test_info_seeking_episode_completes(self, info_env, AgentClass):
         kwargs = {}
         if AgentClass == InformationGainAgent:
             kwargs["info_gain_weight"] = 1.0
-        if AgentClass == VFEAgent:
+        if AgentClass in (VFEAgent, PlanningAgent):
             kwargs["planning_horizon"] = 3
         agent = make_agent(AgentClass, info_env, **kwargs)
         result = run_episode(agent, info_env)
@@ -27,12 +28,12 @@ class TestFullEpisodes:
         assert result.success in (True, False)
         assert result.total_reward != 0.0
 
-    @pytest.mark.parametrize("AgentClass", [MyopicAgent, InformationGainAgent, VFEAgent])
+    @pytest.mark.parametrize("AgentClass", [MyopicAgent, InformationGainAgent, VFEAgent, PlanningAgent])
     def test_tiger_episode_completes(self, tiger_env, AgentClass):
         kwargs = {}
         if AgentClass == InformationGainAgent:
             kwargs["info_gain_weight"] = 1.0
-        if AgentClass == VFEAgent:
+        if AgentClass in (VFEAgent, PlanningAgent):
             kwargs["planning_horizon"] = 4
         agent = make_agent(AgentClass, tiger_env, **kwargs)
         result = run_episode(agent, tiger_env)

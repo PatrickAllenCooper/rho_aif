@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 from environments.navigation import NavigationEnv
 from agents.navigation_vfe import NavigationVFEAgent
+from agents.navigation_baselines import NavigationMyopicAgent, NavigationInfoGainAgent
 
 
 class TestNavigationInterface:
@@ -104,4 +105,62 @@ class TestNavigationVFEAgent:
             if term or trunc:
                 break
             agent.update_belief(obs, obs_action=action)
-        assert True  # just verify it doesn't crash
+        assert True
+
+
+class TestNavigationMyopicAgent:
+    def test_selects_valid_action(self):
+        env = NavigationEnv(grid_size=3, max_steps=10)
+        env.reset(seed=42)
+        env._goal_pos = (2, 2)
+        agent = NavigationMyopicAgent(env)
+        action = agent.select_action()
+        assert action in (0, 1, 2, 3)
+
+    def test_moves_toward_belief(self):
+        """With uniform belief, agent should still select a valid direction."""
+        env = NavigationEnv(grid_size=3, max_steps=10)
+        env.reset(seed=42)
+        agent = NavigationMyopicAgent(env)
+        action = agent.select_action()
+        assert action in (0, 1, 2, 3)
+
+    def test_full_episode(self):
+        env = NavigationEnv(grid_size=3, max_steps=15)
+        env.reset(seed=42)
+        agent = NavigationMyopicAgent(env)
+        for _ in range(15):
+            action = agent.select_action()
+            obs, reward, term, trunc, info = env.step(action)
+            if term or trunc:
+                break
+            agent.update_belief(obs, obs_action=action)
+        assert True
+
+
+class TestNavigationInfoGainAgent:
+    def test_selects_valid_action(self):
+        env = NavigationEnv(grid_size=3, max_steps=10)
+        env.reset(seed=42)
+        env._goal_pos = (2, 2)
+        agent = NavigationInfoGainAgent(env, info_gain_weight=1.0)
+        action = agent.select_action()
+        assert action in (0, 1, 2, 3)
+
+    def test_accepts_weight_parameter(self):
+        env = NavigationEnv(grid_size=3)
+        env.reset(seed=42)
+        agent = NavigationInfoGainAgent(env, info_gain_weight=5.0)
+        assert agent.info_gain_weight == 5.0
+
+    def test_full_episode(self):
+        env = NavigationEnv(grid_size=3, max_steps=15)
+        env.reset(seed=42)
+        agent = NavigationInfoGainAgent(env, info_gain_weight=1.0)
+        for _ in range(15):
+            action = agent.select_action()
+            obs, reward, term, trunc, info = env.step(action)
+            if term or trunc:
+                break
+            agent.update_belief(obs, obs_action=action)
+        assert True
