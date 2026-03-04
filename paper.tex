@@ -14,6 +14,7 @@
 \usepackage{microtype}
 \usepackage{xcolor}
 \usepackage{multirow}
+\usepackage{graphicx}
 
 \title{Variational Free Energy as a Generalized Utility Function\\ for $\rho$-POMDPs: Principled Epistemic Foraging\\ via Active Inference}
 
@@ -178,7 +179,16 @@ Epistemic-only & $0.00$ & 50.9\% & $-44.01$ \\
 \end{small}
 \end{table}
 
-On Tiger, all multi-step agents (Planning, Planning+IG, VFE) achieve ${\sim}99\%$ success. VFE achieves the highest reward ($+5.72$, $p = 0.024$ vs.\ Planning+IG), but the differences are modest. The critical finding is the Epistemic-only ablation: without the pragmatic (reward) term, the agent commits immediately at chance (50.9\%), proving that the pragmatic term is essential and the advantage of VFE is not reducible to information gain alone. On simple observe-then-commit environments, VFE achieves parity with tuned alternatives without per-environment weight selection.
+On Tiger, all multi-step agents (Planning, Planning+IG, VFE) achieve ${\sim}99\%$ success. VFE achieves the highest reward ($+5.72$, $p = 0.024$ vs.\ Planning+IG), but the differences are modest. The Epistemic-only ablation commits at chance (50.9\%), proving the pragmatic term is essential. On simple observe-then-commit environments, VFE achieves parity with tuned alternatives without per-environment weight selection.
+
+To test whether this parity holds across reward scales, we sweep the Tiger penalty magnitude from $|R^-|{=}1$ to $500$ (Figure~\ref{fig:sweep}). VFE naturally adapts its exploration depth: it listens more as penalties increase, tracking the reward-optimal strategy without reconfiguration. Planning matches VFE at all scales (both use deep tree search). InfoGain-Tuned collapses at low penalties where its weight, tuned for the default $|R^-|{=}100$, drives excessive listening. At $|R^-|{=}1$ the tuned InfoGain weight is wasteful; at $|R^-|{=}500$ a different weight would be needed. VFE requires no such adjustment.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_asymmetry_sweep.pdf}
+\caption{Reward asymmetry sweep on Tiger ($H{=}6$, 500 episodes per point). (a) Success rate vs.\ penalty magnitude: VFE and Planning adapt smoothly; Myopic collapses at high penalties. (b) Mean reward: VFE and Planning track each other closely across three orders of magnitude in reward asymmetry, while InfoGain-Tuned's fixed weight produces inconsistent performance.}
+\label{fig:sweep}
+\end{figure}
 
 \subsection{Two-state testbed}
 
@@ -251,6 +261,15 @@ Epistemic-only & $0.00$ & 24.5\% & $+3.21$ \\
 
 VFE achieves the highest reward ($+6.08$, $p < 0.001$ vs.\ all others) and highest success among reward-positive agents. The VFE vs.\ Planning+IG comparison is decisive: Planning+IG over-explores (12.43 inspections, $+3.78$ reward) while VFE inspects 5.24 times for $+6.08$ reward ($p < 0.001$). Adding the same epistemic bonus to a multi-step planner \emph{worsens} reward relative to VFE because the additive weight lacks the self-limiting property of EFE. The Epistemic-only ablation again collapses ($24.5\%$, chance level), confirming that both pragmatic and epistemic terms are necessary.
 
+\paragraph{Observation action complexity.} To isolate the ``which information'' hypothesis, we hold $N{=}8$ fixed on the Diagnosis environment and vary $K$ from 1 to 3 (Figure~\ref{fig:obs_scaling}). At $K{=}1$, all agents face the same single test; VFE and Planning perform similarly. As $K$ increases, VFE's advantage over Planning grows: the information gain term in EFE guides test selection among increasingly differentiated options, while the reward-only planner lacks such guidance.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_obs_scaling.pdf}
+\caption{Observation action complexity scaling on Diagnosis ($N{=}8$, $H{=}3$, 500 episodes). (a)~Success rate and (b)~mean reward as the number of diagnostic tests $K$ increases from 1 to 3. VFE's advantage over Planning grows with $K$, confirming that EFE-as-$\rho$ is most valuable when the agent must choose among differentially informative observation actions.}
+\label{fig:obs_scaling}
+\end{figure}
+
 \subsection{Summary of findings}
 
 The results reveal a consistent pattern:
@@ -268,7 +287,14 @@ The results reveal a consistent pattern:
 VFE's advantage emerges under two conditions: (1)~the environment offers multiple observation actions with differential informativeness, requiring the agent to choose \emph{which} information to gather; and (2)~the planning horizon is sufficient for recursive EFE to propagate epistemic value through the belief tree. When either condition fails---single observation action (Tiger), or shallow horizon ($H{=}2$ in scaling; Appendix~\ref{app:scaling})---reward-only planning achieves equivalent performance.
 
 \paragraph{VFE vs.\ Planning+IG: the joint objective matters.}
-The Planning+IG baseline is the strongest alternative: same recursive tree search as VFE, same epistemic bonus concept, same horizon. Yet VFE consistently achieves better reward. On the Bandit, VFE earns $+6.08$ vs.\ Planning+IG's $+3.78$ ($p < 0.001$); on Diagnosis, $-1.53$ vs.\ $-4.03$ ($p < 0.001$). The mechanism: Planning+IG's additive weight, even when tuned, lacks a natural stopping criterion---it over-explores because the weight that achieves high \emph{accuracy} also drives excessive observation. EFE's joint pragmatic-epistemic objective is self-limiting: as beliefs sharpen, $I(b)$ decays toward zero and the pragmatic commit value dominates, producing a natural transition from exploration to exploitation without weight tuning.
+The Planning+IG baseline is the strongest alternative: same recursive tree search as VFE, same epistemic bonus concept, same horizon. Yet VFE consistently achieves better reward. On the Bandit, VFE earns $+6.08$ vs.\ Planning+IG's $+3.78$ ($p < 0.001$); on Diagnosis, $-1.53$ vs.\ $-4.03$ ($p < 0.001$). The mechanism is visible in Figure~\ref{fig:traj}: EFE's joint pragmatic-epistemic objective is self-limiting. As observations accumulate and beliefs sharpen, the information gain $I(b)$ decays toward zero, the value of committing ($-\mathcal{G}(\text{commit})$) rises, and the agent transitions from exploration to exploitation at the crossover point---with no weight tuning, scheduling, or annealing.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_efe_trajectory.pdf}
+\caption{EFE decomposition within individual Tiger episodes ($H{=}6$). Red: value of committing ($-\mathcal{G}(\text{commit})$, higher = more attractive). Blue: value of observing ($-\mathcal{G}(\text{observe})$). Green shading: belief entropy $H(b)$. The agent commits at the crossover point where committing becomes more valuable than observing. The transition happens automatically: as entropy decreases, information gain decays and the pragmatic commit value dominates.}
+\label{fig:traj}
+\end{figure}
 
 \paragraph{Ablation: both terms are necessary.}
 The Epistemic-only agent (EFE without the pragmatic/reward term) commits immediately at chance on all environments, confirming that the epistemic term alone cannot drive useful behavior. The advantage of VFE over Planning is not merely ``adding information gain to planning'' but the specific \emph{form} of EFE's combination: the pragmatic term scales the epistemic drive relative to the reward landscape, producing environment-appropriate exploration depth without explicit calibration.
