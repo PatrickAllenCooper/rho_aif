@@ -28,6 +28,8 @@ from agents.planning import PlanningAgent
 from agents.navigation_vfe import NavigationVFEAgent
 from agents.navigation_baselines import NavigationMyopicAgent, NavigationInfoGainAgent
 from agents.pymdp_agent import PyMDPAgent
+from agents.planning_infogain import PlanningInfoGainAgent
+from agents.epistemic_only import EpistemicOnlyAgent
 
 
 @dataclass
@@ -210,11 +212,16 @@ def run_info_seeking_experiment(num_episodes: int = 1000, seed: int = 42):
     print(f"  Best InfoGain weight: {best_w}\n")
 
     horizon = 4
+    best_w_plan = tune_info_gain_weight(env, tune_episodes=200)
+    print(f"  Best Planning+IG weight: {best_w_plan}\n")
+
     agent_configs = [
         ("Myopic", MyopicAgent, {}),
         ("Planning", PlanningAgent, {"planning_horizon": horizon}),
         ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
+        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}),
+        ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}),
         ("VFE", VFEAgent, {"planning_horizon": horizon}),
         ("PyMDP-AIF", PyMDPAgent, {}),
     ]
@@ -276,11 +283,16 @@ def run_tiger_experiment(num_episodes: int = 1000, seed: int = 42):
     print(f"  Best InfoGain weight: {best_w}\n")
 
     horizon = 6
+    best_w_plan = tune_info_gain_weight(env, tune_episodes=200)
+    print(f"  Best Planning+IG weight: {best_w_plan}\n")
+
     agent_configs = [
         ("Myopic", MyopicAgent, {}),
         ("Planning", PlanningAgent, {"planning_horizon": horizon}),
         ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
+        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}),
+        ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}),
         ("VFE", VFEAgent, {"planning_horizon": horizon}),
         ("PyMDP-AIF", PyMDPAgent, {}),
     ]
@@ -379,12 +391,16 @@ def run_diagnosis_experiment(num_conditions: int = 4, num_episodes: int = 1000, 
     print(f"Tuning InfoGain weight for Diagnosis N={num_conditions}...")
     best_w = tune_info_gain_weight(env, tune_episodes=200)
     print(f"  Best InfoGain weight: {best_w}\n")
+    best_w_plan = tune_info_gain_weight(env, tune_episodes=200)
+    print(f"  Best Planning+IG weight: {best_w_plan}\n")
     horizon = 3
     configs = [
         ("Myopic", MyopicAgent, {}, None),
         ("Planning", PlanningAgent, {"planning_horizon": horizon}, None),
         ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}, None),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}, None),
+        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}, None),
+        ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}, None),
         ("VFE", VFEAgent, {"planning_horizon": horizon}, None),
     ]
     return run_generic_experiment(
@@ -400,12 +416,16 @@ def run_bandit_experiment(num_arms: int = 4, num_episodes: int = 1000, seed: int
     print(f"Tuning InfoGain weight for Bandit K={num_arms}...")
     best_w = tune_info_gain_weight(env, tune_episodes=200)
     print(f"  Best InfoGain weight: {best_w}\n")
+    best_w_plan = tune_info_gain_weight(env, tune_episodes=200)
+    print(f"  Best Planning+IG weight: {best_w_plan}\n")
     horizon = 2
     configs = [
         ("Myopic", MyopicAgent, {}, None),
         ("Planning", PlanningAgent, {"planning_horizon": horizon}, None),
         ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}, None),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}, None),
+        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}, None),
+        ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}, None),
         ("VFE", VFEAgent, {"planning_horizon": horizon}, None),
     ]
     return run_generic_experiment(
