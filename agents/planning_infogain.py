@@ -33,10 +33,12 @@ class PlanningInfoGainAgent(BaseAgent):
         env_config: dict,
         planning_horizon: int = 4,
         info_gain_weight: float = 1.0,
+        discount: float = 1.0,
     ):
         super().__init__(observation_models, env_config)
         self.planning_horizon = planning_horizon
         self.info_gain_weight = info_gain_weight
+        self.discount = discount
 
     def select_action(self) -> int:
         best_action, _ = self._evaluate(self.belief.belief, depth=0)
@@ -78,7 +80,7 @@ class PlanningInfoGainAgent(BaseAgent):
             expected_posterior_entropy += prob_obs * scipy_entropy(posterior, base=2)
 
             _, continuation_value = self._evaluate(posterior, depth + 1)
-            expected_value += prob_obs * continuation_value
+            expected_value += prob_obs * self.discount * continuation_value
 
         info_gain = prior_entropy - expected_posterior_entropy
         expected_value += self.info_gain_weight * info_gain

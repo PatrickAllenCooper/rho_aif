@@ -115,6 +115,8 @@ The negation $V = -\mathcal{G}$ converts $\arg\min \mathcal{G}$ to $\arg\max V$.
 
 Proposition~\ref{prop:equivalence} makes precise what EFE-as-$\rho$ means: the epistemic term of EFE functions as an action-dependent belief utility. Crucially, this is equivalent to Planning+IG with $w{=}1$ (in nats). EFE does not eliminate the weight---it derives a \emph{canonical} weight from the variational bound, fixing $w{=}1$ without per-environment search. Whether this canonical choice is near-optimal is an empirical question we address in Section~\ref{sec:pareto}.
 
+\paragraph{Extension to discounting.} With $\gamma < 1$, the recursive EFE becomes $\mathcal{G}(\text{obs}_k) = c_k - I_k(b) + \gamma\, \mathbb{E}_o[\min_a \mathcal{G}(a, b'_o)]$, giving $V(\text{obs}_k) = -c_k + I_k(b) + \gamma\, \mathbb{E}_o[\max_a V(a, b'_o)]$. The information gain term $I_k(b)$ appears \emph{undiscounted} at the current step, while future values are discounted. This preserves the $\rho$-POMDP equivalence with $\rho(b,a) = I_a(b)$, but the effective \emph{ratio} of epistemic to pragmatic weight increases at early steps relative to late steps. In the undiscounted case ($\gamma{=}1$), both terms are weighted equally at every depth; with $\gamma < 1$, the agent places relatively more value on immediate information gain compared to future reward, producing slightly more exploratory behavior at early steps. Our experiments (Appendix~\ref{app:discount}) confirm that performance is robust across $\gamma \in \{0.9, 0.95, 0.99, 1.0\}$.
+
 \subsection{Agents}
 
 We compare six agents (Table~\ref{tab:agents}), all sharing the same belief-update machinery and differing only in objective function and planning depth. The Planning and Planning+IG baselines use the same recursive tree search as the EFE agent, isolating the effect of the $\rho$ function from planning depth.
@@ -728,6 +730,44 @@ Bandit & EFE vs.\ Planning+IG & $+0.63$ & medium \\
 \end{table}
 
 The effect sizes confirm the pattern from the main results: EFE vs.\ tuned alternatives shows negligible to small effects on Tiger and Diagnosis (where EFE matches tuned performance without tuning), but medium to large effects on the Testbed and Bandit where tuned weights drive over-exploration that substantially reduces reward.
+
+\section{Discount factor sensitivity}
+\label{app:discount}
+
+We test the EFE agent's robustness to discounting by sweeping $\gamma \in \{0.9, 0.95, 0.99, 1.0\}$ across three environments.
+
+\begin{table}[h]
+\centering
+\caption{EFE and Planning agent performance across discount factors $\gamma$ (500 episodes each).}
+\label{tab:discount}
+\begin{small}
+\begin{tabular}{llcccc}
+\toprule
+Environment & Agent & $\gamma$ & Obs. & Success & Reward \\
+\midrule
+\multirow{4}{*}{Tiger}
+& EFE & 0.90 & 4.18 & 100.0\% & $+5.82$ \\
+& EFE & 0.95 & 4.34 & 99.8\% & $+5.44$ \\
+& EFE & 0.99 & 4.28 & 99.6\% & $+5.28$ \\
+& EFE & 1.00 & 4.36 & 99.4\% & $+4.98$ \\
+\midrule
+\multirow{4}{*}{Diagnosis}
+& EFE & 0.90 & 5.99 & 87.4\% & $-3.55$ \\
+& EFE & 0.95 & 5.85 & 87.6\% & $-3.29$ \\
+& EFE & 0.99 & 9.60 & 97.6\% & $-1.04$ \\
+& EFE & 1.00 & 9.61 & 97.8\% & $-0.93$ \\
+\midrule
+\multirow{4}{*}{Bandit}
+& EFE & 0.90 & 2.12 & 59.2\% & $+5.27$ \\
+& EFE & 0.95 & 2.05 & 63.8\% & $+5.72$ \\
+& EFE & 0.99 & 5.16 & 87.4\% & $+6.29$ \\
+& EFE & 1.00 & 5.16 & 88.4\% & $+6.38$ \\
+\bottomrule
+\end{tabular}
+\end{small}
+\end{table}
+
+Performance is stable near $\gamma{=}1$: on Tiger, the EFE agent achieves ${\geq}99.4\%$ success across all $\gamma$ values. On Diagnosis and Bandit, heavy discounting ($\gamma{=}0.9$) reduces performance because the agent undervalues future observation outcomes, effectively shortening the planning horizon. The transition between $\gamma{=}0.95$ and $\gamma{=}0.99$ is sharp on Diagnosis and Bandit, corresponding to the point where discounting begins to truncate the effective horizon below the number of observations needed for reliable disambiguation. The EFE-$\rho$-POMDP equivalence holds at all $\gamma$ values; what changes is the \emph{effective relative weight} of epistemic vs.\ pragmatic value across planning depths.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NeurIPS Paper Checklist

@@ -34,9 +34,11 @@ class EFEAgent(BaseAgent):
         observation_models: Union[np.ndarray, List[np.ndarray]],
         env_config: dict,
         planning_horizon: int = 4,
+        discount: float = 1.0,
     ):
         super().__init__(observation_models, env_config)
         self.planning_horizon = planning_horizon
+        self.discount = discount
 
     def select_action(self) -> int:
         best_action, _ = self._evaluate(self.belief.belief, depth=0)
@@ -104,4 +106,4 @@ class EFEAgent(BaseAgent):
 
         info_gain = prior_entropy - expected_posterior_entropy
 
-        return self.obs_costs[obs_action] - info_gain + expected_continuation
+        return self.obs_costs[obs_action] - info_gain + self.discount * expected_continuation

@@ -29,9 +29,11 @@ class PlanningAgent(BaseAgent):
         observation_models: Union[np.ndarray, List[np.ndarray]],
         env_config: dict,
         planning_horizon: int = 4,
+        discount: float = 1.0,
     ):
         super().__init__(observation_models, env_config)
         self.planning_horizon = planning_horizon
+        self.discount = discount
 
     def select_action(self) -> int:
         best_action, _ = self._evaluate(self.belief.belief, depth=0)
@@ -77,6 +79,6 @@ class PlanningAgent(BaseAgent):
             posterior = posterior / posterior.sum()
 
             _, continuation_value = self._evaluate(posterior, depth + 1)
-            expected_value += prob_obs * continuation_value
+            expected_value += prob_obs * self.discount * continuation_value
 
         return expected_value
