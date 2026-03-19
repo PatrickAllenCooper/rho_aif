@@ -27,7 +27,7 @@
 \maketitle
 
 \begin{abstract}
-We bridge $\rho$-POMDPs and active inference by showing that Expected Free Energy (EFE) is equivalent to augmenting reward with information gain at a canonical weight $w{=}1$ derived from the variational bound. We evaluate this canonical choice against five baselines---including same-horizon reward-only planning and Planning+IG at per-environment tuned weights---across six discrete observe-then-commit POMDP environments. On multi-observation-action environments where the agent must choose \emph{which} information to gather, $w{=}1$ significantly outperforms same-horizon planning ($+9.4$ pp on diagnosis, $+15.5$ pp on a structured bandit; $p < 0.05$) and achieves substantially better reward than tuned alternatives that over-explore. On a spatial Tileworld ($8{\times}8$, $|S|{=}64$), the EFE-based agent achieves $75.5\%$ success where reward-only planning collapses to $2.0\%$. A Pareto analysis shows $w{=}1$ sits near the reward-maximizing knee on all environments without per-environment search, while tuned weights ($w^*{=}20$--$100$) sacrifice reward for marginal accuracy gains. These findings identify EFE as a principled, automatically-calibrated $\rho$ function for structured uncertainty.
+We bridge $\rho$-POMDPs and active inference by showing that Expected Free Energy (EFE) is equivalent to augmenting reward with information gain at a canonical weight $w{=}1$ derived from the variational bound. We evaluate this canonical choice against multiple baselines---including same-horizon reward-only planning, per-environment tuned information gain, and POMCP---across six discrete observe-then-commit POMDP environments, with preliminary extension to interleaved settings. On multi-observation-action environments where the agent must choose \emph{which} information to gather, $w{=}1$ Pareto-dominates same-horizon planning: it achieves both higher success ($+8.1$ pp on diagnosis, $+16.6$ pp on a structured bandit) and comparable-or-better reward simultaneously, without tuning. On a spatial Tileworld ($8{\times}8$, $|S|{=}64$), the EFE-based agent achieves $66.5\%$ success where reward-only planning collapses to $2.5\%$. A Pareto analysis shows $w{=}1$ sits near the reward-maximizing knee on all environments without per-environment search. We formalize when $w{=}1$ is near-optimal via reward asymmetry and observation informativeness, and characterize the frontier of the equivalence under state transitions. These findings identify EFE as a principled, automatically-calibrated $\rho$ function for structured uncertainty.
 \end{abstract}
 
 \section{Introduction}
@@ -40,9 +40,9 @@ Separately, the Active Inference (AIF) framework \citep{friston2010, parr2019} c
 
 We propose substituting EFE as $\rho$ in $\rho$-POMDPs, yielding an agent whose epistemic foraging is a consequence of its objective rather than an engineered bonus. Our contributions are:
 \begin{enumerate}
-    \item A formal bridge between $\rho$-POMDPs and active inference (Proposition~\ref{prop:equivalence}), embedding EFE within the $\rho$-POMDP architecture via recursive tree search derived from sophisticated inference \citep{friston2021}.
-    \item Controlled comparison against five baselines---including a same-horizon reward-only planner and per-environment tuned information gain---across six environments, with a Pareto analysis showing $w{=}1$ is near-optimal without search.
-    \item Characterization of the regimes where EFE-as-$\rho$ provides genuine advantage, demonstrated on a spatial Tileworld where the EFE agent's advantage grows with state space size ($75.5\%$ vs.\ $2.0\%$ at $|S|{=}64$).
+    \item A formal bridge between $\rho$-POMDPs and active inference (Proposition~\ref{prop:equivalence}), with analysis of the equivalence frontier under state transitions (Section~\ref{par:frontier}) and a formal characterization of when $w{=}1$ is near-optimal (Proposition~\ref{prop:nearopt}).
+    \item Controlled comparison against multiple baselines---including same-horizon planning, tuned information gain, and POMCP \citep{silver2010}---across six environments, with a Pareto analysis showing $w{=}1$ Pareto-dominates planning without per-environment search.
+    \item Characterization of the regimes where EFE-as-$\rho$ provides genuine advantage, demonstrated on a spatial Tileworld where the EFE agent's advantage grows with state space size ($66.5\%$ vs.\ $2.5\%$ at $|S|{=}64$), and preliminary extension to interleaved observe-act settings (RockSample).
 \end{enumerate}
 
 \section{Related work}
@@ -193,7 +193,7 @@ For Info Gain and Planning+IG, $w$ is tuned per environment via grid search over
 
 \section{Experiments}
 
-All environments are implemented as OpenAI Gymnasium environments following the observe-then-commit structure of Section~\ref{sec:methodology}. Experiments use 1{,}000 episodes (500 for scaling) with a fixed random seed. Statistical comparisons use $t$-tests with Holm-Bonferroni correction; bootstrap CIs and Cohen's $d$ are in Appendix~\ref{app:stats}. Full specifications are in Appendix~\ref{app:envs}.
+All environments are implemented as OpenAI Gymnasium environments following the observe-then-commit structure of Section~\ref{sec:methodology}. Main results use 1{,}000 episodes (500 for scaling) with a fixed random seed; confirmation runs with 3{,}000 episodes are reported for Diagnosis and Bandit to tighten confidence intervals. Statistical comparisons use $t$-tests with Holm-Bonferroni correction; bootstrap CIs are in Appendix~\ref{app:stats}. Comparison against POMCP is in Appendix~\ref{app:pomcp}. Full specifications are in Appendix~\ref{app:envs}.
 
 \paragraph{Tiger} \citep{kaelbling1998}. Two states, one observation action (listen, accuracy 0.85), two commit actions. Rewards: correct $+10$, incorrect $-100$, listen cost $-1$.
 
@@ -239,7 +239,7 @@ Environment & Agent & Obs. & Success & Reward \\
 
 On Tiger (single observation action), all multi-step agents achieve ${\sim}99\%$ success; EFE matches tuned alternatives without weight selection. The Epistemic-only ablation commits at chance ($50.9\%$ on Tiger, $24.5\%$ on Bandit; Appendix~\ref{app:full_tables}), proving the pragmatic term is essential.
 
-On the multi-observation-action environments, EFE \emph{Pareto-dominates} Planning: it achieves both substantially higher success rate \emph{and} comparable-or-better reward simultaneously, without any tuning. On Diagnosis ($n{=}3000$), EFE outperforms same-horizon Planning in success rate ($97.4\%$ vs.\ $89.3\%$, $+8.1$ pp) while achieving substantially better reward ($-1.18$, 95\% CI $[-1.54, -0.81]$ vs.\ $-2.33$ $[-3.00, -1.66]$). On Bandit ($n{=}3000$), EFE achieves both higher success ($86.6\%$ vs.\ $70.0\%$, $+16.6$ pp) and the highest reward ($+6.24$, CI $[+6.12, +6.36]$ vs.\ $+5.68$ $[+5.54, +5.82]$; non-overlapping CIs). Planning+IG at tuned weights ($w{=}100$) reaches near-ceiling success ($98.5\%$ on Diagnosis, $99.9\%$ on Bandit) but at substantial reward cost due to over-exploration: 13.13 tests on Diagnosis ($-4.03$ reward) and 12.43 inspections on Bandit ($+3.78$ reward). Viewed in the success--reward plane (Figure~\ref{fig:pareto}), the EFE agent sits at the Pareto knee on every environment, while Planning sacrifices success rate and Planning+IG sacrifices reward. The pattern is consistent: EFE's joint pragmatic--epistemic objective knows when to stop exploring, while additive IG bonuses with tuned weights do not.
+On the multi-observation-action environments, EFE \emph{Pareto-dominates} Planning: it achieves both substantially higher success rate \emph{and} comparable-or-better reward simultaneously, without any tuning. On Diagnosis, EFE outperforms same-horizon Planning in success rate ($97.0\%$ vs.\ $87.6\%$, $+9.4$ pp) while achieving substantially better reward ($-1.53$ vs.\ $-3.24$). On Bandit, EFE achieves both higher success ($85.5\%$ vs.\ $70.0\%$, $+15.5$ pp) and the highest reward ($+6.08$ vs.\ $+5.72$). Confirmation runs with $n{=}3{,}000$ episodes tighten the confidence intervals: on Bandit, reward CIs are non-overlapping (EFE $+6.24$ $[+6.12, +6.36]$ vs.\ Planning $+5.68$ $[+5.54, +5.82]$); on Diagnosis, EFE reward $-1.18$ $[-1.54, -0.81]$ vs.\ Planning $-2.33$ $[-3.00, -1.66]$. Planning+IG at tuned weights ($w{=}100$) reaches near-ceiling success ($98.5\%$ on Diagnosis, $99.9\%$ on Bandit) but at substantial reward cost due to over-exploration: 13.13 tests on Diagnosis ($-4.03$ reward) and 12.43 inspections on Bandit ($+3.78$ reward). Viewed in the success--reward plane (Figure~\ref{fig:pareto}), the EFE agent sits at the Pareto knee on every environment, while Planning sacrifices success rate and Planning+IG sacrifices reward. The pattern is consistent: EFE's joint pragmatic--epistemic objective knows when to stop exploring, while additive IG bonuses with tuned weights do not.
 
 \subsection{Pareto analysis: the canonical $w{=}1$}
 \label{sec:pareto}
@@ -292,7 +292,7 @@ EFE achieves the highest reward ($-20.73$), scanning 14.89 times---less than hal
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_tileworld_scaling.pdf}
-\caption{Tileworld scaling ($H{=}2$, 200 episodes). EFE maintains high success as state space grows; Planning collapses at $8{\times}8$ ($|S|{=}64$).}
+\caption{Tileworld scaling ($H{=}2$, 200 episodes) across all agents. Planning collapses at $8{\times}8$ ($|S|{=}64$); EFE maintains $66.5\%$; tuned Planning+IG ($w{=}100$) achieves $98.0\%$ but at higher reward cost.}
 \label{fig:tw_scaling}
 \end{figure}
 
@@ -692,7 +692,7 @@ $N$ & Agent & Tests & Success & Reward \\
 \end{small}
 \end{table}
 
-At $H{=}2$, EFE and Planning perform similarly across all $N$, both substantially outperforming Myopic and untuned Info Gain. This contrasts with the $H{=}3$ Diagnosis result (Table~\ref{tab:main}), where EFE outperformed Planning by 9.4 pp, confirming that EFE's advantage requires sufficient recursive depth. EFE-over-Myopic advantage grows from $+15.0$ pp at $N{=}2$ to $+38.8$ pp at $N{=}16$, confirming that deeper planning is increasingly valuable as state spaces grow.
+At $H{=}2$, EFE and Planning perform similarly across all $N$, both substantially outperforming Myopic and untuned Info Gain. This contrasts with the $H{=}3$ Diagnosis result (Table~\ref{tab:main}), where EFE outperformed Planning by $+9.4$ pp, confirming that EFE's advantage requires sufficient recursive depth. EFE-over-Myopic advantage grows from $+15.0$ pp at $N{=}2$ to $+38.8$ pp at $N{=}16$, confirming that deeper planning is increasingly valuable as state spaces grow.
 
 \section{PyMDP validation}
 \label{app:pymdp}
@@ -972,7 +972,7 @@ Environment & Agent & Obs. & Success & Reward \\
 \answerYes{Section~6 discusses the observe-then-commit structural assumption, small discrete state spaces, computational cost scaling, and environments where EFE underperforms.}
 
 \item {\bf Theory Assumptions and Proofs}
-\answerYes{Proposition~\ref{prop:equivalence} states all assumptions (action-dependent $\rho$, finite horizon, known generative model). A proof sketch is in the main text; a complete proof is in Appendix~\ref{app:proof}.}
+\answerYes{Propositions~\ref{prop:equivalence} and~\ref{prop:nearopt} state all assumptions (action-dependent $\rho$, finite horizon, known generative model). Proof sketches are in the main text; a complete proof of Prop.~\ref{prop:equivalence} is in Appendix~\ref{app:proof}.}
 
 \item {\bf Experimental Result Reproducibility}
 \answerYes{All environments are implemented as OpenAI Gymnasium environments with full specifications in Appendix~\ref{app:envs}. All experiments use a fixed random seed (42). Agent algorithms are described in Section~3.4 and Table~\ref{tab:agents}. Code will be released upon acceptance.}
@@ -984,7 +984,7 @@ Environment & Agent & Obs. & Success & Reward \\
 \answerYes{Section~4 specifies episode counts, horizons, reward structures, and accuracy parameters for every environment. Appendix~\ref{app:envs} provides the full specification table. Weight tuning uses grid search over $\{0.1, 0.5, 1, 2, 5, 10, 20, 50, 100\}$ on 200 tuning episodes (Section~3.4).}
 
 \item {\bf Experiment Statistical Significance}
-\answerYes{Tables report mean $\pm$ standard error for reward. All pairwise comparisons use $t$-tests with Holm--Bonferroni correction. Bootstrap 95\% CIs and Cohen's $d$ effect sizes are in Appendix~\ref{app:stats}.}
+\answerYes{Tables report mean $\pm$ standard error for reward. Confirmation runs with 3{,}000 episodes provide 95\% CIs for key comparisons. Bootstrap CIs are in Appendix~\ref{app:stats}.}
 
 \item {\bf Experiments Compute Resources}
 \answerYes{All experiments run on a single CPU (Apple M-series). Individual experiment sets complete in 1--120 seconds. Total compute for all results is under 2 CPU-hours.}
