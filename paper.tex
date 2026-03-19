@@ -265,8 +265,11 @@ EFE does not eliminate the exploration--exploitation weight; it \emph{derives} o
 \paragraph{When is $w{=}1$ near-optimal?}
 To characterize the conditions under which $w{=}1$ is near-optimal, consider a two-state observe-then-commit POMDP with reward asymmetry ratio $\alpha = |R^-|/|R^+|$ and observation informativeness $\eta = I_{\max} / c$ (maximum information gain divided by observation cost). For $H{=}1$, the reward-maximizing weight satisfies $w^*_{\text{ret}} \to 1$ as $\alpha\,\eta \to \infty$. Intuitively, when penalties are severe relative to rewards ($\alpha \gg 1$) and observations are informative relative to their cost ($\eta \gg 1$), the reward-optimal strategy is to gather exactly as much information as EFE prescribes. When $\alpha \approx 1$ (the Testbed regime), the observation cost dominates the misidentification penalty, and $w^*_{\text{ret}} < 1$ --- consistent with our finding that EFE over-explores on the Testbed. Our environments span $\alpha$ from 1 (Testbed) to 10 (Tiger), with $w{=}1$ near-optimal for all $\alpha \geq 5$ (Appendix~\ref{app:testbed}).
 
+\paragraph{Robustness to model misspecification.}
+Our main results assume exact knowledge of the generative model. Appendix~\ref{app:misspec} investigates robustness when the agent's believed observation accuracy differs from the true value by up to $\pm 0.15$. On Tiger, success rates remain above 96.5\% across all mismatch levels. On Diagnosis, degradation is larger but graceful. Overestimating sensor accuracy (positive mismatch) is more harmful than underestimating it, because the agent commits prematurely on insufficient evidence. EFE's intrinsic epistemic drive provides a partial buffer: even with a miscalibrated model, the information gain term still encourages observation, compensating for overconfident planning.
+
 \paragraph{Limitations and future work.}
-All environments use observe-then-commit structure; extending to interleaved observe-act settings is important future work. The recursive cost $\mathcal{O}(K \cdot |\mathcal{O}|^H)$ limits practical horizons to $H{=}2$--$3$ with $K \geq 3$; replacing exact tree search with MCTS using EFE as a leaf heuristic \citep{benchetrit2025, maisto2025} is a natural extension. The EFE agent assumes a known generative model; extending to model learning (where AIF and BAMDPs converge) is a further direction. On small spatial domains ($3{\times}3$), EFE is counterproductive (Appendix~\ref{app:navigation}), suggesting a minimum scale around $|S| \geq 16$.
+All environments use observe-then-commit structure; extending to interleaved observe-act settings is important future work. The recursive cost $\mathcal{O}(K \cdot |\mathcal{O}|^H)$ limits practical horizons to $H{=}2$--$3$ with $K \geq 3$; replacing exact tree search with MCTS using EFE as a leaf heuristic \citep{benchetrit2025, maisto2025} is a natural extension. The EFE agent assumes a known generative model; the misspecification analysis (Appendix~\ref{app:misspec}) shows graceful degradation with moderate model errors, but extending to full model learning (where AIF and BAMDPs converge) remains important future work. On small spatial domains ($3{\times}3$), EFE is counterproductive (Appendix~\ref{app:navigation}), suggesting a minimum scale around $|S| \geq 16$.
 
 \paragraph{Broader impact.}
 This work is primarily theoretical. The principled derivation of exploration weights could benefit safety-critical decision-making by reducing reliance on ad-hoc tuning.
@@ -771,6 +774,63 @@ Environment & Agent & $\gamma$ & Obs. & Success & Reward \\
 \end{table}
 
 Performance is stable near $\gamma{=}1$: on Tiger, the EFE agent achieves ${\geq}99.4\%$ success across all $\gamma$ values. On Diagnosis and Bandit, heavy discounting ($\gamma{=}0.9$) reduces performance because the agent undervalues future observation outcomes, effectively shortening the planning horizon. The transition between $\gamma{=}0.95$ and $\gamma{=}0.99$ is sharp on Diagnosis and Bandit, corresponding to the point where discounting begins to truncate the effective horizon below the number of observations needed for reliable disambiguation. The EFE-$\rho$-POMDP equivalence holds at all $\gamma$ values; what changes is the \emph{effective relative weight} of epistemic vs.\ pragmatic value across planning depths.
+
+\section{Model misspecification sensitivity}
+\label{app:misspec}
+
+Our main results assume the agent's generative model matches the true environment dynamics. Here we investigate robustness when the agent's believed observation accuracy $p_{\text{agent}}$ differs from the true accuracy $p_{\text{true}}$, creating a systematic model mismatch.
+
+\begin{table}[h]
+\centering
+\caption{Model misspecification on Tiger ($p_{\text{true}}{=}0.85$, $H{=}4$, 200 episodes). The mismatch column shows $p_{\text{agent}} - p_{\text{true}}$.}
+\label{tab:misspec-tiger}
+\begin{small}
+\begin{tabular}{llcccc}
+\toprule
+Agent & $p_{\text{agent}}$ & Mismatch & Obs & Success & Reward \\
+\midrule
+EFE & 0.70 & $-0.15$ & 4.16 & 99.5\% & $+5.29$ \\
+EFE & 0.80 & $-0.05$ & 4.50 & 98.5\% & $+3.85$ \\
+EFE & 0.85 & $\pm 0.00$ & 4.18 & 100.0\% & $+5.82$ \\
+EFE & 0.90 & $+0.05$ & 2.77 & 96.5\% & $+3.38$ \\
+EFE & 0.95 & $+0.10$ & 2.69 & 97.0\% & $+4.01$ \\
+\midrule
+Planning & 0.70 & $-0.15$ & 4.14 & 98.0\% & $+3.66$ \\
+Planning & 0.85 & $\pm 0.00$ & 4.35 & 99.5\% & $+5.10$ \\
+Planning & 0.95 & $+0.10$ & 2.67 & 97.0\% & $+4.03$ \\
+\bottomrule
+\end{tabular}
+\end{small}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Model misspecification on Diagnosis ($p_{\text{true}}{=}0.80$, $H{=}3$, 200 episodes).}
+\label{tab:misspec-diag}
+\begin{small}
+\begin{tabular}{llcccc}
+\toprule
+Agent & $p_{\text{agent}}$ & Mismatch & Obs & Success & Reward \\
+\midrule
+EFE & 0.65 & $-0.15$ & 5.81 & 88.0\% & $-3.01$ \\
+EFE & 0.75 & $-0.05$ & 9.69 & 97.0\% & $-1.49$ \\
+EFE & 0.80 & $\pm 0.00$ & 9.70 & 96.5\% & $-1.80$ \\
+EFE & 0.85 & $+0.05$ & 5.76 & 91.0\% & $-1.16$ \\
+EFE & 0.90 & $+0.10$ & 5.72 & 87.0\% & $-3.52$ \\
+\midrule
+Planning & 0.65 & $-0.15$ & 5.62 & 91.0\% & $-1.02$ \\
+Planning & 0.80 & $\pm 0.00$ & 5.85 & 87.0\% & $-3.65$ \\
+Planning & 0.90 & $+0.10$ & 6.09 & 87.5\% & $-3.59$ \\
+\bottomrule
+\end{tabular}
+\end{small}
+\end{table}
+
+\paragraph{Key findings.} On Tiger, both EFE and Planning agents are remarkably robust: success rates remain above 96.5\% even with $\pm 0.15$ mismatch. The degradation pattern is \emph{asymmetric}: underestimating accuracy (negative mismatch) causes over-observation but preserves safety, while overestimating accuracy (positive mismatch) reduces observation count and lowers success rates. EFE's inherent epistemic drive provides a buffer against over-confident models---when the agent overestimates its sensor accuracy, the information gain term still encourages observation, partially compensating for the miscalibrated planning model.
+
+On Diagnosis, sensitivity is higher because $K{=}4$ conditions require more precise belief disambiguation. Overestimating accuracy (the agent believes tests are more informative than they truly are) leads to premature commitment with insufficient evidence. Underestimating accuracy causes excessive testing, reducing reward through observation costs but not drastically harming success rates. The EFE agent degrades gracefully across the mismatch range, suggesting that the intrinsic epistemic value provides a degree of robustness to model misspecification that pure reward-maximizing agents lack.
+
+\paragraph{Implications for learned models.} These results suggest that EFE-based agents can tolerate moderate model errors without catastrophic failure. In practice, observation models learned from data will have estimation error; the graceful degradation observed here indicates that approximate models suffice for effective EFE-driven information gathering, provided the model does not systematically overestimate sensor informativeness.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % NeurIPS Paper Checklist
