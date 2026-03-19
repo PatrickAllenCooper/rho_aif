@@ -2,9 +2,9 @@
 Multi-step lookahead reward-only agent (rho-POMDP with rho = 0, H > 1).
 
 Extends the myopic baseline to recursive H-step planning over expected
-reward. Uses the same tree-search structure as VFEAgent but evaluates
-only reward -- no information gain, no EFE. This isolates whether VFE's
-advantage comes from deeper planning or from the EFE objective itself.
+reward. Uses the same tree-search structure as EFEAgent but evaluates
+only reward -- no information gain, no EFE. This isolates whether the
+EFE agent's advantage comes from deeper planning or from the EFE objective.
 
 Action evaluation (maximizing expected reward):
   V(obs_k, b, d) = -cost_k + E_o[max_a V(a, posterior, d+1)]
@@ -18,9 +18,9 @@ from agents.base import BaseAgent
 
 class PlanningAgent(BaseAgent):
     """
-    Multi-step reward-only baseline matching VFE's planning depth.
+    Multi-step reward-only baseline matching the EFE agent's planning depth.
 
-    Identical recursive structure to VFEAgent but optimizes cumulative
+    Identical recursive structure to EFEAgent but optimizes cumulative
     expected reward without any belief-dependent utility (rho = 0).
     """
 

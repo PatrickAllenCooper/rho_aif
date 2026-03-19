@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 from environments.navigation import NavigationEnv
-from agents.navigation_vfe import NavigationVFEAgent
+from agents.navigation_efe import NavigationEFEAgent
 from agents.navigation_baselines import NavigationMyopicAgent, NavigationInfoGainAgent
 
 
@@ -84,19 +84,19 @@ class TestNavigationObservationModel:
             np.testing.assert_almost_equal(row.sum(), 1.0)
 
 
-class TestNavigationVFEAgent:
+class TestNavigationEFEAgent:
     def test_selects_valid_action(self):
         env = NavigationEnv(grid_size=3, max_steps=10)
         env.reset(seed=42)
         env._goal_pos = (2, 2)
-        agent = NavigationVFEAgent(env, planning_horizon=2)
+        agent = NavigationEFEAgent(env, planning_horizon=2)
         action = agent.select_action()
         assert action in (0, 1, 2, 3)
 
     def test_full_episode(self):
         env = NavigationEnv(grid_size=3, max_steps=15)
         env.reset(seed=42)
-        agent = NavigationVFEAgent(env, planning_horizon=2)
+        agent = NavigationEFEAgent(env, planning_horizon=2)
         total_reward = 0.0
         for _ in range(15):
             action = agent.select_action()

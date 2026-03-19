@@ -5,7 +5,7 @@ import pytest
 
 from agents.myopic import MyopicAgent
 from agents.info_gain import InformationGainAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from agents.planning import PlanningAgent
 
 
@@ -63,35 +63,35 @@ class TestInformationGainAgent:
             assert action == 2  # COMMIT_B
 
 
-class TestVFEAgent:
+class TestEFEAgent:
     def test_observes_at_uniform_belief(self, info_obs_model, info_config):
-        """VFE agent should observe when belief is maximally uncertain."""
-        agent = VFEAgent(info_obs_model, info_config, planning_horizon=4)
+        """EFE agent should observe when belief is maximally uncertain."""
+        agent = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         action = agent.select_action()
         assert action == 0  # OBSERVE
 
     def test_commits_when_very_confident(self, info_obs_model, info_config):
-        agent = VFEAgent(info_obs_model, info_config, planning_horizon=4)
+        agent = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         agent.belief.reset(initial_belief=np.array([0.99, 0.01]))
         action = agent.select_action()
         assert action == 1  # COMMIT_A
 
     def test_no_epistemic_weight_parameter(self, info_obs_model, info_config):
-        """VFE agent should not accept epistemic_weight as a parameter."""
+        """EFE agent should not accept epistemic_weight as a parameter."""
         with pytest.raises(TypeError):
-            VFEAgent(info_obs_model, info_config, epistemic_weight=0.5)
+            EFEAgent(info_obs_model, info_config, epistemic_weight=0.5)
 
     def test_commit_direction_matches_belief(self, info_obs_model, info_config):
-        agent = VFEAgent(info_obs_model, info_config, planning_horizon=4)
+        agent = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         agent.belief.reset(initial_belief=np.array([0.01, 0.99]))
         action = agent.select_action()
         if action != 0:
             assert action == 2  # COMMIT_B
 
     def test_explores_more_than_myopic(self, info_obs_model, info_config):
-        """VFE agent should explore more than myopic at intermediate beliefs."""
+        """EFE agent should explore more than myopic at intermediate beliefs."""
         myopic = MyopicAgent(info_obs_model, info_config)
-        vfe = VFEAgent(info_obs_model, info_config, planning_horizon=4)
+        vfe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         belief = np.array([0.75, 0.25])
         myopic.belief.reset(initial_belief=belief)
         vfe.belief.reset(initial_belief=belief)
@@ -102,7 +102,7 @@ class TestVFEAgent:
 
 
 class TestPlanningAgent:
-    """Multi-step reward-only agent -- controls for planning depth vs VFE."""
+    """Multi-step reward-only agent -- controls for planning depth vs EFE."""
 
     def test_observes_at_uniform_on_tiger(self, tiger_obs_model, tiger_config):
         """With multi-step planning on Tiger, the agent should see that
@@ -118,7 +118,7 @@ class TestPlanningAgent:
         assert action == 1  # COMMIT_A
 
     def test_same_horizon_as_vfe(self, info_obs_model, info_config):
-        """PlanningAgent accepts the same planning_horizon parameter as VFE."""
+        """PlanningAgent accepts the same planning_horizon parameter as EFE."""
         for h in [2, 4, 6]:
             agent = PlanningAgent(info_obs_model, info_config, planning_horizon=h)
             assert agent.planning_horizon == h
@@ -137,9 +137,9 @@ class TestPlanningAgent:
 
     def test_explores_less_than_vfe_on_tiger(self, tiger_obs_model, tiger_config):
         """At intermediate belief on Tiger, PlanningAgent should commit
-        sooner than VFE because it lacks intrinsic epistemic value."""
+        sooner than EFE because it lacks intrinsic epistemic value."""
         planning = PlanningAgent(tiger_obs_model, tiger_config, planning_horizon=6)
-        vfe = VFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
+        vfe = EFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
         belief = np.array([0.85, 0.15])
         planning.belief.reset(initial_belief=belief)
         vfe.belief.reset(initial_belief=belief)
@@ -149,23 +149,23 @@ class TestPlanningAgent:
             assert vfe_action == 0
 
 
-class TestVFEOnTiger:
-    """VFE agent behavior on the Tiger problem specifically."""
+class TestEFEOnTiger:
+    """EFE agent behavior on the Tiger problem specifically."""
 
     def test_observes_at_uniform(self, tiger_obs_model, tiger_config):
-        agent = VFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
+        agent = EFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
         action = agent.select_action()
         assert action == 0  # LISTEN
 
     def test_still_observes_after_one_listen(self, tiger_obs_model, tiger_config):
         """With +10/-100 asymmetry, one observation is not enough."""
-        agent = VFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
+        agent = EFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
         agent.belief.reset(initial_belief=np.array([0.85, 0.15]))
         action = agent.select_action()
         assert action == 0  # LISTEN
 
     def test_commits_when_highly_confident(self, tiger_obs_model, tiger_config):
-        agent = VFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
+        agent = EFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
         agent.belief.reset(initial_belief=np.array([0.995, 0.005]))
         action = agent.select_action()
         assert action != 0
@@ -175,14 +175,14 @@ class TestAgentBeliefIntegration:
     """Test that agents properly update beliefs and adapt behavior."""
 
     def test_belief_updates_change_action(self, info_obs_model, info_config):
-        agent = VFEAgent(info_obs_model, info_config, planning_horizon=4)
+        agent = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         assert agent.select_action() == 0  # Should observe initially
         for _ in range(10):
             agent.update_belief(0)
         assert agent.select_action() != 0  # Should commit after many updates
 
     def test_reset_restores_initial_behavior(self, info_obs_model, info_config):
-        agent = VFEAgent(info_obs_model, info_config, planning_horizon=4)
+        agent = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         initial_action = agent.select_action()
         for _ in range(5):
             agent.update_belief(0)

@@ -1,9 +1,9 @@
 """
-Epistemic-only agent: ablation of VFE that removes the pragmatic (reward) term
+Epistemic-only agent: ablation of EFE that removes the pragmatic (reward) term
 from observation action evaluation, retaining only information gain plus
 recursive continuation.
 
-This ablation tests whether VFE's advantage comes from the epistemic term
+This ablation tests whether EFE's advantage comes from the epistemic term
 alone or from its specific combination with the pragmatic term.
 
 Action evaluation (minimizing epistemic EFE only):

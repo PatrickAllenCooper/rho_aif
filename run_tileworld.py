@@ -3,8 +3,8 @@
 Tileworld experiments and figure generation.
 
 Produces:
-  - Figure A: VFE belief evolution strip on 6x6 Tileworld
-  - Figure B: Agent comparison (VFE vs Planning vs InfoGain-Tuned)
+  - Figure A: EFE belief evolution strip on 6x6 Tileworld
+  - Figure B: Agent comparison (EFE vs Planning vs InfoGain-Tuned)
   - Figure C: Scaling analysis and computation time
   - Results table for the paper
 """
@@ -23,7 +23,7 @@ from agents.myopic import MyopicAgent
 from agents.planning import PlanningAgent
 from agents.info_gain import InformationGainAgent
 from agents.planning_infogain import PlanningInfoGainAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from agents.epistemic_only import EpistemicOnlyAgent
 from run_experiment import (
     make_agent, run_episode, run_experiment, summarize_results,
@@ -40,7 +40,7 @@ AGENT_STYLES = {
     "Planning":      {"color": "#2196F3", "ls": "-",  "marker": "^"},
     "InfoGain-Tuned":{"color": "#FF9800", "ls": "-.", "marker": "D"},
     "Planning+IG":   {"color": "#9C27B0", "ls": ":",  "marker": "v"},
-    "VFE":           {"color": "#D32F2F", "ls": "-",  "marker": "o"},
+    "EFE":           {"color": "#D32F2F", "ls": "-",  "marker": "o"},
 }
 
 
@@ -60,17 +60,17 @@ def find_good_episode_seed(
 
 
 def fig_belief_evolution(save_path="figures/fig_tileworld_belief.pdf"):
-    """Figure A: VFE belief evolution on 6x6 Tileworld."""
+    """Figure A: EFE belief evolution on 6x6 Tileworld."""
     print("  Generating Tileworld belief evolution...")
     env = TileworldEnv(grid_size=6)
     seed = find_good_episode_seed(
-        env, VFEAgent, {"planning_horizon": 2},
-        min_scans=4, max_scans=16, agent_name="VFE",
+        env, EFEAgent, {"planning_horizon": 2},
+        min_scans=4, max_scans=16, agent_name="EFE",
     )
     print(f"    Using seed {seed}")
     np.random.seed(seed)
-    agent = make_agent(VFEAgent, env, planning_horizon=2)
-    ep = run_recorded_episode(agent, env, agent_name="VFE", seed=seed)
+    agent = make_agent(EFEAgent, env, planning_horizon=2)
+    ep = run_recorded_episode(agent, env, agent_name="EFE", seed=seed)
     n_scans = sum(1 for s in ep.steps if s.action_type == "scan")
     print(f"    Episode: {n_scans} scans, success={ep.success}, R={ep.total_reward:+.1f}")
     render_belief_evolution(ep, env, save_path, max_panels=7)
@@ -78,7 +78,7 @@ def fig_belief_evolution(save_path="figures/fig_tileworld_belief.pdf"):
 
 
 def fig_agent_comparison(save_path="figures/fig_tileworld_comparison.pdf"):
-    """Figure B: Side-by-side VFE vs Planning vs InfoGain-Tuned."""
+    """Figure B: Side-by-side EFE vs Planning vs InfoGain-Tuned."""
     print("  Generating Tileworld agent comparison...")
     env = TileworldEnv(grid_size=6)
 
@@ -87,14 +87,14 @@ def fig_agent_comparison(save_path="figures/fig_tileworld_comparison.pdf"):
     print(f"    Best InfoGain weight: {best_w}")
 
     agent_defs = [
-        ("VFE", VFEAgent, {"planning_horizon": 2}),
+        ("EFE", EFEAgent, {"planning_horizon": 2}),
         ("Planning", PlanningAgent, {"planning_horizon": 2}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
     ]
 
     seed = find_good_episode_seed(
-        env, VFEAgent, {"planning_horizon": 2},
-        min_scans=4, max_scans=16, agent_name="VFE",
+        env, EFEAgent, {"planning_horizon": 2},
+        min_scans=4, max_scans=16, agent_name="EFE",
     )
     print(f"    Using seed {seed}")
 
@@ -123,7 +123,7 @@ def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
     agent_defs = [
         ("Myopic", MyopicAgent, {}),
         ("Planning", PlanningAgent, {"planning_horizon": horizon}),
-        ("VFE", VFEAgent, {"planning_horizon": horizon}),
+        ("EFE", EFEAgent, {"planning_horizon": horizon}),
     ]
 
     results = {name: {"grid_size": [], "success": [], "reward": [], "scans": [], "time_s": []}
@@ -235,7 +235,7 @@ def run_tileworld_experiment(grid_size=6, num_episodes=500, seed=42):
         ("Planning+IG", PlanningInfoGainAgent,
          {"planning_horizon": horizon, "info_gain_weight": best_w_plan}, None),
         ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}, None),
-        ("VFE", VFEAgent, {"planning_horizon": horizon}, None),
+        ("EFE", EFEAgent, {"planning_horizon": horizon}, None),
     ]
 
     return run_generic_experiment(

@@ -7,7 +7,7 @@ from environments.info_seeking import InfoSeekingEnv
 from environments.tiger import TigerEnv
 from agents.myopic import MyopicAgent
 from agents.info_gain import InformationGainAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from agents.planning import PlanningAgent
 from run_experiment import make_agent, run_episode, run_experiment, summarize_results
 
@@ -15,12 +15,12 @@ from run_experiment import make_agent, run_episode, run_experiment, summarize_re
 class TestFullEpisodes:
     """Verify that full episodes run without errors."""
 
-    @pytest.mark.parametrize("AgentClass", [MyopicAgent, InformationGainAgent, VFEAgent, PlanningAgent])
+    @pytest.mark.parametrize("AgentClass", [MyopicAgent, InformationGainAgent, EFEAgent, PlanningAgent])
     def test_info_seeking_episode_completes(self, info_env, AgentClass):
         kwargs = {}
         if AgentClass == InformationGainAgent:
             kwargs["info_gain_weight"] = 1.0
-        if AgentClass in (VFEAgent, PlanningAgent):
+        if AgentClass in (EFEAgent, PlanningAgent):
             kwargs["planning_horizon"] = 3
         agent = make_agent(AgentClass, info_env, **kwargs)
         result = run_episode(agent, info_env)
@@ -28,12 +28,12 @@ class TestFullEpisodes:
         assert result.success in (True, False)
         assert result.total_reward != 0.0
 
-    @pytest.mark.parametrize("AgentClass", [MyopicAgent, InformationGainAgent, VFEAgent, PlanningAgent])
+    @pytest.mark.parametrize("AgentClass", [MyopicAgent, InformationGainAgent, EFEAgent, PlanningAgent])
     def test_tiger_episode_completes(self, tiger_env, AgentClass):
         kwargs = {}
         if AgentClass == InformationGainAgent:
             kwargs["info_gain_weight"] = 1.0
-        if AgentClass in (VFEAgent, PlanningAgent):
+        if AgentClass in (EFEAgent, PlanningAgent):
             kwargs["planning_horizon"] = 4
         agent = make_agent(AgentClass, tiger_env, **kwargs)
         result = run_episode(agent, tiger_env)
@@ -60,17 +60,17 @@ class TestStatisticalProperties:
         assert ig_succ > m_succ
 
     def test_vfe_explores_more_than_myopic(self, info_env):
-        """VFE agent should make more observations than myopic."""
+        """EFE agent should make more observations than myopic."""
         np.random.seed(42)
         myopic = run_experiment(MyopicAgent, info_env, num_episodes=200)
-        vfe = run_experiment(VFEAgent, info_env, num_episodes=200, planning_horizon=3)
+        vfe = run_experiment(EFEAgent, info_env, num_episodes=200, planning_horizon=3)
         m_obs = np.mean([r.num_observations for r in myopic])
         v_obs = np.mean([r.num_observations for r in vfe])
         assert v_obs > m_obs
 
     def test_tiger_vfe_listens_before_opening(self, tiger_env):
-        """VFE agent on Tiger should listen multiple times before opening."""
-        results = run_experiment(VFEAgent, tiger_env, num_episodes=100, planning_horizon=4)
+        """EFE agent on Tiger should listen multiple times before opening."""
+        results = run_experiment(EFEAgent, tiger_env, num_episodes=100, planning_horizon=4)
         mean_obs = np.mean([r.num_observations for r in results])
         assert mean_obs >= 2.0
 

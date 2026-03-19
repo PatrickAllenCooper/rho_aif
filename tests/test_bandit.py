@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from environments.bandit import BanditEnv
 from agents.myopic import MyopicAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from run_experiment import make_agent, run_episode
 
 
@@ -66,13 +66,13 @@ class TestBanditObservationModels:
 class TestBanditAgents:
     def test_vfe_episode_completes(self):
         env = BanditEnv(num_arms=4)
-        agent = make_agent(VFEAgent, env, planning_horizon=3)
+        agent = make_agent(EFEAgent, env, planning_horizon=3)
         result = run_episode(agent, env)
         assert result.success in (True, False)
 
     def test_vfe_inspects_at_uniform(self):
         env = BanditEnv(num_arms=4)
-        agent = make_agent(VFEAgent, env, planning_horizon=3)
+        agent = make_agent(EFEAgent, env, planning_horizon=3)
         action = agent.select_action()
         assert action < 4  # should inspect, not pull
 

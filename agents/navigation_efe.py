@@ -1,7 +1,7 @@
 """
-Position-aware VFE agent for navigation environments.
+Position-aware EFE agent for navigation environments.
 
-Extends VFEAgent to handle position-dependent observation models: for each
+Extends EFEAgent to handle position-dependent observation models: for each
 movement action, computes the observation model at the resulting position
 and evaluates EFE accordingly. The agent reasons about WHERE to move to
 maximally reduce uncertainty about the hidden goal location.
@@ -13,9 +13,9 @@ from typing import List, Tuple
 from agents.base import BaseAgent
 
 
-class NavigationVFEAgent(BaseAgent):
+class NavigationEFEAgent(BaseAgent):
     """
-    VFE agent for grid navigation with hidden goal.
+    EFE agent for grid navigation with hidden goal.
 
     All actions are movement (non-terminal). The episode ends when the agent
     enters the goal cell (determined by the environment, not by a commit action).

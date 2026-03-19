@@ -2,7 +2,7 @@
 pymdp-based active inference agent wrapper.
 
 Wraps the pymdp library's Agent class to run on our POMDP environments,
-providing a reference implementation for validating our VFE agent's EFE
+providing a reference implementation for validating our EFE agent's
 computation. Also provides standalone EFE computation using pymdp's
 control module for mathematical consistency checks.
 
@@ -11,7 +11,7 @@ using action-independent observation models. Our environments use
 action-dependent observations and variable-length episodes. This wrapper
 adapts by treating each step as a single-step policy evaluation, which
 is equivalent to myopic active inference (policy_len=1). For multi-step
-comparison, the recursive EFE in our VFE agent corresponds to pymdp's
+comparison, the recursive EFE in our EFE agent corresponds to pymdp's
 sophisticated inference scheme (Friston et al., 2021).
 """
 
@@ -32,7 +32,7 @@ def compute_efe_pymdp(
 
     Returns (pragmatic_value, epistemic_value, total_efe) for the given
     observation model and belief state, using pymdp's internal routines
-    for direct comparison with our VFE agent.
+    for direct comparison with our EFE agent.
 
     Args:
         observation_model: P(obs|state), shape (num_states, num_obs) -- our format

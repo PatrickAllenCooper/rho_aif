@@ -3,9 +3,9 @@ Multi-step planning agent with information gain bonus (rho-POMDP with rho = w * 
 
 Combines the recursive tree-search structure of PlanningAgent with an additive
 information gain bonus at each observation step. This is the critical
-apples-to-apples baseline: same planning depth as VFE, same epistemic bonus
-concept as InfoGainAgent, but as an additive weighted term rather than EFE's
-joint objective.
+apples-to-apples baseline: same planning depth as the EFE agent, same epistemic
+bonus concept as InfoGainAgent, but as an additive weighted term rather than
+EFE's joint objective.
 
 Action evaluation (maximizing expected reward + weighted info gain):
   V(obs_k, b, d) = -cost_k + w * I_k(b) + E_o[max_a V(a, posterior, d+1)]
@@ -24,7 +24,7 @@ class PlanningInfoGainAgent(BaseAgent):
 
     At each recursive step, the value of an observation action includes
     both the expected downstream reward AND a weighted information gain
-    term. Isolates whether VFE's advantage is just "IG + deeper search."
+    term. Isolates whether the EFE agent's advantage is just "IG + deeper search."
     """
 
     def __init__(

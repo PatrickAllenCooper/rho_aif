@@ -23,7 +23,7 @@ from agents.myopic import MyopicAgent
 from agents.planning import PlanningAgent
 from agents.info_gain import InformationGainAgent
 from agents.planning_infogain import PlanningInfoGainAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from run_experiment import make_agent, run_episode, run_experiment, summarize_results, tune_info_gain_weight
 
 
@@ -43,7 +43,7 @@ def run_reward_asymmetry_sweep(
         penalties = [1, 2, 5, 10, 20, 50, 100, 200, 500]
 
     results = {name: {"penalties": [], "success": [], "reward": [], "obs": []}
-               for name in ["Myopic", "Planning", "InfoGain-Tuned", "Planning+IG", "VFE"]}
+               for name in ["Myopic", "Planning", "InfoGain-Tuned", "Planning+IG", "EFE"]}
 
     for pen in penalties:
         np.random.seed(seed)
@@ -62,7 +62,7 @@ def run_reward_asymmetry_sweep(
             ("Planning", PlanningAgent, {"planning_horizon": horizon}),
             ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
             ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w}),
-            ("VFE", VFEAgent, {"planning_horizon": horizon}),
+            ("EFE", EFEAgent, {"planning_horizon": horizon}),
         ]
 
         for name, cls, kwargs in configs:
@@ -171,7 +171,7 @@ def run_obs_action_scaling(
     """Vary K (number of tests) while holding N fixed."""
 
     results = {name: {"K": [], "success": [], "reward": []}
-               for name in ["Myopic", "Planning", "Planning+IG", "VFE"]}
+               for name in ["Myopic", "Planning", "Planning+IG", "EFE"]}
 
     for k in [1, 2, 3]:
         np.random.seed(seed)
@@ -191,7 +191,7 @@ def run_obs_action_scaling(
             ("Myopic", MyopicAgent, {}),
             ("Planning", PlanningAgent, {"planning_horizon": horizon}),
             ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w}),
-            ("VFE", VFEAgent, {"planning_horizon": horizon}),
+            ("EFE", EFEAgent, {"planning_horizon": horizon}),
         ]
 
         for name, cls, kwargs in configs:
@@ -213,7 +213,7 @@ AGENT_STYLES = {
     "Planning":      {"color": "#2196F3", "ls": "-",  "marker": "^", "lw": 2.0},
     "InfoGain-Tuned":{"color": "#FF9800", "ls": "-.", "marker": "D", "lw": 1.5},
     "Planning+IG":   {"color": "#9C27B0", "ls": ":",  "marker": "v", "lw": 2.0},
-    "VFE":           {"color": "#D32F2F", "ls": "-",  "marker": "o", "lw": 2.5},
+    "EFE":           {"color": "#D32F2F", "ls": "-",  "marker": "o", "lw": 2.5},
 }
 
 
@@ -319,7 +319,7 @@ def plot_obs_action_scaling(results: Dict, save_path: str = "figures/fig_obs_sca
         "Myopic":      {"color": "#888888", "ls": "--", "marker": "s", "lw": 1.5},
         "Planning":    {"color": "#2196F3", "ls": "-",  "marker": "^", "lw": 2.0},
         "Planning+IG": {"color": "#9C27B0", "ls": ":",  "marker": "v", "lw": 2.0},
-        "VFE":         {"color": "#D32F2F", "ls": "-",  "marker": "o", "lw": 2.5},
+        "EFE":         {"color": "#D32F2F", "ls": "-",  "marker": "o", "lw": 2.5},
     }
 
     for name, style in scale_styles.items():
@@ -376,7 +376,7 @@ if __name__ == "__main__":
     np.random.seed(42)
     env = TigerEnv(listen_accuracy=0.85, listen_cost=1.0,
                    correct_reward=10.0, incorrect_penalty=-100.0)
-    agent = make_agent(VFEAgent, env, planning_horizon=6)
+    agent = make_agent(EFEAgent, env, planning_horizon=6)
     trajectories = collect_trajectories(env, agent, n_episodes=50)
     plot_efe_trajectories(trajectories)
 

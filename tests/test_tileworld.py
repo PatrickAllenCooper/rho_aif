@@ -6,7 +6,7 @@ from environments.tileworld import TileworldEnv
 from agents.myopic import MyopicAgent
 from agents.planning import PlanningAgent
 from agents.info_gain import InformationGainAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from agents.epistemic_only import EpistemicOnlyAgent
 from run_experiment import make_agent, run_episode
 
@@ -175,7 +175,7 @@ class TestTileworldAgents:
     def test_vfe_episode_completes(self):
         np.random.seed(42)
         env = TileworldEnv(grid_size=4)
-        agent = make_agent(VFEAgent, env, planning_horizon=2)
+        agent = make_agent(EFEAgent, env, planning_horizon=2)
         result = run_episode(agent, env)
         assert result.success in (True, False)
         assert result.num_observations >= 0
@@ -190,7 +190,7 @@ class TestTileworldAgents:
     def test_vfe_observes_at_uniform(self):
         np.random.seed(42)
         env = TileworldEnv(grid_size=4)
-        agent = make_agent(VFEAgent, env, planning_horizon=2)
+        agent = make_agent(EFEAgent, env, planning_horizon=2)
         agent.reset()
         action = agent.select_action()
         assert action < env.num_scans
@@ -201,7 +201,7 @@ class TestTileworldAgents:
         n_episodes = 100
 
         myopic_agent = make_agent(MyopicAgent, env)
-        vfe_agent = make_agent(VFEAgent, env, planning_horizon=2)
+        vfe_agent = make_agent(EFEAgent, env, planning_horizon=2)
 
         myopic_success = sum(
             run_episode(myopic_agent, env).success for _ in range(n_episodes)
@@ -218,7 +218,7 @@ class TestTileworldAgents:
             (MyopicAgent, {}),
             (PlanningAgent, {"planning_horizon": 2}),
             (InformationGainAgent, {"info_gain_weight": 1.0}),
-            (VFEAgent, {"planning_horizon": 2}),
+            (EFEAgent, {"planning_horizon": 2}),
         ]:
             agent = make_agent(cls, env, **kwargs)
             result = run_episode(agent, env)

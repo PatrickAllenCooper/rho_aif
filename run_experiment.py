@@ -2,7 +2,7 @@
 """
 Run epistemic foraging experiments across environments and agents.
 
-Compares Myopic, Information Gain, and VFE agents on discrete POMDP
+Compares Myopic, Information Gain, and EFE agents on discrete POMDP
 environments, measuring belief convergence, sample efficiency, and
 policy quality.
 """
@@ -23,9 +23,9 @@ from environments.navigation import NavigationEnv
 from agents.base import BaseAgent
 from agents.myopic import MyopicAgent
 from agents.info_gain import InformationGainAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from agents.planning import PlanningAgent
-from agents.navigation_vfe import NavigationVFEAgent
+from agents.navigation_efe import NavigationEFEAgent
 from agents.navigation_baselines import NavigationMyopicAgent, NavigationInfoGainAgent
 from agents.pymdp_agent import PyMDPAgent
 from agents.planning_infogain import PlanningInfoGainAgent
@@ -283,7 +283,7 @@ def run_info_seeking_experiment(num_episodes: int = 1000, seed: int = 42):
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}),
         ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}),
-        ("VFE", VFEAgent, {"planning_horizon": horizon}),
+        ("EFE", EFEAgent, {"planning_horizon": horizon}),
         ("PyMDP-AIF", PyMDPAgent, {}),
     ]
 
@@ -359,7 +359,7 @@ def run_tiger_experiment(num_episodes: int = 1000, seed: int = 42):
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}),
         ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}),
-        ("VFE", VFEAgent, {"planning_horizon": horizon}),
+        ("EFE", EFEAgent, {"planning_horizon": horizon}),
         ("PyMDP-AIF", PyMDPAgent, {}),
     ]
 
@@ -460,12 +460,12 @@ def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1
 
         vfe_comparisons = stats_df[
             (stats_df["metric"] == "Reward")
-            & ((stats_df["agent_a"] == "VFE") | (stats_df["agent_b"] == "VFE"))
+            & ((stats_df["agent_a"] == "EFE") | (stats_df["agent_b"] == "EFE"))
         ]
         if not vfe_comparisons.empty:
-            print("\n  VFE Reward comparisons (Holm-Bonferroni corrected):")
+            print("\n  EFE Reward comparisons (Holm-Bonferroni corrected):")
             for _, row in vfe_comparisons.iterrows():
-                other = row["agent_b"] if row["agent_a"] == "VFE" else row["agent_a"]
+                other = row["agent_b"] if row["agent_a"] == "EFE" else row["agent_a"]
                 sig_mark = "*" if row["significant_hb"] else "n.s."
                 print(
                     f"    vs {other:15s}: d={row['cohens_d']:+.3f}  "
@@ -493,7 +493,7 @@ def run_diagnosis_experiment(num_conditions: int = 4, num_episodes: int = 1000, 
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}, None),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}, None),
         ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}, None),
-        ("VFE", VFEAgent, {"planning_horizon": horizon}, None),
+        ("EFE", EFEAgent, {"planning_horizon": horizon}, None),
     ]
     return run_generic_experiment(
         env, f"DIAGNOSIS EXPERIMENT (N={num_conditions})", configs,
@@ -518,7 +518,7 @@ def run_bandit_experiment(num_arms: int = 4, num_episodes: int = 1000, seed: int
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}, None),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}, None),
         ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}, None),
-        ("VFE", VFEAgent, {"planning_horizon": horizon}, None),
+        ("EFE", EFEAgent, {"planning_horizon": horizon}, None),
     ]
     return run_generic_experiment(
         env, f"BANDIT EXPERIMENT (K={num_arms})", configs,
@@ -536,13 +536,13 @@ def run_navigation_experiment(grid_size: int = 3, num_episodes: int = 500, seed:
     def make_nav_infogain():
         return NavigationInfoGainAgent(env, info_gain_weight=1.0)
 
-    def make_nav_vfe():
-        return NavigationVFEAgent(env, planning_horizon=2)
+    def make_nav_efe():
+        return NavigationEFEAgent(env, planning_horizon=2)
 
     configs = [
         ("NavMyopic", None, {}, make_nav_myopic),
         ("NavInfoGain", None, {}, make_nav_infogain),
-        ("NavVFE", None, {}, make_nav_vfe),
+        ("NavEFE", None, {}, make_nav_efe),
     ]
     return run_generic_experiment(
         env, f"NAVIGATION EXPERIMENT ({grid_size}x{grid_size})", configs,
@@ -570,7 +570,7 @@ def run_scaling_analysis(seed: int = 42):
             ("Myopic", MyopicAgent, {}),
             ("Planning", PlanningAgent, {"planning_horizon": horizon}),
             ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}),
-            ("VFE", VFEAgent, {"planning_horizon": horizon}),
+            ("EFE", EFEAgent, {"planning_horizon": horizon}),
         ]:
             agent = make_agent(agent_class, env, **kwargs)
             t0 = time.time()

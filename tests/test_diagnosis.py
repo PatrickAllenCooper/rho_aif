@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from environments.diagnosis import DiagnosisEnv
 from agents.myopic import MyopicAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from run_experiment import make_agent, run_episode, run_experiment, summarize_results
 
 
@@ -77,14 +77,14 @@ class TestDiagnosisObservationModels:
 class TestDiagnosisAgents:
     def test_vfe_episode_completes(self):
         env = DiagnosisEnv(num_conditions=4)
-        agent = make_agent(VFEAgent, env, planning_horizon=3)
+        agent = make_agent(EFEAgent, env, planning_horizon=3)
         result = run_episode(agent, env)
         assert result.success in (True, False)
         assert result.num_observations >= 0
 
     def test_vfe_observes_at_uniform(self):
         env = DiagnosisEnv(num_conditions=4)
-        agent = make_agent(VFEAgent, env, planning_horizon=3)
+        agent = make_agent(EFEAgent, env, planning_horizon=3)
         action = agent.select_action()
         assert action < env.num_tests  # should run a test, not diagnose
 

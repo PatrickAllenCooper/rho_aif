@@ -1,5 +1,5 @@
 """
-Variational Free Energy agent (rho-POMDP with rho = Expected Free Energy).
+EFE agent (rho-POMDP with rho = Expected Free Energy).
 
 Selects actions by minimizing Expected Free Energy (EFE), which decomposes
 into pragmatic value (goal alignment) and epistemic value (information gain)
@@ -17,7 +17,7 @@ from belief import BeliefState
 from agents.base import BaseAgent
 
 
-class VFEAgent(BaseAgent):
+class EFEAgent(BaseAgent):
     """
     rho-POMDP agent minimizing Expected Free Energy.
 

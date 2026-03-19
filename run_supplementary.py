@@ -20,7 +20,7 @@ from agents.planning import PlanningAgent
 from agents.info_gain import InformationGainAgent
 from agents.planning_infogain import PlanningInfoGainAgent
 from agents.epistemic_only import EpistemicOnlyAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from run_experiment import (
     make_agent, run_episode, run_experiment, summarize_results,
     tune_info_gain_weight, EpisodeResult, compute_full_statistics,
@@ -72,14 +72,14 @@ def generate_bootstrap_table(all_raw, env_name):
 
 
 def generate_effect_size_table(all_raw, env_name):
-    """Cohen's d for VFE vs each baseline on reward metric."""
-    if "VFE" not in all_raw:
+    """Cohen's d for EFE vs each baseline on reward metric."""
+    if "EFE" not in all_raw:
         return pd.DataFrame()
 
-    vfe_rewards = np.array([r.total_reward for r in all_raw["VFE"]])
+    vfe_rewards = np.array([r.total_reward for r in all_raw["EFE"]])
     rows = []
     for label, results in all_raw.items():
-        if label == "VFE":
+        if label == "EFE":
             continue
         other_rewards = np.array([r.total_reward for r in results])
         d = cohens_d(vfe_rewards, other_rewards)
@@ -91,7 +91,7 @@ def generate_effect_size_table(all_raw, env_name):
         )
         rows.append({
             "Environment": env_name,
-            "Comparison": f"VFE vs {label}",
+            "Comparison": f"EFE vs {label}",
             "Cohen's d": f"{d:+.3f}",
             "Effect": interpretation,
         })
@@ -119,7 +119,7 @@ def main():
         ("Planning", PlanningAgent, {"planning_horizon": 6}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 6, "info_gain_weight": best_w}),
-        ("VFE", VFEAgent, {"planning_horizon": 6}),
+        ("EFE", EFEAgent, {"planning_horizon": 6}),
     ]
     tiger_raw = run_env_with_stats(tiger_env, "Tiger", tiger_configs, num_episodes, seed)
     all_bootstrap_rows.append(generate_bootstrap_table(tiger_raw, "Tiger"))
@@ -139,7 +139,7 @@ def main():
         ("Planning", PlanningAgent, {"planning_horizon": 4}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w_tb}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 4, "info_gain_weight": best_w_tb}),
-        ("VFE", VFEAgent, {"planning_horizon": 4}),
+        ("EFE", EFEAgent, {"planning_horizon": 4}),
     ]
     testbed_raw = run_env_with_stats(testbed_env, "Testbed", testbed_configs, num_episodes, seed)
     all_bootstrap_rows.append(generate_bootstrap_table(testbed_raw, "Testbed"))
@@ -159,7 +159,7 @@ def main():
         ("Planning", PlanningAgent, {"planning_horizon": 3}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w_d}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 3, "info_gain_weight": best_w_d}),
-        ("VFE", VFEAgent, {"planning_horizon": 3}),
+        ("EFE", EFEAgent, {"planning_horizon": 3}),
     ]
     diag_raw = run_env_with_stats(diag_env, "Diagnosis", diag_configs, num_episodes, seed)
     all_bootstrap_rows.append(generate_bootstrap_table(diag_raw, "Diagnosis"))
@@ -179,7 +179,7 @@ def main():
         ("Planning", PlanningAgent, {"planning_horizon": 2}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w_b}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 2, "info_gain_weight": best_w_b}),
-        ("VFE", VFEAgent, {"planning_horizon": 2}),
+        ("EFE", EFEAgent, {"planning_horizon": 2}),
     ]
     bandit_raw = run_env_with_stats(bandit_env, "Bandit", bandit_configs, num_episodes, seed)
     all_bootstrap_rows.append(generate_bootstrap_table(bandit_raw, "Bandit"))
@@ -205,7 +205,7 @@ def main():
     print(bootstrap_df.to_string(index=False))
 
     print("\n" + "=" * 60)
-    print("EFFECT SIZE SUMMARY (VFE vs baselines)")
+    print("EFFECT SIZE SUMMARY (EFE vs baselines)")
     print("=" * 60)
     print(effect_df.to_string(index=False))
 

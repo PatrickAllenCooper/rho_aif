@@ -25,9 +25,9 @@ rho_aif/
     planning.py                   # Planning baseline (rho = 0, H>1)
     info_gain.py                  # Information Gain (rho = w * I(b), H=1)
     planning_infogain.py          # Planning+IG (rho = w * I(b), H>1)
-    vfe.py                        # VFE agent (rho = EFE, H>1)
+    efe.py                        # EFE agent (rho = EFE, H>1)
     epistemic_only.py             # Epistemic-only ablation
-    navigation_vfe.py             # Navigation-specific VFE variant
+    navigation_efe.py             # Navigation-specific EFE variant
     navigation_baselines.py       # Navigation-specific baselines
     pymdp_agent.py                # pymdp wrapper for validation
   belief.py                       # BeliefState with Bayesian updates
@@ -89,7 +89,7 @@ All agents share the same exact Bayesian belief-update machinery and differ only
 | Planning | rho = 0 | H>1 | Controls for planning depth |
 | Info Gain | w * I(b) | H=1 | Epistemic bonus (myopic) |
 | Planning+IG | w * I(b) | H>1 | IG + planning depth |
-| **VFE** | **I_a(b) via EFE** | **H>1** | **Joint objective (Proposition 1)** |
+| **EFE** | **I_a(b) via EFE** | **H>1** | **Joint objective (Proposition 1)** |
 | Epistemic-only | I_a(b) only | H>1 | Ablation: no pragmatic term |
 
 ---
@@ -110,9 +110,9 @@ All environments follow an observe-then-commit structure implemented as OpenAI G
 
 ## Key Results
 
-- **EFE = canonical w=1**: VFE is equivalent to Planning+IG with w=1 (Proposition 1), confirmed empirically on all environments.
-- **w=1 is near-Pareto-optimal**: Sits at the success-reward knee without per-environment search.
-- **Multi-observation-action advantage**: VFE significantly outperforms reward-only planning on Diagnosis (+9.4 pp) and Bandit (+15.5 pp) where the agent must choose which information to gather.
+- **EFE = canonical w=1**: The EFE agent is equivalent to Planning+IG with w=1 (Proposition 1), confirmed empirically on all environments.
+- **w=1 is near-Pareto-optimal**: Sits at the reward-maximizing knee without per-environment search.
+- **Multi-observation-action advantage**: The EFE agent significantly outperforms reward-only planning on Diagnosis (+9.4 pp) and Bandit (+15.5 pp) where the agent must choose which information to gather.
 - **Pragmatic term is essential**: Epistemic-only ablation collapses on all environments.
 
 ---

@@ -2,7 +2,7 @@
 """
 Pareto frontier experiment: sweep Planning+IG weight w across environments.
 
-Demonstrates that VFE (= Planning+IG at w=1 by Proposition 1) sits near the
+Demonstrates that EFE (= Planning+IG at w=1 by Proposition 1) sits near the
 Pareto knee of the success-vs-reward tradeoff, providing a principled
 canonical weight derived from the variational bound rather than per-environment
 grid search.
@@ -20,7 +20,7 @@ from environments.tiger import TigerEnv
 from environments.diagnosis import DiagnosisEnv
 from environments.bandit import BanditEnv
 from agents.planning_infogain import PlanningInfoGainAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from run_experiment import make_agent, run_experiment, summarize_results
 
 
@@ -31,7 +31,7 @@ def run_pareto_sweep(
     num_episodes: int = 500,
     seed: int = 42,
 ) -> Dict:
-    """Sweep Planning+IG weight w, also run VFE for reference."""
+    """Sweep Planning+IG weight w, also run EFE for reference."""
     if weights is None:
         weights = [0.01, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0, 200.0]
 
@@ -48,11 +48,11 @@ def run_pareto_sweep(
         print(f"    w={w:>6.2f}  success={s['success_rate']:.1%}  reward={s['mean_reward']:+.2f}")
 
     np.random.seed(seed)
-    vfe_raw = run_experiment(VFEAgent, env, num_episodes, planning_horizon=horizon)
+    vfe_raw = run_experiment(EFEAgent, env, num_episodes, planning_horizon=horizon)
     vfe_s = summarize_results(vfe_raw)
     vfe = {"success": vfe_s["success_rate"], "reward": vfe_s["mean_reward"],
            "obs": vfe_s["mean_observations"]}
-    print(f"    VFE     success={vfe['success']:.1%}  reward={vfe['reward']:+.2f}")
+    print(f"    EFE     success={vfe['success']:.1%}  reward={vfe['reward']:+.2f}")
 
     return {"sweep": sweep, "vfe": vfe}
 
@@ -108,7 +108,7 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
         Line2D([0], [0], color="#2196F3", marker="D", markersize=8, ls="none",
                markeredgecolor="black", label="Planning+IG $w{=}1$"),
         Line2D([0], [0], color="#D32F2F", marker="*", markersize=12, ls="none",
-               markeredgecolor="black", label="VFE (EFE-as-$\\rho$)"),
+               markeredgecolor="black", label="EFE agent ($w{=}1$)"),
     ]
     fig.legend(handles=legend_elements, loc="lower center", ncol=3, fontsize=8,
                bbox_to_anchor=(0.5, -0.08))

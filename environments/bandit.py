@@ -3,7 +3,7 @@ Multi-Armed Bandit with Hidden Structure as a Gymnasium env.
 
 K arms, one of which is the best. The agent can inspect arms (noisy signal
 about whether an arm is the best) or pull an arm (receive reward, episode ends).
-Tests whether VFE produces better exploration when the agent must choose
+Tests whether the EFE agent produces better exploration when it must choose
 WHICH information to gather, not just WHETHER to gather.
 """
 

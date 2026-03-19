@@ -8,7 +8,7 @@ NavigationInfoGainAgent: Evaluates each movement for expected information
 gain from the position-dependent observation model, weighted by
 info_gain_weight, combined with proximity to high-belief cells.
 
-Both share the same interface as NavigationVFEAgent for direct comparison.
+Both share the same interface as NavigationEFEAgent for direct comparison.
 """
 
 import numpy as np

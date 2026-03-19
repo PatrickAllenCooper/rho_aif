@@ -27,7 +27,7 @@ from agents.myopic import MyopicAgent
 from agents.planning import PlanningAgent
 from agents.info_gain import InformationGainAgent
 from agents.planning_infogain import PlanningInfoGainAgent
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 from run_experiment import make_agent, EpisodeResult, tune_info_gain_weight
 from belief import BeliefState
 
@@ -37,7 +37,7 @@ AGENT_STYLES = {
     "Planning":      {"color": "#2196F3", "ls": "-",  "marker": "^", "lw": 2.0},
     "InfoGain-Tuned":{"color": "#FF9800", "ls": "-.", "marker": "D", "lw": 1.5},
     "Planning+IG":   {"color": "#9C27B0", "ls": ":",  "marker": "v", "lw": 2.0},
-    "VFE":           {"color": "#D32F2F", "ls": "-",  "marker": "o", "lw": 2.5},
+    "EFE":           {"color": "#D32F2F", "ls": "-",  "marker": "o", "lw": 2.5},
 }
 
 TEST_COLORS = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
@@ -208,7 +208,7 @@ def run_simple_episode(agent, env, max_steps=200):
 # ---------------------------------------------------------------------------
 
 def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
-    """Three-panel heatmap: VFE vs Planning vs InfoGain-Tuned belief evolution."""
+    """Three-panel heatmap: EFE vs Planning vs InfoGain-Tuned belief evolution."""
     print("  Generating belief evolution heatmap...")
     np.random.seed(seed)
 
@@ -220,7 +220,7 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
     best_w = tune_info_gain_weight(env, tune_episodes=100)
 
     agents_config = [
-        ("VFE", VFEAgent, {"planning_horizon": 3}),
+        ("EFE", EFEAgent, {"planning_horizon": 3}),
         ("Planning", PlanningAgent, {"planning_horizon": 3}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
     ]
@@ -229,7 +229,7 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
     np.random.seed(seed)
     for trial_seed in range(seed, seed + 200):
         np.random.seed(trial_seed)
-        vfe_agent = make_agent(VFEAgent, env, planning_horizon=3)
+        vfe_agent = make_agent(EFEAgent, env, planning_horizon=3)
         result = run_simple_episode(vfe_agent, env, max_steps=50)
         if result["success"] and result["num_observations"] >= 6:
             target_seed = trial_seed
@@ -239,7 +239,7 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
         target_seed = seed
 
     fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
-    panel_labels = ["(a) VFE ($w{=}1$)", "(b) Planning ($\\rho{=}0$)", "(c) InfoGain-Tuned"]
+    panel_labels = ["(a) EFE ($w{=}1$)", "(b) Planning ($\\rho{=}0$)", "(c) InfoGain-Tuned"]
 
     for ax_idx, (label, agent_cls, kwargs) in enumerate(agents_config):
         np.random.seed(target_seed)
@@ -315,7 +315,7 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
         ("Myopic", MyopicAgent, {}),
         ("Planning", PlanningAgent, {"planning_horizon": 3}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 3, "info_gain_weight": best_w}),
-        ("VFE", VFEAgent, {"planning_horizon": 3}),
+        ("EFE", EFEAgent, {"planning_horizon": 3}),
     ]
 
     max_step = 40
@@ -448,7 +448,7 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
     target_seed = None
     for trial_seed in range(seed, seed + 300):
         np.random.seed(trial_seed)
-        agent = make_agent(VFEAgent, env, planning_horizon=3)
+        agent = make_agent(EFEAgent, env, planning_horizon=3)
         result = run_detailed_episode(agent, env, max_steps=50)
         if result.success and result.num_observations >= 8:
             target_seed = trial_seed
@@ -458,7 +458,7 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
         target_seed = seed
 
     np.random.seed(target_seed)
-    agent = make_agent(VFEAgent, env, planning_horizon=3)
+    agent = make_agent(EFEAgent, env, planning_horizon=3)
     result = run_detailed_episode(agent, env, max_steps=50)
 
     obs_traces = [t for t in result.traces if t.action_type == "observe"]
@@ -556,7 +556,7 @@ def fig_stopping_times(seed=42, num_episodes=300, save_path="figures/fig_stoppin
         ),
     }
 
-    agent_order = ["Myopic", "Planning", "Planning+IG", "VFE"]
+    agent_order = ["Myopic", "Planning", "Planning+IG", "EFE"]
     agent_colors = {name: AGENT_STYLES[name]["color"] for name in agent_order}
 
     fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
@@ -572,7 +572,7 @@ def fig_stopping_times(seed=42, num_episodes=300, save_path="figures/fig_stoppin
             ("Myopic", MyopicAgent, {}),
             ("Planning", PlanningAgent, {"planning_horizon": horizon}),
             ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w}),
-            ("VFE", VFEAgent, {"planning_horizon": horizon}),
+            ("EFE", EFEAgent, {"planning_horizon": horizon}),
         ]
 
         all_obs_counts = {}

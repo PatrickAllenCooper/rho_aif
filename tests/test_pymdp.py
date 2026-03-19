@@ -5,7 +5,7 @@ import pytest
 from scipy.stats import entropy as scipy_entropy
 
 from agents.pymdp_agent import PyMDPAgent, compute_efe_pymdp
-from agents.vfe import VFEAgent
+from agents.efe import EFEAgent
 
 
 @pytest.fixture
@@ -58,7 +58,7 @@ class TestPyMDPAgent:
 
 
 class TestEFEConsistency:
-    """Validate that our VFE agent's EFE values are consistent with pymdp's."""
+    """Validate that our EFE agent's values are consistent with pymdp's."""
 
     def test_info_gain_agrees(self, info_obs_model, info_config):
         """Both implementations should compute the same information gain
@@ -85,15 +85,15 @@ class TestEFEConsistency:
         )
 
     def test_both_prefer_observe_at_uniform(self, info_obs_model, info_config):
-        """Both VFE and PyMDP agents should observe at uniform belief."""
-        vfe = VFEAgent(info_obs_model, info_config, planning_horizon=4)
+        """Both EFE and PyMDP agents should observe at uniform belief."""
+        vfe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         pymdp = PyMDPAgent(info_obs_model, info_config)
         assert vfe.select_action() == 0
         assert pymdp.select_action() == 0
 
     def test_both_commit_when_confident(self, info_obs_model, info_config):
         """Both should commit in the same direction when highly confident."""
-        vfe = VFEAgent(info_obs_model, info_config, planning_horizon=4)
+        vfe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         pymdp = PyMDPAgent(info_obs_model, info_config)
         confident_belief = np.array([0.99, 0.01])
         vfe.belief.reset(initial_belief=confident_belief)
@@ -114,7 +114,7 @@ class TestEFEConsistency:
             np.array([0.05, 0.95]),
         ]
         for belief in test_beliefs:
-            vfe = VFEAgent(info_obs_model, info_config, planning_horizon=4)
+            vfe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
             pymdp = PyMDPAgent(info_obs_model, info_config)
             vfe.belief.reset(initial_belief=belief)
             pymdp.belief.reset(initial_belief=belief)
