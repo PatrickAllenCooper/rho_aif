@@ -9,3 +9,4 @@ from agents.navigation_efe import NavigationEFEAgent
 from agents.navigation_baselines import NavigationMyopicAgent, NavigationInfoGainAgent
 from agents.pymdp_agent import PyMDPAgent
 from agents.thompson import ThompsonSamplingAgent
+from agents.mcts_efe import MCTSEFEAgent
