@@ -370,6 +370,7 @@ At H=2, Planning and VFE are equivalent. VFE's advantage over Planning requires 
 17. NeurIPS submission polish complete
 18. Tileworld champion example: 6x6 grid POMDP with rendered belief evolution and agent comparison figures, spatial scaling analysis (4x4 to 8x8), four new paper figures (belief strip, agent comparison, scaling, scan atlas), headline result of VFE 75.5% vs Planning 2.0% at 8x8
 19. NeurIPS page-length restructure: consolidated Tiger/Diagnosis/Bandit into single main table; moved Testbed, Tiger sweep, obs-action scaling, Tileworld belief strip, and EFE trajectory figure to appendix; tightened abstract, experiments, discussion, and conclusion; main text now ~9 pages with 3 figures and 3 tables
+20. Final NeurIPS polish: fixed broken cross-references (tab:tiger/tab:bandit no longer exist), added VFE/EFE naming clarification, formally defined observe-then-commit structure, added gamma=1 assumption to Proposition, fixed precision/discount gamma collision, standardized Info Gain naming throughout, fixed bibliography ordering, improved table formatting with multirow/shortstack, strengthened narrative transitions, removed prose duplication
 
 **Awaiting**:
 - Feedback from Ashutosh on methodology
