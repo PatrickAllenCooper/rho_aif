@@ -157,6 +157,67 @@ def print_statistical_comparison(
         print(f"  {metric_name:12s}: {name_a} vs {name_b}  t={t_stat:+.3f}  p={p_val:.6f}  {sig}")
 
 
+def compute_full_statistics(
+    all_raw: Dict[str, List[EpisodeResult]],
+    env_name: str = "",
+) -> pd.DataFrame:
+    """Compute comprehensive statistics with Holm-Bonferroni correction.
+
+    Returns a DataFrame with pairwise comparisons including corrected p-values,
+    bootstrap CIs, and Cohen's d effect sizes.
+    """
+    from stats import bootstrap_ci, cohens_d, holm_bonferroni
+
+    labels = list(all_raw.keys())
+    rows = []
+    raw_p_values = []
+
+    for metric_name, extractor in [
+        ("Reward", lambda r: r.total_reward),
+        ("Success", lambda r: float(r.success)),
+        ("Observations", lambda r: r.num_observations),
+    ]:
+        pairs = []
+        for i in range(len(labels)):
+            for j in range(i + 1, len(labels)):
+                vals_a = np.array([extractor(r) for r in all_raw[labels[i]]])
+                vals_b = np.array([extractor(r) for r in all_raw[labels[j]]])
+
+                mean_a, ci_a_lo, ci_a_hi = bootstrap_ci(vals_a)
+                mean_b, ci_b_lo, ci_b_hi = bootstrap_ci(vals_b)
+
+                d = cohens_d(vals_a, vals_b)
+                t_stat, p_val = stats.ttest_ind(vals_a, vals_b)
+                if np.isnan(p_val):
+                    p_val = 1.0
+
+                pairs.append({
+                    "env": env_name,
+                    "metric": metric_name,
+                    "agent_a": labels[i],
+                    "agent_b": labels[j],
+                    "mean_a": mean_a,
+                    "ci_a": f"[{ci_a_lo:.3f}, {ci_a_hi:.3f}]",
+                    "mean_b": mean_b,
+                    "ci_b": f"[{ci_b_lo:.3f}, {ci_b_hi:.3f}]",
+                    "diff": mean_a - mean_b,
+                    "cohens_d": d,
+                    "t_stat": t_stat,
+                    "p_raw": p_val,
+                })
+                raw_p_values.append(p_val)
+
+        rows.extend(pairs)
+
+    p_list = [r["p_raw"] for r in rows]
+    significant = holm_bonferroni(p_list)
+    for r, sig in zip(rows, significant):
+        r["significant_hb"] = sig
+
+    df = pd.DataFrame(rows)
+    return df
+
+
 def tune_info_gain_weight(
     env,
     candidate_weights: List[float] = None,
@@ -255,6 +316,11 @@ def run_info_seeking_experiment(num_episodes: int = 1000, seed: int = 42):
     summary_df = pd.DataFrame(all_results).T
     summary_df.to_csv("results_summary.csv")
     print("Results saved to results_summary.csv")
+
+    stats_df = compute_full_statistics(all_raw, env_name="InfoSeeking")
+    stats_df.to_csv("results_summary_stats.csv", index=False)
+    print("Full statistics saved to results_summary_stats.csv")
+
     return all_results, all_raw
 
 
@@ -326,6 +392,11 @@ def run_tiger_experiment(num_episodes: int = 1000, seed: int = 42):
     summary_df = pd.DataFrame(all_results).T
     summary_df.to_csv("results_tiger.csv")
     print("Results saved to results_tiger.csv")
+
+    stats_df = compute_full_statistics(all_raw, env_name="Tiger")
+    stats_df.to_csv("results_tiger_stats.csv", index=False)
+    print("Full statistics saved to results_tiger_stats.csv")
+
     return all_results, all_raw
 
 
@@ -381,6 +452,27 @@ def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1
         summary_df = pd.DataFrame(all_results).T
         summary_df.to_csv(csv_name)
         print(f"Results saved to {csv_name}")
+
+        stats_df = compute_full_statistics(all_raw, env_name=label)
+        stats_csv = csv_name.replace(".csv", "_stats.csv")
+        stats_df.to_csv(stats_csv, index=False)
+        print(f"Full statistics saved to {stats_csv}")
+
+        vfe_comparisons = stats_df[
+            (stats_df["metric"] == "Reward")
+            & ((stats_df["agent_a"] == "VFE") | (stats_df["agent_b"] == "VFE"))
+        ]
+        if not vfe_comparisons.empty:
+            print("\n  VFE Reward comparisons (Holm-Bonferroni corrected):")
+            for _, row in vfe_comparisons.iterrows():
+                other = row["agent_b"] if row["agent_a"] == "VFE" else row["agent_a"]
+                sig_mark = "*" if row["significant_hb"] else "n.s."
+                print(
+                    f"    vs {other:15s}: d={row['cohens_d']:+.3f}  "
+                    f"p_raw={row['p_raw']:.6f}  HB={sig_mark}"
+                )
+        print()
+
     return all_results, all_raw
 
 

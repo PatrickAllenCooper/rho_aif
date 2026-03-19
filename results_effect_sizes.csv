@@ -1,0 +1,17 @@
+Environment,Comparison,Cohen's d,Effect
+Tiger,VFE vs Myopic,+0.418,small
+Tiger,VFE vs Planning,-0.084,negligible
+Tiger,VFE vs InfoGain-Tuned,-0.048,negligible
+Tiger,VFE vs Planning+IG,-0.057,negligible
+Testbed,VFE vs Myopic,-0.046,negligible
+Testbed,VFE vs Planning,-0.219,small
+Testbed,VFE vs InfoGain-Tuned,+0.630,medium
+Testbed,VFE vs Planning+IG,+0.943,large
+Diagnosis,VFE vs Myopic,+0.555,medium
+Diagnosis,VFE vs Planning,+0.046,negligible
+Diagnosis,VFE vs InfoGain-Tuned,-0.014,negligible
+Diagnosis,VFE vs Planning+IG,+0.045,negligible
+Bandit,VFE vs Myopic,+0.169,negligible
+Bandit,VFE vs Planning,+0.129,negligible
+Bandit,VFE vs InfoGain-Tuned,+0.544,medium
+Bandit,VFE vs Planning+IG,+0.627,medium

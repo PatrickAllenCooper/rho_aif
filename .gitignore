@@ -62,6 +62,7 @@ wandb/
 data/raw/
 data/processed/
 *.csv
+!results_*.csv
 *.hdf5
 
 # Temporary files
