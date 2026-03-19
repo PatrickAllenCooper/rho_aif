@@ -30,6 +30,7 @@ from agents.navigation_baselines import NavigationMyopicAgent, NavigationInfoGai
 from agents.pymdp_agent import PyMDPAgent
 from agents.planning_infogain import PlanningInfoGainAgent
 from agents.epistemic_only import EpistemicOnlyAgent
+from agents.thompson import ThompsonSamplingAgent
 
 
 @dataclass
@@ -284,6 +285,7 @@ def run_info_seeking_experiment(num_episodes: int = 1000, seed: int = 42):
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}),
         ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}),
         ("EFE", EFEAgent, {"planning_horizon": horizon}),
+        ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
         ("PyMDP-AIF", PyMDPAgent, {}),
     ]
 
@@ -360,6 +362,7 @@ def run_tiger_experiment(num_episodes: int = 1000, seed: int = 42):
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}),
         ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}),
         ("EFE", EFEAgent, {"planning_horizon": horizon}),
+        ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
         ("PyMDP-AIF", PyMDPAgent, {}),
     ]
 
@@ -494,6 +497,7 @@ def run_diagnosis_experiment(num_conditions: int = 4, num_episodes: int = 1000, 
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}, None),
         ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}, None),
         ("EFE", EFEAgent, {"planning_horizon": horizon}, None),
+        ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}, None),
     ]
     return run_generic_experiment(
         env, f"DIAGNOSIS EXPERIMENT (N={num_conditions})", configs,
@@ -519,6 +523,7 @@ def run_bandit_experiment(num_arms: int = 4, num_episodes: int = 1000, seed: int
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w_plan}, None),
         ("EpistemicOnly", EpistemicOnlyAgent, {"planning_horizon": horizon}, None),
         ("EFE", EFEAgent, {"planning_horizon": horizon}, None),
+        ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}, None),
     ]
     return run_generic_experiment(
         env, f"BANDIT EXPERIMENT (K={num_arms})", configs,

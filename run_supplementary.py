@@ -21,6 +21,7 @@ from agents.info_gain import InformationGainAgent
 from agents.planning_infogain import PlanningInfoGainAgent
 from agents.epistemic_only import EpistemicOnlyAgent
 from agents.efe import EFEAgent
+from agents.thompson import ThompsonSamplingAgent
 from run_experiment import (
     make_agent, run_episode, run_experiment, summarize_results,
     tune_info_gain_weight, EpisodeResult, compute_full_statistics,
@@ -120,6 +121,7 @@ def main():
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 6, "info_gain_weight": best_w}),
         ("EFE", EFEAgent, {"planning_horizon": 6}),
+        ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
     tiger_raw = run_env_with_stats(tiger_env, "Tiger", tiger_configs, num_episodes, seed)
     all_bootstrap_rows.append(generate_bootstrap_table(tiger_raw, "Tiger"))
@@ -140,6 +142,7 @@ def main():
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w_tb}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 4, "info_gain_weight": best_w_tb}),
         ("EFE", EFEAgent, {"planning_horizon": 4}),
+        ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
     testbed_raw = run_env_with_stats(testbed_env, "Testbed", testbed_configs, num_episodes, seed)
     all_bootstrap_rows.append(generate_bootstrap_table(testbed_raw, "Testbed"))
@@ -160,6 +163,7 @@ def main():
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w_d}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 3, "info_gain_weight": best_w_d}),
         ("EFE", EFEAgent, {"planning_horizon": 3}),
+        ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
     diag_raw = run_env_with_stats(diag_env, "Diagnosis", diag_configs, num_episodes, seed)
     all_bootstrap_rows.append(generate_bootstrap_table(diag_raw, "Diagnosis"))
@@ -180,6 +184,7 @@ def main():
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w_b}),
         ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 2, "info_gain_weight": best_w_b}),
         ("EFE", EFEAgent, {"planning_horizon": 2}),
+        ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
     bandit_raw = run_env_with_stats(bandit_env, "Bandit", bandit_configs, num_episodes, seed)
     all_bootstrap_rows.append(generate_bootstrap_table(bandit_raw, "Bandit"))
