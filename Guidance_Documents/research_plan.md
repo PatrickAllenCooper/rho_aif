@@ -315,7 +315,7 @@ At H=2, Planning and VFE are equivalent. VFE's advantage over Planning requires 
 
 ## Current Status
 
-**Project Phase**: Phase 4 -- Experiments Complete, Paper Submission-Ready  
+**Project Phase**: Phase 5 -- NeurIPS Submission Polish Complete  
 **Date**: March 18, 2026
 
 **Completed**:
@@ -335,9 +335,9 @@ At H=2, Planning and VFE are equivalent. VFE's advantage over Planning requires 
 14. Four new long-horizon visualization figures: belief heatmap, efficiency curves, extended EFE decomposition, stopping time distributions
 15. Paper inconsistencies fixed (baseline count, weight reporting, supplementary reference)
 16. Guidance document aligned with all experimental findings
+17. NeurIPS submission polish: mandatory checklist added, page budget compliance (9-page limit), abstract numbers corrected to match tables, title shortened, formal proof added as appendix, standard errors in all main result tables, broader impact statement, observe-then-commit limitation flagged, conclusion rewritten, two new citations (Maisto et al. 2025, De Vries & Nuijten 2025), stale PyMDP table reference fixed, Testbed w=1 clarified, figure captions tightened, related work condensed, epistemic foraging dynamics moved to appendix
 
 **Awaiting**:
-- NeurIPS paper formatting (David)
 - Feedback from Ashutosh on methodology
 - Computational scaling improvements (MCTS or amortized planning for deeper horizons)
 - Formal convergence analysis of the recursive EFE scheme
