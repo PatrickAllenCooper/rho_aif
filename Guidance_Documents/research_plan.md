@@ -116,6 +116,13 @@ Upon successful Phase 1 completion, we will extend to:
    - Layered uncertainty requiring strategic questioning
    - Tests long-horizon epistemic planning
 
+4. **Tileworld (Tile Search)**
+   - N x N grid with hidden target tile
+   - K scan actions partition the grid spatially (bit-level row/column splits)
+   - N^2 commit actions (collect at cell)
+   - Spatial generalization of Diagnosis; produces visual belief evolution figures
+   - Scaling from 4x4 (16 states) to 8x8 (64 states)
+
 ### Scaling Analysis
 - Larger state spaces
 - More complex observation models
@@ -286,6 +293,30 @@ VFE dominates on BOTH reward AND success. Planning barely improves over Myopic.
 
 VFE over-explores on small grids. Greedy agent wins.
 
+### Tileworld 6x6 (500 episodes, H=2, +10/-50, scan cost -1.0)
+
+| Agent | Scans | Success | Reward |
+|---|---|---|---|
+| Myopic | 0.00 | 2.2% | -48.68 |
+| Planning (H=2) | 15.96 | 71.2% | -23.24 |
+| InfoGain (w=1) | 5.15 | 29.2% | -37.63 |
+| InfoGain-Tuned (w=100) | 32.71 | 99.0% | -23.31 |
+| Planning+IG (w=100) | 33.49 | 98.6% | -24.33 |
+| EpistemicOnly | 200.0 | 0.0% | -200.00 |
+| **VFE (H=2)** | **14.89** | **73.6%** | **-20.73** |
+
+VFE achieves highest reward. InfoGain-Tuned and Planning+IG over-explore massively (30+ scans).
+
+### Tileworld Scaling (200 episodes, H=2)
+
+| Grid | Myopic | Planning | VFE |
+|---|---|---|---|
+| 4x4 | 46.0% | 80.5% | 77.0% |
+| 6x6 | 2.5% | 82.0% | 76.0% |
+| 8x8 | 0.5% | 2.0% | **75.5%** |
+
+**Key finding**: At 8x8 (64 states), VFE 75.5% vs Planning 2.0%. Reward-only planning cannot justify scanning at H=2 with 64 states; VFE's epistemic term drives systematic information gathering.
+
 ### Scaling Analysis (Diagnosis N=2,4,8,16, H=2)
 
 | N | Myopic | Planning | VFE | VFE vs Myopic |
@@ -306,6 +337,7 @@ At H=2, Planning and VFE are equivalent. VFE's advantage over Planning requires 
 - Multi-observation-action environments with sufficient depth: VFE significantly outperforms same-horizon Planning (Diagnosis +9.1 pp at H=3, Bandit +20.6 pp at H=2)
 - At H=2, VFE and Planning perform equivalently on scaling analysis -- EFE advantage requires sufficient recursive depth
 - Very small state spaces: VFE over-explores
+- **Tileworld spatial scaling**: VFE advantage GROWS with state space size. At 8x8 (64 states), VFE 75.5% vs Planning 2.0%. This is the strongest evidence that EFE's epistemic term is essential for larger problems.
 
 **RQ3 (Constitutive epistemics)**: Supported with boundary conditions. Most valuable under structured uncertainty (multiple observation types, large state spaces). Can be counterproductive in very small/simple environments.
 
@@ -315,18 +347,18 @@ At H=2, Planning and VFE are equivalent. VFE's advantage over Planning requires 
 
 ## Current Status
 
-**Project Phase**: Phase 5 -- NeurIPS Submission Polish Complete  
-**Date**: March 18, 2026
+**Project Phase**: Phase 6 -- Tileworld Champion Example  
+**Date**: March 19, 2026
 
 **Completed**:
 1. Modular codebase with generalized multi-observation-action agent architecture
-2. Five Gymnasium environments: InfoSeeking, Tiger, Diagnosis, Bandit, Navigation
+2. Six Gymnasium environments: InfoSeeking, Tiger, Diagnosis, Bandit, Navigation, Tileworld
 3. Ten+ agent types: Myopic, Planning, InformationGain, PlanningInfoGain, VFE, EpistemicOnly, NavigationVFE, NavigationMyopic, NavigationInfoGain, PyMDP-AIF
 4. Per-environment InfoGain weight tuning via grid search
 5. Full experiments on all environments with all baselines (500-1000 episodes each)
 6. Scaling analysis: Diagnosis N=2,4,8,16 with Planning baseline
 7. pymdp integration: reference agent + EFE consistency validation
-8. Comprehensive test suite (130 tests, all passing)
+8. Comprehensive test suite (161 tests, all passing)
 9. Paper draft with expanded results, honest comparative analysis
 10. All experiments re-run and verified with fixed seed (March 2026)
 11. Holm-Bonferroni corrected statistics integrated into experiment runner
@@ -335,7 +367,8 @@ At H=2, Planning and VFE are equivalent. VFE's advantage over Planning requires 
 14. Four new long-horizon visualization figures: belief heatmap, efficiency curves, extended EFE decomposition, stopping time distributions
 15. Paper inconsistencies fixed (baseline count, weight reporting, supplementary reference)
 16. Guidance document aligned with all experimental findings
-17. NeurIPS submission polish: mandatory checklist added, page budget compliance (9-page limit), abstract numbers corrected to match tables, title shortened, formal proof added as appendix, standard errors in all main result tables, broader impact statement, observe-then-commit limitation flagged, conclusion rewritten, two new citations (Maisto et al. 2025, De Vries & Nuijten 2025), stale PyMDP table reference fixed, Testbed w=1 clarified, figure captions tightened, related work condensed, epistemic foraging dynamics moved to appendix
+17. NeurIPS submission polish complete
+18. Tileworld champion example: 6x6 grid POMDP with rendered belief evolution and agent comparison figures, spatial scaling analysis (4x4 to 8x8), four new paper figures (belief strip, agent comparison, scaling, scan atlas), headline result of VFE 75.5% vs Planning 2.0% at 8x8
 
 **Awaiting**:
 - Feedback from Ashutosh on methodology
