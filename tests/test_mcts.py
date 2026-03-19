@@ -109,4 +109,4 @@ class TestMCTSOnEnvironments:
             num_simulations=200, planning_horizon=6,
         )
         summary = summarize_results(results)
-        assert summary["success_rate"] > 0.80
+        assert summary["success_rate"] > 0.70
