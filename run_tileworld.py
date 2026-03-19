@@ -120,9 +120,13 @@ def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
     n_episodes = 200
     seed = 42
 
+    tuned_weight = 100
+
     agent_defs = [
         ("Myopic", MyopicAgent, {}),
         ("Planning", PlanningAgent, {"planning_horizon": horizon}),
+        ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": tuned_weight}),
+        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": tuned_weight}),
         ("EFE", EFEAgent, {"planning_horizon": horizon}),
     ]
 

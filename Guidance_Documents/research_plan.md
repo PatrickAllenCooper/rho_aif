@@ -154,10 +154,12 @@ Upon successful Phase 1 completion, we will extend to:
 
 ### Empirical Contributions
 
-1. **Direct comparison**: EFE vs. reward-only Planning, tuned InfoGain, Thompson sampling across six environments
-2. **Scaling evidence**: EFE advantage grows with state space size (Tileworld 8x8: 75.5% vs 2.0%)
-3. **Robustness**: Model misspecification experiments show graceful degradation
+1. **Direct comparison**: EFE vs. reward-only Planning, tuned InfoGain, Thompson sampling, POMCP across six environments
+2. **Scaling evidence**: EFE advantage grows with state space size (Tileworld 8x8: 66.5% vs 2.5%; complete scaling with all agents including Planning+IG)
+3. **Robustness**: Model misspecification experiments show graceful degradation; discount sensitivity analyzed with Planning baseline
 4. **MCTS scaling**: EFE as leaf heuristic enables practical planning at H=5+
+5. **POMCP comparison**: EFE outperforms standard POMCP on multi-observation environments (Appendix P)
+6. **RockSample**: EFE extends to interleaved observe-act POMDPs (Appendix Q)
 
 ### Target Venues
 - NeurIPS 2026 (initial submission received Weak Reject; revision in progress)
@@ -327,15 +329,15 @@ EFE over-explores on small grids. Greedy agent wins.
 
 EFE achieves highest reward. InfoGain-Tuned and Planning+IG over-explore massively (30+ scans).
 
-### Tileworld Scaling (200 episodes, H=2)
+### Tileworld Scaling (200 episodes, H=2, All Agents)
 
-| Grid | Myopic | Planning | EFE |
-|---|---|---|---|
-| 4x4 | 46.0% | 80.5% | 77.0% |
-| 6x6 | 2.5% | 82.0% | 76.0% |
-| 8x8 | 0.5% | 2.0% | **75.5%** |
+| Grid | Myopic | Planning | InfoGain-Tuned | Planning+IG | EFE |
+|---|---|---|---|---|---|
+| 4x4 | 35.0% | 71.0% | 98.5% | 98.5% | 81.0% |
+| 6x6 | 3.5% | 70.0% | 99.5% | 98.5% | 75.5% |
+| 8x8 | 2.0% | 2.5% | 96.5% | **98.0%** | 66.5% |
 
-**Key finding**: At 8x8 (64 states), EFE 75.5% vs Planning 2.0%. Reward-only planning cannot justify scanning at H=2 with 64 states; EFE's epistemic term drives systematic information gathering.
+**Key finding**: At 8x8 (64 states), EFE 66.5% vs Planning 2.5%. Planning+IG at w=100 achieves 98.0% but at substantial reward cost (-31.40 vs EFE's -27.54). EFE Pareto-dominates Planning at every scale (higher success AND best reward). The gap between w*_ret and w*_succ widens with |S|.
 
 ### Scaling Analysis (Diagnosis N=2,4,8,16, H=2)
 
@@ -368,9 +370,15 @@ At H=2, Planning and EFE are equivalent. EFE's advantage over Planning requires 
 
 **Thompson Sampling comparison**: Thompson matches EFE on Tiger but underperforms on multi-observation-action environments (Diagnosis, Bandit) where EFE's recursive planning exploits observation structure.
 
-**Discount sensitivity**: EFE is robust across gamma in {0.9, 0.95, 0.99, 1.0} on Tiger. On Diagnosis and Bandit, heavy discounting (gamma=0.9) degrades performance by truncating the effective planning horizon below what is needed for disambiguation.
+**Discount sensitivity (with Planning baseline)**: EFE is robust across gamma in {0.9, 0.95, 0.99, 1.0} on Tiger. On Diagnosis and Bandit, heavy discounting (gamma=0.9) erases EFE's advantage over Planning; both agents become myopic. At gamma=0.99+, EFE's advantage emerges sharply: +7.0 pp on Diagnosis, +22.0 pp on Bandit. The relative gap between EFE and Planning depends on gamma preserving sufficient effective horizon.
 
-**RockSample (interleaved observe-act)**: EFE extends naturally to environments with state transitions. The RockSampleEFE agent outperforms a Greedy baseline by gathering rock quality information before committing to collection actions.
+**RockSample (interleaved observe-act)**: EFE extends naturally to environments with state transitions. The RockSampleEFE agent outperforms a Greedy baseline on RS[5,3] (+8.86 vs +5.12 reward) and RS[7,4] (+8.82 vs +1.34) by checking rock quality before sampling. Formal analysis of where Proposition 3.3 breaks under state transitions added to Section 3 (transition-observation coupling term).
+
+**POMCP comparison**: Standalone POMCP agent implemented and compared on all environments. POMCP substantially underperforms EFE on multi-observation environments: Tiger 90.6% vs 99.2%, Diagnosis 72.2% vs 96.6%, Tileworld 10.5% vs 73.0%. On Bandit, POMCP achieves 97.4% success but at extreme reward cost (+3.03 vs EFE's +6.42). POMCP's random rollout cannot evaluate differential informativeness of observation actions.
+
+**Alpha-eta proposition (Proposition 3.X)**: Formalized when w=1 is near-optimal for two-state H=1 case using reward asymmetry ratio alpha and observation informativeness eta. Table mapping alpha, eta to predicted and observed w*_ret across all environments added to Section 3.
+
+**Pareto dominance reframing**: Results text reframed from "EFE maximizes reward" to "EFE Pareto-dominates Planning" (higher success AND comparable reward). Run with 3000 episodes on Diagnosis and Bandit for tighter confidence intervals (non-overlapping CIs on Bandit reward).
 
 **Model misspecification**: EFE degrades gracefully with systematic accuracy mismatch. On Tiger, >96.5% success across all mismatch levels (+/- 0.15). Overestimating accuracy is more harmful than underestimating, because agents commit prematurely. EFE's epistemic drive partially buffers against overconfident models.
 
@@ -400,14 +408,16 @@ Addressing reviewer weaknesses W1-W6 and minor issues:
 
 9. **W1 (Naming)**: Renamed "VFE" agent to "EFE" throughout entire codebase and paper to avoid confusion with variational free energy
 10. **W5 (Baselines)**: Implemented Thompson Sampling agent as new Bayesian exploration baseline; integrated into all experiment runners
-11. **W4 (Discounting)**: Added discount parameter (gamma) to EFE and Planning agents; extended Proposition 3.3 for gamma < 1; ran experiments with gamma in {0.9, 0.95, 0.99, 1.0}; added appendix table
+11. **W4 (Discounting)**: Added discount parameter (gamma) to EFE and Planning agents; extended Proposition 3.3 for gamma < 1; ran experiments with gamma in {0.9, 0.95, 0.99, 1.0}; added appendix table with BOTH EFE and Planning rows, plus relative-gap analysis
 12. **W3 (Computational scaling)**: Implemented MCTSEFEAgent using EFE as leaf heuristic in MCTS framework; enables planning at H=5+ and larger state spaces
-13. **W2 (Observe-then-commit restriction)**: Implemented RockSample environment with interleaved observe-act structure and state transitions; created specialized RockSampleEFEAgent; ran comparison experiments
-14. **W6 (w=1 justification)**: Added formal characterization of when w=1 is near-optimal using reward asymmetry ratio (alpha) and observation informativeness (eta); connected to empirical results
+13. **W2 (Observe-then-commit restriction)**: Implemented RockSample environment with interleaved observe-act structure; redesigned RockSampleEFEAgent with deliberate information gathering; added formal analysis of where Prop 3.3 breaks under state transitions (transition-observation coupling term in Section 3); added RockSample appendix with results
+14. **W6 (w=1 justification)**: Formalized alpha-eta characterization as Proposition 3.X in Section 3 with explicit expression for w*_ret at H=1; added table mapping alpha, eta to predicted vs observed w*_ret across all environments
 15. **Robustness**: Added model misspecification experiments testing agents with wrong observation accuracy (+/- 0.15 mismatch); results show graceful degradation
-16. **Paper updates**: Standard errors in main table, observe-then-commit flagged in abstract, reframed canonical weight claims, Cohen's d caveats, sophisticated inference clarification, misspecification discussion paragraph
-17. Comprehensive test suite expanded to 203 tests, all passing
-18. Guidance document updated to reflect all revision changes
+16. **Paper updates**: Reframed results as Pareto dominance (not reward maximization); ran 3000 episodes on Diagnosis/Bandit for tighter CIs; standard errors in main table; observe-then-commit flagged in abstract; Cohen's d caveats removed (now using CIs); sophisticated inference clarification
+17. **POMCP baseline**: Implemented standalone POMCP agent (agents/pomcp.py) with UCB1 tree search and particle belief; compared on Tiger, Diagnosis, Bandit, Tileworld; EFE outperforms POMCP on all multi-observation environments; added appendix table and discussion
+18. **Tileworld scaling**: Added Planning+IG and InfoGain-Tuned to scaling analysis across all grid sizes (4x4, 6x6, 8x8); updated paper with complete data and analysis of w*_ret vs w*_succ at large scale
+19. Comprehensive test suite expanded to 203 tests, all passing
+20. Guidance document updated to reflect all revision changes
 
 **Awaiting**:
 - Feedback from Ashutosh on methodology
@@ -420,6 +430,7 @@ Addressing reviewer weaknesses W1-W6 and minor issues:
 
 - Araya, M., et al. (2010). A POMDP extension with belief-dependent rewards. *NIPS*
 - Benchetrit, Y., et al. (2025). rho-POMCPOW: Online planning for continuous rho-POMDPs. *arXiv:2502.02549*
+- Silver, D., & Veness, J. (2010). Monte-Carlo Planning in Large POMDPs. *NeurIPS*
 - Da Costa, L., et al. (2020). Active inference on discrete state-spaces: A synthesis. *Journal of Mathematical Psychology*
 - Da Costa, L., et al. (2023). Reward maximization through discrete active inference. *Neural Computation*
 - Fehr, R., et al. (2018). rho-POMDPs have Lipschitz-continuous epsilon-optimal value functions. *NeurIPS*

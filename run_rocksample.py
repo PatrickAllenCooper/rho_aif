@@ -18,8 +18,8 @@ from agents.rocksample_agents import (
 )
 
 
-def run_rocksample_episode(agent, env, max_steps=100):
-    obs, info = env.reset()
+def run_rocksample_episode(agent, env, seed=None, max_steps=100):
+    obs, info = env.reset(seed=seed)
     agent.reset()
     total_reward = 0.0
 
@@ -59,7 +59,8 @@ def run_rocksample_experiment(
         grid_size=grid_size,
         num_rocks=num_rocks,
         rock_positions=rock_positions,
-        max_steps=grid_size * grid_size + num_rocks * 5,
+        move_cost=-0.5,
+        max_steps=grid_size * grid_size + num_rocks * 10,
     )
 
     agent_configs = [
@@ -76,8 +77,8 @@ def run_rocksample_experiment(
         t0 = time.time()
         episode_results = []
 
-        for _ in range(num_episodes):
-            r = run_rocksample_episode(agent, env)
+        for ep_i in range(num_episodes):
+            r = run_rocksample_episode(agent, env, seed=seed + ep_i)
             episode_results.append(r)
 
         dt = time.time() - t0

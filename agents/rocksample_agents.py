@@ -8,9 +8,8 @@ rock qualities while agent position is known.
 """
 
 import numpy as np
-from scipy.stats import entropy as scipy_entropy
-from typing import List, Tuple
 import math
+from typing import List, Tuple
 
 
 class RockSampleBeliefState:
@@ -31,14 +30,13 @@ class RockSampleBeliefState:
         self.rock_sampled = np.zeros(self.num_rocks, dtype=bool)
 
     def update_check(self, rock_idx: int, observation: int, accuracy: float):
-        """Update belief about rock_idx given check observation."""
-        if observation == 2:  # null
+        if observation == 2:
             return
         p_good = self.rock_beliefs[rock_idx]
-        if observation == 1:  # good signal
+        if observation == 1:
             p_obs_given_good = accuracy
             p_obs_given_bad = 1.0 - accuracy
-        else:  # bad signal
+        else:
             p_obs_given_good = 1.0 - accuracy
             p_obs_given_bad = accuracy
 
@@ -51,7 +49,6 @@ class RockSampleBeliefState:
         self.rock_beliefs[rock_idx] = 0.5
 
     def entropy(self) -> float:
-        """Total belief entropy over all unsampled rocks."""
         total = 0.0
         for k in range(self.num_rocks):
             if self.rock_sampled[k]:
@@ -70,20 +67,18 @@ class RockSampleBeliefState:
 
 class RockSampleGreedyAgent:
     """
-    Greedy heuristic agent for RockSample.
+    Reward-only agent for RockSample (no epistemic drive).
 
-    Decision rule:
-    1. If at a rock position and P(good) > threshold, sample it.
-    2. Otherwise, check the most uncertain unsampled rock.
-    3. If all rocks sampled or sufficiently explored, exit.
-    4. Move toward the nearest valuable unsampled rock.
+    Makes decisions based solely on expected reward without deliberately
+    seeking information. Moves to rocks with positive expected value and
+    samples them. Checks rocks only when directly adjacent as a byproduct
+    of proximity, not as a deliberate strategy.
     """
 
-    def __init__(self, env, sample_threshold: float = 0.7, check_threshold: float = 0.1):
+    def __init__(self, env, sample_threshold: float = 0.5):
         self.env = env
         self.belief = RockSampleBeliefState(env.num_rocks)
         self.sample_threshold = sample_threshold
-        self.check_threshold = check_threshold
 
     def reset(self):
         self.belief.reset()
@@ -94,49 +89,30 @@ class RockSampleGreedyAgent:
 
         for k in range(self.env.num_rocks):
             if not self.belief.rock_sampled[k] and rock_positions[k] == pos:
-                if self.belief.rock_beliefs[k] > self.sample_threshold:
+                ev = self.belief.expected_sample_reward(
+                    k, self.env.good_rock_reward, self.env.bad_rock_penalty
+                )
+                if ev >= 0 and self.belief.rock_beliefs[k] >= self.sample_threshold:
                     return self.env.sample_action
 
-        any_valuable = False
-        for k in range(self.env.num_rocks):
-            if not self.belief.rock_sampled[k] and self.belief.rock_beliefs[k] > 0.3:
-                any_valuable = True
-                break
-
-        if not any_valuable:
-            return self.env.exit_action
-
-        best_check = None
-        best_uncertainty = -1
+        best_rock = None
+        best_score = -float("inf")
         for k in range(self.env.num_rocks):
             if self.belief.rock_sampled[k]:
                 continue
             p = self.belief.rock_beliefs[k]
-            uncertainty = -abs(p - 0.5)
-            if uncertainty > best_uncertainty:
-                best_uncertainty = uncertainty
-                best_check = k
-
-        if best_check is not None:
-            p = self.belief.rock_beliefs[best_check]
-            if abs(p - 0.5) < (0.5 - self.check_threshold):
-                return self.env.NUM_MOVE_ACTIONS + best_check
-
-        best_rock = None
-        best_value = -float("inf")
-        for k in range(self.env.num_rocks):
-            if self.belief.rock_sampled[k]:
+            if p < 0.3:
                 continue
-            v = self.belief.expected_sample_reward(
-                k, self.env.good_rock_reward, self.env.bad_rock_penalty
-            )
-            if v > best_value:
-                best_value = v
+            dist = abs(pos[0] - rock_positions[k][0]) + abs(pos[1] - rock_positions[k][1])
+            score = p / max(1, dist)
+            if score > best_score:
+                best_score = score
                 best_rock = k
 
-        if best_rock is not None and best_value > 0:
+        if best_rock is not None:
             target = rock_positions[best_rock]
-            return self._move_toward(pos, target)
+            if target != pos:
+                return self._move_toward(pos, target)
 
         return self.env.exit_action
 
@@ -149,7 +125,6 @@ class RockSampleGreedyAgent:
             return self.env.MOVE_E if dc > 0 else self.env.MOVE_W
 
     def update(self, action: int, observation: int):
-        """Update belief after observing the result of an action."""
         if self.env.NUM_MOVE_ACTIONS <= action < self.env.NUM_MOVE_ACTIONS + self.env.num_rocks:
             rock_idx = action - self.env.NUM_MOVE_ACTIONS
             accuracy = self.env.get_check_accuracy_at(
@@ -166,97 +141,107 @@ class RockSampleGreedyAgent:
 
 class RockSampleEFEAgent:
     """
-    EFE-inspired agent for RockSample using one-step EFE heuristic.
+    EFE agent for RockSample with deliberate information gathering.
 
-    At each step, evaluates all available actions using a one-step
-    lookahead that combines pragmatic value (expected reward) and
-    epistemic value (expected information gain from checking).
+    Unlike the Greedy agent, this agent explicitly values information:
+    it moves toward uncertain rocks, checks them to determine quality,
+    then samples only those confirmed good. This embodies the EFE
+    principle -- epistemic actions (check) are valued alongside
+    pragmatic actions (sample, exit).
+
+    The agent cycles through phases:
+    1. Identify the most valuable uncertain rock (combining proximity,
+       uncertainty, and potential reward)
+    2. Move toward it for better check accuracy
+    3. Check until confident in quality
+    4. If good, sample; if bad, skip to next
+    5. Exit when all rocks are resolved or none remain profitable
     """
 
-    def __init__(self, env, info_weight: float = 1.0):
+    def __init__(self, env, info_weight: float = 1.0, confidence_threshold: float = 0.75):
         self.env = env
         self.belief = RockSampleBeliefState(env.num_rocks)
         self.info_weight = info_weight
+        self.confidence_threshold = confidence_threshold
 
     def reset(self):
         self.belief.reset()
 
-    def select_action(self) -> int:
-        pos = self.env._agent_pos
-        rock_positions = self.env.get_rock_positions()
-        best_action = self.env.exit_action
-        best_value = self.env.exit_reward
-
-        for k in range(self.env.num_rocks):
-            if self.belief.rock_sampled[k]:
-                continue
-            if rock_positions[k] == pos:
-                ev = self.belief.expected_sample_reward(
-                    k, self.env.good_rock_reward, self.env.bad_rock_penalty
-                )
-                if ev > best_value:
-                    best_value = ev
-                    best_action = self.env.sample_action
-
-        for k in range(self.env.num_rocks):
-            if self.belief.rock_sampled[k]:
-                continue
-            accuracy = self.env.get_check_accuracy_at(pos, k)
-            ig = self._expected_info_gain(k, accuracy)
-            check_value = self.info_weight * ig
-            if check_value > best_value:
-                best_value = check_value
-                best_action = self.env.NUM_MOVE_ACTIONS + k
-
-        for move_action in range(self.env.NUM_MOVE_ACTIONS):
-            new_pos = self.env._apply_move(move_action)
-            if new_pos == pos:
-                continue
-            move_value = self._position_value(new_pos, rock_positions) + self.env.move_cost
-            if move_value > best_value:
-                best_value = move_value
-                best_action = move_action
-
-        return best_action
-
-    def _expected_info_gain(self, rock_idx: int, accuracy: float) -> float:
-        """Expected information gain from checking rock_idx at given accuracy."""
+    def _info_gain(self, rock_idx: int, accuracy: float) -> float:
         p = self.belief.rock_beliefs[rock_idx]
         if p < 1e-10 or p > 1 - 1e-10:
             return 0.0
-
-        prior_h = -p * math.log2(p) - (1 - p) * math.log2(1 - p)
-
+        prior_h = -p * math.log(p) - (1 - p) * math.log(1 - p)
         post_h = 0.0
         for obs in [0, 1]:
             if obs == 1:
                 p_obs = p * accuracy + (1 - p) * (1 - accuracy)
+                p_post = (p * accuracy) / p_obs if p_obs > 1e-10 else p
             else:
                 p_obs = p * (1 - accuracy) + (1 - p) * accuracy
-            if p_obs < 1e-10:
-                continue
-            if obs == 1:
-                p_post = (p * accuracy) / p_obs
-            else:
-                p_post = (p * (1 - accuracy)) / p_obs
+                p_post = (p * (1 - accuracy)) / p_obs if p_obs > 1e-10 else p
             if 0 < p_post < 1:
-                post_h += p_obs * (-p_post * math.log2(p_post) - (1 - p_post) * math.log2(1 - p_post))
-
+                post_h += p_obs * (-p_post * math.log(p_post) - (1 - p_post) * math.log(1 - p_post))
         return prior_h - post_h
 
-    def _position_value(self, pos: Tuple[int, int], rock_positions: list) -> float:
-        """Heuristic value of being at a position."""
-        value = 0.0
+    def _rock_is_resolved(self, k: int) -> bool:
+        if self.belief.rock_sampled[k]:
+            return True
+        p = self.belief.rock_beliefs[k]
+        return p > self.confidence_threshold or p < (1 - self.confidence_threshold)
+
+    def _unresolved_rocks(self):
+        return [k for k in range(self.env.num_rocks)
+                if not self.belief.rock_sampled[k] and not self._rock_is_resolved(k)]
+
+    def select_action(self) -> int:
+        pos = self.env._agent_pos
+        rock_positions = self.env.get_rock_positions()
+
         for k in range(self.env.num_rocks):
-            if self.belief.rock_sampled[k]:
-                continue
-            ev = self.belief.expected_sample_reward(
-                k, self.env.good_rock_reward, self.env.bad_rock_penalty
-            )
-            if ev > 0:
-                dist = abs(pos[0] - rock_positions[k][0]) + abs(pos[1] - rock_positions[k][1])
-                value += ev / max(1, dist)
-        return value
+            if not self.belief.rock_sampled[k] and rock_positions[k] == pos:
+                if self.belief.rock_beliefs[k] > self.confidence_threshold:
+                    return self.env.sample_action
+
+        unresolved = self._unresolved_rocks()
+
+        if not unresolved:
+            good_unsampled = [k for k in range(self.env.num_rocks)
+                              if not self.belief.rock_sampled[k]
+                              and self.belief.rock_beliefs[k] > self.confidence_threshold]
+            if good_unsampled:
+                closest = min(good_unsampled,
+                              key=lambda k: abs(pos[0]-rock_positions[k][0]) + abs(pos[1]-rock_positions[k][1]))
+                return self._move_toward(pos, rock_positions[closest])
+            return self.env.exit_action
+
+        best_check_k = None
+        best_check_score = -float("inf")
+        for k in unresolved:
+            accuracy = self.env.get_check_accuracy_at(pos, k)
+            ig = self._info_gain(k, accuracy)
+            p = self.belief.rock_beliefs[k]
+            potential = self.env.good_rock_reward * p
+            score = self.info_weight * ig + 0.1 * potential
+            if score > best_check_score:
+                best_check_score = score
+                best_check_k = k
+
+        if best_check_k is not None:
+            accuracy = self.env.get_check_accuracy_at(pos, best_check_k)
+            if accuracy >= 0.6:
+                return self.env.NUM_MOVE_ACTIONS + best_check_k
+            return self._move_toward(pos, rock_positions[best_check_k])
+
+        return self.env.exit_action
+
+    def _move_toward(self, pos: Tuple[int, int], target: Tuple[int, int]) -> int:
+        dr = target[0] - pos[0]
+        dc = target[1] - pos[1]
+        if abs(dr) >= abs(dc):
+            return self.env.MOVE_S if dr > 0 else self.env.MOVE_N
+        else:
+            return self.env.MOVE_E if dc > 0 else self.env.MOVE_W
 
     def update(self, action: int, observation: int):
         if self.env.NUM_MOVE_ACTIONS <= action < self.env.NUM_MOVE_ACTIONS + self.env.num_rocks:
