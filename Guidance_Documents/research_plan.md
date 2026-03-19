@@ -315,20 +315,26 @@ At H=2, Planning and VFE are equivalent. VFE's advantage over Planning requires 
 
 ## Current Status
 
-**Project Phase**: Phase 3 -- Expanded Baselines Complete  
-**Date**: March 4, 2026
+**Project Phase**: Phase 4 -- Experiments Complete, Paper Submission-Ready  
+**Date**: March 18, 2026
 
 **Completed**:
 1. Modular codebase with generalized multi-observation-action agent architecture
 2. Five Gymnasium environments: InfoSeeking, Tiger, Diagnosis, Bandit, Navigation
-3. Seven agent types: Myopic, Planning, InformationGain, VFE, NavigationVFE, NavigationMyopic, NavigationInfoGain, PyMDP-AIF
+3. Ten+ agent types: Myopic, Planning, InformationGain, PlanningInfoGain, VFE, EpistemicOnly, NavigationVFE, NavigationMyopic, NavigationInfoGain, PyMDP-AIF
 4. Per-environment InfoGain weight tuning via grid search
 5. Full experiments on all environments with all baselines (500-1000 episodes each)
 6. Scaling analysis: Diagnosis N=2,4,8,16 with Planning baseline
 7. pymdp integration: reference agent + EFE consistency validation
-8. Comprehensive test suite (128 tests, all passing)
+8. Comprehensive test suite (130 tests, all passing)
 9. Paper draft with expanded results, honest comparative analysis
-10. Guidance document aligned with all experimental findings
+10. All experiments re-run and verified with fixed seed (March 2026)
+11. Holm-Bonferroni corrected statistics integrated into experiment runner
+12. Supplementary material: bootstrap CIs, Cohen's d effect sizes for all pairwise comparisons
+13. Four original figures regenerated: asymmetry sweep, EFE trajectories, obs scaling, Pareto
+14. Four new long-horizon visualization figures: belief heatmap, efficiency curves, extended EFE decomposition, stopping time distributions
+15. Paper inconsistencies fixed (baseline count, weight reporting, supplementary reference)
+16. Guidance document aligned with all experimental findings
 
 **Awaiting**:
 - NeurIPS paper formatting (David)

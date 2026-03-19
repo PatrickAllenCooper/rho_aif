@@ -27,7 +27,7 @@
 \maketitle
 
 \begin{abstract}
-We bridge $\rho$-POMDPs and active inference by substituting Expected Free Energy (EFE) as the belief-dependent utility $\rho$. We prove this is equivalent to augmenting reward with information gain at a canonical weight $w{=}1$ derived from the variational bound (Proposition~\ref{prop:equivalence}), and evaluate this canonical choice against seven baselines---including same-horizon reward-only planning and Planning+IG at per-environment tuned weights---across five discrete POMDP environments. On multi-observation-action environments where the agent must choose \emph{which} information to gather, the canonical $w{=}1$ significantly outperforms same-horizon planning ($+9.1$ pp on diagnosis, $+20.6$ pp on a structured bandit; $p < 0.05$) and achieves substantially better reward than per-environment tuned alternatives that over-explore. A Pareto analysis across the weight space shows that $w{=}1$ sits near the knee of the success-reward tradeoff on all environments without per-environment search, while tuned weights ($w^*{=}20$--$100$) sacrifice reward for accuracy. These findings identify EFE as a principled, automatically-calibrated $\rho$ function for structured uncertainty.
+We bridge $\rho$-POMDPs and active inference by substituting Expected Free Energy (EFE) as the belief-dependent utility $\rho$. We prove this is equivalent to augmenting reward with information gain at a canonical weight $w{=}1$ derived from the variational bound (Proposition~\ref{prop:equivalence}), and evaluate this canonical choice against five baselines---including same-horizon reward-only planning and Planning+IG at per-environment tuned weights---across five discrete POMDP environments. On multi-observation-action environments where the agent must choose \emph{which} information to gather, the canonical $w{=}1$ significantly outperforms same-horizon planning ($+9.1$ pp on diagnosis, $+20.6$ pp on a structured bandit; $p < 0.05$) and achieves substantially better reward than per-environment tuned alternatives that over-explore. A Pareto analysis across the weight space shows that $w{=}1$ sits near the knee of the success-reward tradeoff on all environments without per-environment search, while tuned weights ($w^*{=}20$--$100$) sacrifice reward for accuracy. These findings identify EFE as a principled, automatically-calibrated $\rho$ function for structured uncertainty.
 \end{abstract}
 
 \section{Introduction}
@@ -141,11 +141,11 @@ Epistemic-only & $I_a(b)$ only & $H > 1$ & Ablation: no pragmatic term \\
 
 Planning+IG is the critical ``apples-to-apples'' baseline: it combines the same recursive tree search as VFE with an additive information gain bonus, $V(\text{obs}_k) = -c_k + w \cdot I_k(b) + \mathbb{E}_o[\max_a V(a, b'_o)]$, at the same horizon. By Proposition~\ref{prop:equivalence}, VFE is exactly Planning+IG with $w{=}1$. Any VFE advantage over Planning+IG at other $w$ values is therefore attributable to the \emph{choice of weight}, not to a different mechanism. The Epistemic-only agent sets $\mathcal{G}(\text{commit}) = 0$ (removing reward awareness) while retaining observation costs and information gain; because observation costs exceed information gain at uniform belief in our environments, this agent commits immediately at chance---confirming that the pragmatic term is what makes epistemic foraging instrumentally rational. A \texttt{pymdp} wrapper \citep{heins2022} additionally validates EFE computation against an independent implementation.
 
-For Info Gain and Planning+IG, $w$ is tuned per environment via grid search over $\{0.1, 0.5, 1, 2, 5, 10, 20, 50, 100\}$ maximizing success rate on 200 tuning episodes. We report both $w{=}1$ and $w{=}w^*$ results.
+For Info Gain and Planning+IG, $w$ is tuned per environment via grid search over $\{0.1, 0.5, 1, 2, 5, 10, 20, 50, 100\}$ maximizing success rate on 200 tuning episodes. Tables report the tuned weight $w^*$ for each environment; the Pareto analysis (Section~\ref{sec:pareto}) sweeps the full weight space including $w{=}1$.
 
 \section{Experiments}
 
-All environments follow an observe-then-commit structure implemented as OpenAI Gymnasium environments. The agent selects among observation actions (gathering noisy information) and commit actions (terminating the episode). All experiments use 1{,}000 episodes (500 for navigation/scaling) with a fixed random seed for reproducibility. Statistical comparisons use independent two-sample $t$-tests with Holm-Bonferroni correction for multiple comparisons across agent pairs; we report $p$-values after correction. Bootstrap 95\% confidence intervals (10{,}000 samples) and Cohen's $d$ effect sizes are available in supplementary material. Full environment specifications are in Appendix~\ref{app:envs}.
+All environments follow an observe-then-commit structure implemented as OpenAI Gymnasium environments. The agent selects among observation actions (gathering noisy information) and commit actions (terminating the episode). All experiments use 1{,}000 episodes (500 for navigation/scaling) with a fixed random seed for reproducibility. Statistical comparisons use independent two-sample $t$-tests with Holm-Bonferroni correction for multiple comparisons across agent pairs; we report $p$-values after correction. Bootstrap 95\% confidence intervals (10{,}000 samples) and Cohen's $d$ effect sizes are in Appendix~\ref{app:stats}. Full environment specifications are in Appendix~\ref{app:envs}.
 
 \paragraph{Tiger} \citep{kaelbling1998}. Two states, one observation action (listen, accuracy 0.85), two commit actions. Rewards: correct $+10$, incorrect $-100$, listen cost $-1$. Tests whether agents gather sufficient evidence under extreme reward asymmetry.
 
@@ -298,13 +298,37 @@ The results reveal a consistent pattern:
     \item \textbf{Pragmatic term is essential}: The Epistemic-only ablation collapses on all environments, confirming that information gain alone cannot justify observation costs.
 \end{itemize}
 
+\subsection{Epistemic foraging dynamics}
+
+The aggregate statistics in Tables~\ref{tab:tiger}--\ref{tab:bandit} show \emph{what} VFE achieves; we now visualize \emph{how} it achieves it by examining within-episode dynamics on extended Diagnosis instances ($N{=}8$, $K{=}3$, accuracy 0.75) that produce episodes with 8--15+ observation steps.
+
+\paragraph{Belief evolution.}
+Figure~\ref{fig:belief_heatmap} shows belief-state evolution within representative episodes for VFE, Planning, and InfoGain-Tuned. Each column is a heatmap of the belief vector over all states at each time step, with the true state marked. VFE exhibits systematic partition-based narrowing: early tests eliminate large groups of states, and later tests refine among remaining candidates. Planning (without epistemic value) makes observations but lacks guidance on \emph{which} test to run, producing less structured belief concentration. InfoGain-Tuned continues testing well past the point where the agent has high confidence, accumulating unnecessary observation costs.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_belief_heatmap.pdf}
+\caption{Belief evolution within representative Diagnosis episodes ($N{=}8$, $K{=}3$, accuracy 0.75). Each panel shows a heatmap of the belief vector (state index vs.\ time step, darker = higher probability). Green line: true state. White dashed line: commit point. VFE concentrates belief efficiently and commits promptly; InfoGain-Tuned over-explores.}
+\label{fig:belief_heatmap}
+\end{figure}
+
+\paragraph{Exploration efficiency.}
+Figure~\ref{fig:efficiency} quantifies the temporal dynamics of epistemic foraging averaged across 300 episodes. Panel (a) shows belief entropy decaying over steps: VFE reduces entropy at a rate comparable to Planning+IG but commits earlier, avoiding the diminishing-returns regime. Panel (b) shows the fraction of episodes still observing at each step---a ``survival curve'' of exploration. VFE has a concentrated drop-off around steps 8--12, while Planning+IG's survival curve extends further right (over-exploring). Panel (c) shows cumulative reward: VFE reaches peak reward earlier because it avoids unnecessary observation costs.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_efficiency_curves.pdf}
+\caption{Exploration efficiency on Diagnosis ($N{=}8$, $K{=}3$, 300 episodes). (a) Mean belief entropy over steps with $\pm$1 SE bands. (b) Fraction of episodes still observing at each step. (c) Cumulative reward. VFE reduces uncertainty efficiently and commits at the right time, while Planning+IG over-explores at the expense of reward.}
+\label{fig:efficiency}
+\end{figure}
+
 \section{Discussion}
 
 \paragraph{When does EFE-as-$\rho$ help?}
 VFE's advantage emerges under two conditions: (1)~the environment offers multiple observation actions with differential informativeness, requiring the agent to choose \emph{which} information to gather; and (2)~the planning horizon is sufficient for recursive EFE to propagate epistemic value through the belief tree. When either condition fails---single observation action (Tiger), or shallow horizon ($H{=}2$ in scaling; Appendix~\ref{app:scaling})---reward-only planning achieves equivalent performance.
 
 \paragraph{The canonical $w{=}1$ and why it works.}
-By Proposition~\ref{prop:equivalence}, VFE is exactly Planning+IG with $w{=}1$. This means EFE does not eliminate the exploration--exploitation weight---it \emph{derives} one from first principles. The Pareto analysis (Figure~\ref{fig:pareto}) shows that $w{=}1$ sits near the knee of the success-reward tradeoff on all tested environments: increasing $w$ beyond 1 buys marginal accuracy at substantial reward cost, while decreasing $w$ below 1 loses accuracy without meaningful reward gain. The mechanism is visible in Figure~\ref{fig:traj}: as beliefs sharpen, information gain $I(b)$ decays toward zero, the value of committing rises, and the agent transitions from exploration to exploitation at the crossover point---a natural stopping criterion that emerges from $w{=}1$ without environment-specific tuning.
+By Proposition~\ref{prop:equivalence}, VFE is exactly Planning+IG with $w{=}1$. This means EFE does not eliminate the exploration--exploitation weight---it \emph{derives} one from first principles. The Pareto analysis (Figure~\ref{fig:pareto}) shows that $w{=}1$ sits near the knee of the success-reward tradeoff on all tested environments: increasing $w$ beyond 1 buys marginal accuracy at substantial reward cost, while decreasing $w$ below 1 loses accuracy without meaningful reward gain. The mechanism is visible in Figure~\ref{fig:traj}: as beliefs sharpen, information gain $I(b)$ decays toward zero, the value of committing rises, and the agent transitions from exploration to exploitation at the crossover point---a natural stopping criterion that emerges from $w{=}1$ without environment-specific tuning. Figure~\ref{fig:extended_efe} (Appendix~\ref{app:extended_efe}) extends this analysis to a multi-test Diagnosis environment, showing how per-test information gains diverge as belief sharpens and the agent adaptively selects the most informative test at each step.
 
 \begin{figure}[t]
 \centering
@@ -525,5 +549,69 @@ At $H{=}2$, VFE and Planning perform similarly across all $N$, both substantiall
 \label{app:pymdp}
 
 We validated our EFE computation against the \texttt{pymdp} library \citep{heins2022} by wrapping pymdp's standard Agent class as a baseline (PyMDP-AIF in Tables~\ref{tab:tiger}--\ref{tab:infoseek}). Both implementations agree on observe-vs-commit decisions across all tested belief states (uniform, intermediate, and confident beliefs on the two-state environments). Information gain values computed by our recursive scheme and pymdp's \texttt{control} module agree qualitatively, with differences attributable to our recursive multi-step evaluation vs.\ pymdp's single-step policy enumeration.
+
+\section{Extended EFE decomposition}
+\label{app:extended_efe}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_extended_efe.pdf}
+\caption{EFE decomposition over an extended Diagnosis episode ($N{=}8$, $K{=}3$). (a)~Value of committing vs.\ observing---the agent commits at the crossover. (b)~Per-test expected information gain: tests become differentially informative as belief concentrates, and the agent selects the most informative test at each step. (c)~Belief entropy decay. (d)~Test selection sequence showing the agent's adaptive strategy.}
+\label{fig:extended_efe}
+\end{figure}
+
+Figure~\ref{fig:extended_efe} extends the EFE trajectory analysis of Figure~\ref{fig:traj} to a multi-observation-action environment where the agent must choose among $K{=}3$ diagnostic tests at each step. Panel (b) reveals a key dynamic: as the agent gathers information, the tests become differentially informative---some partitions of the state space become irrelevant once the agent has narrowed down the true condition, while others remain critical. The VFE agent tracks this structure, selecting the most informative available test at each step (panel d). This adaptive test selection is the mechanism underlying VFE's advantage over reward-only planning in multi-observation-action environments.
+
+\section{Stopping time analysis}
+\label{app:stopping}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/fig_stopping_times.pdf}
+\caption{Distribution of episode lengths (observation steps before commit) across agents and environments. Violin plots with overlaid data points. VFE exhibits concentrated stopping times, committing with consistent timing once sufficient confidence is reached. Planning commits earlier (sometimes prematurely), while Planning+IG over-explores with high variance.}
+\label{fig:stopping}
+\end{figure}
+
+Figure~\ref{fig:stopping} shows the full distribution of stopping times---the number of observation steps each agent takes before committing---across three environment configurations. The shape of these distributions reveals qualitative differences in decision strategy: VFE's distributions are concentrated, indicating consistent and confident stopping behavior. Planning's distributions skew shorter, reflecting its tendency to commit before full disambiguation (especially visible on the $K{=}3$ Diagnosis environment). Planning+IG shows long right tails, confirming that the additive weight drives over-exploration with high variance. The VFE agent's concentrated stopping times are a consequence of the canonical $w{=}1$: the crossover between observation and commit values occurs at a consistent belief-confidence level across episodes.
+
+\section{Supplementary statistics}
+\label{app:stats}
+
+All pairwise comparisons use independent two-sample $t$-tests with Holm--Bonferroni correction for family-wise error control. Bootstrap 95\% confidence intervals use 10{,}000 resamples with fixed seed for reproducibility. Effect sizes use Cohen's $d$ with pooled standard deviation.
+
+\begin{table}[h]
+\centering
+\caption{Cohen's $d$ effect sizes for VFE vs.\ each baseline (reward metric). Interpretation: $|d|{<}0.2$ negligible, $0.2$--$0.5$ small, $0.5$--$0.8$ medium, $|d|{>}0.8$ large.}
+\label{tab:effect_sizes}
+\begin{small}
+\begin{tabular}{llrl}
+\toprule
+Environment & Comparison & $d$ & Interpretation \\
+\midrule
+Tiger & VFE vs.\ Myopic & $+0.42$ & small \\
+Tiger & VFE vs.\ Planning & $-0.08$ & negligible \\
+Tiger & VFE vs.\ InfoGain-Tuned & $-0.05$ & negligible \\
+Tiger & VFE vs.\ Planning+IG & $-0.06$ & negligible \\
+\midrule
+Testbed & VFE vs.\ Myopic & $-0.05$ & negligible \\
+Testbed & VFE vs.\ Planning & $-0.22$ & small \\
+Testbed & VFE vs.\ InfoGain-Tuned & $+0.63$ & medium \\
+Testbed & VFE vs.\ Planning+IG & $+0.94$ & large \\
+\midrule
+Diagnosis & VFE vs.\ Myopic & $+0.56$ & medium \\
+Diagnosis & VFE vs.\ Planning & $+0.05$ & negligible \\
+Diagnosis & VFE vs.\ InfoGain-Tuned & $-0.01$ & negligible \\
+Diagnosis & VFE vs.\ Planning+IG & $+0.05$ & negligible \\
+\midrule
+Bandit & VFE vs.\ Myopic & $+0.17$ & negligible \\
+Bandit & VFE vs.\ Planning & $+0.13$ & negligible \\
+Bandit & VFE vs.\ InfoGain-Tuned & $+0.54$ & medium \\
+Bandit & VFE vs.\ Planning+IG & $+0.63$ & medium \\
+\bottomrule
+\end{tabular}
+\end{small}
+\end{table}
+
+The effect sizes confirm the pattern from the main results: VFE vs.\ tuned alternatives shows negligible to small effects on Tiger and Diagnosis (where VFE matches tuned performance without tuning), but medium to large effects on the Testbed and Bandit where tuned weights drive over-exploration that substantially reduces reward.
 
 \end{document}
