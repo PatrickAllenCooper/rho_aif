@@ -38,6 +38,7 @@ env/
 # Jupyter Notebooks
 .ipynb_checkpoints
 *.ipynb_checkpoints/
+*.ipynb
 
 # Testing
 .pytest_cache/

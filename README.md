@@ -1,66 +1,44 @@
-# rho-POMDP Active Inference Framework
+# Expected Free Energy as Belief-Dependent Utility for rho-POMDPs
 
-Research exploring whether **variational free energy** (VFE) as a belief-state utility function in rho-POMDPs produces superior epistemic foraging behavior compared to standard reward-maximizing and information gain approaches.
+Code accompanying the paper *Expected Free Energy as Belief-Dependent Utility for rho-POMDPs*, submitted to NeurIPS 2025.
 
-**Collaboration**: Patrick Cooper (Implementation) & David Baines (Theory)
-
----
-
-## Research Questions
-
-- **RQ1**: Does VFE serve as an effective generalized utility function (rho) for rho-POMDPs?
-- **RQ2**: Do AIF-informed rho-POMDPs produce superior epistemic foraging?
-- **RQ3**: What does the choice of rho reveal about agent constitution and epistemic behavior?
-
-**Evaluation Metrics**: Policy quality, sample efficiency, belief convergence rate
+We bridge rho-POMDPs and active inference by substituting Expected Free Energy (EFE) as the belief-dependent utility rho. We prove this is equivalent to augmenting reward with information gain at a canonical weight w=1 derived from the variational bound, and evaluate this canonical choice against five baselines across five discrete POMDP environments.
 
 ---
 
-## Results
-
-### Two-State Information-Seeking Testbed (1,000 episodes)
-
-| Agent | Observations | Success Rate | Mean Reward |
-|-------|-------------|--------------|-------------|
-| Myopic | 1.00 | 74.6% | +0.392 |
-| **Info Gain** | **3.24** | **91.8%** | **+0.512** |
-| VFE | 5.51 | 96.4% | +0.377 |
-
-### Tiger Problem (1,000 episodes)
-
-| Agent | Listens | Success Rate | Mean Reward |
-|-------|---------|--------------|-------------|
-| Myopic | 1.00 | 86.5% | -5.850 |
-| Info Gain | 1.00 | 83.5% | -9.150 |
-| **VFE** | **4.31** | **99.1%** | **+4.700** |
-
-### Key Findings
-
-**Info-seeking testbed**: Info Gain agent achieves the best reward by balancing exploration cost against information value. VFE agent achieves the highest success rate (96.4%) but the additional observation costs reduce net reward.
-
-**Tiger problem**: VFE agent is the **only agent with positive mean reward**. The extreme reward asymmetry (+10 vs -100) makes information gathering critical. Myopic and Info Gain agents both listen only once and suffer catastrophic losses. VFE's multi-step EFE planning naturally drives sufficient exploration (4.31 listens) without hand-tuned weights.
-
-**Cross-environment robustness**: The VFE agent works across both environments without parameter tuning. The Info Gain agent requires its weight to be tuned per-environment (weight=1.0 is insufficient for Tiger's reward scale).
-
----
-
-## Architecture
+## Repository Structure
 
 ```
 rho_aif/
-  paper.tex                      # Paper: VFE as rho in rho-POMDPs
-  Guidance_Documents/             # Research plan and guidance
+  paper.tex                        # Main paper (NeurIPS 2025 format)
+  neurips_2025.sty                 # NeurIPS style file
+  Guidance_Documents/              # Research plan and project guidance
   environments/
-    info_seeking.py              # Two-state testbed (Gymnasium)
-    tiger.py                     # Tiger problem (Gymnasium)
+    info_seeking.py                # Two-state testbed (Gymnasium)
+    tiger.py                      # Tiger problem (Gymnasium)
+    diagnosis.py                  # Sequential diagnosis (Gymnasium)
+    bandit.py                     # Structured bandit (Gymnasium)
+    navigation.py                 # Grid navigation (Gymnasium)
   agents/
-    base.py                      # BaseAgent with belief management
-    myopic.py                    # Myopic baseline (rho = 0)
-    info_gain.py                 # Info Gain (rho = entropy reduction)
-    vfe.py                       # VFE (rho = Expected Free Energy)
-  belief.py                      # BeliefState with Bayesian updates
-  run_experiment.py              # Experiment runner
-  tests/                         # Pytest suite (69 tests)
+    base.py                       # BaseAgent with exact Bayesian belief updates
+    myopic.py                     # Myopic baseline (rho = 0, H=1)
+    planning.py                   # Planning baseline (rho = 0, H>1)
+    info_gain.py                  # Information Gain (rho = w * I(b), H=1)
+    planning_infogain.py          # Planning+IG (rho = w * I(b), H>1)
+    vfe.py                        # VFE agent (rho = EFE, H>1)
+    epistemic_only.py             # Epistemic-only ablation
+    navigation_vfe.py             # Navigation-specific VFE variant
+    navigation_baselines.py       # Navigation-specific baselines
+    pymdp_agent.py                # pymdp wrapper for validation
+  belief.py                       # BeliefState with Bayesian updates
+  stats.py                        # Bootstrap CIs, Cohen's d, Holm-Bonferroni
+  run_experiment.py                # Main experiment runner (all environments)
+  run_pareto.py                    # Pareto analysis (weight sweep)
+  run_showcase.py                  # Reward sweep, EFE trajectories, obs scaling
+  run_visualizations.py            # Long-horizon visualization figures
+  run_supplementary.py             # Supplementary statistics tables
+  figures/                         # Generated PDF figures for the paper
+  tests/                           # Pytest suite (130 tests)
 ```
 
 ---
@@ -68,29 +46,92 @@ rho_aif/
 ## Quick Start
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-python run_experiment.py          # Info-seeking testbed
-python run_experiment.py tiger    # Tiger problem
-python run_experiment.py all      # Both experiments
-python -m pytest tests/ -v        # Run test suite
+```
+
+### Run experiments
+
+```bash
+python run_experiment.py info       # Two-state testbed
+python run_experiment.py tiger      # Tiger problem
+python run_experiment.py diagnosis  # Sequential diagnosis
+python run_experiment.py bandit     # Structured bandit
+python run_experiment.py navigation # Grid navigation
+python run_experiment.py scaling    # Diagnosis scaling analysis (N=2..16)
+python run_experiment.py all        # All of the above
+```
+
+### Generate figures
+
+```bash
+python run_showcase.py              # Asymmetry sweep, EFE trajectories, obs scaling
+python run_pareto.py                # Pareto analysis (weight sweep)
+python run_visualizations.py        # Belief heatmap, efficiency curves, extended EFE, stopping times
+```
+
+### Run tests
+
+```bash
+python -m pytest tests/ -v
 ```
 
 ---
 
 ## Agents
 
-**Myopic** (baseline): One-step lookahead maximizing expected reward. No belief utility.
+All agents share the same exact Bayesian belief-update machinery and differ only in their objective function and planning depth.
 
-**Information Gain**: rho-POMDP with rho = weighted entropy reduction. One-step lookahead with tunable `info_gain_weight` parameter.
-
-**VFE**: Minimizes Expected Free Energy with recursive multi-step planning. No tunable weights. EFE decomposes into pragmatic value (goal alignment via log-preferences) and epistemic value (intrinsic information gain). Exploration-exploitation balance emerges from the objective.
+| Agent | rho function | Horizon | Role |
+|-------|-------------|---------|------|
+| Myopic | rho = 0 | H=1 | Weakest baseline |
+| Planning | rho = 0 | H>1 | Controls for planning depth |
+| Info Gain | w * I(b) | H=1 | Epistemic bonus (myopic) |
+| Planning+IG | w * I(b) | H>1 | IG + planning depth |
+| **VFE** | **I_a(b) via EFE** | **H>1** | **Joint objective (Proposition 1)** |
+| Epistemic-only | I_a(b) only | H>1 | Ablation: no pragmatic term |
 
 ---
 
-## References
+## Environments
 
-- Araya, M., et al. (2010). A POMDP extension with belief-dependent rewards. *NIPS*
-- Da Costa, L., et al. (2020). Active inference on discrete state-spaces. *J. Math. Psych.*
-- Friston, K. (2010). The free-energy principle. *Nature Reviews Neuroscience*
-- Kaelbling, L. P., et al. (1998). Planning and acting in partially observable stochastic domains. *AI*
-- Parr, T., & Friston, K. J. (2019). Generalised free energy and active inference. *Biol. Cybernetics*
+All environments follow an observe-then-commit structure implemented as OpenAI Gymnasium environments.
+
+| Environment | States | Obs. Actions | Commit Actions | Key Feature |
+|-------------|--------|-------------|----------------|-------------|
+| Tiger | 2 | 1 (listen) | 2 | Extreme reward asymmetry (+10/-100) |
+| Testbed | 2 | 1 | 2 | Mild penalty (+1/-1) |
+| Diagnosis | N | K tests | N | Multi-test selection |
+| Bandit | K | K inspections | K | Multi-arm inspection |
+| Navigation | 9 | 4 (move) | implicit | Spatial information gathering |
+
+---
+
+## Key Results
+
+- **EFE = canonical w=1**: VFE is equivalent to Planning+IG with w=1 (Proposition 1), confirmed empirically on all environments.
+- **w=1 is near-Pareto-optimal**: Sits at the success-reward knee without per-environment search.
+- **Multi-observation-action advantage**: VFE significantly outperforms reward-only planning on Diagnosis (+9.4 pp) and Bandit (+15.5 pp) where the agent must choose which information to gather.
+- **Pragmatic term is essential**: Epistemic-only ablation collapses on all environments.
+
+---
+
+## Citation
+
+If you use this code, please cite:
+
+```bibtex
+@inproceedings{anonymous2025efe,
+  title={Expected Free Energy as Belief-Dependent Utility for $\rho$-{POMDP}s},
+  author={Anonymous},
+  booktitle={Advances in Neural Information Processing Systems},
+  year={2025}
+}
+```
+
+---
+
+## License
+
+This project is released for academic use. See the paper for full details.
