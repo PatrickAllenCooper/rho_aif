@@ -77,13 +77,13 @@ def generate_effect_size_table(all_raw, env_name):
     if "EFE" not in all_raw:
         return pd.DataFrame()
 
-    vfe_rewards = np.array([r.total_reward for r in all_raw["EFE"]])
+    efe_rewards = np.array([r.total_reward for r in all_raw["EFE"]])
     rows = []
     for label, results in all_raw.items():
         if label == "EFE":
             continue
         other_rewards = np.array([r.total_reward for r in results])
-        d = cohens_d(vfe_rewards, other_rewards)
+        d = cohens_d(efe_rewards, other_rewards)
         interpretation = (
             "negligible" if abs(d) < 0.2 else
             "small" if abs(d) < 0.5 else

@@ -17,10 +17,13 @@ from environments.tileworld import TileworldEnv
 from agents.pomcp import POMCPAgent
 from agents.efe import EFEAgent
 from agents.planning import PlanningAgent
-from run_experiment import make_agent, run_experiment, summarize_results
+from run_experiment import make_agent, run_experiment, run_experiment_multi_seed, summarize_results, SEEDS
 
 
-def run_pomcp_comparison(seed=42, num_episodes=500):
+def run_pomcp_comparison(seeds=None, num_episodes=500):
+    if seeds is None:
+        seeds = SEEDS
+
     envs = {
         "Tiger": (
             TigerEnv(listen_accuracy=0.85, listen_cost=1.0,
@@ -39,53 +42,53 @@ def run_pomcp_comparison(seed=42, num_episodes=500):
         ),
     }
 
-    sim_budgets = [500, 1000]
+    sim_budgets = [500, 1000, 2000, 5000]
 
     for env_name, (env, horizon) in envs.items():
         print(f"\n{'=' * 60}")
-        print(f"POMCP comparison: {env_name} (H={horizon})")
+        print(f"POMCP comparison: {env_name} (H={horizon}, {len(seeds)} seeds)")
         print("=" * 60)
 
-        np.random.seed(seed)
         print("  Running EFE...")
         t0 = time.time()
-        efe_raw = run_experiment(EFEAgent, env, num_episodes, planning_horizon=horizon)
+        efe_raw = run_experiment_multi_seed(EFEAgent, env, num_episodes, seeds=seeds, planning_horizon=horizon)
         efe_s = summarize_results(efe_raw)
-        dt = time.time() - t0
+        efe_time = time.time() - t0
+        efe_per_decision = efe_time / len(efe_raw)
         print(
             f"    EFE: success={efe_s['success_rate']:.1%}  "
             f"reward={efe_s['mean_reward']:+.3f}  "
-            f"obs={efe_s['mean_observations']:.2f}  ({dt:.1f}s)"
+            f"obs={efe_s['mean_observations']:.2f}  ({efe_time:.1f}s, {efe_per_decision*1000:.1f}ms/ep)"
         )
 
-        np.random.seed(seed)
         print("  Running Planning...")
         t0 = time.time()
-        plan_raw = run_experiment(PlanningAgent, env, num_episodes, planning_horizon=horizon)
+        plan_raw = run_experiment_multi_seed(PlanningAgent, env, num_episodes, seeds=seeds, planning_horizon=horizon)
         plan_s = summarize_results(plan_raw)
-        dt = time.time() - t0
+        plan_time = time.time() - t0
         print(
             f"    Planning: success={plan_s['success_rate']:.1%}  "
             f"reward={plan_s['mean_reward']:+.3f}  "
-            f"obs={plan_s['mean_observations']:.2f}  ({dt:.1f}s)"
+            f"obs={plan_s['mean_observations']:.2f}  ({plan_time:.1f}s)"
         )
 
         for n_sims in sim_budgets:
-            np.random.seed(seed)
             print(f"  Running POMCP (sims={n_sims})...")
             t0 = time.time()
-            pomcp_raw = run_experiment(
-                POMCPAgent, env, num_episodes,
+            pomcp_raw = run_experiment_multi_seed(
+                POMCPAgent, env, num_episodes, seeds=seeds,
                 num_simulations=n_sims,
                 rollout_depth=horizon + 3,
                 exploration_constant=5.0,
             )
             pomcp_s = summarize_results(pomcp_raw)
-            dt = time.time() - t0
+            pomcp_time = time.time() - t0
+            pomcp_per_decision = pomcp_time / len(pomcp_raw)
             print(
                 f"    POMCP({n_sims}): success={pomcp_s['success_rate']:.1%}  "
                 f"reward={pomcp_s['mean_reward']:+.3f}  "
-                f"obs={pomcp_s['mean_observations']:.2f}  ({dt:.1f}s)"
+                f"obs={pomcp_s['mean_observations']:.2f}  "
+                f"({pomcp_time:.1f}s, {pomcp_per_decision*1000:.1f}ms/ep)"
             )
 
     print("\n" + "=" * 60)
@@ -95,43 +98,40 @@ def run_pomcp_comparison(seed=42, num_episodes=500):
                        correct_reward=10.0, incorrect_penalty=-50.0)
     horizon = 2
 
-    np.random.seed(seed)
     print("  Running EFE...")
     t0 = time.time()
-    efe_raw = run_experiment(EFEAgent, env, 200, planning_horizon=horizon)
+    efe_raw = run_experiment_multi_seed(EFEAgent, env, 200, seeds=seeds, planning_horizon=horizon)
     efe_s = summarize_results(efe_raw)
-    dt = time.time() - t0
+    efe_time = time.time() - t0
     print(
         f"    EFE: success={efe_s['success_rate']:.1%}  "
-        f"reward={efe_s['mean_reward']:+.3f}  ({dt:.1f}s)"
+        f"reward={efe_s['mean_reward']:+.3f}  ({efe_time:.1f}s)"
     )
 
-    np.random.seed(seed)
     print("  Running Planning...")
     t0 = time.time()
-    plan_raw = run_experiment(PlanningAgent, env, 200, planning_horizon=horizon)
+    plan_raw = run_experiment_multi_seed(PlanningAgent, env, 200, seeds=seeds, planning_horizon=horizon)
     plan_s = summarize_results(plan_raw)
-    dt = time.time() - t0
+    plan_time = time.time() - t0
     print(
         f"    Planning: success={plan_s['success_rate']:.1%}  "
-        f"reward={plan_s['mean_reward']:+.3f}  ({dt:.1f}s)"
+        f"reward={plan_s['mean_reward']:+.3f}  ({plan_time:.1f}s)"
     )
 
-    for n_sims in [500, 1000]:
-        np.random.seed(seed)
+    for n_sims in [500, 1000, 2000, 5000]:
         print(f"  Running POMCP (sims={n_sims})...")
         t0 = time.time()
-        pomcp_raw = run_experiment(
-            POMCPAgent, env, 200,
+        pomcp_raw = run_experiment_multi_seed(
+            POMCPAgent, env, 200, seeds=seeds,
             num_simulations=n_sims,
             rollout_depth=horizon + 3,
             exploration_constant=5.0,
         )
         pomcp_s = summarize_results(pomcp_raw)
-        dt = time.time() - t0
+        pomcp_time = time.time() - t0
         print(
             f"    POMCP({n_sims}): success={pomcp_s['success_rate']:.1%}  "
-            f"reward={pomcp_s['mean_reward']:+.3f}  ({dt:.1f}s)"
+            f"reward={pomcp_s['mean_reward']:+.3f}  ({pomcp_time:.1f}s)"
         )
 
 

@@ -376,7 +376,7 @@ At H=2, Planning and EFE are equivalent. EFE's advantage over Planning requires 
 
 **POMCP comparison**: Standalone POMCP agent implemented and compared on all environments. POMCP substantially underperforms EFE on multi-observation environments: Tiger 90.6% vs 99.2%, Diagnosis 72.2% vs 96.6%, Tileworld 10.5% vs 73.0%. On Bandit, POMCP achieves 97.4% success but at extreme reward cost (+3.03 vs EFE's +6.42). POMCP's random rollout cannot evaluate differential informativeness of observation actions.
 
-**Alpha-eta proposition (Proposition 3.X)**: Formalized when w=1 is near-optimal for two-state H=1 case using reward asymmetry ratio alpha and observation informativeness eta. Table mapping alpha, eta to predicted and observed w*_ret across all environments added to Section 3.
+**Alpha-eta proposition (Proposition nearopt)**: Formalized when w=1 is near-optimal for two-state H=1 case using reward asymmetry ratio alpha and observation informativeness eta. Corrected displayed formula to threshold expression w*_thresh; table mapping alpha, eta, w*_thresh to observed w*_ret across all environments in Section 3.
 
 **Pareto dominance reframing**: Results text reframed from "EFE maximizes reward" to "EFE Pareto-dominates Planning" (higher success AND comparable reward). Run with 3000 episodes on Diagnosis and Bandit for tighter confidence intervals (non-overlapping CIs on Bandit reward).
 
@@ -388,8 +388,8 @@ At H=2, Planning and EFE are equivalent. EFE's advantage over Planning requires 
 
 ## Current Status
 
-**Project Phase**: Phase 8 -- NeurIPS Revision (addressing reviewer comments)  
-**Date**: March 19, 2026
+**Project Phase**: Phase 9 -- NeurIPS Revision Complete (comprehensive reviewer response)  
+**Date**: March 22, 2026
 
 ### Initial Submission (Phases 1-7)
 
@@ -416,8 +416,25 @@ Addressing reviewer weaknesses W1-W6 and minor issues:
 16. **Paper updates**: Reframed results as Pareto dominance (not reward maximization); ran 3000 episodes on Diagnosis/Bandit for tighter CIs; standard errors in main table; observe-then-commit flagged in abstract; Cohen's d caveats removed (now using CIs); sophisticated inference clarification
 17. **POMCP baseline**: Implemented standalone POMCP agent (agents/pomcp.py) with UCB1 tree search and particle belief; compared on Tiger, Diagnosis, Bandit, Tileworld; EFE outperforms POMCP on all multi-observation environments; added appendix table and discussion
 18. **Tileworld scaling**: Added Planning+IG and InfoGain-Tuned to scaling analysis across all grid sizes (4x4, 6x6, 8x8); updated paper with complete data and analysis of w*_ret vs w*_succ at large scale
-19. Comprehensive test suite expanded to 203 tests, all passing
-20. Guidance document updated to reflect all revision changes
+19. Comprehensive test suite: 203 tests, all passing
+20. Guidance document updated to reflect all revision changes (Phase 8)
+
+### Phase 9: Comprehensive Reviewer Response (March 22, 2026)
+
+Addressing all three NeurIPS reviewer critiques (Reject, Borderline Accept, Accept):
+
+21. **Critical: Proposition fix**: Corrected inconsistency in Proposition near-optimality (prop:nearopt). Replaced incorrect w*_ret formula with correct threshold expression w*_thresh = [c - (p-1/2)(R+ - R-)]/I_max. Explicitly derived alpha dependence. The threshold is negative (w=1 trivially sufficient) when alpha > c/[(p-1/2)R+] - 1.
+22. **Critical: Multi-seed evaluation**: All experiment runners now use 5 random seeds {42, 123, 456, 789, 1024} instead of fixed seed 42. Added run_experiment_multi_seed() and summarize_multi_seed() utility functions. Updated all run_*.py files (run_experiment.py, run_tileworld.py, run_pomcp.py, run_rocksample.py, run_pareto.py). Paper updated to report 5000 total episodes.
+23. **RockSample baselines**: Added RockSamplePOMCPAgent (Monte Carlo rollouts) and RockSamplePlanningIGAgent (tunable w) to agents/rocksample_agents.py. Updated run_rocksample.py to include both as baselines. Paper appendix updated.
+24. **Compute-matched POMCP**: Expanded POMCP simulation budget sweep to {500, 1000, 2000, 5000}. Added wall-clock timing per decision. Paper appendix updated with compute-matched analysis.
+25. **MCTS-EFE observation enumeration**: Fixed critical bug in agents/mcts_efe.py where _expand() only sampled one observation outcome. New implementation enumerates all observation outcomes for each action, correctly computing expected information gain. Added _obs_children to MCTSNode __slots__. Tiger H=10: MCTS-EFE achieves 97% success (vs POMCP 89.5%, exact EFE H=6 99%).
+26. **Accuracy sensitivity**: Added run_accuracy_sensitivity() to run_pareto.py. Sweeps observation accuracy {0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85} on Tiger and Diagnosis, checking w=1 knee persistence.
+27. **VFE->EFE rename complete**: All remaining vfe/VFE variable names and test method names renamed to efe/EFE across entire codebase (tests, run scripts, showcase). 0 remaining references.
+28. **Table 1 precision**: Replaced uninformative "0.5-1.0" ranges with specific w*_thresh values computed from Proposition. Added "w=1 sufficient?" column.
+29. **"When to Use" summary**: Added structured summary in Discussion with 4 conditions (alpha >= 5, multiple obs actions, |S| >= 16, H >= 2) and 3 contraindications.
+30. **Paper scope framing**: Updated abstract to mention "multi-seed evaluation" and "via RockSample". Updated checklist items 4-5 for multi-seed and code release URL.
+31. **MCTS-EFE in main paper**: Added paragraph in Discussion about approximate planning results. Added MCTS-EFE paragraph to POMCP appendix.
+32. **Code refactoring**: Extracted shared utility functions in rocksample_agents.py (_update_belief_common, _move_toward_common, _info_gain_for_rock).
 
 **Awaiting**:
 - Feedback from Ashutosh on methodology

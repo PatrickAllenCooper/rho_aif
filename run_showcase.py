@@ -91,7 +91,7 @@ class StepTrace:
     action_type: str
 
 
-def trace_vfe_episode(env, agent, max_steps: int = 30) -> Tuple[List[StepTrace], bool, float]:
+def trace_efe_episode(env, agent, max_steps: int = 30) -> Tuple[List[StepTrace], bool, float]:
     """Run one episode recording EFE components at each decision point."""
     obs, info = env.reset()
     agent.reset()
@@ -153,7 +153,7 @@ def collect_trajectories(
     """Collect multiple traced episodes."""
     all_traces = []
     for _ in range(n_episodes):
-        traces, success, reward = trace_vfe_episode(env, agent, max_steps)
+        traces, success, reward = trace_efe_episode(env, agent, max_steps)
         all_traces.append((traces, success, reward))
     return all_traces
 

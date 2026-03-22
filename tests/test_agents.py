@@ -91,14 +91,14 @@ class TestEFEAgent:
     def test_explores_more_than_myopic(self, info_obs_model, info_config):
         """EFE agent should explore more than myopic at intermediate beliefs."""
         myopic = MyopicAgent(info_obs_model, info_config)
-        vfe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
+        efe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         belief = np.array([0.75, 0.25])
         myopic.belief.reset(initial_belief=belief)
-        vfe.belief.reset(initial_belief=belief)
+        efe.belief.reset(initial_belief=belief)
         myopic_action = myopic.select_action()
-        vfe_action = vfe.select_action()
+        efe_action = efe.select_action()
         if myopic_action != 0:
-            assert vfe_action == 0
+            assert efe_action == 0
 
 
 class TestPlanningAgent:
@@ -117,7 +117,7 @@ class TestPlanningAgent:
         action = agent.select_action()
         assert action == 1  # COMMIT_A
 
-    def test_same_horizon_as_vfe(self, info_obs_model, info_config):
+    def test_same_horizon_as_efe(self, info_obs_model, info_config):
         """PlanningAgent accepts the same planning_horizon parameter as EFE."""
         for h in [2, 4, 6]:
             agent = PlanningAgent(info_obs_model, info_config, planning_horizon=h)
@@ -135,18 +135,18 @@ class TestPlanningAgent:
         if action != 0:
             assert action == 2  # COMMIT_B
 
-    def test_explores_less_than_vfe_on_tiger(self, tiger_obs_model, tiger_config):
+    def test_explores_less_than_efe_on_tiger(self, tiger_obs_model, tiger_config):
         """At intermediate belief on Tiger, PlanningAgent should commit
         sooner than EFE because it lacks intrinsic epistemic value."""
         planning = PlanningAgent(tiger_obs_model, tiger_config, planning_horizon=6)
-        vfe = EFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
+        efe = EFEAgent(tiger_obs_model, tiger_config, planning_horizon=6)
         belief = np.array([0.85, 0.15])
         planning.belief.reset(initial_belief=belief)
-        vfe.belief.reset(initial_belief=belief)
+        efe.belief.reset(initial_belief=belief)
         planning_action = planning.select_action()
-        vfe_action = vfe.select_action()
+        efe_action = efe.select_action()
         if planning_action != 0:
-            assert vfe_action == 0
+            assert efe_action == 0
 
 
 class TestEFEOnTiger:

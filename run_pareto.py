@@ -21,7 +21,7 @@ from environments.diagnosis import DiagnosisEnv
 from environments.bandit import BanditEnv
 from agents.planning_infogain import PlanningInfoGainAgent
 from agents.efe import EFEAgent
-from run_experiment import make_agent, run_experiment, summarize_results
+from run_experiment import make_agent, run_experiment, run_experiment_multi_seed, summarize_results, SEEDS
 
 
 def run_pareto_sweep(
@@ -29,17 +29,19 @@ def run_pareto_sweep(
     horizon: int,
     weights: List[float] = None,
     num_episodes: int = 500,
-    seed: int = 42,
+    seeds: List[int] = None,
 ) -> Dict:
     """Sweep Planning+IG weight w, also run EFE for reference."""
     if weights is None:
         weights = [0.01, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0, 200.0]
+    if seeds is None:
+        seeds = SEEDS
 
     sweep = {"w": [], "success": [], "reward": [], "obs": []}
     for w in weights:
-        np.random.seed(seed)
-        raw = run_experiment(PlanningInfoGainAgent, env, num_episodes,
-                             planning_horizon=horizon, info_gain_weight=w)
+        raw = run_experiment_multi_seed(PlanningInfoGainAgent, env, num_episodes,
+                                        seeds=seeds,
+                                        planning_horizon=horizon, info_gain_weight=w)
         s = summarize_results(raw)
         sweep["w"].append(w)
         sweep["success"].append(s["success_rate"])
@@ -47,14 +49,14 @@ def run_pareto_sweep(
         sweep["obs"].append(s["mean_observations"])
         print(f"    w={w:>6.2f}  success={s['success_rate']:.1%}  reward={s['mean_reward']:+.2f}")
 
-    np.random.seed(seed)
-    vfe_raw = run_experiment(EFEAgent, env, num_episodes, planning_horizon=horizon)
-    vfe_s = summarize_results(vfe_raw)
-    vfe = {"success": vfe_s["success_rate"], "reward": vfe_s["mean_reward"],
-           "obs": vfe_s["mean_observations"]}
-    print(f"    EFE     success={vfe['success']:.1%}  reward={vfe['reward']:+.2f}")
+    efe_raw = run_experiment_multi_seed(EFEAgent, env, num_episodes, seeds=seeds,
+                                        planning_horizon=horizon)
+    efe_s = summarize_results(efe_raw)
+    efe = {"success": efe_s["success_rate"], "reward": efe_s["mean_reward"],
+           "obs": efe_s["mean_observations"]}
+    print(f"    EFE     success={efe['success']:.1%}  reward={efe['reward']:+.2f}")
 
-    return {"sweep": sweep, "vfe": vfe}
+    return {"sweep": sweep, "efe": efe}
 
 
 def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
@@ -70,7 +72,7 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
     for idx, (env_name, ax) in enumerate(zip(envs, axes)):
         data = all_results[env_name]
         sw = data["sweep"]
-        vfe = data["vfe"]
+        efe = data["efe"]
 
         succ = [s * 100 for s in sw["success"]]
         rew = sw["reward"]
@@ -91,7 +93,7 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
             ax.scatter([succ[w1_idx]], [rew[w1_idx]], c="#2196F3", s=100,
                        marker="D", zorder=4, edgecolors="black", linewidths=1.0)
 
-        ax.scatter([vfe["success"] * 100], [vfe["reward"]], c="#D32F2F", s=120,
+        ax.scatter([efe["success"] * 100], [efe["reward"]], c="#D32F2F", s=120,
                    marker="*", zorder=5, edgecolors="black", linewidths=0.8)
 
         ax.set_xlabel("Success rate (%)", fontsize=9)
@@ -117,6 +119,77 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
     plt.savefig(save_path, bbox_inches="tight", dpi=300)
     plt.close()
     print(f"  Saved {save_path}")
+
+
+def run_accuracy_sensitivity(
+    accuracies: List[float] = None,
+    num_episodes: int = 500,
+    seeds: List[int] = None,
+    save_path: str = "figures/fig_accuracy_sensitivity.pdf",
+):
+    """Sweep observation accuracy and check w=1 knee persistence."""
+    if accuracies is None:
+        accuracies = [0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85]
+    if seeds is None:
+        seeds = SEEDS
+
+    env_configs = {
+        "Tiger": lambda acc: TigerEnv(listen_accuracy=acc, listen_cost=1.0,
+                                       correct_reward=10.0, incorrect_penalty=-100.0),
+        "Diagnosis": lambda acc: DiagnosisEnv(num_conditions=4, test_accuracy=acc, test_cost=1.0,
+                                               correct_reward=10.0, incorrect_penalty=-50.0),
+    }
+
+    horizons = {"Tiger": 6, "Diagnosis": 3}
+    weights = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 50.0]
+
+    results = {}
+    for env_name, make_env in env_configs.items():
+        horizon = horizons[env_name]
+        results[env_name] = {"accuracy": [], "w1_reward": [], "best_w": [], "best_reward": []}
+
+        for acc in accuracies:
+            env = make_env(acc)
+            print(f"  {env_name} accuracy={acc:.2f}...")
+
+            best_w_score = -float("inf")
+            best_w = 1.0
+            w1_reward = None
+
+            for w in weights:
+                raw = run_experiment_multi_seed(PlanningInfoGainAgent, env, num_episodes,
+                                                seeds=seeds,
+                                                planning_horizon=horizon, info_gain_weight=w)
+                s = summarize_results(raw)
+                if abs(w - 1.0) < 0.01:
+                    w1_reward = s["mean_reward"]
+                if s["mean_reward"] > best_w_score:
+                    best_w_score = s["mean_reward"]
+                    best_w = w
+
+            results[env_name]["accuracy"].append(acc)
+            results[env_name]["w1_reward"].append(w1_reward)
+            results[env_name]["best_w"].append(best_w)
+            results[env_name]["best_reward"].append(best_w_score)
+            print(f"    w=1 reward={w1_reward:+.2f}  best_w={best_w}  best_reward={best_w_score:+.2f}")
+
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+    for idx, (env_name, data) in enumerate(results.items()):
+        ax = axes[idx]
+        ax.plot(data["accuracy"], data["w1_reward"], "o-", color="#D32F2F", lw=2, label="$w=1$ (EFE)")
+        ax.plot(data["accuracy"], data["best_reward"], "s--", color="#2196F3", lw=2, label="Best $w$ (tuned)")
+        ax.set_xlabel("Observation accuracy")
+        ax.set_ylabel("Mean reward")
+        ax.set_title(env_name)
+        ax.legend(fontsize=8)
+        ax.grid(True, alpha=0.2)
+
+    plt.tight_layout()
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    plt.savefig(save_path, bbox_inches="tight", dpi=300)
+    plt.close()
+    print(f"  Saved {save_path}")
+    return results
 
 
 if __name__ == "__main__":
@@ -145,12 +218,22 @@ if __name__ == "__main__":
         ),
     }
 
-    all_results = {}
-    for env_name, (env, horizon) in envs_config.items():
-        print(f"\n{'=' * 60}")
-        print(f"Pareto sweep: {env_name} (H={horizon})")
-        print("=" * 60)
-        all_results[env_name] = run_pareto_sweep(env, horizon, num_episodes=500)
+    import sys
+    cmd = sys.argv[1] if len(sys.argv) > 1 else "pareto"
 
-    plot_pareto(all_results)
-    print("\nPareto figure saved to figures/fig_pareto.pdf")
+    if cmd in ("pareto", "all"):
+        all_results = {}
+        for env_name, (env, horizon) in envs_config.items():
+            print(f"\n{'=' * 60}")
+            print(f"Pareto sweep: {env_name} (H={horizon})")
+            print("=" * 60)
+            all_results[env_name] = run_pareto_sweep(env, horizon, num_episodes=500)
+
+        plot_pareto(all_results)
+        print("\nPareto figure saved to figures/fig_pareto.pdf")
+
+    if cmd in ("accuracy", "all"):
+        print(f"\n{'=' * 60}")
+        print("ACCURACY SENSITIVITY SWEEP")
+        print("=" * 60)
+        run_accuracy_sensitivity()

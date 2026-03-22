@@ -59,16 +59,16 @@ class TestStatisticalProperties:
         ig_succ = np.mean([r.success for r in ig])
         assert ig_succ > m_succ
 
-    def test_vfe_explores_more_than_myopic(self, info_env):
+    def test_efe_explores_more_than_myopic(self, info_env):
         """EFE agent should make more observations than myopic."""
         np.random.seed(42)
         myopic = run_experiment(MyopicAgent, info_env, num_episodes=200)
-        vfe = run_experiment(EFEAgent, info_env, num_episodes=200, planning_horizon=3)
+        efe = run_experiment(EFEAgent, info_env, num_episodes=200, planning_horizon=3)
         m_obs = np.mean([r.num_observations for r in myopic])
-        v_obs = np.mean([r.num_observations for r in vfe])
-        assert v_obs > m_obs
+        efe_obs = np.mean([r.num_observations for r in efe])
+        assert efe_obs > m_obs
 
-    def test_tiger_vfe_listens_before_opening(self, tiger_env):
+    def test_tiger_efe_listens_before_opening(self, tiger_env):
         """EFE agent on Tiger should listen multiple times before opening."""
         results = run_experiment(EFEAgent, tiger_env, num_episodes=100, planning_horizon=4)
         mean_obs = np.mean([r.num_observations for r in results])

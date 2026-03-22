@@ -15,6 +15,8 @@ from typing import List, Dict, Optional, Type
 
 import time
 
+SEEDS = [42, 123, 456, 789, 1024]
+
 from environments.info_seeking import InfoSeekingEnv
 from environments.tiger import TigerEnv
 from environments.diagnosis import DiagnosisEnv
@@ -141,6 +143,49 @@ def summarize_results(results: List[EpisodeResult]) -> Dict:
     }
 
 
+def run_experiment_multi_seed(
+    agent_class: Type[BaseAgent],
+    env,
+    num_episodes: int = 1000,
+    seeds: List[int] = None,
+    **agent_kwargs,
+) -> List[EpisodeResult]:
+    """Run experiment across multiple seeds, concatenating all results."""
+    if seeds is None:
+        seeds = SEEDS
+    all_results = []
+    for seed in seeds:
+        np.random.seed(seed)
+        results = run_experiment(agent_class, env, num_episodes, **agent_kwargs)
+        all_results.extend(results)
+    return all_results
+
+
+def summarize_multi_seed(
+    agent_class: Type[BaseAgent],
+    env,
+    num_episodes: int = 1000,
+    seeds: List[int] = None,
+    **agent_kwargs,
+) -> Dict:
+    """Run across multiple seeds and return per-seed summary statistics."""
+    if seeds is None:
+        seeds = SEEDS
+    per_seed = []
+    for seed in seeds:
+        np.random.seed(seed)
+        results = run_experiment(agent_class, env, num_episodes, **agent_kwargs)
+        per_seed.append(summarize_results(results))
+
+    keys = ["mean_observations", "success_rate", "mean_reward"]
+    agg = {"agent": per_seed[0]["agent"], "n_seeds": len(seeds)}
+    for k in keys:
+        vals = [s[k] for s in per_seed]
+        agg[f"{k}_mean"] = np.mean(vals)
+        agg[f"{k}_std"] = np.std(vals)
+    return agg
+
+
 def print_statistical_comparison(
     name_a: str,
     name_b: str,
@@ -249,9 +294,10 @@ def tune_info_gain_weight(
     return best_weight
 
 
-def run_info_seeking_experiment(num_episodes: int = 1000, seed: int = 42):
+def run_info_seeking_experiment(num_episodes: int = 1000, seeds: List[int] = None):
     """Run the full experiment on the two-state info-seeking environment."""
-    np.random.seed(seed)
+    if seeds is None:
+        seeds = SEEDS
 
     env = InfoSeekingEnv(
         observation_accuracy=0.75,
@@ -263,12 +309,13 @@ def run_info_seeking_experiment(num_episodes: int = 1000, seed: int = 42):
     print("=" * 72)
     print("INFO-SEEKING TESTBED EXPERIMENT")
     print("=" * 72)
-    print(f"  Episodes: {num_episodes}")
+    print(f"  Episodes per seed: {num_episodes}, Seeds: {seeds}")
     print(f"  Accuracy: {env.observation_accuracy}")
     print(f"  Obs cost: {env.observation_cost}")
     print(f"  Rewards:  +{env.correct_reward} / {env.incorrect_penalty}")
     print()
 
+    np.random.seed(seeds[0])
     print("Tuning InfoGain weight...")
     best_w = tune_info_gain_weight(env, tune_episodes=200)
     print(f"  Best InfoGain weight: {best_w}\n")
@@ -293,8 +340,8 @@ def run_info_seeking_experiment(num_episodes: int = 1000, seed: int = 42):
     all_raw = {}
 
     for label, agent_class, kwargs in agent_configs:
-        print(f"Running {label}...")
-        raw = run_experiment(agent_class, env, num_episodes, **kwargs)
+        print(f"Running {label} ({len(seeds)} seeds)...")
+        raw = run_experiment_multi_seed(agent_class, env, num_episodes, seeds=seeds, **kwargs)
         all_raw[label] = raw
         all_results[label] = summarize_results(raw)
         s = all_results[label]
@@ -326,9 +373,10 @@ def run_info_seeking_experiment(num_episodes: int = 1000, seed: int = 42):
     return all_results, all_raw
 
 
-def run_tiger_experiment(num_episodes: int = 1000, seed: int = 42):
+def run_tiger_experiment(num_episodes: int = 1000, seeds: List[int] = None):
     """Run the full experiment on the Tiger problem."""
-    np.random.seed(seed)
+    if seeds is None:
+        seeds = SEEDS
 
     env = TigerEnv(
         listen_accuracy=0.85,
@@ -340,12 +388,13 @@ def run_tiger_experiment(num_episodes: int = 1000, seed: int = 42):
     print("=" * 72)
     print("TIGER PROBLEM EXPERIMENT")
     print("=" * 72)
-    print(f"  Episodes:  {num_episodes}")
+    print(f"  Episodes per seed: {num_episodes}, Seeds: {seeds}")
     print(f"  Accuracy:  {env.listen_accuracy}")
     print(f"  Listen cost: {env.listen_cost}")
     print(f"  Rewards:   +{env.correct_reward} / {env.incorrect_penalty}")
     print()
 
+    np.random.seed(seeds[0])
     print("Tuning InfoGain weight...")
     best_w = tune_info_gain_weight(env, tune_episodes=200)
     print(f"  Best InfoGain weight: {best_w}\n")
@@ -370,8 +419,8 @@ def run_tiger_experiment(num_episodes: int = 1000, seed: int = 42):
     all_raw = {}
 
     for label, agent_class, kwargs in agent_configs:
-        print(f"Running {label}...")
-        raw = run_experiment(agent_class, env, num_episodes, **kwargs)
+        print(f"Running {label} ({len(seeds)} seeds)...")
+        raw = run_experiment_multi_seed(agent_class, env, num_episodes, seeds=seeds, **kwargs)
         all_raw[label] = raw
         all_results[label] = summarize_results(raw)
         s = all_results[label]
@@ -403,31 +452,33 @@ def run_tiger_experiment(num_episodes: int = 1000, seed: int = 42):
     return all_results, all_raw
 
 
-def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1000, csv_name: str = None):
+def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1000,
+                           csv_name: str = None, seeds: List[int] = None):
     """Run a standard experiment with multiple agents on a given environment."""
+    if seeds is None:
+        seeds = SEEDS
     print("=" * 72)
     print(f"{label}")
     print("=" * 72)
-    print(f"  Episodes: {num_episodes}")
+    print(f"  Episodes per seed: {num_episodes}, Seeds: {seeds}")
     print()
 
     all_results = {}
     all_raw = {}
 
     for agent_label, agent_class, kwargs, make_fn in agent_configs:
-        print(f"Running {agent_label}...")
+        print(f"Running {agent_label} ({len(seeds)} seeds)...")
         t0 = time.time()
-        if make_fn:
-            agent = make_fn()
-        else:
-            agent = make_agent(agent_class, env, **kwargs)
         results = []
-        log_interval = max(1, num_episodes // 10)
-        for i in range(num_episodes):
-            result = run_episode(agent, env)
-            results.append(result)
-            if (i + 1) % log_interval == 0:
-                print(f"    {i+1}/{num_episodes} ({(i+1)/num_episodes*100:.0f}%)", flush=True)
+        for seed in seeds:
+            np.random.seed(seed)
+            if make_fn:
+                agent = make_fn()
+            else:
+                agent = make_agent(agent_class, env, **kwargs)
+            for i in range(num_episodes):
+                result = run_episode(agent, env)
+                results.append(result)
         dt = time.time() - t0
         all_raw[agent_label] = results
         all_results[agent_label] = summarize_results(results)
@@ -461,13 +512,13 @@ def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1
         stats_df.to_csv(stats_csv, index=False)
         print(f"Full statistics saved to {stats_csv}")
 
-        vfe_comparisons = stats_df[
+        efe_comparisons = stats_df[
             (stats_df["metric"] == "Reward")
             & ((stats_df["agent_a"] == "EFE") | (stats_df["agent_b"] == "EFE"))
         ]
-        if not vfe_comparisons.empty:
+        if not efe_comparisons.empty:
             print("\n  EFE Reward comparisons (Holm-Bonferroni corrected):")
-            for _, row in vfe_comparisons.iterrows():
+            for _, row in efe_comparisons.iterrows():
                 other = row["agent_b"] if row["agent_a"] == "EFE" else row["agent_a"]
                 sig_mark = "*" if row["significant_hb"] else "n.s."
                 print(
@@ -479,8 +530,10 @@ def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1
     return all_results, all_raw
 
 
-def run_diagnosis_experiment(num_conditions: int = 4, num_episodes: int = 1000, seed: int = 42):
-    np.random.seed(seed)
+def run_diagnosis_experiment(num_conditions: int = 4, num_episodes: int = 1000, seeds: List[int] = None):
+    if seeds is None:
+        seeds = SEEDS
+    np.random.seed(seeds[0])
     env = DiagnosisEnv(num_conditions=num_conditions, test_accuracy=0.80, test_cost=1.0,
                        correct_reward=10.0, incorrect_penalty=-50.0)
     print(f"Tuning InfoGain weight for Diagnosis N={num_conditions}...")
@@ -501,12 +554,14 @@ def run_diagnosis_experiment(num_conditions: int = 4, num_episodes: int = 1000, 
     ]
     return run_generic_experiment(
         env, f"DIAGNOSIS EXPERIMENT (N={num_conditions})", configs,
-        num_episodes, f"results_diagnosis_n{num_conditions}.csv"
+        num_episodes, f"results_diagnosis_n{num_conditions}.csv", seeds=seeds
     )
 
 
-def run_bandit_experiment(num_arms: int = 4, num_episodes: int = 1000, seed: int = 42):
-    np.random.seed(seed)
+def run_bandit_experiment(num_arms: int = 4, num_episodes: int = 1000, seeds: List[int] = None):
+    if seeds is None:
+        seeds = SEEDS
+    np.random.seed(seeds[0])
     env = BanditEnv(num_arms=num_arms, inspect_accuracy=0.80, inspect_cost=0.5,
                     correct_reward=10.0, small_reward=1.0)
     print(f"Tuning InfoGain weight for Bandit K={num_arms}...")
@@ -527,12 +582,13 @@ def run_bandit_experiment(num_arms: int = 4, num_episodes: int = 1000, seed: int
     ]
     return run_generic_experiment(
         env, f"BANDIT EXPERIMENT (K={num_arms})", configs,
-        num_episodes, "results_bandit.csv"
+        num_episodes, "results_bandit.csv", seeds=seeds
     )
 
 
-def run_navigation_experiment(grid_size: int = 3, num_episodes: int = 500, seed: int = 42):
-    np.random.seed(seed)
+def run_navigation_experiment(grid_size: int = 3, num_episodes: int = 500, seeds: List[int] = None):
+    if seeds is None:
+        seeds = SEEDS
     env = NavigationEnv(grid_size=grid_size, max_steps=grid_size * grid_size * 2)
 
     def make_nav_myopic():
@@ -551,21 +607,23 @@ def run_navigation_experiment(grid_size: int = 3, num_episodes: int = 500, seed:
     ]
     return run_generic_experiment(
         env, f"NAVIGATION EXPERIMENT ({grid_size}x{grid_size})", configs,
-        num_episodes, "results_navigation.csv"
+        num_episodes, "results_navigation.csv", seeds=seeds
     )
 
 
-def run_scaling_analysis(seed: int = 42):
+def run_scaling_analysis(seeds: List[int] = None):
     """Run the Diagnosis env at N=2,4,8,16 and report scaling curves."""
     print("=" * 72)
     print("SCALING ANALYSIS: DIAGNOSIS N=2,4,8,16")
     print("=" * 72)
     print()
 
+    if seeds is None:
+        seeds = SEEDS
+
     scaling_data = []
     for n in [2, 4, 8, 16]:
         print(f"--- N = {n} ---")
-        np.random.seed(seed)
         env = DiagnosisEnv(num_conditions=n, test_accuracy=0.80, test_cost=1.0,
                            correct_reward=10.0, incorrect_penalty=-50.0)
         horizon = 2
@@ -577,11 +635,13 @@ def run_scaling_analysis(seed: int = 42):
             ("InfoGain", InformationGainAgent, {"info_gain_weight": 1.0}),
             ("EFE", EFEAgent, {"planning_horizon": horizon}),
         ]:
-            agent = make_agent(agent_class, env, **kwargs)
             t0 = time.time()
             results = []
-            for _ in range(episodes):
-                results.append(run_episode(agent, env))
+            for seed in seeds:
+                np.random.seed(seed)
+                agent = make_agent(agent_class, env, **kwargs)
+                for _ in range(episodes):
+                    results.append(run_episode(agent, env))
             dt = time.time() - t0
             s = summarize_results(results)
             s["N"] = n

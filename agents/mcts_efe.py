@@ -23,11 +23,13 @@ class MCTSNode:
     __slots__ = [
         "belief", "parent", "action", "children",
         "visit_count", "total_value", "is_terminal",
+        "_obs_children",
     ]
 
     def __init__(self, belief: np.ndarray, parent=None, action: int = -1):
         self.belief = belief
         self.parent = parent
+        self._obs_children = None
         self.action = action
         self.children = {}
         self.visit_count = 0
@@ -91,7 +93,12 @@ class MCTSEFEAgent(BaseAgent):
         return best_action
 
     def _tree_policy(self, node: MCTSNode) -> MCTSNode:
-        """Select a leaf node using UCB1."""
+        """Select a leaf node using UCB1.
+
+        For observation actions, after selecting an action via UCB1,
+        samples an observation outcome proportional to the predictive
+        distribution and descends into that child.
+        """
         depth = 0
         while depth < self.planning_horizon:
             if node.is_terminal:
@@ -100,50 +107,73 @@ class MCTSEFEAgent(BaseAgent):
             if not node.children:
                 self._expand(node)
                 first_child = next(iter(node.children.values()))
+                if first_child._obs_children is not None:
+                    return self._sample_obs_child(first_child)
                 return first_child
 
             if any(c.visit_count == 0 for c in node.children.values()):
                 unvisited = [c for c in node.children.values() if c.visit_count == 0]
-                return unvisited[np.random.randint(len(unvisited))]
+                chosen = unvisited[np.random.randint(len(unvisited))]
+                if chosen._obs_children is not None:
+                    return self._sample_obs_child(chosen)
+                return chosen
 
-            node = max(
+            best = max(
                 node.children.values(),
                 key=lambda c: c.ucb1(self.exploration_constant),
             )
+            if best._obs_children is not None:
+                node = self._sample_obs_child(best)
+            else:
+                node = best
             depth += 1
 
         return node
 
+    def _sample_obs_child(self, action_node: MCTSNode) -> MCTSNode:
+        """Sample an observation outcome for an observation action node."""
+        obs_children = action_node._obs_children
+        probs = np.array([oc["prob"] for oc in obs_children.values()])
+        probs = probs / probs.sum()
+        idx = np.random.choice(len(probs), p=probs)
+        key = list(obs_children.keys())[idx]
+        action_node.visit_count += 1
+        return obs_children[key]["node"]
+
     def _expand(self, node: MCTSNode):
-        """Expand all possible actions from this node."""
+        """Expand all possible actions from this node.
+
+        For observation actions, creates a stochastic node: each simulation
+        samples an observation outcome and descends into the corresponding
+        child. All observation outcomes are pre-computed so information gain
+        is correctly estimated across the full outcome distribution.
+        """
         belief = node.belief
 
         for k in range(self.num_observe_actions):
             model = self.obs_models[k]
             num_outcomes = model.shape[1]
-            obs_idx = self._sample_observation(belief, model)
-
-            posterior = model[:, obs_idx] * belief
-            p_sum = posterior.sum()
-            if p_sum < 1e-10:
-                posterior = np.ones_like(belief) / len(belief)
-            else:
-                posterior = posterior / p_sum
-
-            child = MCTSNode(belief=posterior, parent=node, action=k)
-            node.children[k] = child
+            obs_children = {}
+            for obs_idx in range(num_outcomes):
+                prob_obs = float(np.dot(belief, model[:, obs_idx]))
+                if prob_obs < 1e-10:
+                    continue
+                posterior = model[:, obs_idx] * belief
+                posterior = posterior / posterior.sum()
+                obs_children[obs_idx] = {
+                    "belief": posterior,
+                    "prob": prob_obs,
+                    "node": MCTSNode(belief=posterior, parent=node, action=k),
+                }
+            action_node = MCTSNode(belief=belief.copy(), parent=node, action=k)
+            action_node._obs_children = obs_children
+            node.children[k] = action_node
 
         for i in range(self.num_commit_actions):
             action_id = self.num_observe_actions + i
             child = MCTSNode(belief=belief.copy(), parent=node, action=action_id)
             child.is_terminal = True
             node.children[action_id] = child
-
-    def _sample_observation(self, belief: np.ndarray, model: np.ndarray) -> int:
-        """Sample an observation from the predictive distribution."""
-        predictive = belief @ model
-        predictive = predictive / predictive.sum()
-        return int(np.random.choice(len(predictive), p=predictive))
 
     def _evaluate_leaf(self, node: MCTSNode) -> float:
         """Evaluate a leaf node using EFE heuristic + rollout."""
@@ -178,7 +208,9 @@ class MCTSEFEAgent(BaseAgent):
                 best_k = k
 
         model = self.obs_models[best_k]
-        obs_idx = self._sample_observation(belief, model)
+        predictive = belief @ model
+        predictive = predictive / predictive.sum()
+        obs_idx = int(np.random.choice(len(predictive), p=predictive))
         posterior = model[:, obs_idx] * belief
         p_sum = posterior.sum()
         if p_sum < 1e-10:

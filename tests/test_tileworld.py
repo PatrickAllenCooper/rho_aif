@@ -172,7 +172,7 @@ class TestTileworldAgents:
         assert result.success in (True, False)
         assert result.num_observations >= 0
 
-    def test_vfe_episode_completes(self):
+    def test_efe_episode_completes(self):
         np.random.seed(42)
         env = TileworldEnv(grid_size=4)
         agent = make_agent(EFEAgent, env, planning_horizon=2)
@@ -187,7 +187,7 @@ class TestTileworldAgents:
         result = run_episode(agent, env)
         assert result.success in (True, False)
 
-    def test_vfe_observes_at_uniform(self):
+    def test_efe_observes_at_uniform(self):
         np.random.seed(42)
         env = TileworldEnv(grid_size=4)
         agent = make_agent(EFEAgent, env, planning_horizon=2)
@@ -195,21 +195,21 @@ class TestTileworldAgents:
         action = agent.select_action()
         assert action < env.num_scans
 
-    def test_vfe_outperforms_myopic(self):
+    def test_efe_outperforms_myopic(self):
         np.random.seed(42)
         env = TileworldEnv(grid_size=4)
         n_episodes = 100
 
         myopic_agent = make_agent(MyopicAgent, env)
-        vfe_agent = make_agent(EFEAgent, env, planning_horizon=2)
+        efe_agent = make_agent(EFEAgent, env, planning_horizon=2)
 
         myopic_success = sum(
             run_episode(myopic_agent, env).success for _ in range(n_episodes)
         )
-        vfe_success = sum(
-            run_episode(vfe_agent, env).success for _ in range(n_episodes)
+        efe_success = sum(
+            run_episode(efe_agent, env).success for _ in range(n_episodes)
         )
-        assert vfe_success > myopic_success
+        assert efe_success > myopic_success
 
     def test_all_agents_run_on_6x6(self):
         np.random.seed(42)

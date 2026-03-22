@@ -15,7 +15,10 @@ from environments.rocksample import RockSampleEnv
 from agents.rocksample_agents import (
     RockSampleGreedyAgent,
     RockSampleEFEAgent,
+    RockSamplePlanningIGAgent,
+    RockSamplePOMCPAgent,
 )
+from run_experiment import SEEDS
 
 
 def run_rocksample_episode(agent, env, seed=None, max_steps=100):
@@ -41,13 +44,14 @@ def run_rocksample_episode(agent, env, seed=None, max_steps=100):
 
 
 def run_rocksample_experiment(
-    grid_size=5, num_rocks=3, num_episodes=500, seed=42
+    grid_size=5, num_rocks=3, num_episodes=500, seeds=None
 ):
-    print(f"RockSample[{grid_size},{num_rocks}] -- {num_episodes} episodes")
+    if seeds is None:
+        seeds = SEEDS
+    print(f"RockSample[{grid_size},{num_rocks}] -- {num_episodes} episodes x {len(seeds)} seeds")
     print("=" * 60)
 
-    rock_positions = []
-    np.random.seed(seed)
+    np.random.seed(seeds[0])
     positions = set()
     while len(positions) < num_rocks:
         r = np.random.randint(0, grid_size)
@@ -65,21 +69,23 @@ def run_rocksample_experiment(
 
     agent_configs = [
         ("Greedy", lambda: RockSampleGreedyAgent(env)),
+        ("POMCP (1000)", lambda: RockSamplePOMCPAgent(env, num_simulations=1000)),
+        ("Planning+IG (w=5)", lambda: RockSamplePlanningIGAgent(env, info_weight=5.0)),
+        ("Planning+IG (w=10)", lambda: RockSamplePlanningIGAgent(env, info_weight=10.0)),
         ("EFE (w=1)", lambda: RockSampleEFEAgent(env, info_weight=1.0)),
         ("EFE (w=5)", lambda: RockSampleEFEAgent(env, info_weight=5.0)),
-        ("EFE (w=10)", lambda: RockSampleEFEAgent(env, info_weight=10.0)),
     ]
 
     results = []
-    for label, make_agent in agent_configs:
-        np.random.seed(seed)
-        agent = make_agent()
+    for label, make_agent_fn in agent_configs:
         t0 = time.time()
         episode_results = []
-
-        for ep_i in range(num_episodes):
-            r = run_rocksample_episode(agent, env, seed=seed + ep_i)
-            episode_results.append(r)
+        for seed in seeds:
+            np.random.seed(seed)
+            agent = make_agent_fn()
+            for ep_i in range(num_episodes):
+                r = run_rocksample_episode(agent, env, seed=seed * 10000 + ep_i)
+                episode_results.append(r)
 
         dt = time.time() - t0
         rewards = [r["total_reward"] for r in episode_results]

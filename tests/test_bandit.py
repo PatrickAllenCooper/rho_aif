@@ -64,13 +64,13 @@ class TestBanditObservationModels:
 
 
 class TestBanditAgents:
-    def test_vfe_episode_completes(self):
+    def test_efe_episode_completes(self):
         env = BanditEnv(num_arms=4)
         agent = make_agent(EFEAgent, env, planning_horizon=3)
         result = run_episode(agent, env)
         assert result.success in (True, False)
 
-    def test_vfe_inspects_at_uniform(self):
+    def test_efe_inspects_at_uniform(self):
         env = BanditEnv(num_arms=4)
         agent = make_agent(EFEAgent, env, planning_horizon=3)
         action = agent.select_action()

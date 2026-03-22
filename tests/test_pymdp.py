@@ -86,19 +86,19 @@ class TestEFEConsistency:
 
     def test_both_prefer_observe_at_uniform(self, info_obs_model, info_config):
         """Both EFE and PyMDP agents should observe at uniform belief."""
-        vfe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
+        efe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         pymdp = PyMDPAgent(info_obs_model, info_config)
-        assert vfe.select_action() == 0
+        assert efe.select_action() == 0
         assert pymdp.select_action() == 0
 
     def test_both_commit_when_confident(self, info_obs_model, info_config):
         """Both should commit in the same direction when highly confident."""
-        vfe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
+        efe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
         pymdp = PyMDPAgent(info_obs_model, info_config)
         confident_belief = np.array([0.99, 0.01])
-        vfe.belief.reset(initial_belief=confident_belief)
+        efe.belief.reset(initial_belief=confident_belief)
         pymdp.belief.reset(initial_belief=confident_belief)
-        assert vfe.select_action() == pymdp.select_action()
+        assert efe.select_action() == pymdp.select_action()
 
     def test_qualitative_agreement_across_beliefs(self, info_obs_model, info_config):
         """At various belief points, both agents should agree on observe
@@ -114,12 +114,12 @@ class TestEFEConsistency:
             np.array([0.05, 0.95]),
         ]
         for belief in test_beliefs:
-            vfe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
+            efe = EFEAgent(info_obs_model, info_config, planning_horizon=4)
             pymdp = PyMDPAgent(info_obs_model, info_config)
-            vfe.belief.reset(initial_belief=belief)
+            efe.belief.reset(initial_belief=belief)
             pymdp.belief.reset(initial_belief=belief)
-            vfe_observes = (vfe.select_action() == 0)
+            efe_observes = (efe.select_action() == 0)
             pymdp_observes = (pymdp.select_action() == 0)
-            if vfe_observes == pymdp_observes:
+            if efe_observes == pymdp_observes:
                 agreements += 1
         assert agreements >= 4

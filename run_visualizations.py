@@ -229,8 +229,8 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
     np.random.seed(seed)
     for trial_seed in range(seed, seed + 200):
         np.random.seed(trial_seed)
-        vfe_agent = make_agent(EFEAgent, env, planning_horizon=3)
-        result = run_simple_episode(vfe_agent, env, max_steps=50)
+        efe_agent = make_agent(EFEAgent, env, planning_horizon=3)
+        result = run_simple_episode(efe_agent, env, max_steps=50)
         if result["success"] and result["num_observations"] >= 6:
             target_seed = trial_seed
             break

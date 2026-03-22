@@ -27,7 +27,7 @@ from agents.efe import EFEAgent
 from agents.epistemic_only import EpistemicOnlyAgent
 from run_experiment import (
     make_agent, run_episode, run_experiment, summarize_results,
-    tune_info_gain_weight, run_generic_experiment,
+    tune_info_gain_weight, run_generic_experiment, SEEDS,
 )
 from render_tileworld import (
     run_recorded_episode, render_belief_evolution,
@@ -118,7 +118,7 @@ def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
     grid_sizes = [4, 6, 8]
     horizon = 2
     n_episodes = 200
-    seed = 42
+    seeds = SEEDS
 
     tuned_weight = 100
 
@@ -138,12 +138,13 @@ def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
         print(f"    Grid {gs}x{gs} ({env.num_cells} states, {env.num_scans} scans)...")
 
         for name, cls, kwargs in agent_defs:
-            np.random.seed(seed)
-            agent = make_agent(cls, env, **kwargs)
             t0 = time.time()
             episode_results = []
-            for _ in range(n_episodes):
-                episode_results.append(run_episode(agent, env))
+            for seed in seeds:
+                np.random.seed(seed)
+                agent = make_agent(cls, env, **kwargs)
+                for _ in range(n_episodes):
+                    episode_results.append(run_episode(agent, env))
             dt = time.time() - t0
 
             s = summarize_results(episode_results)
@@ -151,7 +152,7 @@ def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
             results[name]["success"].append(s["success_rate"] * 100)
             results[name]["reward"].append(s["mean_reward"])
             results[name]["scans"].append(s["mean_observations"])
-            results[name]["time_s"].append(dt / n_episodes)
+            results[name]["time_s"].append(dt / (n_episodes * len(seeds)))
             print(
                 f"      {name:10s}: success={s['success_rate']:.1%}  "
                 f"reward={s['mean_reward']:+.2f}  scans={s['mean_observations']:.1f}  "
@@ -215,9 +216,11 @@ def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
     return results
 
 
-def run_tileworld_experiment(grid_size=6, num_episodes=500, seed=42):
+def run_tileworld_experiment(grid_size=6, num_episodes=500, seeds=None):
     """Full experiment with all agents on the Tileworld environment."""
-    np.random.seed(seed)
+    if seeds is None:
+        seeds = SEEDS
+    np.random.seed(seeds[0])
     env = TileworldEnv(
         grid_size=grid_size, scan_accuracy=0.80, scan_cost=1.0,
         correct_reward=10.0, incorrect_penalty=-50.0,
@@ -244,7 +247,7 @@ def run_tileworld_experiment(grid_size=6, num_episodes=500, seed=42):
 
     return run_generic_experiment(
         env, f"TILEWORLD EXPERIMENT ({grid_size}x{grid_size})", configs,
-        num_episodes, f"results_tileworld_{grid_size}x{grid_size}.csv",
+        num_episodes, f"results_tileworld_{grid_size}x{grid_size}.csv", seeds=seeds,
     )
 
 
