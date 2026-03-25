@@ -554,6 +554,27 @@ Addressing six reviewer concerns (W2-W7) with scaled experiments, a new domain-r
 86. **Tileworld 8x8 full agent suite**: Ran all agents on 8x8 Tileworld (200 eps x 3 seeds). EFE: 74.2% success, -23.37 reward. Planning collapses to 1.5% (single scan insufficient for 64 states). InfoGain-Tuned (w=100): 98.0%, -31.13. EpistemicOnly: 0.0%, -200.00 (never commits). Added to appendix full tables.
 87. **Diagnosis N=16 full agent suite**: Ran all agents on Diagnosis N=16 (200 eps x 3 seeds). EFE: 79.5% success, -14.11 reward. Consistent with scaling table (79.1%, -14.30). InfoGain-Tuned (w=100): 98.5%, -17.46. EpistemicOnly: 0.0%, -200.00. Added to appendix full tables.
 
+### Phase 15: NeurIPS Review R1-R5 Response
+
+**Code Changes:**
+
+88. **Inspection experiments scaled**: Re-ran Inspection N=8 with 500 episodes x 5 seeds (2,500 total) and N=16 with 200 episodes x 5 seeds (1,000 total). SE now reported in all results. N=8: EFE 87.9% accuracy, -20.60 +/- 0.34 reward. N=16: EFE 86.1% accuracy, -45.71 +/- 0.94 reward.
+89. **RS[11,11] depth-3 evaluation**: Attempted tree_depth=3 for RS[11,11] (11 rocks, |S|=2048). Confirmed computationally intractable -- a single tree-search agent could not complete 50 episodes in 7 minutes. This finding used to strengthen the paper's discussion of tractability vs differentiation.
+90. **Tileworld partition modes**: Added partition_mode parameter to TileworldEnv supporting "bitwise" (default), "random" (random balanced binary partitions), and "overlapping" (random linear combinations). Each mode stored in _partition_assignments matrix for reproducibility.
+91. **Partition sensitivity analysis**: run_partition_sensitivity() in run_tileworld.py evaluates Planning, InfoGain-Tuned, EFE on 6x6 Tileworld across all three partition modes. Results: EFE achieves best reward under all three modes (bitwise -20.52, random -29.15, overlapping -46.73), confirming advantage is not an artifact of structured observations.
+92. **MCTS-EFE Tileworld 6x6**: run_mcts_tileworld_6x6() in run_mcts_experiments.py. MCTS-EFE(50) achieves 96.0% success on 6x6, dramatically outperforming POMCP(50) at 2.0% and POMCP(200) at 15.0%.
+93. **VFE verification**: Confirmed no "VFE" text in any Python source, paper.tex, or generated PDF figures.
+94. **Partition mode tests**: 8 new tests in test_tileworld.py covering bitwise, random, overlapping modes, reproducibility, observation model consistency, and invalid mode error handling.
+95. **Inspection SE tests**: 2 new tests in test_inspection.py verifying SE computation in experiment results.
+
+**Paper Revisions (paper.tex):**
+
+96. **R1**: Updated Inspection table (tab:inspection) with new results including mean +/- SE, updated caption with correct episode/seed counts, revised prose with accurate numbers.
+97. **R2**: Rewrote RS[11,11] discussion to explicitly separate tractability (scaling to |S|=2,048 in seconds) from differentiation (agents converge at depth 2; depth 3 intractable). Cross-referenced Tileworld scaling finding.
+98. **R3**: Added observation structure sensitivity paragraph after Tileworld scaling discussion, reporting bitwise/random/overlapping partition sensitivity analysis.
+99. **R4**: Added MCTS-EFE Tileworld 6x6 results to approximate planning paragraph, showing 96.0% success vs POMCP's 2-15%.
+100. **R5**: Verified no VFE labels in any figures or text.
+
 ---
 
 ## References

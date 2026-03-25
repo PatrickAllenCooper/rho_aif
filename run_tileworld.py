@@ -251,6 +251,56 @@ def run_tileworld_experiment(grid_size=6, num_episodes=500, seeds=None):
     )
 
 
+def run_partition_sensitivity(grid_size=6, num_episodes=200, seeds=None):
+    """Sensitivity analysis: compare bitwise, random, and overlapping partitions."""
+    if seeds is None:
+        seeds = SEEDS[:5]
+    horizon = 2
+    tuned_weight = 100
+    modes = ["bitwise", "random", "overlapping"]
+
+    all_rows = []
+    for mode in modes:
+        env = TileworldEnv(
+            grid_size=grid_size, scan_accuracy=0.80, scan_cost=1.0,
+            correct_reward=10.0, incorrect_penalty=-50.0,
+            partition_mode=mode, partition_seed=42,
+        )
+        agent_defs = [
+            ("Planning", PlanningAgent, {"planning_horizon": horizon}, None),
+            ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": tuned_weight}, None),
+            ("EFE", EFEAgent, {"planning_horizon": horizon}, None),
+        ]
+
+        print(f"\n  Partition mode: {mode}")
+        for label, agent_class, kwargs, make_fn in agent_defs:
+            t0 = time.time()
+            results = []
+            for seed in seeds:
+                np.random.seed(seed)
+                agent = make_agent(agent_class, env, **kwargs)
+                for i in range(num_episodes):
+                    result = run_episode(agent, env)
+                    results.append(result)
+            dt = time.time() - t0
+            s = summarize_results(results)
+            all_rows.append({
+                "mode": mode, "agent": label,
+                "success": s["success_rate"],
+                "reward": s["mean_reward"],
+                "se_reward": np.std([r.total_reward for r in results]) / np.sqrt(len(results)),
+                "obs": s["mean_observations"],
+                "time_s": dt,
+            })
+            print(f"    {label:20s}: success={s['success_rate']:.1%}  "
+                  f"reward={s['mean_reward']:+.3f}  ({dt:.1f}s)")
+
+    df = pd.DataFrame(all_rows)
+    df.to_csv(f"results_partition_sensitivity_{grid_size}x{grid_size}.csv", index=False)
+    print(f"\n  Saved results_partition_sensitivity_{grid_size}x{grid_size}.csv")
+    return df
+
+
 if __name__ == "__main__":
     import sys
 

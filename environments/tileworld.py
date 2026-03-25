@@ -45,6 +45,8 @@ class TileworldEnv(gym.Env):
         correct_reward: float = 10.0,
         incorrect_penalty: float = -50.0,
         num_scans: Optional[int] = None,
+        partition_mode: str = "bitwise",
+        partition_seed: int = 0,
     ):
         super().__init__()
 
@@ -54,10 +56,13 @@ class TileworldEnv(gym.Env):
         self.scan_cost = scan_cost
         self.correct_reward = correct_reward
         self.incorrect_penalty = incorrect_penalty
+        self.partition_mode = partition_mode
 
         self.num_row_bits = max(1, math.ceil(math.log2(grid_size))) if grid_size > 1 else 1
         self.num_col_bits = max(1, math.ceil(math.log2(grid_size))) if grid_size > 1 else 1
         self.num_scans = num_scans or (self.num_row_bits + self.num_col_bits)
+
+        self._partition_assignments = self._build_partitions(partition_seed)
 
         self.action_space = spaces.Discrete(self.num_scans + self.num_cells)
         self.observation_space = spaces.Discrete(3)  # 0=group_A, 1=group_B, 2=null
@@ -80,21 +85,57 @@ class TileworldEnv(gym.Env):
     def _rc_to_cell(self, row: int, col: int) -> int:
         return row * self.grid_size + col
 
+    def _build_partitions(self, partition_seed: int) -> np.ndarray:
+        """Build partition assignment matrix: shape (num_scans, num_cells).
+
+        Each row is a binary vector assigning cells to group 0 or 1.
+        """
+        assignments = np.zeros((self.num_scans, self.num_cells), dtype=int)
+
+        if self.partition_mode == "bitwise":
+            for scan_idx in range(self.num_scans):
+                for cell in range(self.num_cells):
+                    row, col = self._cell_to_rc(cell)
+                    if scan_idx < self.num_row_bits:
+                        assignments[scan_idx, cell] = (row >> scan_idx) & 1
+                    else:
+                        bit_idx = scan_idx - self.num_row_bits
+                        assignments[scan_idx, cell] = (col >> bit_idx) & 1
+
+        elif self.partition_mode == "random":
+            rng = np.random.RandomState(partition_seed)
+            for scan_idx in range(self.num_scans):
+                perm = rng.permutation(self.num_cells)
+                half = self.num_cells // 2
+                assignments[scan_idx, perm[:half]] = 0
+                assignments[scan_idx, perm[half:]] = 1
+
+        elif self.partition_mode == "overlapping":
+            rng = np.random.RandomState(partition_seed)
+            for scan_idx in range(self.num_scans):
+                w_row = rng.randn()
+                w_col = rng.randn()
+                threshold = rng.randn() * 0.5
+                for cell in range(self.num_cells):
+                    row, col = self._cell_to_rc(cell)
+                    norm_r = row / max(self.grid_size - 1, 1)
+                    norm_c = col / max(self.grid_size - 1, 1)
+                    val = w_row * norm_r + w_col * norm_c
+                    assignments[scan_idx, cell] = 1 if val > threshold else 0
+        else:
+            raise ValueError(f"Unknown partition_mode: {self.partition_mode}")
+
+        return assignments
+
     def _build_observation_models(self) -> List[np.ndarray]:
-        """
-        Build one observation model per scan. Row scans partition by bits of
-        the row index; column scans partition by bits of the column index.
-        If num_scans exceeds the natural bit count, additional scans cycle
-        through finer partitions.
-        """
+        """Build one observation model per scan from partition assignments."""
         models = []
         acc = self.scan_accuracy
 
         for scan_idx in range(self.num_scans):
             model = np.zeros((self.num_cells, 2))
             for cell in range(self.num_cells):
-                row, col = self._cell_to_rc(cell)
-                bit = self._scan_bit(scan_idx, row, col)
+                bit = self._partition_assignments[scan_idx, cell]
                 if bit == 0:
                     model[cell] = [acc, 1.0 - acc]
                 else:
@@ -105,11 +146,8 @@ class TileworldEnv(gym.Env):
 
     def _scan_bit(self, scan_idx: int, row: int, col: int) -> int:
         """Determine which partition group a cell belongs to for a given scan."""
-        if scan_idx < self.num_row_bits:
-            return (row >> scan_idx) & 1
-        else:
-            bit_idx = scan_idx - self.num_row_bits
-            return (col >> bit_idx) & 1
+        cell = self._rc_to_cell(row, col)
+        return int(self._partition_assignments[scan_idx, cell])
 
     def get_observation_models(self) -> List[np.ndarray]:
         return list(self._obs_models)

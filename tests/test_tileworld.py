@@ -1,5 +1,6 @@
 """Tests for the Tileworld environment."""
 
+import unittest
 import numpy as np
 import pytest
 from environments.tileworld import TileworldEnv
@@ -223,3 +224,66 @@ class TestTileworldAgents:
             agent = make_agent(cls, env, **kwargs)
             result = run_episode(agent, env)
             assert result.success in (True, False)
+
+
+class TestPartitionModes(unittest.TestCase):
+
+    def test_bitwise_default(self):
+        env = TileworldEnv(grid_size=4, partition_mode="bitwise")
+        assert env.partition_mode == "bitwise"
+        assert env._partition_assignments.shape == (env.num_scans, env.num_cells)
+
+    def test_random_mode_creates_valid_partitions(self):
+        env = TileworldEnv(grid_size=6, partition_mode="random", partition_seed=42)
+        for scan_idx in range(env.num_scans):
+            assignments = env._partition_assignments[scan_idx]
+            assert set(np.unique(assignments)) <= {0, 1}
+            half = env.num_cells // 2
+            assert np.sum(assignments == 0) == half
+            assert np.sum(assignments == 1) == env.num_cells - half
+
+    def test_overlapping_mode_creates_valid_partitions(self):
+        env = TileworldEnv(grid_size=6, partition_mode="overlapping", partition_seed=42)
+        for scan_idx in range(env.num_scans):
+            assignments = env._partition_assignments[scan_idx]
+            assert set(np.unique(assignments)) <= {0, 1}
+        total_ones = env._partition_assignments.sum()
+        assert total_ones > 0, "At least some cells should be in group 1"
+
+    def test_random_differs_from_bitwise(self):
+        env_bit = TileworldEnv(grid_size=6, partition_mode="bitwise")
+        env_rnd = TileworldEnv(grid_size=6, partition_mode="random", partition_seed=42)
+        assert not np.array_equal(
+            env_bit._partition_assignments, env_rnd._partition_assignments
+        )
+
+    def test_observation_models_match_partitions(self):
+        env = TileworldEnv(grid_size=4, partition_mode="random", partition_seed=99)
+        models = env.get_observation_models()
+        acc = env.scan_accuracy
+        for scan_idx in range(env.num_scans):
+            for cell in range(env.num_cells):
+                bit = env._partition_assignments[scan_idx, cell]
+                if bit == 0:
+                    np.testing.assert_allclose(models[scan_idx][cell], [acc, 1 - acc])
+                else:
+                    np.testing.assert_allclose(models[scan_idx][cell], [1 - acc, acc])
+
+    def test_random_seed_reproducibility(self):
+        env1 = TileworldEnv(grid_size=6, partition_mode="random", partition_seed=42)
+        env2 = TileworldEnv(grid_size=6, partition_mode="random", partition_seed=42)
+        np.testing.assert_array_equal(
+            env1._partition_assignments, env2._partition_assignments
+        )
+
+    def test_all_modes_run_episode(self):
+        np.random.seed(42)
+        for mode in ["bitwise", "random", "overlapping"]:
+            env = TileworldEnv(grid_size=4, partition_mode=mode, partition_seed=42)
+            agent = make_agent(EFEAgent, env, planning_horizon=2)
+            result = run_episode(agent, env)
+            assert result.success in (True, False)
+
+    def test_invalid_mode_raises(self):
+        with self.assertRaises(ValueError):
+            TileworldEnv(grid_size=4, partition_mode="invalid")

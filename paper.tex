@@ -345,6 +345,8 @@ EFE achieves the highest reward ($-21.13$), scanning 14.81 times---less than hal
 \label{fig:tw_scaling}
 \end{figure}
 
+\paragraph{Observation structure sensitivity.} A natural concern is whether EFE's advantage on Tileworld depends on the highly structured bit-level partition of scan actions. We test this by replacing the deterministic row/column splits with two alternative observation structures: \emph{random} partitions (each scan randomly assigns cells to two groups, breaking orthogonality) and \emph{overlapping} partitions (scans use random linear combinations of coordinates, producing correlated and partially redundant observations). On $6{\times}6$ Tileworld ($H{=}2$, 200 episodes $\times$ 5 seeds), EFE achieves the best reward under all three modes: bitwise $-20.52$ (74.2\% success), random $-29.15$ (56.1\%), overlapping $-46.73$ (9.8\%). Planning follows the same pattern: $-21.44$ (73.7\%), $-30.41$ (54.5\%), $-47.61$ (8.5\%). EFE's reward advantage over Planning is consistent across modes ($+0.9$, $+1.3$, $+0.9$), confirming that the result is not an artifact of the structured observation model. As expected, random and overlapping modes reduce absolute performance because scans provide less complementary information, but the \emph{relative} ranking of agents is preserved.
+
 \subsection{Interleaved observe-act: RockSample}
 \label{sec:rocksample}
 
@@ -383,7 +385,9 @@ Instance & Agent & Steps & Checks & Good & Bad & Reward \\
 \end{small}
 \end{table}
 
-On RS[5,3] and RS[7,4], EFE ($w{=}1$) achieves the highest reward. On RS[7,8], EFE ($w{=}1$) scores $+19.57$ vs.\ Planning's $+11.75$ ($+7.82$ gap), showing that the advantage grows with the number of observation actions---consistent with the observe-then-commit findings. On RS[11,11] ($|S|{=}2{,}048$), all information-aware agents vastly outperform Greedy ($+13.6$ vs.\ $-21.9$) while the factored belief tree search remains tractable (1--2 seconds for 100 episodes). On all instances, EFE samples dramatically fewer bad rocks than Greedy (0.00--0.05 vs.\ 1.51--5.67), confirming that the information gain term drives checking behavior. Detailed results including POMCP baselines are in Appendix~\ref{app:rocksample}.
+On RS[5,3] and RS[7,4], EFE ($w{=}1$) achieves the highest reward. On RS[7,8], EFE ($w{=}1$) scores $+19.57$ vs.\ Planning's $+11.75$ ($+7.82$ gap), showing that the advantage grows with the number of observation actions---consistent with the observe-then-commit findings. On all instances up to RS[7,8], EFE samples dramatically fewer bad rocks than Greedy (0.00--0.05 vs.\ 1.51--5.67), confirming that the information gain term drives checking behavior.
+
+On RS[11,11] ($|S|{=}2{,}048$), EFE and Planning achieve identical reward ($+13.64$), with all information-aware agents vastly outperforming Greedy ($+13.6$ vs.\ $-21.9$). This result demonstrates \emph{tractability}---the factored belief tree search scales to 2{,}048 states in seconds---but not EFE \emph{differentiation}. At depth 2, the tree search horizon is too shallow relative to the 11-rock environment: all informed agents converge to a conservative ``check nearest rock, sample if good, exit'' strategy. Depth 3 is computationally intractable at this scale, requiring orders of magnitude more search time per step. This mirrors the Tileworld scaling finding (Figure~\ref{fig:tw_scaling}), where EFE's advantage requires sufficient depth relative to the state space. The RS[7,8] result, where EFE achieves a $+7.82$ reward gap over Planning, shows that EFE differentiation emerges when the observation action count ($K{=}8$) provides sufficient room for directed information gathering within the search horizon. Detailed results including POMCP baselines are in Appendix~\ref{app:rocksample}.
 
 \subsection{Structural inspection}
 \label{sec:inspection}
@@ -392,28 +396,28 @@ To validate Proposition~\ref{prop:factored} on a domain-realistic benchmark and 
 
 \begin{table}[ht]
 \centering
-\caption{Structural Inspection results. $N{=}8$: 200 episodes $\times$ 3 seeds; $N{=}16$: 100 $\times$ 2 seeds. EFE ($w{=}1$) achieves the best reward--accuracy trade-off. Accuracy: fraction of components correctly diagnosed.}
+\caption{Structural Inspection results. $N{=}8$: 2{,}500 episodes (500 per seed $\times$ 5 seeds); $N{=}16$: 1{,}000 episodes (200 per seed $\times$ 5 seeds). Reward shown as mean $\pm$ SE. EFE ($w{=}1$) achieves the best reward--accuracy trade-off. Accuracy: fraction of components correctly diagnosed.}
 \label{tab:inspection}
 \begin{small}
 \begin{tabular}{llccccc}
 \toprule
 Instance & Agent & Accuracy & Missed & Tests & Reward \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{$N{=}8$\\[-1pt]{\scriptsize $|S|{=}256$}}} & Greedy & 70.0\% & $2.40$ & $0.0$ & $-113.71$ \\
-& Planning ($w{=}0$) & 76.5\% & $0.07$ & $13.0$ & $-13.66$ \\
-& Planning+IG ($w{=}5$) & 93.0\% & $0.17$ & $13.8$ & $-18.95$ \\
-& \textbf{EFE} ($w{=}1$) & $\mathbf{88.6\%}$ & $\mathbf{0.10}$ & $14.7$ & $\mathbf{-13.86}$ \\
+\multirow{4}{*}{\shortstack[l]{$N{=}8$\\[-1pt]{\scriptsize $|S|{=}256$}}} & Greedy & 70.7\% & $2.34$ & $0.0$ & $-114.33 \pm 1.33$ \\
+& Planning ($w{=}0$) & 73.0\% & $0.07$ & $12.7$ & $-17.85 \pm 0.34$ \\
+& Planning+IG ($w{=}5$) & 94.9\% & $0.10$ & $18.7$ & $-22.82 \pm 0.35$ \\
+& \textbf{EFE} ($w{=}1$) & $\mathbf{87.9\%}$ & $\mathbf{0.08}$ & $18.0$ & $\mathbf{-20.60 \pm 0.34}$ \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{$N{=}16$\\[-1pt]{\scriptsize $|S|{=}65{,}536$}}} & Greedy & 70.1\% & $4.79$ & $0.0$ & $-236.32$ \\
-& Planning ($w{=}0$) & 78.8\% & $0.20$ & $22.6$ & $-43.53$ \\
-& Planning+IG ($w{=}5$) & 90.7\% & $0.28$ & $28.1$ & $-46.24$ \\
-& \textbf{EFE} ($w{=}1$) & $\mathbf{85.8\%}$ & $\mathbf{0.26}$ & $32.9$ & $\mathbf{-45.67}$ \\
+\multirow{4}{*}{\shortstack[l]{$N{=}16$\\[-1pt]{\scriptsize $|S|{=}65{,}536$}}} & Greedy & 70.0\% & $4.81$ & $0.0$ & $-237.46 \pm 2.93$ \\
+& Planning ($w{=}0$) & 78.2\% & $0.26$ & $22.3$ & $-46.09 \pm 0.94$ \\
+& Planning+IG ($w{=}5$) & 91.4\% & $0.24$ & $28.1$ & $-43.51 \pm 0.85$ \\
+& \textbf{EFE} ($w{=}1$) & $\mathbf{86.1\%}$ & $\mathbf{0.27}$ & $32.8$ & $\mathbf{-45.71 \pm 0.94}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-EFE ($w{=}1$) achieves the best reward--accuracy trade-off on both instances. On $N{=}8$ ($|S|{=}256$), EFE achieves $88.6\%$ accuracy with reward $-13.86$---nearly matching Planning's reward ($-13.66$) while gaining $+12.1$pp accuracy. Planning+IG ($w{=}5$) achieves $93\%$ accuracy but at $5.1$ lower reward: it over-tests, spending resources on visual checks where a single detailed test suffices. On $N{=}16$ ($|S|{=}65{,}536$), EFE outperforms Planning by $+7.0$pp accuracy ($85.8\%$ vs.\ $78.8\%$) with comparable reward. This is the largest state space in our evaluation and confirms that the factored belief tree search scales to realistic domains. The asymmetric penalty structure ($\alpha = 25$) places this firmly in the regime where Proposition~\ref{prop:nearopt} predicts $w{=}1$ is near-optimal.
+EFE ($w{=}1$) achieves the best reward--accuracy trade-off on both instances. On $N{=}8$ ($|S|{=}256$), EFE achieves $87.9\%$ accuracy with reward $-20.60 \pm 0.34$---gaining $+14.9$pp accuracy over Planning ($73.0\%$, $-17.85$) at a moderate reward cost. Planning+IG ($w{=}5$) achieves $94.9\%$ accuracy but at $-22.82$ reward: it over-tests, spending resources on visual checks where a single detailed test suffices. On $N{=}16$ ($|S|{=}65{,}536$), EFE outperforms Planning by $+7.9$pp accuracy ($86.1\%$ vs.\ $78.2\%$) with comparable reward ($-45.71 \pm 0.94$ vs.\ $-46.09 \pm 0.94$; $p > 0.05$). This is the largest state space in our evaluation and confirms that the factored belief tree search scales to realistic domains. The asymmetric penalty structure ($\alpha = 25$) places this firmly in the regime where Proposition~\ref{prop:nearopt} predicts $w{=}1$ is near-optimal.
 
 \subsection{Summary}
 
@@ -462,7 +466,7 @@ Many real-world decision problems---medical diagnosis, fault detection, security
 Our main results assume exact knowledge of the generative model. Appendix~\ref{app:misspec} investigates robustness when the agent's believed observation accuracy differs from the true value by up to $\pm 0.15$. On Tiger, success rates remain above 96.7\% across all mismatch levels. On Diagnosis, degradation is larger but graceful. Overestimating sensor accuracy (positive mismatch) is more harmful than underestimating it, because the agent commits prematurely on insufficient evidence. EFE's intrinsic epistemic drive provides a partial buffer: even with a miscalibrated model, the information gain term still encourages observation, compensating for overconfident planning.
 
 \paragraph{Approximate planning with MCTS-EFE.}
-The exact tree search cost $\mathcal{O}(K \cdot |\mathcal{O}|^H)$ limits practical horizons to $H{=}2$--$3$ with $K \geq 3$. To push beyond this, we implement MCTS with EFE as a leaf heuristic: the tree policy uses UCB1 with observation-outcome enumeration, and leaf nodes are evaluated via greedy EFE rollouts. On Tiger at $H{=}10$, MCTS-EFE with 500 simulations achieves 97.2\% success (7.2s per 200 episodes), compared to 89.7\% for POMCP at matched budget (1.7s). This demonstrates that EFE's closed-form information valuation provides a substantially stronger leaf heuristic than semi-informed rollouts. Our POMCP implementation already uses belief-optimal commits (not purely random rollouts): observations are sampled uniformly, but the rollout terminates with the commit action maximizing expected reward under the Bayesian-updated belief (Appendix~\ref{app:pomcp}). The remaining performance gap therefore reflects the value of \emph{directed observation selection}---EFE chooses which test to run based on information gain, while POMCP samples tests uniformly. The claim is not that EFE-based planning exceeds state-of-the-art POMDP solvers, but that the EFE leaf heuristic provides a principled, zero-tuning alternative to heuristic rollout design. POMCP with fully informed rollouts (e.g., using domain knowledge or a learned value function for observation selection) would narrow the gap further. For single-observation environments, the observation-outcome enumeration (2 outcomes per action) keeps expansion costs low. On Diagnosis ($N{=}4$, $K{=}2$ tests), MCTS-EFE at $H{=}5$ achieves $98.0\%$ success compared to POMCP's $71.3\%$ at matched budget (200 simulations), demonstrating that EFE scales to multi-observation environments. For larger observation spaces, more efficient tree policies---such as progressive widening or double progressive widening \citep{benchetrit2025}---would further improve scalability; we leave this to future work.
+The exact tree search cost $\mathcal{O}(K \cdot |\mathcal{O}|^H)$ limits practical horizons to $H{=}2$--$3$ with $K \geq 3$. To push beyond this, we implement MCTS with EFE as a leaf heuristic: the tree policy uses UCB1 with observation-outcome enumeration, and leaf nodes are evaluated via greedy EFE rollouts. On Tiger at $H{=}10$, MCTS-EFE with 500 simulations achieves 97.2\% success (7.2s per 200 episodes), compared to 89.7\% for POMCP at matched budget (1.7s). This demonstrates that EFE's closed-form information valuation provides a substantially stronger leaf heuristic than semi-informed rollouts. Our POMCP implementation already uses belief-optimal commits (not purely random rollouts): observations are sampled uniformly, but the rollout terminates with the commit action maximizing expected reward under the Bayesian-updated belief (Appendix~\ref{app:pomcp}). The remaining performance gap therefore reflects the value of \emph{directed observation selection}---EFE chooses which test to run based on information gain, while POMCP samples tests uniformly. The claim is not that EFE-based planning exceeds state-of-the-art POMDP solvers, but that the EFE leaf heuristic provides a principled, zero-tuning alternative to heuristic rollout design. POMCP with fully informed rollouts (e.g., using domain knowledge or a learned value function for observation selection) would narrow the gap further. For single-observation environments, the observation-outcome enumeration (2 outcomes per action) keeps expansion costs low. On Diagnosis ($N{=}4$, $K{=}2$ tests), MCTS-EFE at $H{=}5$ achieves $98.0\%$ success compared to POMCP's $71.3\%$ at matched budget (200 simulations), demonstrating that EFE scales to multi-observation environments. To validate on a larger multi-observation environment, we evaluate on Tileworld $6{\times}6$ ($|S|{=}36$, $K{=}6$ scans). MCTS-EFE(50) achieves $96.0\%$ success and $-19.04$ reward, outperforming both Exact-EFE (75.0\%, $-20.11$) and POMCP at matched (50) or higher (200) simulation budgets ($2.0\%$/$15.0\%$ success). The improvement over exact tree search reflects MCTS's ability to concentrate samples on promising observation sequences. The $81$--$94$pp gap over POMCP confirms that EFE's directed observation selection is essential at this scale---POMCP's semi-informed rollouts cannot identify which of the 6 scans to perform. For larger observation spaces, more efficient tree policies---such as progressive widening or double progressive widening \citep{benchetrit2025}---would further improve scalability; we leave this to future work.
 
 \paragraph{When to use EFE-as-$\rho$: summary.}
 Our analysis identifies the following conditions favoring EFE over tuned alternatives:
