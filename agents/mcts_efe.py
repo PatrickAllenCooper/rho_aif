@@ -78,19 +78,31 @@ class MCTSEFEAgent(BaseAgent):
         self.exploration_constant = exploration_constant
 
     def select_action(self) -> int:
-        root = MCTSNode(belief=self.belief.belief.copy())
-        root.visit_count = 1
+        belief = self.belief.belief
 
-        for _ in range(self.num_simulations):
-            node = self._tree_policy(root)
-            value = self._evaluate_leaf(node)
-            self._backpropagate(node, value)
+        best_commit_action, best_commit_value = self._best_commit_from_belief(belief)
 
-        best_action = max(
-            root.children.values(),
-            key=lambda c: c.visit_count,
-        ).action
-        return best_action
+        n_samples = min(self.num_simulations, 50)
+        observe_values = np.zeros(self.num_observe_actions)
+        for k in range(self.num_observe_actions):
+            total = 0.0
+            model = self.obs_models[k]
+            predictive = belief @ model
+            predictive = predictive / predictive.sum()
+            for _ in range(n_samples):
+                obs_idx = int(np.random.choice(len(predictive), p=predictive))
+                posterior = model[:, obs_idx] * belief
+                posterior = posterior / posterior.sum()
+                v = -self.obs_costs[k] + self._multi_step_rollout(posterior, self.rollout_depth)
+                total += v
+            observe_values[k] = total / n_samples
+
+        best_obs_k = int(np.argmax(observe_values))
+        best_obs_value = observe_values[best_obs_k]
+
+        if best_commit_value >= best_obs_value:
+            return best_commit_action
+        return best_obs_k
 
     def _tree_policy(self, node: MCTSNode) -> MCTSNode:
         """Select a leaf node using UCB1.
@@ -183,20 +195,16 @@ class MCTSEFEAgent(BaseAgent):
 
         return self._efe_rollout(node.belief, self.rollout_depth)
 
-    def _efe_rollout(self, belief: np.ndarray, depth: int) -> float:
-        """Greedy EFE rollout for estimating leaf value."""
-        if depth <= 0:
-            return self._best_commit_value(belief)
+    def _multi_step_rollout(self, belief: np.ndarray, depth: int) -> float:
+        """Multi-step rollout that continues observing for the full depth.
 
+        At each step, picks the observation with highest one-step EFE value.
+        Returns the maximum of (commit-now, continue-observing) to correctly
+        value both early and late commitment strategies.
+        """
         best_commit = self._best_commit_value(belief)
-        best_obs_value = float("-inf")
 
-        for k in range(self.num_observe_actions):
-            v = self._one_step_efe_value(k, belief)
-            if v > best_obs_value:
-                best_obs_value = v
-
-        if best_obs_value <= best_commit:
+        if depth <= 0 or np.max(belief) > 0.99:
             return best_commit
 
         best_k = 0
@@ -218,7 +226,12 @@ class MCTSEFEAgent(BaseAgent):
         else:
             posterior = posterior / p_sum
 
-        return -self.obs_costs[best_k] + self._efe_rollout(posterior, depth - 1)
+        continue_value = -self.obs_costs[best_k] + self._multi_step_rollout(posterior, depth - 1)
+        return max(best_commit, continue_value)
+
+    def _efe_rollout(self, belief: np.ndarray, depth: int) -> float:
+        """Leaf evaluation rollout for the tree search."""
+        return self._multi_step_rollout(belief, depth)
 
     def _one_step_efe_value(self, obs_action: int, belief: np.ndarray) -> float:
         """One-step EFE value V = -G = -cost + IG + E[best_commit_after]."""

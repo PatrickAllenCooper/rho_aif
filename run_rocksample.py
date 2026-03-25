@@ -45,6 +45,16 @@ ROCKSAMPLE_CONFIGS = {
         ],
         "tree_depth": 3,
     },
+    "RS[11,11]": {
+        "grid_size": 11,
+        "num_rocks": 11,
+        "rock_positions": [
+            (0, 3), (1, 7), (2, 1), (2, 9),
+            (4, 4), (4, 8), (5, 0), (6, 6),
+            (8, 2), (8, 10), (10, 5),
+        ],
+        "tree_depth": 2,
+    },
 }
 
 

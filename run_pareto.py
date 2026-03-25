@@ -78,23 +78,31 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
         rew = sw["reward"]
         ws = sw["w"]
 
-        ax.plot(succ, rew, color="#2196F3", lw=1.5, alpha=0.5, zorder=1)
-        ax.scatter(succ, rew, c="#2196F3", s=30, zorder=2, edgecolors="white", linewidths=0.5)
+        ax.plot(succ, rew, color="#2196F3", lw=2.0, alpha=0.5, zorder=1)
+        ax.scatter(succ, rew, c="#2196F3", s=60, zorder=2, edgecolors="white", linewidths=0.7)
 
         for i, w in enumerate(ws):
             if w in [0.01, 1.0, 10.0, 100.0]:
-                offset = (5, 5) if w != 1.0 else (5, -12)
+                if w == 1.0:
+                    offset = (7, -14)
+                elif w == 0.01:
+                    offset = (-10, 8)
+                elif w == 100.0:
+                    offset = (-10, -12)
+                else:
+                    offset = (7, 7)
                 ax.annotate(f"$w$={w:g}", (succ[i], rew[i]),
                             textcoords="offset points", xytext=offset,
-                            fontsize=6, color="#2196F3", alpha=0.8)
+                            fontsize=7, color="#2196F3", alpha=0.9,
+                            fontweight="bold")
 
         w1_idx = next((i for i, w in enumerate(ws) if abs(w - 1.0) < 0.01), None)
         if w1_idx is not None:
-            ax.scatter([succ[w1_idx]], [rew[w1_idx]], c="#2196F3", s=100,
-                       marker="D", zorder=4, edgecolors="black", linewidths=1.0)
+            ax.scatter([succ[w1_idx]], [rew[w1_idx]], c="#2196F3", s=140,
+                       marker="D", zorder=4, edgecolors="black", linewidths=1.2)
 
-        ax.scatter([efe["success"] * 100], [efe["reward"]], c="#D32F2F", s=120,
-                   marker="*", zorder=5, edgecolors="black", linewidths=0.8)
+        ax.scatter([efe["success"] * 100], [efe["reward"]], c="#D32F2F", s=180,
+                   marker="*", zorder=5, edgecolors="black", linewidths=1.0)
 
         ax.set_xlabel("Success rate (%)", fontsize=9)
         if idx == 0:

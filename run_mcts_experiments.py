@@ -16,6 +16,7 @@ import os
 
 from environments.tiger import TigerEnv
 from environments.tileworld import TileworldEnv
+from environments.diagnosis import DiagnosisEnv
 from agents.mcts_efe import MCTSEFEAgent
 from agents.efe import EFEAgent
 from agents.pomcp import POMCPAgent
@@ -213,8 +214,111 @@ def run_mcts_tileworld(seeds=None, csv_path="results_mcts_efe.csv", existing_row
     return rows
 
 
+def run_mcts_diagnosis_sweep(seeds=None, csv_path="results_mcts_efe.csv", existing_rows=None):
+    """Sweep MCTS-EFE on Diagnosis (N=4, K=2 tests) at multiple horizons.
+
+    Diagnosis has 2 observation actions with 2 outcomes each, testing MCTS-EFE
+    on a multi-observation environment where exact tree search at higher
+    horizons is intractable.
+    """
+    if seeds is None:
+        seeds = SEEDS
+
+    rows = list(existing_rows) if existing_rows else []
+
+    env = DiagnosisEnv(
+        num_conditions=4, test_accuracy=0.80, test_cost=1.0,
+        correct_reward=10.0, incorrect_penalty=-50.0,
+    )
+
+    num_episodes = 200
+    total_ep = num_episodes * len(seeds)
+
+    print("\n" + "=" * 70)
+    print("MCTS-EFE EXPERIMENTS: Diagnosis (N=4, K=2)")
+    print("=" * 70)
+
+    print("  Running Exact EFE (H=3)...", flush=True)
+    t0 = time.time()
+    exact_raw = run_experiment_multi_seed(
+        EFEAgent, env, num_episodes, seeds=seeds, planning_horizon=3,
+    )
+    exact_s = summarize_results(exact_raw)
+    exact_time = time.time() - t0
+    rows.append({
+        "env": "Diagnosis-N4", "agent": "Exact-EFE", "horizon": 3,
+        "sim_budget": 0, "success": exact_s["success_rate"],
+        "reward": exact_s["mean_reward"], "std_reward": exact_s["std_reward"],
+        "obs": exact_s["mean_observations"],
+        "wall_clock_s": exact_time, "ms_per_ep": exact_time / total_ep * 1000,
+    })
+    print(
+        f"    Exact EFE(H=3): success={exact_s['success_rate']:.1%}  "
+        f"reward={exact_s['mean_reward']:+.3f}  "
+        f"obs={exact_s['mean_observations']:.2f}  ({exact_time:.1f}s)"
+    )
+
+    configs = [
+        (3, 200), (5, 200), (5, 500), (7, 200), (7, 500),
+    ]
+    for horizon, n_sims in configs:
+        print(f"  Running MCTS-EFE (H={horizon}, sims={n_sims})...", flush=True)
+        t0 = time.time()
+        mcts_raw = run_experiment_multi_seed(
+            MCTSEFEAgent, env, num_episodes, seeds=seeds,
+            num_simulations=n_sims,
+            planning_horizon=horizon,
+            rollout_depth=3,
+        )
+        mcts_s = summarize_results(mcts_raw)
+        mcts_time = time.time() - t0
+        rows.append({
+            "env": "Diagnosis-N4", "agent": f"MCTS-EFE({n_sims})",
+            "horizon": horizon, "sim_budget": n_sims,
+            "success": mcts_s["success_rate"],
+            "reward": mcts_s["mean_reward"], "std_reward": mcts_s["std_reward"],
+            "obs": mcts_s["mean_observations"],
+            "wall_clock_s": mcts_time, "ms_per_ep": mcts_time / total_ep * 1000,
+        })
+        print(
+            f"    MCTS-EFE({n_sims}): success={mcts_s['success_rate']:.1%}  "
+            f"reward={mcts_s['mean_reward']:+.3f}  "
+            f"obs={mcts_s['mean_observations']:.2f}  ({mcts_time:.1f}s)"
+        )
+
+        print(f"  Running POMCP (H={horizon}, sims={n_sims})...", flush=True)
+        t0 = time.time()
+        pomcp_raw = run_experiment_multi_seed(
+            POMCPAgent, env, num_episodes, seeds=seeds,
+            num_simulations=n_sims,
+            rollout_depth=horizon + 3,
+            exploration_constant=5.0,
+        )
+        pomcp_s = summarize_results(pomcp_raw)
+        pomcp_time = time.time() - t0
+        rows.append({
+            "env": "Diagnosis-N4", "agent": f"POMCP({n_sims})",
+            "horizon": horizon, "sim_budget": n_sims,
+            "success": pomcp_s["success_rate"],
+            "reward": pomcp_s["mean_reward"], "std_reward": pomcp_s["std_reward"],
+            "obs": pomcp_s["mean_observations"],
+            "wall_clock_s": pomcp_time, "ms_per_ep": pomcp_time / total_ep * 1000,
+        })
+        print(
+            f"    POMCP({n_sims}): success={pomcp_s['success_rate']:.1%}  "
+            f"reward={pomcp_s['mean_reward']:+.3f}  "
+            f"obs={pomcp_s['mean_observations']:.2f}  ({pomcp_time:.1f}s)"
+        )
+
+        pd.DataFrame(rows).to_csv(csv_path, index=False)
+        print(f"  [checkpoint] saved {len(rows)} rows to {csv_path}")
+
+    return rows
+
+
 if __name__ == "__main__":
     os.makedirs("figures", exist_ok=True)
     rows = run_mcts_tiger_sweep()
+    rows = run_mcts_diagnosis_sweep(existing_rows=rows)
     run_mcts_tileworld(existing_rows=rows)
     print("\nAll MCTS-EFE results saved to results_mcts_efe.csv")

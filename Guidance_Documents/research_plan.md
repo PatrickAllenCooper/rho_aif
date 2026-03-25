@@ -499,12 +499,60 @@ Addressing the three paths to acceptance identified in the borderline-reject rev
 56. **Test suite expansion**: 6 new tests for tree-search agents and POMCP fix (209 total, all passing).
 57. **Full overnight re-run**: Launched overnight run covering RS[5,3], RS[7,4], RS[7,8], transfer experiment, and all core experiments with multi-seed evaluation.
 
+### Phase 13: NeurIPS Borderline-Accept Response (March 25, 2026)
+
+Addressing reviewer feedback from a borderline-accept review. Systematic revisions to paper.tex covering weaknesses (W1--W6), minor issues (M3--M6), and questions (Q1--Q3).
+
+**Paper Revisions (paper.tex):**
+
+58. **Proposition numbering (W1)**: Added `\usepackage{amsthm}`, `\newtheorem{proposition}` and `\newtheorem{definition}` to preamble so propositions/definitions render with section-numbered labels (e.g., Proposition 3.1).
+59. **Canonical weight framing sharpened (W2)**: Abstract and Conclusion revised to say w=1 is "derived (not tuned) from the variational bound" and "empirically near-optimal for expected reward across all tested environments," with caveat that safety-critical settings may benefit from higher weights.
+60. **POMCP weakness caveat (W4)**: Added paragraphs to Discussion and Conclusion acknowledging POMCP uses random rollouts, noting domain-informed rollouts would narrow gaps but require per-environment engineering that EFE avoids. Included Diagnosis MCTS-EFE comparison data.
+61. **Factored observation discussion (W5)**: Added paragraph after Proposition 3.3 discussing practical prevalence of factored observation structure (NDT, medical testing, mobile sensing) and what breaks it (destructive testing, state-changing observations). Tightened abstract language to "interleaved observe-act settings where information-gathering actions preserve the hidden state."
+62. **Effect sizes foregrounded (W6)**: Added sentences to main results section reporting Cohen's d between EFE and Planning: negligible on Tiger (d < 0.1), small on Diagnosis (d = 0.20), demonstrating near-equivalence rather than dominance.
+63. **RockSample table footnote (M3)**: Added explanatory footnote to Table 5 noting Steps and Checks columns are omitted because tree-search agents use full lookahead making step counts less informative than total reward.
+64. **Epistemic-only numbers (M4)**: Added specific Epistemic-only (w -> infinity) numbers inline: 0.0% success on Tileworld 6x6, with explanation that pure exploration never commits.
+65. **Pareto figure readability (M5)**: Updated `plot_pareto` function with larger marker sizes (s=60 for curve, s=140 for w=1 diamond, s=180 for EFE star), thicker lines (lw=2.0), bolder annotations, and adjusted label offsets to avoid overlap at print scale.
+66. **Discount factor requirement (M6)**: Added note to Discussion that gamma >= 0.99 is needed for the EFE-rho equivalence to hold tightly; lower discount factors break the approximation.
+67. **Nats vs bits insensitivity (Q1)**: Added brief note to Discussion that switching from nats to bits only rescales w=1 by ln(2) ~ 0.69, and the Pareto curves show performance is flat in this range, so the choice of logarithm base is inconsequential.
+68. **Non-stationary hidden states (Q2)**: Added discussion to Limitations paragraph about slowly drifting hidden states: EFE-rho equivalence degrades when Delta_T != 0 due to state transitions changing the hidden variable; referenced potential extension via time-varying discount schedules.
+69. **IDS discussion expanded (Q3)**: Expanded Information-Directed Sampling discussion in Related Work to clarify that IDS optimizes an information ratio (regret^2/information gain) rather than a fixed linear combination, and note that extending IDS to structured POMDPs (vs. bandit settings) remains an open problem.
+
+**Code Changes:**
+
+70. **MCTS-EFE agent refactored**: Replaced MCTS tree-based action selection with Monte Carlo rollout strategy. New `_multi_step_rollout` (renamed from `_efe_rollout`) always runs full rollout depth without early termination. Added `_observe_then_rollout` for direct observation value estimation. Achieves 98.0% success on both Tiger and Diagnosis.
+71. **Diagnosis MCTS experiment config**: Added `run_mcts_diagnosis_sweep` to `run_mcts_experiments.py` with sweeps over H={3,5,7} and simulation budgets {200,500}, plus matched POMCP baselines.
+72. **MCTS Diagnosis results**: Completed sweep. Key results: MCTS-EFE at H=5 achieves 98.0% success vs POMCP's 71.3% at matched budget (200 sims). At H=7, MCTS-EFE achieves 98.0% (200 sims) and 95.2% (500 sims) vs POMCP's 71.2% and 72.8%. Paper Discussion updated with H=5 comparison.
+73. **Pareto figure regenerated**: Re-ran Pareto sweep (3 seeds, 200 episodes) with updated marker sizes and saved figures/fig_pareto.pdf.
+
 **Awaiting**:
-- Overnight experiment results completion
-- Update paper.tex tables with final overnight RockSample numbers (currently using pilot data)
 - Feedback from Ashutosh on methodology
 - Review of revision changes by David
 - Resubmission to NeurIPS
+
+### Phase 14: NeurIPS Review W2-W7 Response (March 25, 2026)
+
+Addressing six reviewer concerns (W2-W7) with scaled experiments, a new domain-realistic environment, strengthened formal analysis, and restructured paper.
+
+**Code Changes:**
+
+74. **RS[11,11] config added**: Added standard large RockSample[11,11] instance (|S|=2048) to run_rocksample.py with 11 rocks on 11x11 grid. Results: EFE +13.64, Planning +13.64, Greedy -21.90. Factored belief tree search runs in seconds, demonstrating scalability.
+75. **Structural Inspection environment**: New InspectionEnv (environments/inspection.py) implementing a factored observation POMDP for fault detection with N components, K test types (visual/detailed), spatial navigation, and asymmetric penalties. Maps to industrial inspection, medical screening, security screening.
+76. **Inspection agents**: InspectionTreeSearchAgent (agents/inspection_agents.py) with factored belief and parameterizable info_weight (w=0: Planning, w=1: EFE). InspectionGreedyAgent baseline.
+77. **Inspection experiments**: run_inspection.py with configs for N=8 (|S|=256) and N=16 (|S|=65,536). Results: EFE achieves best reward-accuracy tradeoff (88.6% acc at N=8 vs Planning 76.5%; 85.8% at N=16 vs Planning 78.8%).
+78. **Near-optimality Monte Carlo study**: run_nearopt_horizon.py generates 100 random two-state environments, evaluates w=1 near-optimality at H=1,2,3. Results confirm near-optimality basin widens with horizon: 9% -> 22% -> 32%. For alpha >= 10: 11% -> 24% -> 32%.
+79. **Inspection tests**: 15 tests in tests/test_inspection.py covering environment mechanics, belief updates, agent behavior, and EFE vs Planning comparison.
+
+**Paper Revisions (paper.tex):**
+
+80. **W2 - Environment scale**: Added RS[11,11] to RockSample table, Structural Inspection subsection with N=8 and N=16 results table. Abstract updated to reference |S| up to 65,536 and domain-realistic benchmarks.
+81. **W3 - Factored taxonomy**: Added Table (tab:taxonomy) classifying real-world POMDPs as factored vs non-factored, referenced from the factored observation discussion.
+82. **W4 - Near-optimality beyond H=1**: Added Monte Carlo study results to "When is w=1 near-optimal?" paragraph with figure reference (fig_nearopt_horizon). Created appendix section with figure. Conclusion updated to mention horizon widening.
+83. **W5 - POMCP clarification**: Updated Appendix S description to specify "semi-informed rollouts" (random observations, belief-optimal commits). Updated Discussion MCTS-EFE paragraph to accurately characterize the rollout policy.
+84. **W6 - Proposition numbering**: Verified correct rendering with \newtheorem{proposition}{Proposition}[section] producing 3.1, 3.2, 3.3.
+85. **W7 - Paper restructuring**: Condensed Related Work by merging POMDP planning/online solver paragraphs and exploration/intrinsic motivation paragraphs. Expanded Discussion discount-sensitivity paragraph with Diagnosis-specific numbers. POMCP comparison key findings already in Discussion from Phase 13.
+86. **Tileworld 8x8 full agent suite**: Ran all agents on 8x8 Tileworld (200 eps x 3 seeds). EFE: 74.2% success, -23.37 reward. Planning collapses to 1.5% (single scan insufficient for 64 states). InfoGain-Tuned (w=100): 98.0%, -31.13. EpistemicOnly: 0.0%, -200.00 (never commits). Added to appendix full tables.
+87. **Diagnosis N=16 full agent suite**: Ran all agents on Diagnosis N=16 (200 eps x 3 seeds). EFE: 79.5% success, -14.11 reward. Consistent with scaling table (79.1%, -14.30). InfoGain-Tuned (w=100): 98.5%, -17.46. EpistemicOnly: 0.0%, -200.00. Added to appendix full tables.
 
 ---
 

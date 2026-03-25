@@ -15,7 +15,7 @@ from typing import List, Dict, Optional, Type
 
 import time
 
-SEEDS = [42, 123, 456, 789, 1024]
+SEEDS = [42, 123, 456, 789, 1024, 2048, 3141, 4096, 5555, 6789]
 
 from environments.info_seeking import InfoSeekingEnv
 from environments.tiger import TigerEnv
