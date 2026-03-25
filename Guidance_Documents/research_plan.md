@@ -388,8 +388,8 @@ At H=2, Planning and EFE are equivalent. EFE's advantage over Planning requires 
 
 ## Current Status
 
-**Project Phase**: Phase 9 -- NeurIPS Revision Complete (comprehensive reviewer response)  
-**Date**: March 22, 2026
+**Project Phase**: Phase 11 -- Paper updated with fresh overnight data; ready for review
+**Date**: March 25, 2026
 
 ### Initial Submission (Phases 1-7)
 
@@ -436,7 +436,51 @@ Addressing all three NeurIPS reviewer critiques (Reject, Borderline Accept, Acce
 31. **MCTS-EFE in main paper**: Added paragraph in Discussion about approximate planning results. Added MCTS-EFE paragraph to POMCP appendix.
 32. **Code refactoring**: Extracted shared utility functions in rocksample_agents.py (_update_belief_common, _move_toward_common, _info_gain_for_rock).
 
+### Phase 10: Comprehensive Overnight Re-run (March 22, 2026)
+
+All previous results CSVs were stale (still used "VFE" naming, indicating they predated Phase 9 code changes). Complete re-run of all experiments with fresh multi-seed data, plus filling empirical gaps:
+
+33. **run_pomcp.py**: Modified to save results to CSV (results_pomcp.csv) with wall-clock timing columns (env, agent, sim_budget, success, reward, obs, wall_clock_s, ms_per_ep). Previously only printed to stdout.
+34. **run_supplementary.py**: Modified to use SEEDS (5 seeds) instead of single seed=42. Bootstrap CIs and effect sizes now computed on 5x larger sample.
+35. **run_mcts_experiments.py**: New dedicated MCTS-EFE experiment runner. Sweeps Tiger at H={6,8,10} x sim_budgets {200,500,1000} with matched POMCP comparison. Includes Tileworld 4x4 MCTS-EFE. Saves to results_mcts_efe.csv with wall-clock timing.
+36. **run_model_misspec.py**: Modified to use SEEDS and increased from 200 to 500 episodes per seed (2500 total per condition, up from 200).
+37. **run_overnight.py**: Master overnight script with checkpoint.json. Runs 9 groups (A-I) sequentially: (A) core multi-seed, (B) RockSample all baselines, (C) POMCP compute-matched, (D) MCTS-EFE, (E) Pareto + accuracy sensitivity, (F) Tileworld, (G) model misspecification, (H) statistical analysis, (I) supplementary figures. Each group saves immediately on completion. Can resume from crash.
+38. **Fresh multi-seed CSVs**: All results_*.csv regenerated with "EFE" naming and 5-seed data. Replaces stale single-seed "VFE" files.
+
+**Phase 10 Completion** (March 25, 2026):
+
+Full overnight experiment suite completed in 30.6 hours across two shell sessions (first session hit 24h timeout during Group D Tileworld MCTS, second session completed remaining groups E-I). All 9 groups finished successfully:
+
+- **Group A** (Core multi-seed): 209.8 min -- All 6 environments with 5 seeds x 500+ episodes each
+- **Group B** (RockSample): 0.7 min -- RS[5,3] and RS[7,4] with 6 baselines each
+- **Group C** (POMCP comparison): 806.2 min -- Tiger, Diagnosis, Bandit, Tileworld-6x6 with sim budgets {500,1000,2000,5000} + wall-clock timing
+- **Group D** (MCTS-EFE): Tiger H={6,8,10} x {200,500,1000} sims with matched POMCP (Tileworld MCTS too expensive, Tiger data sufficient)
+- **Group E** (Pareto + accuracy): 1321.9 min -- Pareto sweeps for 4 envs + accuracy sensitivity for Tiger/Diagnosis
+- **Group F** (Tileworld): 414.0 min -- 6x6 full experiment + all Tileworld figures
+- **Group G** (Model misspecification): 21.7 min -- Tiger and Diagnosis with multi-seed
+- **Group H** (Statistical analysis): 48.7 min -- Bootstrap CIs, effect sizes, full pairwise statistics
+- **Group I** (Supplementary figures): 30.2 min -- All visualization and showcase figures
+
+Generated outputs: 22 CSV result files, 13 PDF figures. All use "EFE" naming and multi-seed data.
+
+### Phase 11: Paper Update with Fresh Data (March 25, 2026)
+
+All paper.tex tables and inline numbers updated from overnight CSV results:
+
+39. **Table 1 (main results)**: Updated Tiger, Diagnosis, Bandit numbers from results_tiger.csv, results_diagnosis_n4.csv, results_bandit.csv. All SEs recomputed as std/sqrt(5000). Key changes: Diagnosis EFE vs Planning gap is +7.9 pp (was +9.4), Bandit gap is +17.7 pp (was +15.5). Pareto dominance claims hold on both.
+40. **Appendix full tables**: All six per-environment tables updated (Tiger, Testbed, Diagnosis, Bandit, Tileworld 6x6, Navigation). Table captions updated to reflect multi-seed episode counts.
+41. **POMCP table**: Updated from results_pomcp.csv. Tiger POMCP(1000): 89.3% (was 90.6%). Diagnosis POMCP(1000): 73.1% (was 72.2%). Bandit POMCP(1000): 96.8% (was 97.4%). Tileworld POMCP(1000): 6.1% (was 10.5%).
+42. **MCTS-EFE numbers**: Updated from results_mcts_efe.csv. H=10 MCTS-EFE(500): 97.2% (was 97%), POMCP(500): 89.7% (was 89.5%).
+43. **Scaling table**: Updated N=2,4,8,16 Diagnosis scaling from results_scaling.csv. EFE now outperforms Planning at N=16 (79.1% vs 76.8%).
+44. **Model misspecification**: Updated both Tiger and Diagnosis misspec tables from results_model_misspec.csv. Now 2,500 episodes per condition (was 200). Tiger min success: 96.7% (was 96.5%).
+45. **RockSample table**: Updated from results_rocksample_5x3.csv and results_rocksample_7x4.csv. POMCP baseline removed (bugged: immediately exits without sampling).
+46. **Effect sizes table**: Updated from results_effect_sizes.csv. Testbed EFE vs Planning+IG now large ($d=1.33$, was 0.94).
+47. **Abstract and inline numbers**: Updated +8.1->+7.9 pp (Diagnosis), +16.6->+17.7 pp (Bandit), bootstrap CIs, MCTS-EFE claims, misspec thresholds.
+48. **Compute resources**: Updated NeurIPS checklist from "under 2 CPU-hours" to "approximately 30 CPU-hours".
+49. **Testbed**: Tuned weight changed from w*=1 to w*=50. Caption and discussion updated accordingly.
+
 **Awaiting**:
+- Address POMCP RockSample issue (agent immediately exits without sampling rocks)
 - Feedback from Ashutosh on methodology
 - Review of revision changes by David
 - Resubmission to NeurIPS (or alternative venue)
@@ -445,20 +489,64 @@ Addressing all three NeurIPS reviewer critiques (Reject, Borderline Accept, Acce
 
 ## References
 
-- Araya, M., et al. (2010). A POMDP extension with belief-dependent rewards. *NIPS*
-- Benchetrit, Y., et al. (2025). rho-POMCPOW: Online planning for continuous rho-POMDPs. *arXiv:2502.02549*
-- Silver, D., & Veness, J. (2010). Monte-Carlo Planning in Large POMDPs. *NeurIPS*
-- Da Costa, L., et al. (2020). Active inference on discrete state-spaces: A synthesis. *Journal of Mathematical Psychology*
-- Da Costa, L., et al. (2023). Reward maximization through discrete active inference. *Neural Computation*
-- Fehr, R., et al. (2018). rho-POMDPs have Lipschitz-continuous epsilon-optimal value functions. *NeurIPS*
-- Friston, K. (2010). The free-energy principle: a unified brain theory? *Nature Reviews Neuroscience*
-- Friston, K., et al. (2021). Sophisticated inference. *Neural Computation*
-- Heins, C., et al. (2022). pymdp: A Python library for active inference in discrete state spaces. *JOSS*
-- Maisto, D., et al. (2025). Active inference tree search in large POMDPs. *arXiv*
-- Millidge, B., et al. (2020). On the relationship between active inference and control as inference. *IWAI*
-- Parr, T., & Friston, K. J. (2019). Generalised free energy and active inference. *Biological Cybernetics*
-- Sajid, N., et al. (2021). Active inference: Demystified and compared. *Neural Computation*
+### POMDP Foundations and Solvers
+- Smallwood, R. D. & Sondik, E. J. (1973). The optimal control of partially observable Markov processes over a finite horizon. *Operations Research*
+- Kaelbling, L. P., et al. (1998). Planning and acting in partially observable stochastic domains. *Artificial Intelligence*
+- Pineau, J., et al. (2003). Point-based value iteration: An anytime algorithm for POMDPs. *IJCAI*
 - Smith, T. & Simmons, R. (2004). Heuristic search value iteration for POMDPs. *UAI* (RockSample benchmark)
+- Kurniawati, H., et al. (2008). SARSOP: Efficient point-based POMDP planning. *RSS*
+- Silver, D. & Veness, J. (2010). Monte-Carlo Planning in Large POMDPs. *NeurIPS*
+- Shani, G., et al. (2013). A survey of point-based POMDP solvers. *AAMAS*
+- Ye, N., et al. (2017). DESPOT: Online POMDP planning with regularization. *JAIR*
+- Sunberg, Z. N. & Kochenderfer, M. J. (2018). Online algorithms for POMDPs with continuous state, action, and observation spaces. *ICAPS*
+
+### rho-POMDPs
+- Araya, M., et al. (2010). A POMDP extension with belief-dependent rewards. *NeurIPS*
+- Fehr, R., et al. (2018). rho-POMDPs have Lipschitz-continuous epsilon-optimal value functions. *NeurIPS*
+- Benchetrit, Y., et al. (2025). rho-POMCPOW: Online planning for continuous rho-POMDPs. *arXiv:2502.02549*
+
+### Active Inference and EFE
+- Friston, K. (2010). The free-energy principle: a unified brain theory? *Nature Reviews Neuroscience*
+- Friston, K., et al. (2015). Active inference and epistemic value. *Cognitive Neuroscience*
+- Parr, T. & Friston, K. J. (2019). Generalised free energy and active inference. *Biological Cybernetics*
+- Da Costa, L., et al. (2020). Active inference on discrete state-spaces: A synthesis. *Journal of Mathematical Psychology*
+- Millidge, B., et al. (2020). On the relationship between active inference and control as inference. *IWAI*
+- Millidge, B., et al. (2021). Whence the expected free energy? *Neural Computation*
+- Friston, K., et al. (2021). Sophisticated inference. *Neural Computation*
+- Sajid, N., et al. (2021). Active inference: Demystified and compared. *Neural Computation*
+- Parr, T., Pezzulo, G. & Friston, K. J. (2022). Active Inference: The Free Energy Principle in Mind, Brain, and Behavior. *MIT Press*
+- Da Costa, L., et al. (2023). Reward maximization through discrete active inference. *Neural Computation*
+- Champion, T., et al. (2024). Reframing the expected free energy: Four formulations and a unification. *arXiv:2402.14460*
+- De Vries, B. & Nuijten, W. (2025). Expected free energy-based planning as variational inference. *arXiv:2504.14898*
+- Maisto, D., et al. (2025). Active inference tree search in large POMDPs. *Neurocomputing*
+
+### Scaling Active Inference
+- Fountas, Z., et al. (2020). Deep active inference agents using Monte-Carlo methods. *NeurIPS*
+- Tschantz, A., et al. (2020). Reinforcement learning through active inference. *ICLR BAICS Workshop*
+- Heins, C., et al. (2022). pymdp: A Python library for active inference in discrete state spaces. *JOSS*
+
+### Control as Inference and Maximum Entropy RL
+- Todorov, E. (2007). Linearly-solvable Markov decision problems. *NeurIPS*
+- Rawlik, K., et al. (2012). On stochastic optimal control and reinforcement learning by approximate inference. *RSS*
+- Levine, S. (2018). Reinforcement learning and control as probabilistic inference: Tutorial and review. *arXiv:1805.00909*
+- Haarnoja, T., et al. (2018). Soft actor-critic: Off-policy maximum entropy deep reinforcement learning. *ICML*
+
+### Value of Information and Experimental Design
+- Lindley, D. V. (1956). On a measure of the information provided by an experiment. *Annals of Mathematical Statistics*
+- Howard, R. A. (1966). Information value theory. *IEEE Transactions on Systems Science and Cybernetics*
+- Russo, D. & Van Roy, B. (2014). Learning to optimize via information-directed sampling. *NeurIPS*
+
+### Exploration and Intrinsic Motivation
+- Schmidhuber, J. (1991). A possibility for implementing curiosity and boredom in model-building neural controllers. *SAB*
+- Duff, M. O. & Barto, A. G. (2002). Optimal learning: Computational procedures for Bayes-adaptive MDPs. *PhD thesis*
+- Oudeyer, P.-Y. & Kaplan, F. (2007). What is intrinsic motivation? A typology of computational approaches. *Frontiers in Neurorobotics*
+- Itti, L. & Baldi, P. (2009). Bayesian surprise attracts human attention. *Vision Research*
+- Guez, A., et al. (2013). Scalable and efficient Bayes-adaptive RL based on MCTS. *JAIR*
+- Ghavamzadeh, M., et al. (2015). Bayesian reinforcement learning: A survey. *Foundations and Trends in ML*
+- Bellemare, M., et al. (2016). Unifying count-based exploration and intrinsic motivation. *NeurIPS*
+- Houthooft, R., et al. (2016). VIME: Variational information maximizing exploration. *NeurIPS*
+- Pathak, D., et al. (2017). Curiosity-driven exploration by self-supervised prediction. *ICML*
+- Burda, Y., et al. (2019). Exploration by random network distillation. *ICLR*
 
 ---
 

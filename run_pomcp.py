@@ -3,10 +3,12 @@
 POMCP baseline comparison experiment.
 
 Runs POMCP (Silver & Veness, 2010) on Tiger, Diagnosis, Bandit, and Tileworld
-to compare against EFE and Planning baselines.
+to compare against EFE and Planning baselines. Saves results to CSV with
+wall-clock timing for compute-matched analysis.
 """
 
 import numpy as np
+import pandas as pd
 import time
 import os
 
@@ -20,9 +22,25 @@ from agents.planning import PlanningAgent
 from run_experiment import make_agent, run_experiment, run_experiment_multi_seed, summarize_results, SEEDS
 
 
-def run_pomcp_comparison(seeds=None, num_episodes=500):
+def _record_row(rows, env_name, agent_label, sim_budget, summary, wall_clock_s, n_episodes):
+    rows.append({
+        "env": env_name,
+        "agent": agent_label,
+        "sim_budget": sim_budget,
+        "success": summary["success_rate"],
+        "reward": summary["mean_reward"],
+        "std_reward": summary["std_reward"],
+        "obs": summary["mean_observations"],
+        "wall_clock_s": wall_clock_s,
+        "ms_per_ep": (wall_clock_s / n_episodes) * 1000,
+    })
+
+
+def run_pomcp_comparison(seeds=None, num_episodes=500, csv_path="results_pomcp.csv"):
     if seeds is None:
         seeds = SEEDS
+
+    total_ep = num_episodes * len(seeds)
 
     envs = {
         "Tiger": (
@@ -43,29 +61,31 @@ def run_pomcp_comparison(seeds=None, num_episodes=500):
     }
 
     sim_budgets = [500, 1000, 2000, 5000]
+    rows = []
 
     for env_name, (env, horizon) in envs.items():
         print(f"\n{'=' * 60}")
         print(f"POMCP comparison: {env_name} (H={horizon}, {len(seeds)} seeds)")
         print("=" * 60)
 
-        print("  Running EFE...")
+        print("  Running EFE...", flush=True)
         t0 = time.time()
         efe_raw = run_experiment_multi_seed(EFEAgent, env, num_episodes, seeds=seeds, planning_horizon=horizon)
         efe_s = summarize_results(efe_raw)
         efe_time = time.time() - t0
-        efe_per_decision = efe_time / len(efe_raw)
+        _record_row(rows, env_name, "EFE", 0, efe_s, efe_time, total_ep)
         print(
             f"    EFE: success={efe_s['success_rate']:.1%}  "
             f"reward={efe_s['mean_reward']:+.3f}  "
-            f"obs={efe_s['mean_observations']:.2f}  ({efe_time:.1f}s, {efe_per_decision*1000:.1f}ms/ep)"
+            f"obs={efe_s['mean_observations']:.2f}  ({efe_time:.1f}s, {efe_time/total_ep*1000:.1f}ms/ep)"
         )
 
-        print("  Running Planning...")
+        print("  Running Planning...", flush=True)
         t0 = time.time()
         plan_raw = run_experiment_multi_seed(PlanningAgent, env, num_episodes, seeds=seeds, planning_horizon=horizon)
         plan_s = summarize_results(plan_raw)
         plan_time = time.time() - t0
+        _record_row(rows, env_name, "Planning", 0, plan_s, plan_time, total_ep)
         print(
             f"    Planning: success={plan_s['success_rate']:.1%}  "
             f"reward={plan_s['mean_reward']:+.3f}  "
@@ -73,7 +93,7 @@ def run_pomcp_comparison(seeds=None, num_episodes=500):
         )
 
         for n_sims in sim_budgets:
-            print(f"  Running POMCP (sims={n_sims})...")
+            print(f"  Running POMCP (sims={n_sims})...", flush=True)
             t0 = time.time()
             pomcp_raw = run_experiment_multi_seed(
                 POMCPAgent, env, num_episodes, seeds=seeds,
@@ -83,14 +103,19 @@ def run_pomcp_comparison(seeds=None, num_episodes=500):
             )
             pomcp_s = summarize_results(pomcp_raw)
             pomcp_time = time.time() - t0
-            pomcp_per_decision = pomcp_time / len(pomcp_raw)
+            _record_row(rows, env_name, f"POMCP({n_sims})", n_sims, pomcp_s, pomcp_time, total_ep)
             print(
                 f"    POMCP({n_sims}): success={pomcp_s['success_rate']:.1%}  "
                 f"reward={pomcp_s['mean_reward']:+.3f}  "
                 f"obs={pomcp_s['mean_observations']:.2f}  "
-                f"({pomcp_time:.1f}s, {pomcp_per_decision*1000:.1f}ms/ep)"
+                f"({pomcp_time:.1f}s, {pomcp_time/total_ep*1000:.1f}ms/ep)"
             )
 
+        pd.DataFrame(rows).to_csv(csv_path, index=False)
+        print(f"  [checkpoint] saved {len(rows)} rows to {csv_path}")
+
+    tw_episodes = 200
+    tw_total = tw_episodes * len(seeds)
     print("\n" + "=" * 60)
     print("POMCP on Tileworld 6x6")
     print("=" * 60)
@@ -98,41 +123,49 @@ def run_pomcp_comparison(seeds=None, num_episodes=500):
                        correct_reward=10.0, incorrect_penalty=-50.0)
     horizon = 2
 
-    print("  Running EFE...")
+    print("  Running EFE...", flush=True)
     t0 = time.time()
-    efe_raw = run_experiment_multi_seed(EFEAgent, env, 200, seeds=seeds, planning_horizon=horizon)
+    efe_raw = run_experiment_multi_seed(EFEAgent, env, tw_episodes, seeds=seeds, planning_horizon=horizon)
     efe_s = summarize_results(efe_raw)
     efe_time = time.time() - t0
+    _record_row(rows, "Tileworld-6x6", "EFE", 0, efe_s, efe_time, tw_total)
     print(
         f"    EFE: success={efe_s['success_rate']:.1%}  "
         f"reward={efe_s['mean_reward']:+.3f}  ({efe_time:.1f}s)"
     )
 
-    print("  Running Planning...")
+    print("  Running Planning...", flush=True)
     t0 = time.time()
-    plan_raw = run_experiment_multi_seed(PlanningAgent, env, 200, seeds=seeds, planning_horizon=horizon)
+    plan_raw = run_experiment_multi_seed(PlanningAgent, env, tw_episodes, seeds=seeds, planning_horizon=horizon)
     plan_s = summarize_results(plan_raw)
     plan_time = time.time() - t0
+    _record_row(rows, "Tileworld-6x6", "Planning", 0, plan_s, plan_time, tw_total)
     print(
         f"    Planning: success={plan_s['success_rate']:.1%}  "
         f"reward={plan_s['mean_reward']:+.3f}  ({plan_time:.1f}s)"
     )
 
-    for n_sims in [500, 1000, 2000, 5000]:
-        print(f"  Running POMCP (sims={n_sims})...")
+    for n_sims in sim_budgets:
+        print(f"  Running POMCP (sims={n_sims})...", flush=True)
         t0 = time.time()
         pomcp_raw = run_experiment_multi_seed(
-            POMCPAgent, env, 200, seeds=seeds,
+            POMCPAgent, env, tw_episodes, seeds=seeds,
             num_simulations=n_sims,
             rollout_depth=horizon + 3,
             exploration_constant=5.0,
         )
         pomcp_s = summarize_results(pomcp_raw)
         pomcp_time = time.time() - t0
+        _record_row(rows, "Tileworld-6x6", f"POMCP({n_sims})", n_sims, pomcp_s, pomcp_time, tw_total)
         print(
             f"    POMCP({n_sims}): success={pomcp_s['success_rate']:.1%}  "
             f"reward={pomcp_s['mean_reward']:+.3f}  ({pomcp_time:.1f}s)"
         )
+
+    df = pd.DataFrame(rows)
+    df.to_csv(csv_path, index=False)
+    print(f"\nAll POMCP results saved to {csv_path}")
+    return df
 
 
 if __name__ == "__main__":

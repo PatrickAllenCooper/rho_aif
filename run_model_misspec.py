@@ -18,7 +18,7 @@ from agents.efe import EFEAgent
 from agents.planning import PlanningAgent
 from agents.myopic import MyopicAgent
 from agents.thompson import ThompsonSamplingAgent
-from run_experiment import run_episode, summarize_results
+from run_experiment import run_episode, summarize_results, SEEDS
 
 
 def make_misspec_agent(agent_cls, env, true_accuracy, agent_accuracy, **kwargs):
@@ -53,12 +53,16 @@ def make_misspec_agent(agent_cls, env, true_accuracy, agent_accuracy, **kwargs):
     return agent_cls(misspec_models, config, **kwargs)
 
 
-def run_misspec_sweep(seed=42, num_episodes=200):
+def run_misspec_sweep(seeds=None, num_episodes=500):
+    if seeds is None:
+        seeds = SEEDS
+
     true_accuracy = 0.85
     agent_accuracies = [0.70, 0.75, 0.80, 0.85, 0.90, 0.95]
 
     print("=" * 70)
-    print("MODEL MISSPECIFICATION: Tiger (true accuracy = 0.85)")
+    print(f"MODEL MISSPECIFICATION: Tiger (true accuracy = {true_accuracy})")
+    print(f"  {num_episodes} episodes x {len(seeds)} seeds = {num_episodes * len(seeds)} total")
     print("=" * 70, flush=True)
 
     env = TigerEnv(
@@ -74,14 +78,15 @@ def run_misspec_sweep(seed=42, num_episodes=200):
             ("Planning", PlanningAgent, {"planning_horizon": 4}),
             ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
         ]:
-            np.random.seed(seed)
-            agent = make_misspec_agent(
-                agent_cls, env, true_accuracy, p_agent, **kwargs
-            )
-            results = []
-            for _ in range(num_episodes):
-                results.append(run_episode(agent, env))
-            s = summarize_results(results)
+            all_results = []
+            for seed in seeds:
+                np.random.seed(seed)
+                agent = make_misspec_agent(
+                    agent_cls, env, true_accuracy, p_agent, **kwargs
+                )
+                for _ in range(num_episodes):
+                    all_results.append(run_episode(agent, env))
+            s = summarize_results(all_results)
             rows.append({
                 "env": "Tiger",
                 "agent": agent_name,
@@ -90,7 +95,10 @@ def run_misspec_sweep(seed=42, num_episodes=200):
                 "mismatch": mismatch,
                 "success": s["success_rate"],
                 "reward": s["mean_reward"],
+                "std_reward": s["std_reward"],
                 "obs": s["mean_observations"],
+                "n_seeds": len(seeds),
+                "n_episodes": num_episodes * len(seeds),
             })
             print(
                 f"  {agent_name:10s} p_agent={p_agent:.2f} "
@@ -100,8 +108,12 @@ def run_misspec_sweep(seed=42, num_episodes=200):
                 flush=True,
             )
 
+    pd.DataFrame(rows).to_csv("results_model_misspec.csv", index=False)
+    print("  [checkpoint] Tiger misspec saved")
+
     print("\n" + "=" * 70)
-    print("MODEL MISSPECIFICATION: Diagnosis (true accuracy = 0.80)")
+    print(f"MODEL MISSPECIFICATION: Diagnosis (true accuracy = 0.80)")
+    print(f"  {num_episodes} episodes x {len(seeds)} seeds = {num_episodes * len(seeds)} total")
     print("=" * 70, flush=True)
 
     true_acc_diag = 0.80
@@ -117,14 +129,15 @@ def run_misspec_sweep(seed=42, num_episodes=200):
             ("EFE", EFEAgent, {"planning_horizon": 3}),
             ("Planning", PlanningAgent, {"planning_horizon": 3}),
         ]:
-            np.random.seed(seed)
-            agent = make_misspec_agent(
-                agent_cls, env_diag, true_acc_diag, p_agent, **kwargs
-            )
-            results = []
-            for _ in range(num_episodes):
-                results.append(run_episode(agent, env_diag))
-            s = summarize_results(results)
+            all_results = []
+            for seed in seeds:
+                np.random.seed(seed)
+                agent = make_misspec_agent(
+                    agent_cls, env_diag, true_acc_diag, p_agent, **kwargs
+                )
+                for _ in range(num_episodes):
+                    all_results.append(run_episode(agent, env_diag))
+            s = summarize_results(all_results)
             rows.append({
                 "env": "Diagnosis",
                 "agent": agent_name,
@@ -133,7 +146,10 @@ def run_misspec_sweep(seed=42, num_episodes=200):
                 "mismatch": mismatch,
                 "success": s["success_rate"],
                 "reward": s["mean_reward"],
+                "std_reward": s["std_reward"],
                 "obs": s["mean_observations"],
+                "n_seeds": len(seeds),
+                "n_episodes": num_episodes * len(seeds),
             })
             print(
                 f"  {agent_name:10s} p_agent={p_agent:.2f} "

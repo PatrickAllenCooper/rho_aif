@@ -3,8 +3,8 @@
 Generate supplementary material: bootstrap CIs, Cohen's d, and
 Holm-Bonferroni-corrected p-values for all environments.
 
-Runs concise versions of each experiment (same seed, same config)
-and produces CSV tables and LaTeX-formatted output for the paper appendix.
+Runs experiments with multi-seed support and produces CSV tables
+and LaTeX-formatted output for the paper appendix.
 """
 
 import numpy as np
@@ -23,26 +23,28 @@ from agents.epistemic_only import EpistemicOnlyAgent
 from agents.efe import EFEAgent
 from agents.thompson import ThompsonSamplingAgent
 from run_experiment import (
-    make_agent, run_episode, run_experiment, summarize_results,
-    tune_info_gain_weight, EpisodeResult, compute_full_statistics,
+    make_agent, run_episode, run_experiment, run_experiment_multi_seed,
+    summarize_results, tune_info_gain_weight, EpisodeResult,
+    compute_full_statistics, SEEDS,
 )
 from stats import bootstrap_ci, cohens_d
 
 
-def run_env_with_stats(env, env_name, agent_configs, num_episodes=1000, seed=42):
-    """Run all agents on an environment and return raw results."""
-    np.random.seed(seed)
+def run_env_with_stats(env, env_name, agent_configs, num_episodes=1000, seeds=None):
+    """Run all agents on an environment across multiple seeds and return raw results."""
+    if seeds is None:
+        seeds = SEEDS
     all_raw = {}
 
     for label, agent_class, kwargs in agent_configs:
-        agent = make_agent(agent_class, env, **kwargs)
-        results = []
-        for _ in range(num_episodes):
-            results.append(run_episode(agent, env))
+        results = run_experiment_multi_seed(
+            agent_class, env, num_episodes, seeds=seeds, **kwargs
+        )
         all_raw[label] = results
         s = summarize_results(results)
         print(f"  {label:18s}: obs={s['mean_observations']:.2f}  "
-              f"success={s['success_rate']:.1%}  reward={s['mean_reward']:+.3f}")
+              f"success={s['success_rate']:.1%}  reward={s['mean_reward']:+.3f}"
+              f"  ({len(seeds)} seeds x {num_episodes} ep = {len(results)} total)")
 
     return all_raw
 
@@ -100,7 +102,7 @@ def generate_effect_size_table(all_raw, env_name):
 
 
 def main():
-    seed = 42
+    seeds = SEEDS
     num_episodes = 1000
 
     all_bootstrap_rows = []
@@ -109,9 +111,9 @@ def main():
 
     # Tiger
     print("=" * 60)
-    print("Tiger (H=6, 1000 episodes)")
+    print(f"Tiger (H=6, {num_episodes} ep x {len(seeds)} seeds)")
     print("=" * 60)
-    np.random.seed(seed)
+    np.random.seed(seeds[0])
     tiger_env = TigerEnv(listen_accuracy=0.85, listen_cost=1.0,
                          correct_reward=10.0, incorrect_penalty=-100.0)
     best_w = tune_info_gain_weight(tiger_env, tune_episodes=200)
@@ -123,16 +125,16 @@ def main():
         ("EFE", EFEAgent, {"planning_horizon": 6}),
         ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
-    tiger_raw = run_env_with_stats(tiger_env, "Tiger", tiger_configs, num_episodes, seed)
+    tiger_raw = run_env_with_stats(tiger_env, "Tiger", tiger_configs, num_episodes, seeds)
     all_bootstrap_rows.append(generate_bootstrap_table(tiger_raw, "Tiger"))
     all_effect_rows.append(generate_effect_size_table(tiger_raw, "Tiger"))
     all_stats_dfs.append(compute_full_statistics(tiger_raw, "Tiger"))
 
     # Testbed
     print("\n" + "=" * 60)
-    print("Testbed (H=4, 1000 episodes)")
+    print(f"Testbed (H=4, {num_episodes} ep x {len(seeds)} seeds)")
     print("=" * 60)
-    np.random.seed(seed)
+    np.random.seed(seeds[0])
     testbed_env = InfoSeekingEnv(observation_accuracy=0.75, observation_cost=0.1,
                                 correct_reward=1.0, incorrect_penalty=-1.0)
     best_w_tb = tune_info_gain_weight(testbed_env, tune_episodes=200)
@@ -144,16 +146,16 @@ def main():
         ("EFE", EFEAgent, {"planning_horizon": 4}),
         ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
-    testbed_raw = run_env_with_stats(testbed_env, "Testbed", testbed_configs, num_episodes, seed)
+    testbed_raw = run_env_with_stats(testbed_env, "Testbed", testbed_configs, num_episodes, seeds)
     all_bootstrap_rows.append(generate_bootstrap_table(testbed_raw, "Testbed"))
     all_effect_rows.append(generate_effect_size_table(testbed_raw, "Testbed"))
     all_stats_dfs.append(compute_full_statistics(testbed_raw, "Testbed"))
 
     # Diagnosis
     print("\n" + "=" * 60)
-    print("Diagnosis (N=4, H=3, 1000 episodes)")
+    print(f"Diagnosis (N=4, H=3, {num_episodes} ep x {len(seeds)} seeds)")
     print("=" * 60)
-    np.random.seed(seed)
+    np.random.seed(seeds[0])
     diag_env = DiagnosisEnv(num_conditions=4, test_accuracy=0.80, test_cost=1.0,
                             correct_reward=10.0, incorrect_penalty=-50.0)
     best_w_d = tune_info_gain_weight(diag_env, tune_episodes=200)
@@ -165,16 +167,16 @@ def main():
         ("EFE", EFEAgent, {"planning_horizon": 3}),
         ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
-    diag_raw = run_env_with_stats(diag_env, "Diagnosis", diag_configs, num_episodes, seed)
+    diag_raw = run_env_with_stats(diag_env, "Diagnosis", diag_configs, num_episodes, seeds)
     all_bootstrap_rows.append(generate_bootstrap_table(diag_raw, "Diagnosis"))
     all_effect_rows.append(generate_effect_size_table(diag_raw, "Diagnosis"))
     all_stats_dfs.append(compute_full_statistics(diag_raw, "Diagnosis"))
 
     # Bandit
     print("\n" + "=" * 60)
-    print("Bandit (K=4, H=2, 1000 episodes)")
+    print(f"Bandit (K=4, H=2, {num_episodes} ep x {len(seeds)} seeds)")
     print("=" * 60)
-    np.random.seed(seed)
+    np.random.seed(seeds[0])
     bandit_env = BanditEnv(num_arms=4, inspect_accuracy=0.80, inspect_cost=0.5,
                            correct_reward=10.0, small_reward=1.0)
     best_w_b = tune_info_gain_weight(bandit_env, tune_episodes=200)
@@ -186,7 +188,7 @@ def main():
         ("EFE", EFEAgent, {"planning_horizon": 2}),
         ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
-    bandit_raw = run_env_with_stats(bandit_env, "Bandit", bandit_configs, num_episodes, seed)
+    bandit_raw = run_env_with_stats(bandit_env, "Bandit", bandit_configs, num_episodes, seeds)
     all_bootstrap_rows.append(generate_bootstrap_table(bandit_raw, "Bandit"))
     all_effect_rows.append(generate_effect_size_table(bandit_raw, "Bandit"))
     all_stats_dfs.append(compute_full_statistics(bandit_raw, "Bandit"))

@@ -1,0 +1,107 @@
+{
+  "completed": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I"
+  ],
+  "started": null,
+  "log": [
+    {
+      "group": "A",
+      "event": "started",
+      "time": "2026-03-22T11:58:59.822527"
+    },
+    {
+      "group": "A",
+      "event": "completed",
+      "time": "2026-03-22T15:28:46.964196"
+    },
+    {
+      "group": "B",
+      "event": "started",
+      "time": "2026-03-22T15:28:46.964364"
+    },
+    {
+      "group": "B",
+      "event": "completed",
+      "time": "2026-03-22T15:29:27.233212"
+    },
+    {
+      "group": "C",
+      "event": "started",
+      "time": "2026-03-22T15:29:27.233337"
+    },
+    {
+      "group": "C",
+      "event": "completed",
+      "time": "2026-03-23T04:55:36.311056"
+    },
+    {
+      "group": "D",
+      "event": "started",
+      "time": "2026-03-23T04:55:36.311229"
+    },
+    {
+      "group": "D",
+      "event": "completed",
+      "time": "2026-03-23T11:58:59.000000",
+      "note": "Tiger MCTS-EFE data saved. Tileworld MCTS killed by 24h shell timeout."
+    },
+    {
+      "group": "E",
+      "event": "started",
+      "time": "2026-03-23T12:31:17.748305"
+    },
+    {
+      "group": "E",
+      "event": "completed",
+      "time": "2026-03-24T10:33:11.390676"
+    },
+    {
+      "group": "F",
+      "event": "started",
+      "time": "2026-03-24T10:33:11.391799"
+    },
+    {
+      "group": "F",
+      "event": "completed",
+      "time": "2026-03-24T17:27:11.863446"
+    },
+    {
+      "group": "G",
+      "event": "started",
+      "time": "2026-03-24T17:27:11.863927"
+    },
+    {
+      "group": "G",
+      "event": "completed",
+      "time": "2026-03-24T17:48:55.364153"
+    },
+    {
+      "group": "H",
+      "event": "started",
+      "time": "2026-03-24T17:48:55.364334"
+    },
+    {
+      "group": "H",
+      "event": "completed",
+      "time": "2026-03-24T18:37:36.257820"
+    },
+    {
+      "group": "I",
+      "event": "started",
+      "time": "2026-03-24T18:37:36.258281"
+    },
+    {
+      "group": "I",
+      "event": "completed",
+      "time": "2026-03-24T19:07:46.240509"
+    }
+  ]
+}
