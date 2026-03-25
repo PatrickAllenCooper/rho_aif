@@ -2,7 +2,7 @@
 
 ## Project: rho-POMDP Active Inference Framework
 
-**Last Updated**: March 19, 2026  
+**Last Updated**: March 25, 2026  
 **Project Lead**: Patrick Cooper  
 **Collaborator**: David Baines  
 **Advisor**: Ashutosh Trehan
@@ -94,7 +94,9 @@ OpenAI Gymnasium is used as the environment interface. This is a well-known stan
 
 #### 9. Environment-Specific Agents
 - **NavigationEFE** (navigation_efe.py): EFE for grid navigation
-- **RockSampleEFE** (rocksample_agents.py): EFE for interleaved observe-act POMDPs
+- **RockSampleTreeSearchAgent** (rocksample_agents.py): Proper depth-limited belief-space tree search for interleaved observe-act POMDPs. Parameterized by info_weight: w=0 (Planning), w=1 (EFE), arbitrary w (Planning+IG). Uses factored belief (independent per-rock) with memoization. Replaces the earlier heuristic-based RockSample agents.
+- **RockSamplePOMCPAgent** (rocksample_agents.py): POMCP with heuristic greedy rollout policy (bug fixed: no longer exits immediately)
+- **RockSampleGreedyAgent** (rocksample_agents.py): Greedy heuristic baseline
 - **PyMDP-AIF**: Reference implementation via pymdp library
 
 ### Evaluation Metrics
@@ -134,7 +136,7 @@ Upon successful Phase 1 completion, we will extend to:
 4. **Multi-Armed Bandit** -- K arms with hidden quality, inspection actions
 5. **Navigation** -- Grid-world with limited visibility, hidden goal
 6. **Tileworld** -- N x N grid, spatial scan actions, scaling from 4x4 to 8x8
-7. **RockSample** -- Interleaved observe-act POMDP with state transitions (added in revision, addresses W2)
+7. **RockSample** -- Interleaved observe-act POMDP with state transitions. Three instances: RS[5,3], RS[7,4], RS[7,8]. Uses proper depth-limited tree search agents (not heuristics). Promoted to main text Section 5.4 with full results. Validates Proposition 3 (factored observation POMDP extension). Addresses reviewer weaknesses W2 (interleaved experiments) and partially W1 (broader formal result).
 
 ### Scaling Analysis
 - State space scaling: Tileworld 4x4 to 8x8 (16-64 states)
@@ -148,21 +150,26 @@ Upon successful Phase 1 completion, we will extend to:
 
 ### Theoretical Contributions
 
-1. **Formal Equivalence (Proposition 3.3)**: EFE minimization is equivalent to solving a rho-POMDP with rho = information gain, w=1, and Bellman recursion. This holds for any gamma in (0,1].
-2. **w=1 Characterization**: Formal analysis using reward asymmetry ratio (alpha) and observation informativeness (eta) to characterize when w=1 is near-optimal vs. when it over-explores.
-3. **Discounting Extension**: EFE with gamma < 1 preserves the rho-POMDP equivalence but shifts the effective epistemic-to-pragmatic ratio across planning depths.
+1. **Formal Equivalence (Proposition 1)**: EFE minimization is equivalent to solving a rho-POMDP with rho = information gain, w=1, and Bellman recursion. This holds for any gamma in (0,1]. Established for observe-then-commit POMDPs.
+2. **Factored Observation POMDP Extension (Proposition 3, NEW)**: Extends the formal equivalence beyond observe-then-commit to factored observation POMDPs where the hidden state is preserved by information-gathering and navigation actions. Covers interleaved observe-act settings such as RockSample, mobile sensor placement, and sequential testing with spatial access costs. The coupling term Delta_T vanishes for all observation and navigation actions.
+3. **w=1 Characterization (Proposition 2)**: Formal analysis using reward asymmetry ratio (alpha) and observation informativeness (eta) to characterize when w=1 is near-optimal vs. when it over-explores.
+4. **Discounting Extension**: EFE with gamma < 1 preserves the rho-POMDP equivalence but shifts the effective epistemic-to-pragmatic ratio across planning depths.
 
 ### Empirical Contributions
 
-1. **Direct comparison**: EFE vs. reward-only Planning, tuned InfoGain, Thompson sampling, POMCP across six environments
-2. **Scaling evidence**: EFE advantage grows with state space size (Tileworld 8x8: 66.5% vs 2.5%; complete scaling with all agents including Planning+IG)
-3. **Robustness**: Model misspecification experiments show graceful degradation; discount sensitivity analyzed with Planning baseline
-4. **MCTS scaling**: EFE as leaf heuristic enables practical planning at H=5+
-5. **POMCP comparison**: EFE outperforms standard POMCP on multi-observation environments (Appendix P)
-6. **RockSample**: EFE extends to interleaved observe-act POMDPs (Appendix Q)
+1. **Direct comparison**: EFE vs. reward-only Planning, tuned InfoGain, Thompson sampling, POMCP across six observe-then-commit environments and three RockSample instances
+2. **RockSample interleaved experiments (NEW, MAIN TEXT)**: Proper depth-limited belief-space tree search agents on RS[5,3], RS[7,4], RS[7,8]. EFE (w=1) achieves best reward on RS[5,3] and RS[7,4]; +7.82 reward gap over Planning on RS[7,8]. Validates Proposition 3 empirically. Promoted from appendix to main text Section 5.4.
+3. **Zero-shot transfer experiment (NEW)**: Demonstrates that w=1 transfers across all four environments without retuning, while per-environment tuned weights transfer catastrophically. EFE achieves best or near-best reward on every target. Added to Discussion as Table.
+4. **Scaling evidence**: EFE advantage grows with state space size (Tileworld 8x8: 66.5% vs 2.5%; complete scaling with all agents including Planning+IG) and observation action count (RockSample[7,8]: +7.82 gap)
+5. **Robustness**: Model misspecification experiments show graceful degradation; discount sensitivity analyzed with Planning baseline
+6. **MCTS scaling**: EFE as leaf heuristic enables practical planning at H=5+
+7. **POMCP comparison**: EFE outperforms standard POMCP on multi-observation environments. POMCP on RockSample now uses heuristic rollout (bug fixed).
 
 ### Target Venues
-- NeurIPS 2026 (initial submission received Weak Reject; revision in progress)
+- NeurIPS 2026 (initial submission received Borderline Reject; revision in progress addressing paths A, B, C)
+  - Path A (broader formal result): Proposition 3 extends equivalence to factored observation POMDPs
+  - Path B (stronger interleaved experiments): RS[5,3], RS[7,4], RS[7,8] with proper tree search agents, promoted to main text
+  - Path C (canonical weight impact): Zero-shot transfer experiment showing w=1 transfers robustly
 - UAI, AISTATS (alternatives if NeurIPS resubmission unsuccessful)
 
 ---
@@ -191,7 +198,7 @@ Upon successful Phase 1 completion, we will extend to:
 - NumPy/SciPy for numerical computation
 - Gymnasium for environment interface
 - Matplotlib/Seaborn for visualization
-- Pytest for testing (203 tests)
+- Pytest for testing (209 tests)
 - pandas for experiment results
 
 ---
@@ -479,11 +486,25 @@ All paper.tex tables and inline numbers updated from overnight CSV results:
 48. **Compute resources**: Updated NeurIPS checklist from "under 2 CPU-hours" to "approximately 30 CPU-hours".
 49. **Testbed**: Tuned weight changed from w*=1 to w*=50. Caption and discussion updated accordingly.
 
+### Phase 12: NeurIPS Borderline-Reject Response (March 25, 2026)
+
+Addressing the three paths to acceptance identified in the borderline-reject review:
+
+50. **POMCP RockSample bug fix**: Fixed RockSamplePOMCPAgent that was immediately exiting (reward 9.5, 0 samples, 1 step). Root cause: uniform random rollout policy heavily favored the exit action. Fix: replaced with heuristic greedy rollout that (given sampled rock qualities) moves to and samples good rocks, then exits. POMCP now engages with the environment (1.20 good rocks, 0.02 bad).
+51. **Proper tree-search agents for RockSample**: Implemented RockSampleTreeSearchAgent -- a depth-limited belief-space tree search agent that performs recursive Bellman-style evaluation over the factored belief space. Parameterized by info_weight (w=0: Planning, w=1: EFE, w>0: Planning+IG). Uses memoization on (position, discretized belief, sampled flags, depth) for efficiency. Replaces the earlier heuristic-based agents.
+52. **RS[7,8] instance added**: Added the standard RockSample[7,8] benchmark instance (8 rocks on 7x7 grid) to run_rocksample.py. Results: EFE +19.57 vs Planning +11.75 (+7.82 gap), demonstrating dramatic advantage of information-directed exploration on larger instances.
+53. **Proposition 3 (Factored observation POMDPs)**: New formal result extending the EFE-rho equivalence beyond observe-then-commit to factored observation POMDPs where s = (s_vis, s_hid), observation actions preserve s_hid, and navigation actions change s_vis deterministically. Proof shows Delta_T = 0 for all actions that preserve s_hid. Covers RockSample, mobile sensor placement, sequential testing with spatial access costs.
+54. **Zero-shot transfer experiment**: Evaluated each environment's success-maximizing weight on all other environments. Results: EFE (w=1) achieves the best or near-best reward on all four environments. Transferred tuned weights fail: w=100 from Diagnosis on Tiger drops reward from +5.02 to +4.13; w=20 from Tiger on Testbed drops from +0.39 to -0.16. Added Table in Discussion.
+55. **Paper restructuring**: (a) RockSample promoted from Appendix to main text Section 5.4 with full results table and analysis. (b) Section 3 updated: "Frontier of the equivalence" paragraph replaced with Definition 1 (factored observation POMDP) and Proposition 3 with proof sketch. (c) Transfer results table added to Discussion. (d) Abstract updated to reflect broader scope. (e) Introduction contribution bullets updated. (f) Conclusion updated with RockSample results and Proposition 3. (g) "When to use" conditions expanded with interleaved setting and cross-environment deployment.
+56. **Test suite expansion**: 6 new tests for tree-search agents and POMCP fix (209 total, all passing).
+57. **Full overnight re-run**: Launched overnight run covering RS[5,3], RS[7,4], RS[7,8], transfer experiment, and all core experiments with multi-seed evaluation.
+
 **Awaiting**:
-- Address POMCP RockSample issue (agent immediately exits without sampling rocks)
+- Overnight experiment results completion
+- Update paper.tex tables with final overnight RockSample numbers (currently using pilot data)
 - Feedback from Ashutosh on methodology
 - Review of revision changes by David
-- Resubmission to NeurIPS (or alternative venue)
+- Resubmission to NeurIPS
 
 ---
 

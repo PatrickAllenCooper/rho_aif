@@ -5,11 +5,16 @@ Unlike observe-then-commit agents, these must handle state transitions
 (agent movement) interleaved with observations (rock checks) and
 terminal actions (sample, exit). Belief is maintained over K-bit
 rock qualities while agent position is known.
+
+Includes both heuristic agents (Greedy, original EFE/PlanningIG) and
+proper depth-limited belief-space tree search agents (RockSampleTreeSearchAgent)
+that perform recursive Bellman-style evaluation over the factored belief space.
 """
 
 import numpy as np
 import math
 from typing import List, Tuple, Optional
+from copy import deepcopy
 
 
 class RockSampleBeliefState:
@@ -309,11 +314,11 @@ class RockSamplePOMCPAgent:
     POMCP-style agent for RockSample with Monte Carlo rollouts.
 
     Uses sampled rock qualities from the factored belief to evaluate actions
-    via forward simulation. Provides a stronger baseline than greedy by
-    implicitly valuing future reward through random rollouts.
+    via forward simulation. The rollout policy is a greedy heuristic that
+    (given sampled rock qualities) moves to and samples good rocks, then exits.
     """
 
-    def __init__(self, env, num_simulations: int = 1000, rollout_depth: int = 15):
+    def __init__(self, env, num_simulations: int = 1000, rollout_depth: int = 30):
         self.env = env
         self.belief = RockSampleBeliefState(env.num_rocks)
         self.num_simulations = num_simulations
@@ -344,6 +349,28 @@ class RockSamplePOMCPAgent:
         mean_values = np.where(action_counts > 0, action_values / action_counts, -np.inf)
         return int(np.argmax(mean_values))
 
+    def _greedy_rollout_action(self, sim_pos, rock_quals, sim_sampled, rock_positions):
+        """Heuristic rollout: sample good rocks at current position, move toward
+        nearest good unsampled rock, or exit if none remain."""
+        for k in range(self.env.num_rocks):
+            if rock_positions[k] == sim_pos and not sim_sampled[k] and rock_quals[k] == 1:
+                return self.env.sample_action
+
+        best_rock = None
+        best_dist = float("inf")
+        for k in range(self.env.num_rocks):
+            if sim_sampled[k] or rock_quals[k] == 0:
+                continue
+            dist = abs(sim_pos[0] - rock_positions[k][0]) + abs(sim_pos[1] - rock_positions[k][1])
+            if dist < best_dist:
+                best_dist = dist
+                best_rock = k
+
+        if best_rock is not None:
+            return _move_toward_common(self.env, sim_pos, rock_positions[best_rock])
+
+        return self.env.exit_action
+
     def _simulate_rollout(self, pos, rock_quals, first_action, rock_positions):
         sim_pos = pos
         sim_sampled = self.belief.rock_sampled.copy()
@@ -360,7 +387,7 @@ class RockSamplePOMCPAgent:
                 sim_pos = (r, c)
                 total_reward += self.env.move_cost
             elif action < self.env.NUM_MOVE_ACTIONS + self.env.num_rocks:
-                pass
+                total_reward += self.env.move_cost
             elif action == self.env.sample_action:
                 for k in range(self.env.num_rocks):
                     if rock_positions[k] == sim_pos and not sim_sampled[k]:
@@ -370,13 +397,217 @@ class RockSamplePOMCPAgent:
                         else:
                             total_reward += self.env.bad_rock_penalty
                         break
+                total_reward += self.env.move_cost
             elif action == self.env.exit_action:
-                total_reward += self.env.exit_reward
+                total_reward += self.env.exit_reward + self.env.move_cost
                 return total_reward
 
-            action = np.random.randint(0, self.env.num_actions)
+            action = self._greedy_rollout_action(
+                sim_pos, rock_quals, sim_sampled, rock_positions
+            )
 
         return total_reward
+
+    def update(self, action: int, observation: int):
+        _update_belief_common(self.belief, self.env, action, observation)
+
+
+class RockSampleTreeSearchAgent:
+    """
+    Depth-limited belief-space tree search agent for RockSample.
+
+    Performs recursive Bellman-style evaluation over the factored belief space.
+    Parameterized by info_weight:
+      - info_weight=0: reward-only Planning (rho=0)
+      - info_weight=1: EFE (rho = information gain, canonical w=1)
+      - info_weight=w: Planning+IG with tunable weight
+
+    The tree search evaluates all actions (move, check, sample, exit) at each
+    node. Check actions branch on observation outcomes; move actions update
+    position deterministically; sample evaluates expected reward under belief;
+    exit is terminal.
+    """
+
+    def __init__(self, env, info_weight: float = 1.0, max_depth: int = 3):
+        self.env = env
+        self.belief = RockSampleBeliefState(env.num_rocks)
+        self.info_weight = info_weight
+        self.max_depth = max_depth
+        self._cache = {}
+
+    def reset(self):
+        self.belief.reset()
+        self._cache = {}
+
+    def _apply_move_sim(self, pos, action):
+        r, c = pos
+        if action == self.env.MOVE_N:
+            r = max(0, r - 1)
+        elif action == self.env.MOVE_S:
+            r = min(self.env.grid_size - 1, r + 1)
+        elif action == self.env.MOVE_E:
+            c = min(self.env.grid_size - 1, c + 1)
+        elif action == self.env.MOVE_W:
+            c = max(0, c - 1)
+        return (r, c)
+
+    def _check_accuracy_at(self, pos, rock_idx):
+        rock_pos = self.env.get_rock_positions()[rock_idx]
+        dist = math.sqrt((pos[0] - rock_pos[0])**2 + (pos[1] - rock_pos[1])**2)
+        accuracy = self.env.check_base_accuracy * (
+            0.5 ** (dist / self.env.half_efficiency_distance)
+        )
+        return max(0.5, min(accuracy, self.env.check_base_accuracy))
+
+    def _leaf_value(self, pos, rock_beliefs, rock_sampled):
+        """Heuristic value at leaf nodes: expected reward from greedily
+        sampling reachable good rocks then exiting."""
+        value = 0.0
+        sim_pos = pos
+        sim_sampled = rock_sampled.copy()
+        rock_positions = self.env.get_rock_positions()
+
+        for _ in range(self.env.num_rocks):
+            best_k = None
+            best_score = -float("inf")
+            for k in range(self.env.num_rocks):
+                if sim_sampled[k]:
+                    continue
+                ev = rock_beliefs[k] * self.env.good_rock_reward + \
+                     (1 - rock_beliefs[k]) * self.env.bad_rock_penalty
+                if ev <= 0:
+                    continue
+                dist = abs(sim_pos[0] - rock_positions[k][0]) + \
+                       abs(sim_pos[1] - rock_positions[k][1])
+                travel_cost = dist * abs(self.env.move_cost)
+                score = ev - travel_cost
+                if score > best_score:
+                    best_score = score
+                    best_k = k
+
+            if best_k is None:
+                break
+
+            dist = abs(sim_pos[0] - rock_positions[best_k][0]) + \
+                   abs(sim_pos[1] - rock_positions[best_k][1])
+            value += self.env.move_cost * dist
+            ev = rock_beliefs[best_k] * self.env.good_rock_reward + \
+                 (1 - rock_beliefs[best_k]) * self.env.bad_rock_penalty
+            value += ev + self.env.move_cost
+            sim_pos = rock_positions[best_k]
+            sim_sampled[best_k] = True
+
+        exit_dist = self.env.grid_size - 1 - sim_pos[1]
+        value += self.env.move_cost * exit_dist
+        value += self.env.exit_reward + self.env.move_cost
+        return value
+
+    def _make_cache_key(self, pos, rock_beliefs, rock_sampled, depth):
+        belief_key = tuple(round(b, 3) for b in rock_beliefs)
+        sampled_key = tuple(rock_sampled)
+        return (pos, belief_key, sampled_key, depth)
+
+    def _evaluate(self, pos, rock_beliefs, rock_sampled, depth):
+        """Recursively evaluate all actions, returning (best_action, best_value)."""
+        if depth >= self.max_depth:
+            return -1, self._leaf_value(pos, rock_beliefs, rock_sampled)
+
+        cache_key = self._make_cache_key(pos, rock_beliefs, rock_sampled, depth)
+        if cache_key in self._cache:
+            return self._cache[cache_key]
+
+        rock_positions = self.env.get_rock_positions()
+        best_action = self.env.exit_action
+        best_value = self.env.exit_reward + self.env.move_cost
+
+        for move_a in range(self.env.NUM_MOVE_ACTIONS):
+            new_pos = self._apply_move_sim(pos, move_a)
+            if new_pos == pos:
+                continue
+            _, cont_val = self._evaluate(
+                new_pos, rock_beliefs, rock_sampled, depth + 1
+            )
+            val = self.env.move_cost + cont_val
+            if val > best_value:
+                best_value = val
+                best_action = move_a
+
+        for k in range(self.env.num_rocks):
+            if rock_sampled[k]:
+                continue
+            accuracy = self._check_accuracy_at(pos, k)
+            if accuracy < 0.52:
+                continue
+
+            p_good = rock_beliefs[k]
+            prior_h = 0.0
+            if 0 < p_good < 1:
+                prior_h = -p_good * math.log(p_good) - \
+                          (1 - p_good) * math.log(1 - p_good)
+
+            expected_cont = 0.0
+            expected_post_h = 0.0
+
+            for obs_val in [0, 1]:
+                if obs_val == 1:
+                    p_obs = p_good * accuracy + (1 - p_good) * (1 - accuracy)
+                    p_post = (p_good * accuracy) / p_obs if p_obs > 1e-10 else p_good
+                else:
+                    p_obs = p_good * (1 - accuracy) + (1 - p_good) * accuracy
+                    p_post = (p_good * (1 - accuracy)) / p_obs if p_obs > 1e-10 else p_good
+
+                post_h = 0.0
+                if 0 < p_post < 1:
+                    post_h = -p_post * math.log(p_post) - \
+                             (1 - p_post) * math.log(1 - p_post)
+                expected_post_h += p_obs * post_h
+
+                new_beliefs = rock_beliefs.copy()
+                new_beliefs[k] = p_post
+                _, cont_val = self._evaluate(
+                    pos, new_beliefs, rock_sampled, depth + 1
+                )
+                expected_cont += p_obs * cont_val
+
+            ig = prior_h - expected_post_h
+            check_action = self.env.NUM_MOVE_ACTIONS + k
+            val = self.env.move_cost + self.info_weight * ig + expected_cont
+            if val > best_value:
+                best_value = val
+                best_action = check_action
+
+        at_rock = None
+        for k in range(self.env.num_rocks):
+            if not rock_sampled[k] and rock_positions[k] == pos:
+                at_rock = k
+                break
+
+        if at_rock is not None:
+            ev = rock_beliefs[at_rock] * self.env.good_rock_reward + \
+                 (1 - rock_beliefs[at_rock]) * self.env.bad_rock_penalty
+            new_sampled = rock_sampled.copy()
+            new_sampled[at_rock] = True
+            new_beliefs = rock_beliefs.copy()
+            new_beliefs[at_rock] = 0.5
+            _, cont_val = self._evaluate(
+                pos, new_beliefs, new_sampled, depth + 1
+            )
+            val = self.env.move_cost + ev + cont_val
+            if val > best_value:
+                best_value = val
+                best_action = self.env.sample_action
+
+        self._cache[cache_key] = (best_action, best_value)
+        return best_action, best_value
+
+    def select_action(self) -> int:
+        self._cache = {}
+        pos = self.env._agent_pos
+        action, _ = self._evaluate(
+            pos, self.belief.rock_beliefs.copy(),
+            self.belief.rock_sampled.copy(), 0
+        )
+        return action
 
     def update(self, action: int, observation: int):
         _update_belief_common(self.belief, self.env, action, observation)

@@ -1,8 +1,13 @@
-"""Tests for the RockSample environment."""
+"""Tests for the RockSample environment and agents."""
 
 import numpy as np
 import pytest
 from environments.rocksample import RockSampleEnv
+from agents.rocksample_agents import (
+    RockSampleTreeSearchAgent,
+    RockSampleGreedyAgent,
+    RockSamplePOMCPAgent,
+)
 
 
 class TestRockSampleInterface:
@@ -134,3 +139,122 @@ class TestRockSampleCheckAccuracy:
             for c in range(20):
                 acc = env.get_check_accuracy_at((r, c), 0)
                 assert 0.5 <= acc <= env.check_base_accuracy
+
+
+class TestRockSampleTreeSearch:
+    @pytest.fixture
+    def env(self):
+        return RockSampleEnv(
+            grid_size=5, num_rocks=2,
+            rock_positions=[(2, 2), (3, 4)],
+            move_cost=-0.5, max_steps=30,
+        )
+
+    def test_tree_search_returns_valid_action(self, env):
+        env.reset(seed=42)
+        agent = RockSampleTreeSearchAgent(env, info_weight=1.0, max_depth=2)
+        agent.reset()
+        action = agent.select_action()
+        assert 0 <= action < env.num_actions
+
+    def test_tree_search_planning_only(self, env):
+        env.reset(seed=42)
+        agent = RockSampleTreeSearchAgent(env, info_weight=0.0, max_depth=2)
+        agent.reset()
+        action = agent.select_action()
+        assert 0 <= action < env.num_actions
+
+    def test_tree_search_completes_episode(self, env):
+        env.reset(seed=42)
+        agent = RockSampleTreeSearchAgent(env, info_weight=1.0, max_depth=2)
+        agent.reset()
+        total_reward = 0.0
+        for _ in range(30):
+            action = agent.select_action()
+            obs, reward, terminated, truncated, info = env.step(action)
+            total_reward += reward
+            agent.update(action, obs)
+            if terminated or truncated:
+                break
+        assert terminated or truncated
+
+    def test_efe_avoids_bad_rocks(self, env):
+        """EFE agent should sample fewer bad rocks than greedy over many episodes."""
+        np.random.seed(42)
+        efe_bads, greedy_bads = 0, 0
+        n_eps = 50
+        for ep in range(n_eps):
+            env.reset(seed=ep * 100)
+            agent = RockSampleTreeSearchAgent(env, info_weight=1.0, max_depth=2)
+            agent.reset()
+            for _ in range(30):
+                action = agent.select_action()
+                obs, reward, terminated, truncated, info = env.step(action)
+                agent.update(action, obs)
+                if terminated or truncated:
+                    break
+            efe_bads += info.get("total_bad_sampled", 0)
+
+            env.reset(seed=ep * 100)
+            agent = RockSampleGreedyAgent(env)
+            agent.reset()
+            for _ in range(30):
+                action = agent.select_action()
+                obs, reward, terminated, truncated, info = env.step(action)
+                agent.update(action, obs)
+                if terminated or truncated:
+                    break
+            greedy_bads += info.get("total_bad_sampled", 0)
+
+        assert efe_bads <= greedy_bads
+
+    def test_efe_outperforms_planning_on_rs53(self):
+        """EFE (w=1) should achieve higher reward than Planning (w=0) on RS[5,3]."""
+        env = RockSampleEnv(
+            grid_size=5, num_rocks=3,
+            rock_positions=[(1, 2), (3, 1), (2, 4)],
+            move_cost=-0.5, max_steps=60,
+        )
+        np.random.seed(42)
+        n_eps = 30
+
+        def run_agent(w):
+            rewards = []
+            for ep in range(n_eps):
+                env.reset(seed=42 * 10000 + ep)
+                agent = RockSampleTreeSearchAgent(env, info_weight=w, max_depth=3)
+                agent.reset()
+                total_reward = 0.0
+                for _ in range(60):
+                    action = agent.select_action()
+                    obs, reward, terminated, truncated, info = env.step(action)
+                    total_reward += reward
+                    agent.update(action, obs)
+                    if terminated or truncated:
+                        break
+                rewards.append(total_reward)
+            return np.mean(rewards)
+
+        efe_reward = run_agent(1.0)
+        planning_reward = run_agent(0.0)
+        assert efe_reward > planning_reward
+
+    def test_pomcp_no_longer_exits_immediately(self):
+        """Verify POMCP fix: agent should take more than 1 step."""
+        env = RockSampleEnv(
+            grid_size=5, num_rocks=3,
+            rock_positions=[(1, 2), (3, 1), (2, 4)],
+            move_cost=-0.5, max_steps=60,
+        )
+        env.reset(seed=42)
+        agent = RockSamplePOMCPAgent(env, num_simulations=200)
+        agent.reset()
+        steps = 0
+        for _ in range(60):
+            action = agent.select_action()
+            obs, reward, terminated, truncated, info = env.step(action)
+            agent.update(action, obs)
+            steps += 1
+            if terminated or truncated:
+                break
+        assert steps > 1
