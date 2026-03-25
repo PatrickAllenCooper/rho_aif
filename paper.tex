@@ -1106,15 +1106,15 @@ On Diagnosis, degradation is graceful but measurable. Overestimating accuracy (t
 
 \paragraph{Implications for learned models.} These results suggest that EFE-based agents can tolerate moderate model errors without catastrophic failure. In practice, observation models learned from data will have estimation error; the graceful degradation observed here indicates that approximate models suffice for effective EFE-driven information gathering, provided the model does not systematically overestimate sensor informativeness.
 
-\section{Interleaved observe-act: RockSample}
+\section{Interleaved observe-act: RockSample (extended)}
 \label{app:rocksample}
 
-To test whether EFE-based information gathering extends beyond observe-then-commit POMDPs, we evaluate on RockSample \citep{smith2004}, a standard POMDP benchmark with interleaved observe-act dynamics and state transitions. An agent navigates an $N{\times}N$ grid containing $K$ rocks at known positions, each with hidden binary quality. Actions include move (N/S/E/W, cost $-0.5$), check rock $k$ (noisy observation, accuracy decays with distance), sample (collect rock at current position: good $+10$, bad $-10$), and exit ($+10$). The hidden state includes both agent position (known) and rock qualities (hidden), with state transitions arising from movement.
+This appendix provides extended RockSample results beyond the main text (Section~\ref{sec:rocksample}), including POMCP baselines and per-instance detail. The environment and agents are described in Section~\ref{sec:rocksample}.
 
 \begin{table}[h]
 \centering
-\caption{RockSample results (500 episodes each). The EFE agent checks rocks before sampling, avoiding bad rocks; the Greedy agent samples blindly.}
-\label{tab:rocksample}
+\caption{RockSample extended results (500 episodes each), including POMCP baseline and heuristic agents.}
+\label{tab:rocksample_extended}
 \begin{small}
 \begin{tabular}{llccccc}
 \toprule
