@@ -38,7 +38,7 @@ rho_aif/
   run_visualizations.py            # Long-horizon visualization figures
   run_supplementary.py             # Supplementary statistics tables
   figures/                         # Generated PDF figures for the paper
-  tests/                           # Pytest suite (130 tests)
+  tests/                           # Pytest suite (235 tests)
 ```
 
 ---
@@ -58,7 +58,8 @@ python run_experiment.py info       # Two-state testbed
 python run_experiment.py tiger      # Tiger problem
 python run_experiment.py diagnosis  # Sequential diagnosis
 python run_experiment.py bandit     # Structured bandit
-python run_experiment.py navigation # Grid navigation
+python run_experiment.py navigation # Grid navigation (writes results_navigation.csv)
+python run_experiment.py navigation-scaling  # 3x3 / 5x5 / 7x7 sweep -> results_navigation_scaling.csv
 python run_experiment.py scaling    # Diagnosis scaling analysis (N=2..16)
 python run_experiment.py all        # All of the above
 ```

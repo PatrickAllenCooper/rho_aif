@@ -2,7 +2,7 @@
 
 ## Project: rho-POMDP Active Inference Framework
 
-**Last Updated**: March 25, 2026  
+**Last Updated**: March 29, 2026  
 **Project Lead**: Patrick Cooper  
 **Collaborator**: David Baines  
 **Advisor**: Ashutosh Trehan
@@ -198,7 +198,7 @@ Upon successful Phase 1 completion, we will extend to:
 - NumPy/SciPy for numerical computation
 - Gymnasium for environment interface
 - Matplotlib/Seaborn for visualization
-- Pytest for testing (209 tests)
+- Pytest for testing (235 tests)
 - pandas for experiment results
 
 ---
@@ -574,6 +574,20 @@ Addressing six reviewer concerns (W2-W7) with scaled experiments, a new domain-r
 98. **R3**: Added observation structure sensitivity paragraph after Tileworld scaling discussion, reporting bitwise/random/overlapping partition sensitivity analysis.
 99. **R4**: Added MCTS-EFE Tileworld 6x6 results to approximate planning paragraph, showing 96.0% success vs POMCP's 2-15%.
 100. **R5**: Verified no VFE labels in any figures or text.
+
+### Phase 16: Paper polish, effect sizes, navigation scaling (March 29, 2026)
+
+**Paper (`paper.tex`):**
+
+101. **Effect sizes**: Fixed incorrect claim that Diagnosis EFE vs Planning reward had Cohen's $d=0.20$ (true value negligible, $\approx 0.07$). Main text now reports success-rate Cohen's $d$ for EFE vs Planning on Diagnosis ($\approx 0.33$) and Bandit ($\approx 0.47$) alongside negligible reward $d$, matching the Pareto narrative. Appendix table `tab:effect_sizes` extended with a success-rate block.
+102. **References**: Cited previously orphan bibitems `ghavamzadeh2015`, `itti2009`, `oudeyer2007` in Related Work; bibliography width 44; RockSample appendix now points to Section 3 (methodology) for transition--observation coupling instead of misusing ``Section'' with a paragraph label.
+103. **$w{=}1$ clarity**: Abstract and Introduction gloss on nats/variational scale; post-recursive-EFE equation sentence on why no tunable exploration weight; Conclusion ties $w{=}1$ to Proposition 1 (equivalence).
+104. **Navigation appendix**: Replaced single $3{\times}3$ table with scaling table (`tab:nav_scaling`) from `results_navigation_scaling.csv` ($3{\times}3$, $5{\times}5$, $7{\times}7$). Framing: proximity observations make greedy translation informative; NavEFE matches or beats NavInfoGain at $7{\times}7$ on reward; contrast with explicit test-selection domains. Discussion limitations updated accordingly.
+
+**Code:**
+
+105. **`run_navigation_scaling()`** in `run_experiment.py`: CLI `navigation-scaling`, writes `results_navigation_scaling.csv`; `run_navigation_experiment` gains optional `max_steps`, `planning_horizon`, `output_csv`. Default scaling uses $150$ episodes $\times$ $5$ seeds and step budget $3n^2$.
+106. **Tests**: `test_run_navigation_scaling_smoke` in `tests/test_navigation.py`.
 
 ---
 

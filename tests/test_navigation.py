@@ -138,6 +138,24 @@ class TestNavigationMyopicAgent:
         assert True
 
 
+class TestNavigationScalingRunner:
+    def test_run_navigation_scaling_smoke(self, tmp_path):
+        """Fast regression: scaling runner produces three agents x one grid."""
+        from run_experiment import run_navigation_scaling
+
+        out = tmp_path / "nav_scale.csv"
+        df = run_navigation_scaling(
+            grid_sizes=(3,),
+            num_episodes=2,
+            seeds=[99],
+            output_csv=str(out),
+        )
+        assert len(df) == 3
+        assert set(df["agent"]) == {"NavMyopic", "NavInfoGain", "NavEFE"}
+        assert df["grid_size"].iloc[0] == 3
+        assert out.is_file()
+
+
 class TestNavigationInfoGainAgent:
     def test_selects_valid_action(self):
         env = NavigationEnv(grid_size=3, max_steps=10)

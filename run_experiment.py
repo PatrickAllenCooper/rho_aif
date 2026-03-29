@@ -586,10 +586,20 @@ def run_bandit_experiment(num_arms: int = 4, num_episodes: int = 1000, seeds: Li
     )
 
 
-def run_navigation_experiment(grid_size: int = 3, num_episodes: int = 500, seeds: List[int] = None):
+def run_navigation_experiment(
+    grid_size: int = 3,
+    num_episodes: int = 500,
+    seeds: List[int] = None,
+    max_steps: Optional[int] = None,
+    planning_horizon: int = 2,
+    output_csv: str = "results_navigation.csv",
+):
+    """Partially observable grid navigation. Default max_steps matches prior runs (2 n^2)."""
     if seeds is None:
         seeds = SEEDS
-    env = NavigationEnv(grid_size=grid_size, max_steps=grid_size * grid_size * 2)
+    if max_steps is None:
+        max_steps = grid_size * grid_size * 2
+    env = NavigationEnv(grid_size=grid_size, max_steps=max_steps)
 
     def make_nav_myopic():
         return NavigationMyopicAgent(env)
@@ -598,7 +608,7 @@ def run_navigation_experiment(grid_size: int = 3, num_episodes: int = 500, seeds
         return NavigationInfoGainAgent(env, info_gain_weight=1.0)
 
     def make_nav_efe():
-        return NavigationEFEAgent(env, planning_horizon=2)
+        return NavigationEFEAgent(env, planning_horizon=planning_horizon)
 
     configs = [
         ("NavMyopic", None, {}, make_nav_myopic),
@@ -606,9 +616,85 @@ def run_navigation_experiment(grid_size: int = 3, num_episodes: int = 500, seeds
         ("NavEFE", None, {}, make_nav_efe),
     ]
     return run_generic_experiment(
-        env, f"NAVIGATION EXPERIMENT ({grid_size}x{grid_size})", configs,
-        num_episodes, "results_navigation.csv", seeds=seeds
+        env,
+        f"NAVIGATION EXPERIMENT ({grid_size}x{grid_size})",
+        configs,
+        num_episodes,
+        output_csv,
+        seeds=seeds,
     )
+
+
+def run_navigation_scaling(
+    grid_sizes: tuple = (3, 5, 7),
+    num_episodes: int = 150,
+    seeds: List[int] = None,
+    output_csv: str = "results_navigation_scaling.csv",
+):
+    """
+    Navigation across grid sizes with a more generous step budget (3 n^2) and deeper
+    EFE planning on larger grids. Writes one CSV row per (grid_size, agent).
+    Default seeds are five (matches multi-seed convention in the paper); pass SEEDS for all ten.
+    """
+    if seeds is None:
+        seeds = [42, 123, 456, 789, 1024]
+    print("=" * 72)
+    print("NAVIGATION SCALING (multiple grid sizes)")
+    print("=" * 72)
+    rows = []
+    for gs in grid_sizes:
+        max_steps = 3 * gs * gs
+        # Depth 3 on large grids makes NavEFE prohibitively slow; step budget is the main scaling knob.
+        planning_horizon = 2
+        env = NavigationEnv(grid_size=gs, max_steps=max_steps)
+
+        def make_nav_myopic():
+            return NavigationMyopicAgent(env)
+
+        def make_nav_infogain():
+            return NavigationInfoGainAgent(env, info_gain_weight=1.0)
+
+        def make_nav_efe():
+            return NavigationEFEAgent(env, planning_horizon=planning_horizon)
+
+        configs = [
+            ("NavMyopic", make_nav_myopic),
+            ("NavInfoGain", make_nav_infogain),
+            ("NavEFE", make_nav_efe),
+        ]
+        print(f"\n--- Grid {gs}x{gs} (|S|={gs * gs}), max_steps={max_steps}, EFE H={planning_horizon} ---")
+        for agent_label, make_fn in configs:
+            t0 = time.time()
+            results = []
+            for seed in seeds:
+                np.random.seed(seed)
+                agent = make_fn()
+                for _ in range(num_episodes):
+                    results.append(run_episode(agent, env))
+            dt = time.time() - t0
+            s = summarize_results(results)
+            row = {
+                "grid_size": gs,
+                "num_states": gs * gs,
+                "max_steps": max_steps,
+                "efe_planning_horizon": planning_horizon,
+                "agent": agent_label,
+                "mean_observations": s["mean_observations"],
+                "std_observations": s["std_observations"],
+                "success_rate": s["success_rate"],
+                "mean_reward": s["mean_reward"],
+                "std_reward": s["std_reward"],
+                "time_s": dt,
+            }
+            rows.append(row)
+            print(
+                f"  {agent_label:12s} success={s['success_rate']:.1%} "
+                f"reward={s['mean_reward']:+.2f} obs={s['mean_observations']:.1f} ({dt:.1f}s)"
+            )
+    df = pd.DataFrame(rows)
+    df.to_csv(output_csv, index=False)
+    print(f"\nSaved {output_csv}")
+    return df
 
 
 def run_scaling_analysis(seeds: List[int] = None):
@@ -673,6 +759,8 @@ if __name__ == "__main__":
         run_bandit_experiment()
     elif cmd == "navigation":
         run_navigation_experiment()
+    elif cmd == "navigation-scaling":
+        run_navigation_scaling()
     elif cmd == "scaling":
         run_scaling_analysis()
     elif cmd == "phase2":
