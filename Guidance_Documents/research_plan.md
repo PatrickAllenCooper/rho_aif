@@ -589,6 +589,17 @@ Addressing six reviewer concerns (W2-W7) with scaled experiments, a new domain-r
 105. **`run_navigation_scaling()`** in `run_experiment.py`: CLI `navigation-scaling`, writes `results_navigation_scaling.csv`; `run_navigation_experiment` gains optional `max_steps`, `planning_horizon`, `output_csv`. Default scaling uses $150$ episodes $\times$ $5$ seeds and step budget $3n^2$.
 106. **Tests**: `test_run_navigation_scaling_smoke` in `tests/test_navigation.py`.
 
+### Phase 17: Paper audit and number consistency (March 29, 2026)
+
+**Paper (`paper.tex`):**
+
+107. **Inspection numbers**: Abstract and conclusion referenced stale values (88.6%/76.5% for N=8 with "matched reward"). Fixed to use N=16 table values (86.1%/78.2%, comparable reward with p > 0.05) which are both accurate and reference the largest state space.
+108. **Discount discussion**: Fixed stale gap values (+24.5pp, +3.2pp) in main text to match `tab:discount` (+7.8pp at gamma=1.0, +1.0pp at gamma=0.95, -1.6pp at gamma=0.90). Removed incorrect H=4 claim.
+109. **Exact EFE Tiger**: Fixed 99.3% to 99.5% in POMCP appendix to match main table.
+110. **Tileworld 8x8 appendix**: Added clarifying note to caption about 3-seed vs 5-seed run difference from main text.
+111. **NeurIPS checklist**: Added Proposition `prop:factored` to theory item; changed "All experiments" to "Core experiments" with note about 2-3 seed appendix runs; replaced phantom "3,000 confirmation episodes" with actual bootstrap CI methodology.
+112. **Minor**: Fixed "a EFE" to "an EFE"; unified Holm-Bonferroni to en-dash (Holm--Bonferroni); corrected bibliography width hint from 44 to 45.
+
 ---
 
 ## References
