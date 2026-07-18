@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-from environments.inspection import InspectionEnv
-from agents.inspection_agents import (
+from rho_aif.environments.inspection import InspectionEnv
+from rho_aif.agents.inspection_agents import (
     InspectionBeliefState,
     InspectionTreeSearchAgent,
     InspectionGreedyAgent,

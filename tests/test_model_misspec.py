@@ -2,10 +2,10 @@
 
 import numpy as np
 import pytest
-from environments.tiger import TigerEnv
-from environments.diagnosis import DiagnosisEnv
-from agents.efe import EFEAgent
-from agents.planning import PlanningAgent
+from rho_aif.environments.tiger import TigerEnv
+from rho_aif.environments.diagnosis import DiagnosisEnv
+from rho_aif.agents.efe import EFEAgent
+from rho_aif.agents.planning import PlanningAgent
 from run_model_misspec import make_misspec_agent
 from run_experiment import run_episode
 

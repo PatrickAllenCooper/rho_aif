@@ -4,8 +4,8 @@ import numpy as np
 import pytest
 from scipy.stats import entropy as scipy_entropy
 
-from agents.pymdp_agent import PyMDPAgent, compute_efe_pymdp
-from agents.efe import EFEAgent
+from rho_aif.agents.pymdp_agent import PyMDPAgent, compute_efe_pymdp
+from rho_aif.agents.efe import EFEAgent
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from belief import BeliefState
+from rho_aif.belief import BeliefState
 
 
 class TestBeliefInitialization:

@@ -63,8 +63,15 @@ wandb/
 data/raw/
 data/processed/
 *.csv
-!results_*.csv
+!results/results_*.csv
 *.hdf5
+
+# LaTeX build artifacts
+paper/*.pdf
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.synctex.gz
 
 # Temporary files
 tmp/
@@ -79,3 +86,9 @@ temp/
 # Environment variables
 .env
 .env.local
+
+# Local promotional material (not part of the public package)
+linkedin_post/
+
+# Experiment checkpoints
+checkpoint_overnight.json

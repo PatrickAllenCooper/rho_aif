@@ -170,15 +170,24 @@ Upon successful Phase 1 completion, we will extend to:
   - Path A (broader formal result): Proposition 3 extends equivalence to factored observation POMDPs
   - Path B (stronger interleaved experiments): RS[5,3], RS[7,4], RS[7,8] with proper tree search agents, promoted to main text
   - Path C (canonical weight impact): Zero-shot transfer experiment showing w=1 transfers robustly
-- IWAI 2026 (abridged 12-page LNCS version submitted; see paper_iwai2026_abridged.tex)
+- IWAI 2026 (abridged 12-page LNCS version submitted; see paper/paper_iwai2026_abridged.tex)
 - UAI, AISTATS (alternatives if NeurIPS resubmission unsuccessful)
 
 ### arXiv Preprint (July 2026)
-- paper_arxiv.tex: full non-anonymous version of the IWAI paper (LNCS format, 41 pages) with all appendix experiments (proofs, per-environment results, navigation, scaling, discount sensitivity, model misspecification, extended RockSample, POMCP comparison, MCTS-EFE)
+- paper/paper_arxiv.tex: full non-anonymous version of the IWAI paper (LNCS format, 41 pages) with all appendix experiments (proofs, per-environment results, navigation, scaling, discount sensitivity, model misspecification, extended RockSample, POMCP comparison, MCTS-EFE)
 - Authors: Patrick Cooper (primary) and Alvaro Velasquez, University of Colorado Boulder
 - Links to the public code repository (github.com/PatrickAllenCooper/rho_aif); acknowledgments section dropped, competing-interests statement retained
-- Submission package: arxiv_submission.zip (paper_arxiv.tex, llncs.cls, 12 figure PDFs); verified to compile standalone
+- Submission package: paper/arxiv_submission.zip (paper_arxiv.tex, llncs.cls, 12 figure PDFs); verified to compile standalone
 - Primary category cs.AI, cross-list cs.LG
+
+### Repository Reorganization for Public Release (July 2026)
+In preparation for the arXiv preprint's public code link, the repository was restructured as an installable Python package:
+- rho_aif/ package now contains agents/, environments/, belief.py, stats.py, and render_tileworld.py; all imports are package-qualified (from rho_aif.agents import EFEAgent)
+- experiments/ contains all run_*.py reproduction scripts; they write CSVs to results/ and figures to figures/
+- results/ holds the committed CSVs backing every paper table; paper/ holds all LaTeX sources, style files, and submission zips (tex files use \graphicspath to resolve figures/ from the repository root)
+- pyproject.toml added (package name rho-aif, Python >= 3.9, pip install -e ".[dev]" for test tooling)
+- README rewritten with installation, a runnable package usage example, and a table mapping every paper table/figure to its reproduction command
+- Removed stale checkpoint_overnight.json and untracked promotional material; full 235-test suite passes after the reorganization
 
 ---
 

@@ -3,13 +3,13 @@
 import numpy as np
 import pytest
 
-from agents.mcts_efe import MCTSEFEAgent
+from rho_aif.agents.mcts_efe import MCTSEFEAgent
 from run_experiment import make_agent, run_episode, run_experiment, summarize_results
-from environments.info_seeking import InfoSeekingEnv
-from environments.tiger import TigerEnv
-from environments.diagnosis import DiagnosisEnv
-from environments.bandit import BanditEnv
-from environments.tileworld import TileworldEnv
+from rho_aif.environments.info_seeking import InfoSeekingEnv
+from rho_aif.environments.tiger import TigerEnv
+from rho_aif.environments.diagnosis import DiagnosisEnv
+from rho_aif.environments.bandit import BanditEnv
+from rho_aif.environments.tileworld import TileworldEnv
 
 
 @pytest.fixture

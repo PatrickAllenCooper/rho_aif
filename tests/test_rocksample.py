@@ -2,8 +2,8 @@
 
 import numpy as np
 import pytest
-from environments.rocksample import RockSampleEnv
-from agents.rocksample_agents import (
+from rho_aif.environments.rocksample import RockSampleEnv
+from rho_aif.agents.rocksample_agents import (
     RockSampleTreeSearchAgent,
     RockSampleGreedyAgent,
     RockSamplePOMCPAgent,

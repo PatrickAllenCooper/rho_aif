@@ -3,13 +3,13 @@
 import numpy as np
 import pytest
 
-from agents.thompson import ThompsonSamplingAgent
-from agents.myopic import MyopicAgent
+from rho_aif.agents.thompson import ThompsonSamplingAgent
+from rho_aif.agents.myopic import MyopicAgent
 from run_experiment import make_agent, run_episode, run_experiment, summarize_results
-from environments.info_seeking import InfoSeekingEnv
-from environments.tiger import TigerEnv
-from environments.diagnosis import DiagnosisEnv
-from environments.bandit import BanditEnv
+from rho_aif.environments.info_seeking import InfoSeekingEnv
+from rho_aif.environments.tiger import TigerEnv
+from rho_aif.environments.diagnosis import DiagnosisEnv
+from rho_aif.environments.bandit import BanditEnv
 
 
 @pytest.fixture

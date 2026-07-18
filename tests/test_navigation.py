@@ -2,9 +2,9 @@
 
 import numpy as np
 import pytest
-from environments.navigation import NavigationEnv
-from agents.navigation_efe import NavigationEFEAgent
-from agents.navigation_baselines import NavigationMyopicAgent, NavigationInfoGainAgent
+from rho_aif.environments.navigation import NavigationEnv
+from rho_aif.agents.navigation_efe import NavigationEFEAgent
+from rho_aif.agents.navigation_baselines import NavigationMyopicAgent, NavigationInfoGainAgent
 
 
 class TestNavigationInterface:

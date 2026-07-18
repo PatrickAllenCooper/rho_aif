@@ -3,12 +3,12 @@
 import numpy as np
 import pytest
 
-from environments.info_seeking import InfoSeekingEnv
-from environments.tiger import TigerEnv
-from agents.myopic import MyopicAgent
-from agents.info_gain import InformationGainAgent
-from agents.efe import EFEAgent
-from agents.planning import PlanningAgent
+from rho_aif.environments.info_seeking import InfoSeekingEnv
+from rho_aif.environments.tiger import TigerEnv
+from rho_aif.agents.myopic import MyopicAgent
+from rho_aif.agents.info_gain import InformationGainAgent
+from rho_aif.agents.efe import EFEAgent
+from rho_aif.agents.planning import PlanningAgent
 from run_experiment import make_agent, run_episode, run_experiment, summarize_results
 
 

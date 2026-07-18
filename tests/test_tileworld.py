@@ -3,12 +3,12 @@
 import unittest
 import numpy as np
 import pytest
-from environments.tileworld import TileworldEnv
-from agents.myopic import MyopicAgent
-from agents.planning import PlanningAgent
-from agents.info_gain import InformationGainAgent
-from agents.efe import EFEAgent
-from agents.epistemic_only import EpistemicOnlyAgent
+from rho_aif.environments.tileworld import TileworldEnv
+from rho_aif.agents.myopic import MyopicAgent
+from rho_aif.agents.planning import PlanningAgent
+from rho_aif.agents.info_gain import InformationGainAgent
+from rho_aif.agents.efe import EFEAgent
+from rho_aif.agents.epistemic_only import EpistemicOnlyAgent
 from run_experiment import make_agent, run_episode
 
 

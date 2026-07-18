@@ -4,9 +4,9 @@ import numpy as np
 import pytest
 from gymnasium import spaces
 
-from environments.info_seeking import InfoSeekingEnv, OBSERVE, COMMIT_A, COMMIT_B, SIGNAL_A, SIGNAL_B, NULL_OBS
-from environments.tiger import TigerEnv, LISTEN, OPEN_LEFT, OPEN_RIGHT, HEAR_LEFT, HEAR_RIGHT
-from environments.tiger import NULL_OBS as TIGER_NULL
+from rho_aif.environments.info_seeking import InfoSeekingEnv, OBSERVE, COMMIT_A, COMMIT_B, SIGNAL_A, SIGNAL_B, NULL_OBS
+from rho_aif.environments.tiger import TigerEnv, LISTEN, OPEN_LEFT, OPEN_RIGHT, HEAR_LEFT, HEAR_RIGHT
+from rho_aif.environments.tiger import NULL_OBS as TIGER_NULL
 
 
 class TestInfoSeekingGymInterface:

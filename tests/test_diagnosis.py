@@ -2,9 +2,9 @@
 
 import numpy as np
 import pytest
-from environments.diagnosis import DiagnosisEnv
-from agents.myopic import MyopicAgent
-from agents.efe import EFEAgent
+from rho_aif.environments.diagnosis import DiagnosisEnv
+from rho_aif.agents.myopic import MyopicAgent
+from rho_aif.agents.efe import EFEAgent
 from run_experiment import make_agent, run_episode, run_experiment, summarize_results
 
 

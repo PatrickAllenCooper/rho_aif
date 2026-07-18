@@ -5,11 +5,13 @@ import os
 import pytest
 import numpy as np
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, _REPO_ROOT)
+sys.path.insert(0, os.path.join(_REPO_ROOT, "experiments"))
 
-from environments.info_seeking import InfoSeekingEnv
-from environments.tiger import TigerEnv
-from belief import BeliefState
+from rho_aif.environments.info_seeking import InfoSeekingEnv
+from rho_aif.environments.tiger import TigerEnv
+from rho_aif.belief import BeliefState
 
 
 @pytest.fixture
