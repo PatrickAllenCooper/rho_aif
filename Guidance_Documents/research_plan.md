@@ -179,6 +179,7 @@ Upon successful Phase 1 completion, we will extend to:
 - Links to the public code repository (github.com/PatrickAllenCooper/rho_aif); acknowledgments section dropped, competing-interests statement retained
 - Submission package: paper/arxiv_submission.zip (paper_arxiv.tex, llncs.cls, 12 figure PDFs); verified to compile standalone
 - Primary category cs.AI, cross-list cs.LG
+- Abstract revised (July 2026) into a narrative structure (problem, insight, theory, evidence, takeaway), dropping the dense per-environment numbers in favor of one scale claim; applied to paper_arxiv.tex, paper_iwai2026.tex, and paper.tex (the submitted IWAI abridged snapshot keeps its original abstract)
 - Bibliography audit (July 2026): added natbib author tags to all LNCS bibliographies so \citet resolves (19 citations previously rendered "(author?)"); corrected fehr2018 (M. Fehr), friston2015 (Friston, Rigoli, Ognibene, Mathys, FitzGerald, Pezzulo), benchetrit2025 (title "Anytime Incremental rhoPOMDP Planning in Continuous Spaces", R. Benchetrit), champion2024 (author order; now Neural Computation 38(3):439-469, 2026), maisto2025 (Neurocomputing 623), devries2025 (de Vries, Nuijten, van de Laar, et al.), araya2010 (Araya-Lopez), todorov (NeurIPS 2006); all 45 entries verified against published records; fixes mirrored across paper.tex, paper_arxiv.tex, paper_iwai2026.tex, paper_iwai2026_abridged.tex
 
 ### Repository Reorganization for Public Release (July 2026)
