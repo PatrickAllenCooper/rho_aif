@@ -116,7 +116,7 @@ The threshold is negative, making $w{=}1$ trivially sufficient, whenever $\alpha
 At $H{=}1$, a Planning+IG agent observes iff $-c + w \cdot I(b) + \max_i \mathbb{E}_{b'_o}[R_i] > \max_i \mathbb{E}_b[R_i]$. The net gain from observing is $(p - \frac{1}{2})(R^+ - R^-) - c + w \cdot I_{\max}$. Setting this to zero and substituting $R^- = -\alpha R^+$ gives the stated threshold. When $\alpha \gg 1$, the marginal reward improvement dominates the cost $c$, making $w^*_{\mathrm{thresh}}$ negative.
 \end{proof}
 
-Table~\ref{tab:alpha_eta} validates Proposition~\ref{prop:nearopt} across our environments. Environments where $\alpha \geq 5$ have $w^*_{\text{thresh}} \ll 0$, meaning $w{=}1$ is far above the threshold and near-optimal. A Monte Carlo study over 100 randomly generated two-state environments confirms that the near-optimality basin widens with planning horizon: from 9\% at $H{=}1$ to 32\% at $H{=}3$ (full figure in the extended version).
+Table~\ref{tab:alpha_eta} validates Proposition~\ref{prop:nearopt} across our environments. Environments where $\alpha \geq 5$ have $w^*_{\text{thresh}} \ll 0$, meaning $w{=}1$ is far above the threshold and near-optimal. A Monte Carlo study over 100 randomly generated two-state environments confirms that the near-optimality basin widens with planning horizon: from 11\% at $H{=}1$ to 38\% at $H{=}3$ (full figure in the extended version).
 
 \begin{table}[ht]
 \centering

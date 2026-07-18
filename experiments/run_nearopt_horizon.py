@@ -125,10 +125,10 @@ def plot_nearopt(df, output_path="figures/fig_nearopt_horizon.pdf"):
             linewidth=2, markersize=6, linestyle="--")
 
     ax.set_xlabel("Planning horizon $H$")
-    ax.set_ylabel("Environments where $w{=}1$ near-optimal (\\%)")
+    ax.set_ylabel("$w{=}1$ near-optimal (% of envs)")
     ax.set_xticks(horizons)
-    ax.set_ylim(40, 102)
-    ax.legend(fontsize=8, loc="lower right")
+    ax.set_ylim(0, 102)
+    ax.legend(fontsize=8, loc="upper left")
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
     plt.savefig(output_path, bbox_inches="tight")
