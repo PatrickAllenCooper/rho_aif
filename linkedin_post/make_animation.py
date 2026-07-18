@@ -154,7 +154,7 @@ def main():
     )
     subtitle = fig.text(
         0.5, 0.895,
-        "Same maze. Same scans available. One agent values information; one doesn't.",
+        "Same maze. Same scans available. One agent values information. One doesn't.",
         ha="center", va="top", fontsize=12.5, color=DIM,
     )
 
@@ -247,7 +247,7 @@ def main():
         else:
             title.set_text("Where is the hidden target?")
             subtitle.set_text(
-                "Same maze. Same scans available. One agent values information; one doesn't."
+                "Same maze. Same scans available. One agent values information. One doesn't."
             )
         return []
 

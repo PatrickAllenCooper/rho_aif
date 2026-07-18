@@ -1,11 +1,11 @@
-LINKEDIN POST (copy below the line; attach efe_vs_planning.mp4 as the video)
+LINKEDIN POST (copy below the line and attach efe_vs_planning.mp4 as the video)
 ----------------------------------------------------------------------------
 
 How much should an agent pay to satisfy its curiosity?
 
 Thrilled to share that our paper "Expected Free Energy as Belief-Dependent Utility for rho-POMDPs" was accepted as a Spotlight at the International Workshop on Active Inference (IWAI) 2026.
 
-The problem: agents acting under uncertainty must decide when to gather more information and when to act on what they know. Standard practice bolts an "exploration bonus" onto the reward and tunes its weight by trial and error, per environment. Get it wrong in one direction and the agent commits blindly; wrong in the other and it tests forever.
+The problem: agents acting under uncertainty must decide when to gather more information and when to act on what they know. Standard practice bolts an "exploration bonus" onto the reward and tunes its weight by trial and error, per environment. Get it wrong in one direction and the agent commits blindly. Get it wrong in the other and it tests forever.
 
 Our result: active inference already contains the answer. We prove that minimizing Expected Free Energy is exactly equivalent to solving a rho-POMDP where reward is augmented with information gain at weight 1. That weight is not a hyperparameter. It falls out of the variational bound, because information gain and reward end up measured in the same units (nats).
 
