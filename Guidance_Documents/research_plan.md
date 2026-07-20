@@ -712,6 +712,8 @@ Full response to IWAI reviews (uscY, ieKV, NbgT) across all four LaTeX versions 
 10. Bernardo 1979; Spaan et al. 2015 (POMDP-IR); Satsangi et al. 2018; Walraven et al. 2024.
 11. Tuning criterion stated; Greedy defined; Myopic instrumental VoI explained.
 
+- **Prose tightening (July 20, 2026, evening).** A cross-version style pass removed prose semicolons (math `\;` kept), prose `\emph`/`\textbf` (table-cell best-metric bold and "Bold: best" legends retained), and one-sentence fragment paragraphs; the abstract was rewritten as a lean narrative (not results-stuffed) with varied sentence rhythm; Broader impact was merged into Limitations; contribution and discussion itemize labels were unbolded. Changes originated in `paper_arxiv.tex` and were propagated analogously to `paper.tex` (NeurIPS; plain `Keywords:`), `paper_iwai2026.tex` (shared prose aligned with arxiv, anonymity preserved), and `paper_iwai2026_abridged.tex` (same style and lean abstract, without expanding length).
+
 ---
 
 ## Document Evolution
