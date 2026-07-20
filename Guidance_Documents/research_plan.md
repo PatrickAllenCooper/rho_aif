@@ -2,7 +2,7 @@
 
 ## Project: rho-POMDP Active Inference Framework
 
-**Last Updated**: March 29, 2026  
+**Last Updated**: July 20, 2026  
 **Project Lead**: Patrick Cooper  
 **Collaborator**: David Baines  
 **Advisor**: Ashutosh Trehan
@@ -685,6 +685,32 @@ Addressing six reviewer concerns (W2-W7) with scaled experiments, a new domain-r
 - Houthooft, R., et al. (2016). VIME: Variational information maximizing exploration. *NeurIPS*
 - Pathak, D., et al. (2017). Curiosity-driven exploration by self-supervised prediction. *ICML*
 - Burda, Y., et al. (2019). Exploration by random network distillation. *ICLR*
+
+---
+
+## Phase: IWAI 2026 review response
+
+**Status**: Implemented (July 20, 2026)  
+**Date**: July 20, 2026
+
+Full response to IWAI reviews (uscY, ieKV, NbgT) across all four LaTeX versions and supporting code/experiments.
+
+### Theory and claims
+1. **Prop.~2 thresholds** — `experiments/run_thresholds.py` regenerates `results/results_thresholds.csv`. Corrected Tiger/Diagnosis thresholds ($\approx -138.7$, $\approx -88.2$ nats). Added upper over-observation threshold $w^*_{\mathrm{hi}}$; Bandit dropped from two-state table; Testbed over-exploration explained via proximity to $w^*_{\mathrm{hi}}\approx 1.01$.
+2. **Reward–nats calibration** — Explicit $\beta{=}1$ per reward unit; keeping $w$ fixed while scaling rewards by $k$ rescales effective weight by $1/k$ (equivalently $w^*_{\mathrm{ret}}(k)\propto k$); Bernardo (1979) log-scoring exactness; bits vs nats noted.
+3. **Prop.~1 positioning** — Corollary/notational bridge of Da Costa et al. sophisticated-inference Bellman optimality; deterministic tie-break shared with Planning+IG($w{=}1$).
+4. **Softened $w{=}1$ language** — Derived relative coefficient; exact under log scoring; robust default under shared reward convention; not scale-invariant.
+5. **Over-claim fixes** — Pareto-dominates restricted to Diagnosis/Bandit vs Planning; Inspection/RS bolding honest; Diagnosis EFE $-1.52$.
+
+### New experiments
+6. **Reward rescaling** — `experiments/run_reward_scaling.py`, `figures/fig_reward_scaling.pdf`, Appendix `app:reward_scaling`. Bandit $w^*_{\mathrm{ret}}$ tracks $k$ exactly ($0.1,1,10$).
+7. **IDS baseline** — `rho_aif/agents/ids.py`, `experiments/run_ids.py`, Appendix `app:ids`. IDS competitive on Tiger; over-explores on Diagnosis/Bandit relative to EFE.
+8. **Reward-tuned transfer** — `experiments/run_transfer.py` reports $w^*_{\mathrm{ret}}$ and $w^*_{\mathrm{succ}}$. Success-tuned transfer harms reward; moderate reward-tuned weights transfer better; $w{=}1$ remains a robust default.
+9. **Seed-level stats** — `rho_aif/stats.py`: `seed_level_ttest`, `hierarchical_bootstrap_ci`; documented in stats appendix.
+
+### Citations and clarity
+10. Bernardo 1979; Spaan et al. 2015 (POMDP-IR); Satsangi et al. 2018; Walraven et al. 2024.
+11. Tuning criterion stated; Greedy defined; Myopic instrumental VoI explained.
 
 ---
 
