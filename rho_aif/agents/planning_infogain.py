@@ -54,11 +54,13 @@ class PlanningInfoGainAgent(BaseAgent):
         best_obs_value = -float("inf")
         for k in range(self.num_observe_actions):
             v = self._expected_value_of_observe(k, belief, depth)
-            if v > best_obs_value:
+            # Strict improvement only; ties keep the lower action index so
+            # Planning+IG(w=1) matches EFE's deterministic tie-break.
+            if v > best_obs_value + 1e-12:
                 best_obs_value = v
                 best_obs_action = k
 
-        if best_obs_value > best_commit_value:
+        if best_obs_action is not None and best_obs_value > best_commit_value + 1e-12:
             return best_obs_action, best_obs_value
         return best_commit_action, best_commit_value
 

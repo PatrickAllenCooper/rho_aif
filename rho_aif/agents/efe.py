@@ -58,11 +58,13 @@ class EFEAgent(BaseAgent):
         best_obs_g = float("inf")
         for k in range(self.num_observe_actions):
             g = self._efe_observe(k, belief, depth)
-            if g < best_obs_g:
+            # Strict improvement only; ties keep the lower action index so
+            # EFE and Planning+IG(w=1) share a deterministic tie-break.
+            if g < best_obs_g - 1e-12:
                 best_obs_g = g
                 best_obs_action = k
 
-        if best_obs_g < best_commit_g:
+        if best_obs_action is not None and best_obs_g < best_commit_g - 1e-12:
             return best_obs_action, best_obs_g
         return best_commit_action, best_commit_g
 

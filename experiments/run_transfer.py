@@ -1,33 +1,39 @@
 #!/usr/bin/env python3
 """
-Zero-shot transfer experiment: demonstrates that EFE's canonical w=1
-generalizes across environments without retuning, while per-environment
-tuned weights transfer poorly.
+Zero-shot transfer experiment: success-tuned vs reward-tuned weights.
 
-For each environment, we evaluate Planning+IG at:
-  - w=1 (EFE canonical weight)
-  - w* tuned on that environment
-  - w* tuned on every OTHER environment (transfer)
-
-The hypothesis: w=1 achieves near-Pareto-knee reward everywhere,
-while transferred tuned weights fail catastrophically because optimal
-weights vary by orders of magnitude across environments.
+Demonstrates that EFE's untuned w=1 generalizes across environments, while
+per-environment tuned weights transfer poorly. Reports both:
+  - w*_succ: success-maximizing (as used in prior transfer tables)
+  - w*_ret:  reward-maximizing (addresses the review critique that transferring
+             success-tuned weights while evaluating reward manufactures failure)
 """
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(_ROOT))
+sys.path.insert(0, str(_ROOT / "experiments"))
 
 import numpy as np
 import pandas as pd
-import time
 
-from rho_aif.environments.tiger import TigerEnv
-from rho_aif.environments.diagnosis import DiagnosisEnv
-from rho_aif.environments.bandit import BanditEnv
-from rho_aif.environments.info_seeking import InfoSeekingEnv
-from run_experiment import (
-    SEEDS, make_agent, run_episode, run_experiment_multi_seed,
-    summarize_results, get_obs_models, make_env_config,
-)
 from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
+from rho_aif.environments.bandit import BanditEnv
+from rho_aif.environments.diagnosis import DiagnosisEnv
+from rho_aif.environments.info_seeking import InfoSeekingEnv
+from rho_aif.environments.tiger import TigerEnv
+from run_experiment import (
+    SEEDS,
+    run_experiment_multi_seed,
+    summarize_results,
+)
 
+# w*_succ from prior success-rate grid search; w*_ret from Pareto reward knee.
 TRANSFER_ENVS = {
     "Tiger": {
         "make_env": lambda: TigerEnv(
@@ -37,7 +43,8 @@ TRANSFER_ENVS = {
             listen_cost=1.0,
         ),
         "horizon": 6,
-        "w_star": 20,
+        "w_succ": 20,
+        "w_ret": 1.0,
     },
     "Diagnosis": {
         "make_env": lambda: DiagnosisEnv(
@@ -48,7 +55,8 @@ TRANSFER_ENVS = {
             test_cost=1.0,
         ),
         "horizon": 3,
-        "w_star": 100,
+        "w_succ": 100,
+        "w_ret": 0.5,
     },
     "Bandit": {
         "make_env": lambda: BanditEnv(
@@ -59,7 +67,8 @@ TRANSFER_ENVS = {
             inspect_cost=0.5,
         ),
         "horizon": 2,
-        "w_star": 100,
+        "w_succ": 100,
+        "w_ret": 1.0,
     },
     "Testbed": {
         "make_env": lambda: InfoSeekingEnv(
@@ -69,18 +78,26 @@ TRANSFER_ENVS = {
             observation_cost=0.1,
         ),
         "horizon": 4,
-        "w_star": 50,
+        "w_succ": 50,
+        "w_ret": 0.5,
     },
 }
 
 
-def run_transfer_experiment(num_episodes=500, seeds=None):
+def run_transfer_experiment(
+    num_episodes: int = 500,
+    seeds=None,
+    output: Path = Path("results/results_transfer.csv"),
+):
     if seeds is None:
         seeds = SEEDS[:5]
 
-    all_weights = set([1.0])
-    for cfg in TRANSFER_ENVS.values():
-        all_weights.add(float(cfg["w_star"]))
+    # Evaluate w=1 plus every distinct success- and reward-tuned weight.
+    weight_meta = {1.0: [("EFE", "canonical")]}
+    for src_name, cfg in TRANSFER_ENVS.items():
+        for kind, key in (("succ", "w_succ"), ("ret", "w_ret")):
+            w = float(cfg[key])
+            weight_meta.setdefault(w, []).append((src_name, kind))
 
     results = []
 
@@ -90,21 +107,17 @@ def run_transfer_experiment(num_episodes=500, seeds=None):
         print(f"\nEvaluating on {env_name} (H={horizon}):")
         print("-" * 60)
 
-        for w in sorted(all_weights):
-            source_envs = []
-            if w == 1.0:
-                source_envs.append("EFE (canonical)")
-            for src_name, src_cfg in TRANSFER_ENVS.items():
-                if float(src_cfg["w_star"]) == w:
-                    if src_name == env_name:
-                        source_envs.append(f"tuned on {src_name} (native)")
-                    else:
-                        source_envs.append(f"tuned on {src_name} (transfer)")
-
-            if not source_envs:
-                continue
-
-            source_label = "; ".join(source_envs)
+        for w in sorted(weight_meta):
+            sources = weight_meta[w]
+            source_parts = []
+            for src, kind in sources:
+                if src == "EFE":
+                    source_parts.append("EFE (canonical w=1)")
+                elif src == env_name:
+                    source_parts.append(f"{kind}-tuned on {src} (native)")
+                else:
+                    source_parts.append(f"{kind}-tuned on {src} (transfer)")
+            source_label = "; ".join(source_parts)
 
             all_episode_results = run_experiment_multi_seed(
                 PlanningInfoGainAgent,
@@ -114,13 +127,19 @@ def run_transfer_experiment(num_episodes=500, seeds=None):
                 planning_horizon=horizon,
                 info_gain_weight=w,
             )
-
             summary = summarize_results(all_episode_results)
+
+            # Classify whether this weight is native success/reward tuned.
+            is_native_succ = abs(w - float(env_cfg["w_succ"])) < 1e-9
+            is_native_ret = abs(w - float(env_cfg["w_ret"])) < 1e-9
 
             row = {
                 "target_env": env_name,
                 "weight": w,
                 "source": source_label,
+                "is_w1": abs(w - 1.0) < 1e-9,
+                "is_native_succ": is_native_succ,
+                "is_native_ret": is_native_ret,
                 "success_rate": summary["success_rate"],
                 "mean_reward": summary["mean_reward"],
                 "std_reward": summary["std_reward"],
@@ -129,17 +148,22 @@ def run_transfer_experiment(num_episodes=500, seeds=None):
             }
             results.append(row)
             print(
-                f"  w={w:6.1f} [{source_label:40s}]: "
+                f"  w={w:6.1f} [{source_label[:50]:50s}]: "
                 f"success={row['success_rate']:.1%}  "
                 f"reward={row['mean_reward']:+.2f} +/- {row['se_reward']:.2f}  "
                 f"obs={row['mean_observations']:.1f}"
             )
 
     df = pd.DataFrame(results)
-    df.to_csv("results/results_transfer.csv", index=False)
-    print(f"\nResults saved to results/results_transfer.csv")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(output, index=False)
+    print(f"\nResults saved to {output}")
     return df
 
 
 if __name__ == "__main__":
-    run_transfer_experiment()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--episodes", type=int, default=500)
+    parser.add_argument("--seeds", type=int, default=5)
+    args = parser.parse_args()
+    run_transfer_experiment(num_episodes=args.episodes, seeds=SEEDS[: args.seeds])

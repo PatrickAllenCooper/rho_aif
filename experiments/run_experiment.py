@@ -44,6 +44,7 @@ class EpisodeResult:
     success: bool
     total_reward: float
     belief_history: List[np.ndarray] = field(default_factory=list)
+    seed: Optional[int] = None
 
 
 def make_env_config(env) -> dict:
@@ -157,6 +158,8 @@ def run_experiment_multi_seed(
     for seed in seeds:
         np.random.seed(seed)
         results = run_experiment(agent_class, env, num_episodes, **agent_kwargs)
+        for r in results:
+            r.seed = seed
         all_results.extend(results)
     return all_results
 

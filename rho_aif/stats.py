@@ -92,3 +92,102 @@ def compute_comparison_stats(
         "t_stat": float(t_stat),
         "p_value": float(p_val),
     }
+
+
+def seed_means(
+    results: List,
+    metric_fn,
+    seed_attr: str = "seed",
+) -> np.ndarray:
+    """
+    Collapse episode-level results to per-seed means.
+
+    Each result must expose ``seed_attr`` (default ``seed``). Returns an
+    array of length n_seeds for hierarchical / seed-level inference.
+    """
+    by_seed: Dict[object, List[float]] = {}
+    for r in results:
+        if isinstance(r, dict):
+            seed = r[seed_attr]
+            val = metric_fn(r)
+        else:
+            seed = getattr(r, seed_attr)
+            val = metric_fn(r)
+        by_seed.setdefault(seed, []).append(float(val))
+    return np.array([np.mean(v) for _, v in sorted(by_seed.items(), key=lambda x: str(x[0]))])
+
+
+def seed_level_ttest(
+    results_a: List,
+    results_b: List,
+    metric_fn,
+    seed_attr: str = "seed",
+) -> Dict:
+    """
+    Two-sample t-test on per-seed means (n = number of seeds).
+
+    Complements pooled episode-level t-tests, which inflate degrees of
+    freedom when episodes within a seed are dependent.
+    """
+    from scipy.stats import ttest_ind
+
+    means_a = seed_means(results_a, metric_fn, seed_attr=seed_attr)
+    means_b = seed_means(results_b, metric_fn, seed_attr=seed_attr)
+    t_stat, p_val = ttest_ind(means_a, means_b)
+    return {
+        "n_seeds_a": int(len(means_a)),
+        "n_seeds_b": int(len(means_b)),
+        "mean_of_seed_means_a": float(np.mean(means_a)),
+        "mean_of_seed_means_b": float(np.mean(means_b)),
+        "seed_means_a": means_a.tolist(),
+        "seed_means_b": means_b.tolist(),
+        "t_stat": float(t_stat),
+        "p_value": float(p_val),
+        "cohens_d": cohens_d(means_a, means_b),
+    }
+
+
+def hierarchical_bootstrap_ci(
+    results: List,
+    metric_fn,
+    seed_attr: str = "seed",
+    n_bootstrap: int = 10000,
+    confidence: float = 0.95,
+    seed: int = 42,
+) -> tuple:
+    """
+    Hierarchical bootstrap: resample seeds, then resample episodes within seed.
+
+    Returns (point_estimate, ci_lower, ci_upper) for the grand mean.
+    """
+    by_seed: Dict[object, np.ndarray] = {}
+    for r in results:
+        if isinstance(r, dict):
+            s = r[seed_attr]
+            val = metric_fn(r)
+        else:
+            s = getattr(r, seed_attr)
+            val = metric_fn(r)
+        by_seed.setdefault(s, []).append(float(val))
+    seed_keys = list(by_seed.keys())
+    arrays = {s: np.asarray(by_seed[s], dtype=float) for s in seed_keys}
+    point = float(np.mean([np.mean(arrays[s]) for s in seed_keys]))
+
+    rng = np.random.RandomState(seed)
+    n_seeds = len(seed_keys)
+    boot = np.empty(n_bootstrap)
+    for b in range(n_bootstrap):
+        chosen = rng.randint(0, n_seeds, size=n_seeds)
+        means = []
+        for idx in chosen:
+            arr = arrays[seed_keys[idx]]
+            draws = arr[rng.randint(0, len(arr), size=len(arr))]
+            means.append(np.mean(draws))
+        boot[b] = np.mean(means)
+
+    alpha = 1.0 - confidence
+    return (
+        point,
+        float(np.percentile(boot, 100 * alpha / 2)),
+        float(np.percentile(boot, 100 * (1 - alpha / 2))),
+    )

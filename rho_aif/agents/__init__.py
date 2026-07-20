@@ -10,3 +10,4 @@ from rho_aif.agents.navigation_baselines import NavigationMyopicAgent, Navigatio
 from rho_aif.agents.pymdp_agent import PyMDPAgent
 from rho_aif.agents.thompson import ThompsonSamplingAgent
 from rho_aif.agents.mcts_efe import MCTSEFEAgent
+from rho_aif.agents.ids import IDSAgent
