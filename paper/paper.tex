@@ -79,7 +79,7 @@ Standard AIF evaluates policies myopically. \citet{friston2021} introduced sophi
 Discrete-state AIF with full policy enumeration is limited to small state--action spaces. Several lines of work address scaling. \citet{fountas2020} combined deep generative models with Monte Carlo tree search for EFE-optimal planning in continuous state spaces. \citet{tschantz2020} developed an RL-compatible objective (the free energy of the expected future) that inherits AIF's exploration--exploitation balance while scaling to standard RL benchmarks. \citet{maisto2025} combined active inference with Monte-Carlo tree search for large POMDPs, achieving state-of-the-art on RockSample \citep{smith2004}. Our MCTS-EFE variant (Section~6) follows this direction, using EFE as a leaf heuristic within MCTS to extend planning horizons beyond exact tree search.
 
 \paragraph{Exploration, control as inference, and intrinsic motivation.}
-The control-as-inference perspective \citep{todorov2007, levine2018} casts reward maximization as variational inference. Maximum-entropy RL \citep{haarnoja2018} and stochastic optimal control \citep{rawlik2012} are algorithmic instances. \citet{millidge2020} proved formal equivalence between AIF and control-as-inference. \citet{sajid2021} showed that intrinsic motivation behaviors arise under EFE. Intrinsic motivation methods, including curiosity \citep{schmidhuber1991, pathak2017}, typologies of intrinsic signals \citep{oudeyer2007}, Bayesian surprise \citep{itti2009}, count-based exploration \citep{bellemare2016}, VIME \citep{houthooft2016}, and random network distillation \citep{burda2019}, all require tunable bonus weights. Bayes-Adaptive MDPs \citep{duff2002, guez2013} and Bayesian RL more broadly \citep{ghavamzadeh2015} address model uncertainty (unknown dynamics), distinct from our focus on state uncertainty under a known model. Our $\rho$-POMDP formalism makes the connection between EFE and these lines of work precise, inheriting formal properties (convexity, Lipschitz continuity) while fixing a derived information-unit weight under a shared reward convention.
+The control-as-inference perspective \citep{todorov2007, levine2018} casts reward maximization as variational inference. Maximum-entropy RL \citep{haarnoja2018} and stochastic optimal control \citep{rawlik2012} are algorithmic instances. \citet{millidge2020} provided a formal comparison of AIF and control-as-inference, tracing their differences to how value is encoded in the generative model. \citet{sajid2021} showed that intrinsic motivation behaviors arise under EFE. Intrinsic motivation methods, including curiosity \citep{schmidhuber1991, pathak2017}, typologies of intrinsic signals \citep{oudeyer2007}, Bayesian surprise \citep{itti2009}, count-based exploration \citep{bellemare2016}, VIME \citep{houthooft2016}, and random network distillation \citep{burda2019}, all require tunable bonus weights. Bayes-Adaptive MDPs \citep{duff2002, guez2013} and Bayesian RL more broadly \citep{ghavamzadeh2015} address model uncertainty (unknown dynamics), distinct from our focus on state uncertainty under a known model. Our $\rho$-POMDP formalism makes the connection between EFE and these lines of work precise, inheriting formal properties (convexity, Lipschitz continuity) while fixing a derived information-unit weight under a shared reward convention.
 
 \section{Methodology}
 \label{sec:methodology}
@@ -570,8 +570,8 @@ B.~de~Vries, W.~Nuijten, T.~van~de~Laar, et~al.
 \newblock Expected free energy-based planning as variational inference.
 \newblock \emph{arXiv preprint arXiv:2504.14898}, 2025.
 
-\bibitem[Duff and Barto(2002)]{duff2002}
-M.~O. Duff and A.~G. Barto.
+\bibitem[Duff(2002)]{duff2002}
+M.~O. Duff.
 \newblock Optimal learning: Computational procedures for {B}ayes-adaptive {M}arkov decision processes.
 \newblock PhD thesis, University of Massachusetts Amherst, 2002.
 
@@ -661,7 +661,7 @@ D.~Maisto, F.~Gregoretti, K.~J. Friston, and G.~Pezzulo.
 \newblock \emph{Neurocomputing}, 623:129319, 2025.
 
 \bibitem[Millidge et~al.(2020)]{millidge2020}
-B.~Millidge, A.~Tschantz, and C.~L. Buckley.
+B.~Millidge, A.~Tschantz, A.~K. Seth, and C.~L. Buckley.
 \newblock On the relationship between active inference and control as inference.
 \newblock In \emph{International Workshop on Active Inference}, pp.\ 3--11. Springer, 2020.
 
@@ -760,10 +760,10 @@ A.~Tschantz, B.~Millidge, A.~K. Seth, and C.~L. Buckley.
 \newblock Reinforcement learning through active inference.
 \newblock In \emph{ICLR Workshop on Bridging AI and Cognitive Science}, 2020.
 
-\bibitem[Walraven et~al.(2024)]{walraven2024}
+\bibitem[Walraven et~al.(2025)]{walraven2024}
 E.~Walraven, J.~Sijs, and G.~Burghouts.
 \newblock Information gathering in {POMDP}s using active inference.
-\newblock \emph{Autonomous Agents and Multi-Agent Systems}, 39:3, 2024.
+\newblock \emph{Autonomous Agents and Multi-Agent Systems}, 39(1):3, 2025.
 
 \bibitem[Ye et~al.(2017)]{ye2017}
 N.~Ye, A.~Somani, D.~Hsu, and W.~S. Lee.

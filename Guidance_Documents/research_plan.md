@@ -736,6 +736,16 @@ Concrete fixes: Table 1 thresholds were wrong and are regenerated from code (Tig
 
 Thank you for the clear revision requirements, which we adopt in full. (1) Calibration: we state the exp(beta R) identification with beta=1 per reward unit, acknowledge non-invariance to reward rescaling, cite Bernardo (1979), and add a rescaling sweep confirming w*_ret scales with k. (2) Reproducibility: Table 1 is corrected to the formula's values (−138.7, −88.2 nats) and regenerated from a public script, and every tuned weight is labeled reward- or success-tuned, resolving the Table 1 vs Table 2 discrepancy. (3) Headlines: comparisons are drawn against tuned Planning+IG, non-EFE winners are bolded, and Pareto-domination is restricted to Diagnosis/Bandit versus same-horizon Planning. The transfer table now includes reward-tuned weights alongside success-tuned ones.
 
+### Citation audit (July 20, 2026)
+
+All 49 bibliography entries across the four paper variants were verified against the published record. Three corrections were applied to every variant containing the affected entries:
+
+1. **duff2002** — the PhD thesis "Optimal learning: Computational procedures for Bayes-adaptive Markov decision processes" (UMass Amherst, 2002) is single-authored by M. O. Duff (Barto was the advisor, not a coauthor). Author list and label corrected from "Duff and Barto" to "Duff".
+2. **millidge2020** — the IWAI 2020 paper "On the Relationship Between Active Inference and Control as Inference" has four authors: Millidge, Tschantz, Seth, and Buckley. Seth was missing and has been added. The in-text claim that the paper "proved formal equivalence" was overstated (the paper provides a formal comparison and shows the frameworks differ in how value is encoded); the sentence was corrected in the three full variants.
+3. **walraven2024** — the journal's version of record is Autonomous Agents and Multi-Agent Systems 39(1), article 3, 2025 (published online November 2024). Year and issue number corrected; the citation key is unchanged.
+
+All remaining entries (venues, volumes, page ranges, author lists, arXiv identifiers) were confirmed accurate, including the recently updated champion2024 entry (Neural Computation 38(3):439–469, 2026) and benchetrit2025 (arXiv:2502.02549). All four variants recompile cleanly and the three submission zips were refreshed with the corrected sources.
+
 ---
 
 ## Document Evolution
