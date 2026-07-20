@@ -716,59 +716,25 @@ Full response to IWAI reviews (uscY, ieKV, NbgT) across all four LaTeX versions 
 
 ### OpenReview camera-ready author responses (July 20, 2026)
 
-Post-decision replies for IWAI 2026 submission #4 (Accept: Poster + Spotlight). Paste into OpenReview as replies under each review. Revisions described below are already implemented in the working sources (`paper_iwai2026*.tex`, `paper_arxiv.tex`) and will ship in the camera-ready PDF.
+Post-decision replies for IWAI 2026 submission #4 (Accept: Poster + Spotlight). Paste into OpenReview as replies under each review. All promised revisions are already implemented in the working sources and will ship in the camera-ready PDF.
 
-#### Optional note to Program Chairs
+#### Note to Program Chairs
 
-We thank the Program Chairs for the Accept (Poster + Spotlight) decision and the reviewers for unusually detailed feedback. The camera-ready revision will (i) reposition the w=1 claim as a derived relative coefficient under a shared reward convention, exact under log scoring and not scale-invariant, (ii) correct Proposition 2 thresholds and add an over-observation bound, (iii) make tuning criteria, bolding, and headline comparisons honest against tuned Planning+IG, (iv) add Bernardo / POMDP-IR / Walraven citations, an IDS baseline, and a reward-rescaling experiment, and (v) deanonymize with a public code link. Full proofs and extended tables remain in the appendix / extended version within Springer page limits.
+We thank the chairs and reviewers. The camera-ready repositions the w=1 claim (derived coefficient under a shared reward convention, exact under log scoring, not scale-invariant), corrects the Proposition 2 thresholds, makes headline comparisons and bolding honest against tuned Planning+IG, adds the missing citations plus an IDS baseline and a reward-rescaling experiment, and links public code.
 
-#### Reply to Reviewer NbgT (Accept)
+#### Reviewer NbgT
 
-Thank you for the careful reading and for the Accept recommendation. We agree that the submitted draft overstated the uniqueness of “canonical w=1” relative to the EFE-non-uniqueness literature we ourselves cite, and that Proposition 1 should be positioned as a corollary of Da Costa et al.’s Bellman optimality result rather than as a freestanding novelty claim. We also agree that citing IDS / SARSOP / POMCPOW without benchmarking the most relevant of these weakens the comparison story.
+Thank you for the Accept and the fair critique. Camera-ready: we reposition w=1 as a derived relative coefficient (exact under log scoring, Bernardo 1979) rather than canonical, present Proposition 1 as a corollary of Da Costa et al.'s Bellman result, and add an IDS baseline (competitive on Tiger, over-explores on Diagnosis/Bandit). SARSOP/POMCPOW remain future work rather than cited-as-run. Public code accompanies the final version.
 
-Camera-ready commitments:
+#### Reviewer uscY
 
-1. Positioning of w=1. We will rewrite the abstract, introduction, and discussion to state that EFE supplies a derived relative coefficient in information units once pragmatic value is identified with task reward (beta=1 per reward unit). The identification is exact under log scoring (Bernardo 1979). Under our shared reward convention it is an empirically robust untuned default. It is not a scale-invariant automatic calibration. We will cite Millidge, Champion, and De Vries & Nuijten explicitly when stating what the claim does and does not settle.
+Thank you for an exceptionally precise review. You are right on the central point: identifying reward with the pragmatic term fixes beta implicitly, so w=1 is not scale-invariant. The camera-ready drops the canonical/automatically-calibrated language, states beta=1 per reward unit, cites Bernardo (1979), and adds a rescaling experiment confirming w*_ret(k) proportional to k. We restate the conclusion as yours: moderate untuned weights are robust within a shared reward convention, and success-tuned weights overfit.
 
-2. Proposition 1. We will present Prop. 1 as a notational bridge / corollary of sophisticated-inference Bellman optimality specialized to rho = expected information gain, not as an independent optimality theorem.
+Concrete fixes: Table 1 thresholds were wrong and are regenerated from code (Tiger −138.7, Diagnosis −88.2 nats), with an added over-observation bound; Diagnosis EFE is unified to −1.52; a shared tie-break makes the Figure 1 star and diamond coincide as Proposition 1 requires; bolding and Pareto-domination claims are restricted to where the tables support them; tuning criteria (w*_ret vs w*_succ) are stated everywhere, and the transfer table reports both. Greedy and Myopic are defined, missing details filled in, and Spaan, Satsangi, Walraven, and Bernardo are cited with repositioning against POMDP-IR. Code is released.
 
-3. Baselines. The camera-ready will include an observe-then-commit IDS baseline (Russo & Van Roy). In our suite IDS is competitive on Tiger and over-explores on Diagnosis/Bandit relative to untuned EFE, similar to success-tuned Planning+IG on reward. We retain POMCP as the primary online Monte Carlo baseline (already in the extended version). Full SARSOP / POMCPOW head-to-heads are outside the 12-page main-text budget for this discrete observe-then-commit suite; we will clarify in related work why they are the natural next comparison for continuous / large-scale settings and leave them as future work rather than cite them as if they were run.
+#### Reviewer ieKV
 
-4. Deanonymization and code. The camera-ready will name the author and link a public repository with scripts that regenerate all tables and figures.
-
-We appreciate the assessment that the issues are addressable matters of thoroughness and positioning. The revised draft aims to keep the useful bridge while stating the claim at the strength the evidence supports.
-
-#### Reply to Reviewer uscY (Reject)
-
-Thank you for an exceptionally thorough review. Several of your critiques are correct about the submitted draft, and they reshaped the camera-ready revision. We summarize the substantive points and our commitments.
-
-1. Reward–nats calibration and scale invariance (main claim). We agree: the variational bound fixes the relative coefficient between two information-unit terms and does not, by itself, fix the exchange rate between nats and arbitrary task rewards. Identifying the pragmatic term with task reward chooses P(o|C) proportional to exp(beta R) with an implicit beta. Rescaling all rewards by k while keeping w fixed is equivalent to rescaling the effective weight by 1/k. In the camera-ready we will (a) state beta=1 per reward unit explicitly, (b) drop “canonical / automatically-calibrated / first principles” language, (c) cite Bernardo (1979) for the log-scoring case where the claim is exact, and (d) add a reward-rescaling experiment showing w*_ret(k) proportional to k on Diagnosis and Bandit. The honest conclusion we will state is that moderate untuned weights are robust under a shared reward convention, and that w=1 is the variational default in that band, not a scale-free optimum.
-
-2. Over-claiming vs. the tables. We agree that Inspection N=8 favors Planning on reward, that Planning+IG(w=5) can lead on Inspection N=16 and RockSample[7,8], and that “Pareto-dominates” should not be stated globally. The camera-ready will restrict Pareto-domination language to Diagnosis/Bandit versus same-horizon Planning, bold best metrics honestly (including non-EFE winners), and draw headline comparisons against tuned Planning+IG as well as reward-only planning. The abstract will be a lean narrative of the top-level conclusion rather than a results dump.
-
-3. Tuning criterion and transfer. You are right that success-tuned transfer evaluated on reward manufactures part of the failure. The camera-ready will state the tuning criterion wherever w* appears, distinguish w*_ret from w*_succ, and report both in the transfer table. Success-tuned weights overfit; moderate reward-tuned weights transfer better; w=1 remains a strong untuned default within the shared scale.
-
-4. Numerical inconsistencies. (a) Prop. 2 thresholds: the published Table 1 values were incorrect. Correct thresholds under the stated formula are approximately −138.7 (Tiger) and −88.2 (Diagnosis) in nats. We will regenerate the table from code, drop Bandit from the two-state table, and add an upper over-observation threshold w*_hi (relevant to Testbed). (b) Diagnosis EFE reward will be unified to a single reported value (−1.52 under the main protocol). (c) Figure 1 star/diamond mismatch: Prop. 1 equivalence requires a shared deterministic argmin; we will enforce a shared tie-break so EFE and Planning+IG(w=1) coincide, and regenerate the Pareto figure. (d) Table 1 vs Table 5 on Tiger: w*_ret=1.0 is reward-optimal in the Pareto sweep, while w=20 can improve success; we will state this distinction explicitly.
-
-5. Definitions and missing details. Camera-ready will define Greedy, explain that Myopic observes via instrumental value of information under one-step commit lookahead (not an epistemic bonus), describe Testbed/Navigation briefly or point to the appendix, report RockSample action costs, and note discounting assumptions. Public code will accompany the camera-ready. Seed-level t-tests and hierarchical bootstrap CIs will be documented alongside pooled episode-level tests.
-
-6. Citations. We will cite Spaan et al. (2015, POMDP-IR), Satsangi et al. (2018), Walraven et al. (2024), and Bernardo (1979), and reposition our contribution relative to that line: EFE as a derived information-unit weight under a stated reward convention, not the first information-reward POMDP.
-
-We believe these revisions convert the paper to the claim your review already suggested the data support: a moderate untuned weight within a given reward scale is a robust default, and success-tuned weights overfit. Thank you again for the precision of the critique.
-
-#### Reply to Reviewer ieKV (Reject)
-
-Thank you for the clear diagnosis of what would be required for a major revision and for highlighting the value of the conceptual bridge and the zero-shot transfer observation. We treat your three revision requirements as camera-ready commitments.
-
-1. Reward-to-log-preference calibration and scale invariance. We agree this is not a presentation issue. The camera-ready will specify that pragmatic value is identified with task reward via P(o|C) proportional to exp(beta R) with beta=1 per reward unit, state that the conclusions are not invariant to a global reward rescaling, cite Bernardo (1979) for the log-scoring case where w=1 is exact, and include a reward-rescaling sweep confirming w*_ret(k) proportional to k. We will rewrite the central claim as: derived relative coefficient in information units; robust untuned default under a shared reward convention; not scale-invariant automatic calibration.
-
-2. Reproducible thresholds and consistent tuning criteria. We will correct Table 1 to the values implied by Proposition 2 and the stated parameters (Tiger approximately −138.7, Diagnosis approximately −88.2 nats), add the upper over-observation threshold, and regenerate thresholds from a public script. Wherever Planning+IG uses a tuned weight, we will state whether it is reward-tuned or success-tuned. Main-table Planning+IG uses success-tuned w*_succ (e.g. 100 on Diagnosis/Bandit); Pareto / transfer analyses report w*_ret separately. This removes the apparent contradiction between Table 1 and Table 2.
-
-3. Headline comparisons against tuned Planning+IG. We agree. The camera-ready will not lead with reward-only planning alone when tuned Planning+IG is stronger on the same metrics. On Structural Inspection N=16 and RockSample[7,8] we will report that Planning+IG(w=5) can lead, bold accordingly, and restrict “Pareto-dominates” to the environments and baselines where it holds (Diagnosis/Bandit vs. same-horizon Planning). The abstract will emphasize the top-level takeaway (near the reward-maximizing knee under the shared convention; competitive with tuned bonuses) rather than selective no-bonus contrasts.
-
-We also appreciate your note that the zero-shot transfer result is useful. The revised transfer table will include reward-tuned as well as success-tuned weights so that the finding is about criterion choice, not only about w=1.
-
-Thank you for framing the work as a strong candidate for major revision. The camera-ready aims to deliver that revision within the Springer page limits, with extended analyses in the appendix and a linked full version.
+Thank you for the clear revision requirements, which we adopt in full. (1) Calibration: we state the exp(beta R) identification with beta=1 per reward unit, acknowledge non-invariance to reward rescaling, cite Bernardo (1979), and add a rescaling sweep confirming w*_ret scales with k. (2) Reproducibility: Table 1 is corrected to the formula's values (−138.7, −88.2 nats) and regenerated from a public script, and every tuned weight is labeled reward- or success-tuned, resolving the Table 1 vs Table 2 discrepancy. (3) Headlines: comparisons are drawn against tuned Planning+IG, non-EFE winners are bolded, and Pareto-domination is restricted to Diagnosis/Bandit versus same-horizon Planning. The transfer table now includes reward-tuned weights alongside success-tuned ones.
 
 ---
 
