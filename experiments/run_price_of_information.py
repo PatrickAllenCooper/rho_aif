@@ -516,7 +516,7 @@ def main() -> None:
 
     if "curves" in only:
         df = run_shadow_price_curves(env_names, curve_budgets, seeds, ep, n_grid=n_grid)
-        df.to_csv(RESULTS / "price_shadow_curves.csv", index=False)
+        df.to_csv(RESULTS / "results_price_shadow_curves.csv", index=False)
         plot_shadow_price_curves(df, FIGURES / "price_shadow_curves.png")
         summary["curves_rows"] = len(df)
 
@@ -528,13 +528,13 @@ def main() -> None:
             num_episodes=ep,
             n_grid=n_grid,
         )
-        df.to_csv(RESULTS / "price_scale_invariance.csv", index=False)
+        df.to_csv(RESULTS / "results_price_scale_invariance.csv", index=False)
         plot_scale_invariance(df, FIGURES / "price_scale_invariance.png")
         summary["scale_rows"] = len(df)
 
     if "prop2" in only:
         df = run_prop2_duality(seeds, ep)
-        df.to_csv(RESULTS / "price_prop2_duality.csv", index=False)
+        df.to_csv(RESULTS / "results_price_prop2_duality.csv", index=False)
         summary["prop2_rows"] = len(df)
 
     if "dual" in only:
@@ -545,16 +545,16 @@ def main() -> None:
             rescale_at=dual_episodes // 2,
             rescale_factor=10.0,
         )
-        df.to_csv(RESULTS / "price_dual_descent.csv", index=False)
+        df.to_csv(RESULTS / "results_price_dual_descent.csv", index=False)
         plot_dual_descent(df, FIGURES / "price_dual_descent.png")
         summary["dual_rows"] = len(df)
 
     if "efe" in only:
         df = run_implicit_efe_budget(env_names, seeds, ep)
-        df.to_csv(RESULTS / "price_efe_implicit_budget.csv", index=False)
+        df.to_csv(RESULTS / "results_price_efe_implicit_budget.csv", index=False)
         summary["efe_rows"] = len(df)
 
-    with open(RESULTS / "price_of_information_summary.json", "w") as f:
+    with open(RESULTS / "results_price_of_information_summary.json", "w") as f:
         json.dump(summary, f, indent=2)
     print("\nDone.", json.dumps(summary, indent=2), flush=True)
 

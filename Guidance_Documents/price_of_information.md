@@ -1,8 +1,10 @@
 # The Price of Information: w as a Shadow Price on a Sensing Budget
 
-**Status**: Derivation notes and implementation targets for research extension #1  
+**Status**: Derivation notes + implementation + quick experimental battery complete; full battery and paper draft still open  
 **Date**: July 22, 2026  
-**Relation to paper**: Addresses the accepted IWAI 2026 paper's limitation that the canonical weight `w=1` in Planning+IG / EFE is not reward-scale invariant. Paper draft deferred until scale-invariance and duality experiments hold.
+**Relation to paper**: Addresses the accepted IWAI 2026 paper's limitation that the canonical weight `w=1` in Planning+IG / EFE is not reward-scale invariant. Paper draft deferred until fuller scale-invariance results hold.
+
+Quick-battery summary (see also `Guidance_Documents/research_plan.md` phase entry): grid solver finds operational `w*(B)` above instrumental `U(0)`; fixed `w=1` usage moves under reward rescaling while dual control keeps usage near `B`; Prop 2 lower thresholds are negative on Testbed/Tiger and match `U(0)≫0`; implicit EFE budgets recorded per environment.
 
 ## Citation check (verified before writing)
 

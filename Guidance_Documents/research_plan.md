@@ -783,6 +783,38 @@ git push origin main --tags
 - [ ] Push `main` and tag `v1.0.0` (or bump version if the tree has moved on)
 - [ ] Point the next-venue paper / README install instructions at the live PyPI package
 
+## Phase: Price of Information (July 22, 2026)
+
+**Status**: Machinery + quick experimental battery implemented; paper draft deferred until fuller scale-invariance / duality results hold  
+**Goal**: Recast the Planning+IG weight `w` as an operational shadow price of a sensing budget `B`, with offline solve and online dual control. Theory notes: `Guidance_Documents/price_of_information.md`.
+
+### Delivered
+1. **Theory notes** — budgeted rho-POMDP, information-floor dual (exact match to Planning+IG) vs sensing-budget operational inverse, Prop 2 boundary reading, SAC-style dual control. Citations verified: Sims (2003, JME 50(3):665–690); Matějka and McKay (2015, AER 105(1):272–298); Haarnoja et al. (2018, arXiv:1812.05905) for automatic temperature (not the ICML fixed-temperature paper alone).
+2. **`rho_aif/budget.py`** — usage accounting, `estimate_usage`, `grid_solve_usage_fn` / `bisect_usage_fn`, `solve_shadow_price` (default: grid; robust to non-monotone `U(w)`).
+3. **`DualWeightAgent`** — projected update `w ← max(0, w + η(B − U))`; exported from `rho_aif.agents`.
+4. **Experiments** — `experiments/run_price_of_information.py` (`--mode quick|full`): shadow-price curves, scale invariance, Prop 2 consistency, dual-descent with mid-run rescale, implicit EFE budget `B_EFE = U(w=1)`.
+5. **Tests** — `tests/test_budget.py`, `tests/test_dual_descent.py`; full suite **289 passed**.
+
+### Quick-battery findings (`--mode quick`, 2 seeds × 30 episodes)
+| Result | Observation |
+|---|---|
+| Shadow curves | Diagnosis/Bandit recover distinct `w*(B)` above the instrumental baseline `U(0)`; Tiger’s `U(w)` range is narrow (~4–5.5), so prices are weakly identified. |
+| Scale invariance | Fixed `w=1` usage on Diagnosis moves with reward scale α∈{0.1,1,10}: ~9.67 / 9.97 / 5.87. Budget-derived `w*(B=8)` moves ~0.13 / ~0 / 36 and pulls usage back toward B at α=10 (`U*≈9.27`). Grid is coarse; needs `--mode full`. |
+| Prop 2 | Closed-form lower thresholds are largely **negative** (Testbed −2.12, Tiger −96.1 in bits); consistent with `U(0)≫0` (instrumental sensing alone overshoots a zero-observation budget). |
+| Dual descent | On Diagnosis with `B=8`, online `w_t` keeps recent usage near the budget (~8–9); after mid-run ×10 reward rescale, `w` rises (0.4 → ~3) while usage stays near B. |
+| Implicit EFE budget | `B_EFE`: Tiger 4.43, Diagnosis 9.63, Bandit 4.38 mean observations. |
+
+Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_summary.json`, `figures/price_*.png`.
+
+### Design note forced by data
+`U(w)` is only *roughly* monotone (discrete policy switches). Default solver is log-grid argmin `|U−B|`, not pure bisection. Budgets below `U(0)` are unachievable with nonnegative `w`.
+
+### Still open (before paper draft)
+- [ ] Re-run `--mode full` (more seeds/episodes, denser grid, include Tileworld + Inspection-N8)
+- [ ] Tighten scale-invariance headline: show `w*(B; α) / α` approximately constant and usage pinned at B across α
+- [ ] Optional: cost-usage (`usage_kind='cost'`) curves alongside count usage
+- [ ] Start paper draft only after the full battery confirms the scale story
+
 ---
 
 ## Document Evolution

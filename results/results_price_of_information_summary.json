@@ -1,0 +1,13 @@
+{
+  "mode": "quick",
+  "seeds": [
+    42,
+    123
+  ],
+  "episodes": 30,
+  "curves_rows": 10,
+  "scale_rows": 3,
+  "prop2_rows": 2,
+  "dual_rows": 100,
+  "efe_rows": 3
+}
