@@ -31,7 +31,7 @@ class SensingUsage:
 
 @dataclass
 class ShadowPriceResult:
-    """Outcome of bisection on U(w) - B."""
+    """Outcome of bisection / grid / curve solve for U(w) - B."""
 
     w_star: float
     w_lo: float
@@ -45,6 +45,40 @@ class ShadowPriceResult:
     bracketed: bool
     achievable: bool = True
     note: str = ""
+    usage_se_at_star: float = float("nan")
+    usage_se_lo: float = float("nan")
+    usage_se_hi: float = float("nan")
+    u_min: float = float("nan")
+    u_max: float = float("nan")
+
+
+@dataclass
+class UsageCurvePoint:
+    """One grid point of an estimated usage curve U(w)."""
+
+    w: float
+    mean_usage: float
+    se_usage: float
+    n_seeds: int
+    per_seed_means: List[float]
+
+
+def make_log_w_grid(w_lo: float, w_hi: float, n_grid: int) -> np.ndarray:
+    """Log-spaced nonnegative weight grid; includes 0 when w_lo == 0."""
+    if w_lo < 0:
+        raise ValueError("w_lo must be nonnegative")
+    if w_hi <= w_lo:
+        raise ValueError("w_hi must exceed w_lo")
+    if n_grid < 2:
+        raise ValueError("n_grid must be at least 2")
+    if w_lo == 0.0:
+        positive = np.logspace(
+            np.log10(max(w_hi / (10 ** (n_grid - 1)), 1e-3)),
+            np.log10(w_hi),
+            num=n_grid - 1,
+        )
+        return np.concatenate([[0.0], positive])
+    return np.logspace(np.log10(w_lo), np.log10(w_hi), num=n_grid)
 
 
 def episode_sensing_usage(
@@ -153,6 +187,164 @@ def estimate_usage(
                 usages.append(usage_value(u, usage_kind))
 
     return float(np.mean(usages)) if usages else 0.0
+
+
+def estimate_usage_curve(
+    env,
+    w_grid: Sequence[float],
+    seeds: Sequence[int],
+    num_episodes: int,
+    planning_horizon: int = 4,
+    usage_kind: str = "count",
+    family: str = "observe_then_commit",
+    tree_depth: Optional[int] = None,
+    max_steps: int = 200,
+) -> List[UsageCurvePoint]:
+    """
+    Estimate U(w) on a weight grid with per-seed means and SE across seeds.
+
+    Returns one ``UsageCurvePoint`` per grid weight. SE is the standard error
+    of the per-seed means (nan when fewer than two seeds).
+    """
+    points: List[UsageCurvePoint] = []
+    for w in w_grid:
+        per_seed: List[float] = []
+        for seed in seeds:
+            u = estimate_usage(
+                env,
+                w=float(w),
+                seeds=[int(seed)],
+                num_episodes=num_episodes,
+                planning_horizon=planning_horizon,
+                usage_kind=usage_kind,
+                family=family,
+                tree_depth=tree_depth,
+                max_steps=max_steps,
+            )
+            per_seed.append(float(u))
+        mean_u = float(np.mean(per_seed)) if per_seed else 0.0
+        if len(per_seed) >= 2:
+            se = float(np.std(per_seed, ddof=1) / np.sqrt(len(per_seed)))
+        else:
+            se = float("nan")
+        points.append(
+            UsageCurvePoint(
+                w=float(w),
+                mean_usage=mean_u,
+                se_usage=se,
+                n_seeds=len(per_seed),
+                per_seed_means=list(per_seed),
+            )
+        )
+    return points
+
+
+def usage_curve_to_arrays(curve: Sequence[UsageCurvePoint]):
+    """Return (w, mean_U, se_U) arrays from a usage curve."""
+    ws = np.asarray([p.w for p in curve], dtype=float)
+    us = np.asarray([p.mean_usage for p in curve], dtype=float)
+    ses = np.asarray([p.se_usage for p in curve], dtype=float)
+    return ws, us, ses
+
+
+def solve_shadow_price_from_curve(
+    curve: Sequence[UsageCurvePoint],
+    budget: float,
+    tol: float = 0.05,
+) -> ShadowPriceResult:
+    """
+    Solve w*(B) from a precomputed usage curve.
+
+    Returns the grid point minimizing |U - B|, plus the **step bracket**:
+    the last w with U below B and the first w with U at/above B (when such
+    neighbors exist). Also reports SEs at those points and the curve's
+    [U_min, U_max] range.
+    """
+    if not curve:
+        raise ValueError("curve must be nonempty")
+    ws, us, ses = usage_curve_to_arrays(curve)
+    order = np.argsort(ws)
+    ws, us, ses = ws[order], us[order], ses[order]
+
+    u_min = float(np.min(us))
+    u_max = float(np.max(us))
+    errs = np.abs(us - budget)
+    best_i = int(np.argmin(errs))
+    # Tie-break toward smaller w
+    ties = np.where(np.abs(errs - errs[best_i]) <= 1e-12)[0]
+    best_i = int(ties[0])
+
+    # Step bracket: last below budget, first at/above budget along sorted w.
+    below = np.where(us < budget - tol)[0]
+    above = np.where(us >= budget - tol)[0]
+    if len(below) and len(above):
+        lo_i = int(below[-1])
+        # first above that is >= lo_i when possible
+        above_after = above[above >= lo_i]
+        hi_i = int(above_after[0]) if len(above_after) else int(above[0])
+        if hi_i < lo_i:
+            lo_i, hi_i = hi_i, lo_i
+        bracketed = True
+    else:
+        lo_i = max(0, best_i - 1)
+        hi_i = min(len(ws) - 1, best_i + 1)
+        bracketed = False
+
+    achievable = bool(errs[best_i] <= tol or (u_min - tol <= budget <= u_max + tol))
+    note = ""
+    if budget < u_min - tol:
+        note = "budget below observed U range; returning argmin U"
+        achievable = False
+    elif budget > u_max + tol:
+        note = "budget above observed U range; returning argmax U"
+        achievable = False
+
+    return ShadowPriceResult(
+        w_star=float(ws[best_i]),
+        w_lo=float(ws[lo_i]),
+        w_hi=float(ws[hi_i]),
+        usage_at_star=float(us[best_i]),
+        usage_lo=float(us[lo_i]),
+        usage_hi=float(us[hi_i]),
+        budget=float(budget),
+        usage_kind="",
+        n_iters=len(ws),
+        bracketed=bracketed,
+        achievable=achievable,
+        note=note,
+        usage_se_at_star=float(ses[best_i]),
+        usage_se_lo=float(ses[lo_i]),
+        usage_se_hi=float(ses[hi_i]),
+        u_min=u_min,
+        u_max=u_max,
+    )
+
+
+def identifiable_budgets(
+    curve: Sequence[UsageCurvePoint],
+    n_budgets: int = 5,
+    margin: float = 0.05,
+) -> List[float]:
+    """
+    Place budgets strictly inside [U(0-ish), U_max] from a usage curve.
+
+    Uses the minimum and maximum mean usages on the curve as the identifiable
+    range, shrunk by ``margin`` of the span so endpoints are not selected.
+    """
+    if not curve:
+        return []
+    us = np.asarray([p.mean_usage for p in curve], dtype=float)
+    u_lo = float(np.min(us))
+    u_hi = float(np.max(us))
+    span = u_hi - u_lo
+    if span <= 1e-9:
+        return [u_lo]
+    lo = u_lo + margin * span
+    hi = u_hi - margin * span
+    if hi <= lo:
+        return [0.5 * (u_lo + u_hi)]
+    n = max(1, int(n_budgets))
+    return [float(x) for x in np.linspace(lo, hi, n)]
 
 
 def bisect_usage_fn(
@@ -283,64 +475,19 @@ def grid_solve_usage_fn(
     Robust when U is only roughly monotone (discrete policy switches make
     U a noisy step function that can locally decrease).
     """
-    if w_lo < 0:
-        raise ValueError("w_lo must be nonnegative")
-    if w_hi <= w_lo:
-        raise ValueError("w_hi must exceed w_lo")
-    if n_grid < 2:
-        raise ValueError("n_grid must be at least 2")
-
-    # Include 0 explicitly, then log-space the rest.
-    if w_lo == 0.0:
-        positive = np.logspace(
-            np.log10(max(w_hi / (10 ** (n_grid - 1)), 1e-3)),
-            np.log10(w_hi),
-            num=n_grid - 1,
+    grid = make_log_w_grid(w_lo, w_hi, n_grid)
+    # Build a thin UsageCurvePoint list (no SE) and reuse the step-bracket solver.
+    curve = [
+        UsageCurvePoint(
+            w=float(w),
+            mean_usage=float(usage_fn(float(w))),
+            se_usage=float("nan"),
+            n_seeds=0,
+            per_seed_means=[],
         )
-        grid = np.concatenate([[0.0], positive])
-    else:
-        grid = np.logspace(np.log10(w_lo), np.log10(w_hi), num=n_grid)
-
-    usages = []
-    best_w, best_u, best_err = grid[0], None, float("inf")
-    u_min, u_max = float("inf"), -float("inf")
-    for w in grid:
-        u = float(usage_fn(float(w)))
-        usages.append(u)
-        u_min = min(u_min, u)
-        u_max = max(u_max, u)
-        err = abs(u - budget)
-        if err < best_err - 1e-12 or (abs(err - best_err) <= 1e-12 and w < best_w):
-            best_w, best_u, best_err = float(w), u, err
-
-    assert best_u is not None
-    # Bracket: nearest grid neighbors around best_w
-    idx = int(np.argmin(np.abs(grid - best_w)))
-    lo_i = max(0, idx - 1)
-    hi_i = min(len(grid) - 1, idx + 1)
-    achievable = best_err <= tol or (u_min - tol <= budget <= u_max + tol)
-    note = ""
-    if budget < u_min - tol:
-        note = "budget below observed U range; returning argmin U"
-        achievable = False
-    elif budget > u_max + tol:
-        note = "budget above observed U range; returning argmax U"
-        achievable = False
-
-    return ShadowPriceResult(
-        w_star=best_w,
-        w_lo=float(grid[lo_i]),
-        w_hi=float(grid[hi_i]),
-        usage_at_star=best_u,
-        usage_lo=float(min(usages[lo_i], usages[hi_i])),
-        usage_hi=float(max(usages[lo_i], usages[hi_i])),
-        budget=budget,
-        usage_kind="",
-        n_iters=len(grid),
-        bracketed=achievable,
-        achievable=achievable,
-        note=note,
-    )
+        for w in grid
+    ]
+    return solve_shadow_price_from_curve(curve, budget=budget, tol=tol)
 
 
 def solve_shadow_price(
@@ -359,13 +506,20 @@ def solve_shadow_price(
     tree_depth: Optional[int] = None,
     n_grid: int = 12,
     method: str = "grid",
+    curve: Optional[Sequence[UsageCurvePoint]] = None,
 ) -> ShadowPriceResult:
     """
     Find w*(B) so that estimated usage U(w) is near budget B.
 
     Default method is grid search (robust to non-monotone U). Pass
-    ``method='bisect'`` only when U is known monotone.
+    ``method='bisect'`` only when U is known monotone. Pass a precomputed
+    ``curve`` to skip re-estimation (uses step-bracket solve).
     """
+    if curve is not None:
+        result = solve_shadow_price_from_curve(curve, budget=budget, tol=tol)
+        result.usage_kind = usage_kind
+        return result
+
     if seeds is None:
         seeds = [42, 123, 456]
 
