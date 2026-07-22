@@ -763,7 +763,15 @@ All remaining entries (venues, volumes, page ranges, author lists, arXiv identif
 Per-test VoI audit records, SARSOP/POMCPOW baselines, public leaderboard, RockSample as a headline track (remains research code).
 
 ### Release notes
-Build with `python -m build`. Publish to TestPyPI then PyPI when credentials are available (`twine upload`). Tag `v1.0.0` after a successful PyPI upload.
+Build with `python -m build` (sdist + wheel; `twine check` passed). Tag `v1.0.0` created locally on commit `bf81000`. TestPyPI/PyPI upload requires API tokens not present in this environment; publish when ready with:
+
+```bash
+python -m build
+twine upload --repository testpypi dist/*
+# verify: pip install -i https://test.pypi.org/simple/ rho-aif
+twine upload dist/*
+git push origin main --tags
+```
 
 ---
 
