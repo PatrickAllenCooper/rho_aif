@@ -748,30 +748,40 @@ All remaining entries (venues, volumes, page ranges, author lists, arXiv identif
 
 ## Phase: Inspection Benchmark Release (July 22, 2026)
 
-**Status**: Implemented  
+**Status**: Code and release prep implemented; public PyPI publish deferred to next venue submission  
 **Goal**: Publish `rho-aif` as a pip-installable benchmark for information-gathering planning (Structural Inspection + observe-then-commit suite), with proper scoring rules as the new capability.
 
-### Delivered
+### Delivered (code / release prep done)
 1. **MIT LICENSE** — replaces informal "academic use" wording; `pyproject.toml` license/classifiers updated.
 2. **Public API** — `InspectionEnv` and `POMCPAgent` exported; `rho_aif/benchmark.py` holds canonical configs (`Tiger`, `Diagnosis`, `Bandit`, `Tileworld-6x6`, `Inspection-N8`, `Inspection-N16`), seeds, and runners.
 3. **Scoring rules** — `rho_aif/scoring.py` (log score, Brier score; factored variants for inspection). Wired into `EpisodeResult` / `summarize_results` and the inspection runner (`mean_log_score`, `mean_brier`).
 4. **CLI** — console script `rho-aif-bench` (`list`, `run --env ... --agent ...`).
 5. **Docs / CI** — README rewritten as benchmark quickstart; GitHub Actions for pytest (3.9–3.12) and sdist/wheel build.
 6. **Tests** — `test_scoring.py`, `test_benchmark.py`, `test_cli.py`; full suite 275 passed.
+7. **Local packaging** — `python -m build` produces sdist/wheel; `twine check` passed; local tag `v1.0.0` on commit `bf81000`.
 
 ### Out of scope (v1)
 Per-test VoI audit records, SARSOP/POMCPOW baselines, public leaderboard, RockSample as a headline track (remains research code).
 
-### Release notes
-Build with `python -m build` (sdist + wheel; `twine check` passed). Tag `v1.0.0` created locally on commit `bf81000`. TestPyPI/PyPI upload requires API tokens not present in this environment; publish when ready with:
+### Deferred until next venue submission
+Public TestPyPI verification and PyPI upload of `rho-aif` are **not** a free-floating someday task. They are a required item on the next-paper submission checklist (alongside uploading the paper PDF / OpenReview / journal portal). Do this when preparing that submission so the camera-ready or preprint can cite a stable `pip install rho-aif` URL.
 
 ```bash
 python -m build
 twine upload --repository testpypi dist/*
-# verify: pip install -i https://test.pypi.org/simple/ rho-aif
+# verify in a clean venv:
+#   pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple rho-aif
+#   rho-aif-bench list
 twine upload dist/*
 git push origin main --tags
 ```
+
+### Next-venue submission checklist (package)
+- [ ] Rebuild and `twine check` the current tree
+- [ ] Upload to TestPyPI and verify `pip install` + `rho-aif-bench list` in a clean venv
+- [ ] Upload to PyPI (`rho-aif`)
+- [ ] Push `main` and tag `v1.0.0` (or bump version if the tree has moved on)
+- [ ] Point the next-venue paper / README install instructions at the live PyPI package
 
 ---
 
