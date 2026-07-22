@@ -12,6 +12,7 @@ from rho_aif.agents.thompson import ThompsonSamplingAgent
 from rho_aif.agents.mcts_efe import MCTSEFEAgent
 from rho_aif.agents.ids import IDSAgent
 from rho_aif.agents.pomcp import POMCPAgent
+from rho_aif.agents.dual_descent import DualWeightAgent
 
 __all__ = [
     "BaseAgent",
@@ -29,4 +30,5 @@ __all__ = [
     "MCTSEFEAgent",
     "IDSAgent",
     "POMCPAgent",
+    "DualWeightAgent",
 ]
