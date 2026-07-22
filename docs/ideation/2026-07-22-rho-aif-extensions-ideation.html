@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ideation: Extending the rho-AIF Research Program</title>
+<style>
+:root {
+  --bg: #faf9f6;
+  --ink: #23211c;
+  --muted: #6b675e;
+  --accent: #1f5f8b;
+  --accent-soft: #e8f0f6;
+  --accent-text: #174a6e;
+  --warn-soft: #f7efe2;
+  --warn-text: #7a5a1e;
+  --card: #ffffff;
+  --border: #e2ded4;
+  --good: #2e6b46;
+  --good-soft: #e7f1ea;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.65 Georgia, 'Times New Roman', serif;
+}
+.container { max-width: 900px; margin-inline: auto; padding: 2.5rem 1.5rem 4rem; }
+header.doc-head { border-bottom: 2px solid var(--ink); padding-bottom: 1.2rem; margin-bottom: 2rem; }
+.eyebrow { font: 600 11px/1 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 0.6rem; }
+h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 0.8rem; }
+.meta { font: 13px/1.6 'Helvetica Neue', Arial, sans-serif; color: var(--muted); }
+.meta code { background: var(--accent-soft); padding: 1px 6px; border-radius: 4px; color: var(--accent-text); font-size: 12px; }
+h2 { font-size: 1.35rem; margin: 2.6rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+h3 { font-size: 1.08rem; margin: 0 0 0.5rem; }
+p { max-width: 72ch; }
+section > p, section > ul { max-width: 72ch; }
+ul.axes { list-style: none; padding: 0; max-width: 72ch; }
+ul.axes li { padding: 0.45rem 0.8rem; margin-bottom: 0.4rem; background: var(--card); border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
+ul.axes li b { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px; }
+.jump { font: 13px/1.9 'Helvetica Neue', Arial, sans-serif; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.9rem 1.2rem; margin-bottom: 1.6rem; }
+.jump a { color: var(--accent-text); text-decoration: none; }
+.jump a:hover { text-decoration: underline; }
+article.idea { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem 1.6rem 1.2rem; margin-bottom: 1.6rem; }
+.chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+.chip { font: 600 11px/1 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); }
+.chip.rank { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip.axis { background: var(--accent-soft); color: var(--accent-text); border-color: var(--accent-soft); }
+.chip.conf-high { background: var(--good-soft); color: var(--good); border-color: var(--good-soft); }
+.chip.conf-med { background: var(--warn-soft); color: var(--warn-text); border-color: var(--warn-soft); }
+.field { margin: 0.55rem 0; font-size: 14.5px; }
+.field b.lbl { font: 700 11.5px/1 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.2rem; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; margin-top: 0.8rem; }
+th, td { text-align: left; padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font: 700 11.5px/1.4 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+figure.viz { margin: 1rem 0 0.4rem; padding: 0.8rem; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; }
+figure.viz figcaption { font: italic 12.5px/1.5 Georgia, serif; color: var(--muted); margin-top: 0.4rem; }
+footer.composition-signal { margin-top: 3.5rem; padding-top: 1rem; border-top: 1px solid var(--border); font: 12px/1.6 'Helvetica Neue', Arial, sans-serif; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="doc-head">
+  <div class="eyebrow">Ideation</div>
+  <h1>Extending the rho-AIF Research Program</h1>
+  <div class="meta">
+    date <code>2026-07-22</code> &nbsp; topic <code>rho-aif-extensions</code> &nbsp; mode <code>repo-grounded</code><br>
+    focus: follow-on directions after IWAI 2026 acceptance (Poster + Spotlight) of "Expected Free Energy as Belief-Dependent Utility for rho-POMDPs"
+  </div>
+</header>
+
+<section id="grounding-context">
+<h2>Grounding Context</h2>
+<p><b>Codebase context.</b> The <code>rho_aif</code> package holds a full agent grid (EFE, Planning, Planning+IG, Myopic, Thompson, POMCP, MCTS-EFE, IDS, PyMDP, domain tree-search agents) over exact discrete Bayesian beliefs, eleven benchmark instances from Tiger through RockSample to Structural Inspection (up to 65,536 states), 18 reproduction scripts, and 251 passing tests. The accepted paper proves EFE equals a rho-POMDP with expected information gain at w=1 for observe-then-commit POMDPs (Prop 1), gives near-optimality thresholds w_lo and w_hi for two-state problems (Prop 2), and extends the equivalence to factored observation POMDPs (Prop 3).</p>
+<p><b>Stated limitations.</b> Exact search is O(K|O|^H), capping horizons at 2 to 3. Everything is discrete with a known model. The w=1 weight is not reward-scale invariant, being exact only under log scoring rules (Bernardo 1979). The equivalence breaks when observation actions alter the hidden state. SARSOP and POMCPOW baselines were deferred as future work in the camera-ready replies.</p>
+<p><b>External landscape.</b> The result sits in a thin seam between the Technion rho-POMDP group (Benchetrit et al. 2025 built an anytime continuous-space rho-POMCPOW) and active inference theory. Sequential Bayesian experimental design has an amortization toolkit (Deep Adaptive Design, Foster et al. 2021). LLM agents that gather information (BED-LLM, AutoDiscovery, InfoReasoner) all weight information gain heuristically. A fresh-context verifier spot-checked the load-bearing citations and prior art during filtering.</p>
+</section>
+
+<section id="topic-axes">
+<h2>Topic Axes</h2>
+<ul class="axes">
+  <li><b>theory</b> — extending the formal results: state-changing observations, drifting states, scale-aware calibration of w, deeper near-optimality characterization</li>
+  <li><b>scaling-solvers</b> — continuous spaces, rho-POMCPOW, progressive-widening MCTS-EFE, SARSOP/POMCPOW baselines, deep-horizon EFE</li>
+  <li><b>learned-models</b> — dropping the known-model assumption: model learning under EFE, amortized/deep EFE, misspecification robustness</li>
+  <li><b>applications-benchmarks</b> — domain-realistic uses: inspection, medical screening, robotics active sensing, benchmark suites</li>
+  <li><b>new-audiences</b> — carrying the calibrated-information-weight result to LLM agents, experimental design, bandits, RL exploration</li>
+</ul>
+</section>
+
+<section id="ranked-ideas">
+<h2>Ranked Ideas</h2>
+
+<div class="jump">
+  <a href="#idea1">1. The price of information: w as a shadow price</a> ·
+  <a href="#idea2">2. Active inference under destructive sensing</a> ·
+  <a href="#idea3">3. The inspection benchmark, released</a> ·
+  <a href="#idea4">4. A principled w for LLM question-askers</a> ·
+  <a href="#idea5">5. The continuous bridge: EFE meets rho-POMCPOW</a> ·
+  <a href="#idea6">6. When is myopic enough? Submodularity certificates</a>
+</div>
+
+
+<article class="idea" id="idea1">
+  <div class="chips"><span class="chip rank">Rank 1</span><span class="chip axis">theory</span><span class="chip conf-med">Confidence 60%</span><span class="chip">Complexity Medium</span></div>
+  <h3>The Price of Information: w as a Shadow Price on a Sensing Budget</h3>
+  <div class="field"><b class="lbl">Description</b>
+  Replace the scale-dependent weight w with an operational sensing budget (number of tests, total observation cost, time on task) and derive the effective w as the Lagrange multiplier of the budgeted rho-POMDP, computable by bisection with existing solvers. Rational inattention in economics (Sims 2003, Matejka and McKay 2015) prices information exactly this way, and its entropy cost is the same log-scoring structure that makes w=1 exact in Prop 1. Pair the static duality with an online dual-descent rule that adjusts w during planning to hit a target information level, the same mechanism SAC-v2 used to eliminate its entropy-temperature hyperparameter. Prop 2's thresholds become corollaries of the duality statement.</div>
+  <figure class="viz">
+    <svg viewBox="0 0 640 160" role="img" aria-label="Mapping from budgeted problem to dual weight">
+      <rect x="10" y="20" width="185" height="54" rx="8" fill="#ffffff" stroke="#e2ded4"/>
+      <text x="102" y="42" text-anchor="middle" font-family="Helvetica, Arial" font-size="12" font-weight="700" fill="#23211c">Sensing budget</text>
+      <text x="102" y="60" text-anchor="middle" font-family="Georgia" font-size="12" fill="#6b675e">"3 tests per component"</text>
+      <rect x="10" y="92" width="185" height="54" rx="8" fill="#ffffff" stroke="#e2ded4"/>
+      <text x="102" y="114" text-anchor="middle" font-family="Helvetica, Arial" font-size="12" font-weight="700" fill="#23211c">Target info level</text>
+      <text x="102" y="132" text-anchor="middle" font-family="Georgia" font-size="12" fill="#6b675e">entropy reduction / episode</text>
+      <rect x="255" y="55" width="150" height="56" rx="8" fill="#e8f0f6" stroke="#b9cfdf"/>
+      <text x="330" y="79" text-anchor="middle" font-family="Helvetica, Arial" font-size="12" font-weight="700" fill="#174a6e">Duality</text>
+      <text x="330" y="97" text-anchor="middle" font-family="Georgia" font-size="12" fill="#174a6e">bisection / dual descent</text>
+      <rect x="465" y="55" width="165" height="56" rx="8" fill="#e7f1ea" stroke="#bcd8c6"/>
+      <text x="547" y="79" text-anchor="middle" font-family="Helvetica, Arial" font-size="12" font-weight="700" fill="#2e6b46">w* emerges</text>
+      <text x="547" y="97" text-anchor="middle" font-family="Georgia" font-size="12" fill="#2e6b46">scales with reward units</text>
+      <line x1="198" y1="47" x2="252" y2="72" stroke="#6b675e" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <line x1="198" y1="119" x2="252" y2="95" stroke="#6b675e" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <line x1="408" y1="83" x2="462" y2="83" stroke="#6b675e" stroke-width="1.5" marker-end="url(#arr2)"/>
+      <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#6b675e"/></marker></defs>
+    </svg>
+    <figcaption>Budgets are denominated in physical units, so the derived multiplier rescales automatically with the reward function. The scale-invariance objection dissolves rather than being patched.</figcaption>
+  </figure>
+  <div class="field"><b class="lbl">Basis</b>
+  direct: the grounding lists "w=1 not reward-scale-invariant" as the paper's central conceded limitation and "success-tuned w* (20-200) beats w=1 on accuracy at reward cost" as the unexplained anomaly. external: Matejka and McKay (2015, AER) show the information price is the shadow cost of an attention constraint; Haarnoja et al. (2018) auto-tune the structurally identical entropy temperature by dual descent. Verifier caution: no universal closed form w*(R, gamma, |S|, H) follows without extra assumptions, and EFE-to-resource-rationality duality has prior art, so the contribution must be the budgeted rho-POMDP formulation and its empirical validation, not the duality observation itself.</div>
+  <div class="field"><b class="lbl">Rationale</b>
+  This converts the paper's most awkward limitation, an uninterpretable scale-dependent dial, into its next theorem, and the reward-scaling, Pareto, and transfer scripts already in the repo are the empirical apparatus. It also reframes the reviewers' strongest objection as the motivation for the sequel.</div>
+  <div class="field"><b class="lbl">Downsides</b>
+  Prior work on resource-rational and bounded-rational duality must be positioned against carefully or reviewers will call it a restatement. The clean results may hold only for the same restricted problem classes as Prop 2.</div>
+</article>
+
+<article class="idea" id="idea2">
+  <div class="chips"><span class="chip rank">Rank 2</span><span class="chip axis">theory</span><span class="chip conf-high">Confidence 75%</span><span class="chip">Complexity Medium</span></div>
+  <h3>Active Inference Under Destructive Sensing</h3>
+  <div class="field"><b class="lbl">Description</b>
+  Extend Propositions 1 and 3 to observation actions that alter the hidden state (destructive testing, biopsy, invasive probing). The paper explicitly flags this as the case where the equivalence breaks. The move is to decompose the value of a state-changing observation into information gained minus future information foreclosed, drawing on quasi-option value from environmental economics (Arrow and Fisher 1974) as the framing, then derive the corrected Bellman operator and characterize when naive EFE over-tests or under-tests. A destructive variant of the existing Structural Inspection environment is the natural testbed.</div>
+  <figure class="viz">
+    <svg viewBox="0 0 640 150" role="img" aria-label="Passive versus destructive observation value decomposition">
+      <rect x="10" y="30" width="290" height="100" rx="8" fill="#e8f0f6" stroke="#b9cfdf"/>
+      <text x="155" y="52" text-anchor="middle" font-family="Helvetica, Arial" font-size="12" font-weight="700" fill="#174a6e">CURRENT (Prop 1 / 3)</text>
+      <text x="155" y="80" text-anchor="middle" font-family="Georgia" font-size="13" fill="#23211c">value(observe) = info gained</text>
+      <text x="155" y="104" text-anchor="middle" font-family="Georgia" font-size="12" fill="#6b675e">hidden state untouched</text>
+      <rect x="340" y="30" width="290" height="100" rx="8" fill="#f7efe2" stroke="#e0cfa8"/>
+      <text x="485" y="52" text-anchor="middle" font-family="Helvetica, Arial" font-size="12" font-weight="700" fill="#7a5a1e">PROPOSED (destructive)</text>
+      <text x="485" y="80" text-anchor="middle" font-family="Georgia" font-size="13" fill="#23211c">value(observe) = info gained</text>
+      <text x="485" y="104" text-anchor="middle" font-family="Georgia" font-size="13" fill="#23211c">&minus; future info foreclosed</text>
+      <line x1="303" y1="80" x2="337" y2="80" stroke="#6b675e" stroke-width="1.5" marker-end="url(#arr)"/>
+      <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#6b675e"/></marker></defs>
+    </svg>
+    <figcaption>The correction term prices what a destructive probe destroys: the option to probe again later.</figcaption>
+  </figure>
+  <div class="field"><b class="lbl">Basis</b>
+  direct: the paper's Limitations section names "state-changing observations (destructive testing, full Delta_T)" as explicit future work, and the grounding notes "equivalence breaks when observation actions alter hidden state." external: Arrow and Fisher (1974, QJE) established quasi-option value for irreversible acts that both yield information and foreclose future information, with a known sign of bias. The verifier confirmed the analogy is framing, not a ready-made theorem, so the Bellman correction is the genuine contribution.</div>
+  <div class="field"><b class="lbl">Rationale</b>
+  This is the most-flagged open problem in the accepted paper, it targets exactly the settings the applications story is built on (NDT and medical screening are dominated by costly or destructive probes), and it is a self-contained theory-plus-experiments paper achievable on the existing discrete infrastructure. The verifier rated it sound with no prior-art collision.</div>
+  <div class="field"><b class="lbl">Downsides</b>
+  The corrected operator may not admit clean closed-form thresholds like Prop 2, and the result could land as incremental if the correction term is small in practice. Requires building a destructive-inspection environment variant.</div>
+</article>
+
+<article class="idea" id="idea3">
+  <div class="chips"><span class="chip rank">Rank 3</span><span class="chip axis">applications-benchmarks</span><span class="chip conf-high">Confidence 80%</span><span class="chip">Complexity Low</span></div>
+  <h3>The Inspection Benchmark, Released</h3>
+  <div class="field"><b class="lbl">Description</b>
+  Package the Structural Inspection environment plus the observe-then-commit suite as a standalone pip-installable benchmark for information-gathering planning, with documented baselines (all existing agents), standardized metrics, and reproducible configs. Two twists lift it above a code dump. First, score terminal beliefs with proper scoring rules alongside reward, since in screening and NDT the deliverable is a calibrated posterior, and under log scoring the w=1 agent is provably the right reporter. Second, emit a per-test value-of-information record per episode, giving the audit-trail artifact applied communities ask for. This forces the deferred SARSOP comparison into existence as a baseline PR rather than a paper burden.</div>
+  <div class="field"><b class="lbl">Basis</b>
+  direct: "Structural Inspection benchmark (domain-realistic NDT/medical)" and the 18-script, 251-test infrastructure exist today; the camera-ready replies promise public code anyway. reasoned: no standard open benchmark exists for inspection and screening planning the way MuJoCo exists for control; benchmark and dataset papers have outsized citation impact relative to effort, and the marginal work over the promised code release is curation. Verifier rated it sound, noting value depends on genuinely difficult baselines.</div>
+  <div class="field"><b class="lbl">Rationale</b>
+  Cheapest idea on the list with the longest tail. It compounds: every later paper (destructive sensing, continuous bridge, LLM calibration) gets its evaluation suite for free, and external users create the citations and collaborations that a solo researcher otherwise has to manufacture.</div>
+  <div class="field"><b class="lbl">Downsides</b>
+  Benchmarks need maintenance and adoption work (docs, issues, CI) that competes with research time. A NeurIPS Datasets and Benchmarks submission needs more baselines than currently exist.</div>
+</article>
+
+<article class="idea" id="idea4">
+  <div class="chips"><span class="chip rank">Rank 4</span><span class="chip axis">new-audiences</span><span class="chip conf-med">Confidence 55%</span><span class="chip">Complexity Medium</span></div>
+  <h3>A Principled w for LLM Question-Askers</h3>
+  <div class="field"><b class="lbl">Description</b>
+  LLM agents that gather information before acting (BED-LLM, AutoDiscovery, InfoReasoner) weight information gain against task progress heuristically. Export the calibration machinery: given a task with a defined utility and per-question cost, compute the near-optimal weight band from Prop 2 style thresholds and show on a twenty-questions style benchmark with known ground-truth posteriors that heuristic weights provably under- or over-explore where the calibrated weight does not. The verifier's condition is the design spec: the demonstration must define the task utility explicitly and beat pure expected-information-gain maximization, not just a strawman.</div>
+  <div class="field"><b class="lbl">Basis</b>
+  direct: the external grounding names "BED-LLM, AutoDiscovery, InfoReasoner pick information-gain weights heuristically, none has a principled w" and flags LLM-agent exploration as a top venue conversation. reasoned: the theory needs only a belief, an information measure, and a reward scale, none of which requires the agent to be a POMDP solver; the discrete testbed generates the ground-truth posteriors LLM evaluations usually lack.</div>
+  <div class="field"><b class="lbl">Rationale</b>
+  Highest-traffic audience reachable with the least new theory. A four-page workshop paper at an agents venue could land within months, and it repositions the whole research program from "active inference internal affairs" to "calibration tool for the busiest agent question of 2026."</div>
+  <div class="field"><b class="lbl">Downsides</b>
+  LLM beliefs are not exact Bayesian posteriors, so the transfer involves an approximation step reviewers will probe. Fast-moving field with real scoop risk. Success depends on the calibrated weight actually beating pure EIG on the chosen tasks, which is unverified.</div>
+</article>
+
+<article class="idea" id="idea5">
+  <div class="chips"><span class="chip rank">Rank 5</span><span class="chip axis">scaling-solvers</span><span class="chip conf-med">Confidence 55%</span><span class="chip">Complexity High</span></div>
+  <h3>The Continuous Bridge: EFE Meets rho-POMCPOW</h3>
+  <div class="field"><b class="lbl">Description</b>
+  Benchetrit et al. (2025) built an anytime continuous-space rho-POMCPOW with incremental entropy estimators but never made the EFE connection. Rebuild Structural Inspection with continuous defect severity, run EFE-as-rho inside their solver class, and test whether the Prop 1 identity and the Prop 2 near-optimality bands survive particle beliefs and entropy estimation. Run SARSOP on the discrete suite in the same paper to retire the deferred-baselines debt honestly. A differentiating algorithmic piece: govern progressive widening by marginal information gain per expansion rather than the standard polynomial schedule.</div>
+  <div class="field"><b class="lbl">Basis</b>
+  direct: "discrete-only" is a stated limitation and SARSOP/POMCPOW baselines were promised as future work in the camera-ready replies. external: Benchetrit et al., arXiv 2502.02549, verified real by the filtering pass, which also corrected the framing: continuous rho-POMCPOW already exists with POMCPOW comparisons, so the contribution here is the empirical EFE bridge and the widening rule, not a new solver.</div>
+  <div class="field"><b class="lbl">Rationale</b>
+  Whoever runs this experiment first owns the continuous half of the seam between the two communities. It converts the accepted paper's two acknowledged empirical gaps into the sequel's headline table.</div>
+  <div class="field"><b class="lbl">Downsides</b>
+  Heaviest engineering lift on the list (particle filters, entropy estimators, a Julia or reimplemented solver stack). The verifier judged the current shape closer to an application paper than a solver contribution, so novelty rests on the widening rule and the equivalence-survival analysis.</div>
+</article>
+
+<article class="idea" id="idea6">
+  <div class="chips"><span class="chip rank">Rank 6</span><span class="chip axis">theory</span><span class="chip conf-med">Confidence 45%</span><span class="chip">Complexity Medium</span></div>
+  <h3>When Is Myopic Enough? Adaptive-Submodularity Certificates for Greedy EFE</h3>
+  <div class="field"><b class="lbl">Description</b>
+  Attack the H=2-3 horizon ceiling from below: instead of scaling search deeper, prove when depth is unnecessary. In Prop 3's factored-observation setting, information gain is a candidate for adaptive submodularity (Golovin and Krause 2011), which would give greedy EFE a constant-factor guarantee with no lookahead. The verifier's caution defines the research question: EFE's reward term, observation noise, and transitions can violate the submodularity conditions, so the deliverable is a certificate identifying which environment families qualify, with the testbed's known "EFE needs H at least 2" cases as the boundary-mapping counterexamples.</div>
+  <div class="field"><b class="lbl">Basis</b>
+  direct: "exact search O(K*|O|^H) limits H=2-3" is the paper's main computational wall, and the Myopic and Planning agent pairs needed to test any claim already exist. external: Golovin and Krause (JAIR 2011) provide the greedy guarantee framework for adaptive stochastic optimization. reasoned: a sufficiency certificate telling practitioners when they can skip planning entirely is more useful than a solver speedup, and negative results (which families fail, and why) are publishable in this framing.</div>
+  <div class="field"><b class="lbl">Rationale</b>
+  It would dissolve rather than mitigate the scaling limitation for a characterized problem class, and it produces theory that stands regardless of which way the certificates fall.</div>
+  <div class="field"><b class="lbl">Downsides</b>
+  Real risk the conditions fail almost everywhere interesting, leaving a mostly negative paper. Proof work is nontrivial and further from the existing codebase than the other candidates.</div>
+</article>
+
+</section>
+
+<section id="rejection-summary">
+<h2>Rejection Summary</h2>
+<p>33 raw ideas were generated across five frames (pain, inversion, leverage, cross-domain analogy, assumption/constraint flipping), deduplicated into seven clusters and five syntheses, then filtered against a fresh-context verifier that spot-checked prior art.</p>
+<table>
+  <tr><th>#</th><th>Idea</th><th>Reason rejected</th></tr>
+  <tr><td>1</td><td>BAMDP-EFE unification (Dirichlet model learning)</td><td>Verifier found active-inference work with Dirichlet learning and explicit BAPOMDP comparisons already published; not a new capability standalone.</td></tr>
+  <tr><td>2</td><td>LMSR prediction-market synthesis ("price of information" via Hanson's b)</td><td>Refuted: the b log n subsidy bound does not transfer to an EFE over-exploration guarantee; salvageable pieces folded into idea 1.</td></tr>
+  <tr><td>3</td><td>Clinical VoI audit certificates as standalone paper</td><td>Health-economics EVSI already provides closely analogous audit trails; per-test VoI reporting absorbed into idea 3.</td></tr>
+  <tr><td>4</td><td>Calibration-scored diagnosis benchmark</td><td>Strong mechanism, weak as standalone; proper-scoring-rule metrics absorbed into idea 3.</td></tr>
+  <tr><td>5</td><td>Closed-form universal w*(R, gamma, |S|, H)</td><td>Verifier: does not follow without dynamics and belief assumptions; scoped down into idea 1's duality framing.</td></tr>
+  <tr><td>6</td><td>Adversarial hidden state inspection</td><td>Interesting but requires game-theoretic machinery orthogonal to the program's assets; premature before ideas 2 and 3.</td></tr>
+  <tr><td>7</td><td>Fast-drift persistent monitoring (information half-life)</td><td>Good future direction but duplicates idea 2's structural role as "the Delta extension paper" with weaker theory footing.</td></tr>
+  <tr><td>8</td><td>Preference-uncertain rho-POMDPs (hidden state = reward parameters)</td><td>CIRL overlap is substantial; unclear which propositions survive; better revisited after idea 1 settles calibration.</td></tr>
+  <tr><td>9</td><td>Reward-free active inference (Jin et al. analogy)</td><td>Analogy sound but sample-complexity machinery is far from the codebase and the RL-theory bar is high for a solo entry.</td></tr>
+  <tr><td>10</td><td>Empirical w* atlas dataset with meta-model</td><td>Useful artifact but weak as a paper on its own; natural appendix or companion to ideas 1 and 3.</td></tr>
+  <tr><td>11</td><td>Drop-in RL exploration module (vs RND/ICM)</td><td>Deployment gap: estimating belief-space information gain in model-free RL removes the exactness the result depends on.</td></tr>
+  <tr><td>12</td><td>MVT patch-leaving stopping rule as standalone</td><td>Folded into ideas 5 (widening rule) and 6 (myopic sufficiency); not enough alone.</td></tr>
+  <tr><td>13</td><td>MDL second derivation of the info-gain reward</td><td>Elegant but a section, not a paper; noted as supporting material for idea 1.</td></tr>
+  <tr><td>14</td><td>Amortized EFE at H=100 via DAD contrastive bounds</td><td>Verifier: Foster et al. amortize EIG, not EFE planning at long horizons; the leap is underspecified today. Revisit after idea 5.</td></tr>
+  <tr><td>-</td><td>axis: learned-models</td><td>No standalone survivor: the strongest candidate (BAMDP-EFE) hit prior art. Partially covered by idea 1's dual-descent component. Deliberate gap.</td></tr>
+</table>
+</section>
+
+<footer class="composition-signal">Composed 2026-07-22 by ce-ideate from repository grounding of /Users/pat/code/rho_aif and external research on the 2025-2026 active inference, rho-POMDP, and sequential experimental design landscape.</footer>
+
+</div>
+</body>
+</html>

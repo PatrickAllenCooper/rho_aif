@@ -11,3 +11,22 @@ from rho_aif.agents.pymdp_agent import PyMDPAgent
 from rho_aif.agents.thompson import ThompsonSamplingAgent
 from rho_aif.agents.mcts_efe import MCTSEFEAgent
 from rho_aif.agents.ids import IDSAgent
+from rho_aif.agents.pomcp import POMCPAgent
+
+__all__ = [
+    "BaseAgent",
+    "MyopicAgent",
+    "InformationGainAgent",
+    "EFEAgent",
+    "PlanningAgent",
+    "PlanningInfoGainAgent",
+    "EpistemicOnlyAgent",
+    "NavigationEFEAgent",
+    "NavigationMyopicAgent",
+    "NavigationInfoGainAgent",
+    "PyMDPAgent",
+    "ThompsonSamplingAgent",
+    "MCTSEFEAgent",
+    "IDSAgent",
+    "POMCPAgent",
+]

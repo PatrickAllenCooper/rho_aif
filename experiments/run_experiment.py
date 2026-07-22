@@ -33,6 +33,8 @@ from rho_aif.agents.pymdp_agent import PyMDPAgent
 from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
 from rho_aif.agents.epistemic_only import EpistemicOnlyAgent
 from rho_aif.agents.thompson import ThompsonSamplingAgent
+from rho_aif.benchmark import make_env_config, get_obs_models
+from rho_aif.scoring import log_score, brier_score, extract_true_state
 
 
 @dataclass
@@ -45,25 +47,10 @@ class EpisodeResult:
     total_reward: float
     belief_history: List[np.ndarray] = field(default_factory=list)
     seed: Optional[int] = None
-
-
-def make_env_config(env) -> dict:
-    """Extract agent-facing config from any environment."""
-    if hasattr(env, "get_observation_costs"):
-        costs = env.get_observation_costs()
-    else:
-        costs = [env.observation_cost]
-    return {
-        "observation_costs": costs,
-        "commit_reward_matrix": env.get_commit_reward_matrix(),
-    }
-
-
-def get_obs_models(env):
-    """Get observation models from an environment (single or multi)."""
-    if hasattr(env, "get_observation_models"):
-        return env.get_observation_models()
-    return [env.get_observation_model()]
+    true_state: Optional[int] = None
+    terminal_belief: Optional[np.ndarray] = None
+    log_score: Optional[float] = None
+    brier_score: Optional[float] = None
 
 
 def make_agent(
@@ -88,6 +75,8 @@ def run_episode(agent: BaseAgent, env, max_steps: int = 200) -> EpisodeResult:
         total_reward += reward
 
         if terminated:
+            belief = agent.belief.belief.copy()
+            true_state = extract_true_state(info, env)
             return EpisodeResult(
                 agent_name=agent.__class__.__name__,
                 num_observations=observation_count,
@@ -96,11 +85,17 @@ def run_episode(agent: BaseAgent, env, max_steps: int = 200) -> EpisodeResult:
                 success=info.get("correct", False),
                 total_reward=total_reward,
                 belief_history=[b.copy() for b in agent.belief.history],
+                true_state=true_state,
+                terminal_belief=belief,
+                log_score=log_score(belief, true_state),
+                brier_score=brier_score(belief, true_state),
             )
 
         agent.update_belief(obs, obs_action=action)
         observation_count += 1
 
+    belief = agent.belief.belief.copy()
+    true_state = extract_true_state(info, env)
     return EpisodeResult(
         agent_name=agent.__class__.__name__,
         num_observations=observation_count,
@@ -108,6 +103,10 @@ def run_episode(agent: BaseAgent, env, max_steps: int = 200) -> EpisodeResult:
         final_confidence=agent.belief.confidence(),
         success=False,
         total_reward=total_reward,
+        true_state=true_state,
+        terminal_belief=belief,
+        log_score=log_score(belief, true_state),
+        brier_score=brier_score(belief, true_state),
     )
 
 
@@ -132,6 +131,8 @@ def run_experiment(
 
 
 def summarize_results(results: List[EpisodeResult]) -> Dict:
+    log_scores = [r.log_score for r in results if r.log_score is not None]
+    briers = [r.brier_score for r in results if r.brier_score is not None]
     return {
         "agent": results[0].agent_name,
         "mean_observations": np.mean([r.num_observations for r in results]),
@@ -141,6 +142,8 @@ def summarize_results(results: List[EpisodeResult]) -> Dict:
         "success_rate": np.mean([r.success for r in results]),
         "mean_reward": np.mean([r.total_reward for r in results]),
         "std_reward": np.std([r.total_reward for r in results]),
+        "mean_log_score": float(np.mean(log_scores)) if log_scores else float("nan"),
+        "mean_brier": float(np.mean(briers)) if briers else float("nan"),
     }
 
 

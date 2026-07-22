@@ -746,6 +746,25 @@ All 49 bibliography entries across the four paper variants were verified against
 
 All remaining entries (venues, volumes, page ranges, author lists, arXiv identifiers) were confirmed accurate, including the recently updated champion2024 entry (Neural Computation 38(3):439–469, 2026) and benchetrit2025 (arXiv:2502.02549). All four variants recompile cleanly and the three submission zips were refreshed with the corrected sources.
 
+## Phase: Inspection Benchmark Release (July 22, 2026)
+
+**Status**: Implemented  
+**Goal**: Publish `rho-aif` as a pip-installable benchmark for information-gathering planning (Structural Inspection + observe-then-commit suite), with proper scoring rules as the new capability.
+
+### Delivered
+1. **MIT LICENSE** — replaces informal "academic use" wording; `pyproject.toml` license/classifiers updated.
+2. **Public API** — `InspectionEnv` and `POMCPAgent` exported; `rho_aif/benchmark.py` holds canonical configs (`Tiger`, `Diagnosis`, `Bandit`, `Tileworld-6x6`, `Inspection-N8`, `Inspection-N16`), seeds, and runners.
+3. **Scoring rules** — `rho_aif/scoring.py` (log score, Brier score; factored variants for inspection). Wired into `EpisodeResult` / `summarize_results` and the inspection runner (`mean_log_score`, `mean_brier`).
+4. **CLI** — console script `rho-aif-bench` (`list`, `run --env ... --agent ...`).
+5. **Docs / CI** — README rewritten as benchmark quickstart; GitHub Actions for pytest (3.9–3.12) and sdist/wheel build.
+6. **Tests** — `test_scoring.py`, `test_benchmark.py`, `test_cli.py`; full suite 275 passed.
+
+### Out of scope (v1)
+Per-test VoI audit records, SARSOP/POMCPOW baselines, public leaderboard, RockSample as a headline track (remains research code).
+
+### Release notes
+Build with `python -m build`. Publish to TestPyPI then PyPI when credentials are available (`twine upload`). Tag `v1.0.0` after a successful PyPI upload.
+
 ---
 
 ## Document Evolution
