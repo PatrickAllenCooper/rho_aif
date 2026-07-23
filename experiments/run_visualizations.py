@@ -109,7 +109,7 @@ def run_detailed_episode(agent, env, max_steps=200):
         if hasattr(agent, '_efe_observe'):
             best_obs_g = float("inf")
             for k in range(agent.num_observe_actions):
-                g = agent._efe_observe(k, belief, 0)
+                g, _ = agent._efe_observe(k, belief, 0)
                 if g < best_obs_g:
                     best_obs_g = g
             best_observe_value = -best_obs_g

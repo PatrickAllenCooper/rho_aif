@@ -8,7 +8,9 @@ Follows the same pattern as RockSampleTreeSearchAgent.
 
 import numpy as np
 import math
-from typing import List, Tuple, Optional
+from typing import List, Optional, Tuple
+
+from rho_aif.audit import ActionAudit, DecisionAudit
 
 
 class InspectionBeliefState:
@@ -61,12 +63,14 @@ class InspectionTreeSearchAgent:
     component as done.
     """
 
-    def __init__(self, env, info_weight: float = 1.0, max_depth: int = 3):
+    def __init__(self, env, info_weight: float = 1.0, max_depth: int = 3, record_audit: bool = False):
         self.env = env
         self.belief = InspectionBeliefState(env.num_components, env.fault_prior)
         self.info_weight = info_weight
         self.max_depth = max_depth
         self._cache = {}
+        self.record_audit = record_audit
+        self.audit_log: List[DecisionAudit] = []
 
     def reset(self):
         self.belief.reset()
@@ -126,16 +130,22 @@ class InspectionTreeSearchAgent:
         diag_key = tuple(diagnosed)
         return (pos, belief_key, diag_key, depth)
 
-    def _evaluate(self, pos, fault_beliefs, diagnosed, depth, comp_positions):
+    def _evaluate(self, pos, fault_beliefs, diagnosed, depth, comp_positions, collect: bool = False):
+        """Recursive depth-limited search. When ``collect`` is set (only ever
+        passed at depth 0, from ``select_action``), also returns a third
+        element: the list of ``ActionAudit`` records for every candidate
+        action evaluated at this node, for the interpretability audit trail."""
+        candidates: Optional[List[ActionAudit]] = [] if collect else None
+
         if np.all(diagnosed):
-            return -1, 0.0
+            return -1, 0.0, candidates
 
         if depth >= self.max_depth:
-            return -1, self._leaf_value(pos, fault_beliefs, diagnosed, comp_positions)
+            return -1, self._leaf_value(pos, fault_beliefs, diagnosed, comp_positions), candidates
 
         cache_key = self._make_cache_key(pos, fault_beliefs, diagnosed, depth)
-        if cache_key in self._cache:
-            return self._cache[cache_key]
+        if not collect and cache_key in self._cache:
+            return self._cache[cache_key][0], self._cache[cache_key][1], None
 
         best_action = -1
         best_value = -1e9
@@ -144,10 +154,23 @@ class InspectionTreeSearchAgent:
             new_pos = self._apply_move_sim(pos, move_a)
             if new_pos == pos:
                 continue
-            _, cont_val = self._evaluate(
+            _, cont_val, _ = self._evaluate(
                 new_pos, fault_beliefs, diagnosed, depth + 1, comp_positions
             )
             val = self.env.move_cost + cont_val
+            if collect:
+                candidates.append(
+                    ActionAudit(
+                        action=move_a,
+                        kind="move",
+                        sensing_cost=0.0,
+                        info_gain_weight=self.info_weight,
+                        expected_info_gain=0.0,
+                        weighted_info_gain=0.0,
+                        expected_task_value=val,
+                        total_score=val,
+                    )
+                )
             if val > best_value:
                 best_value = val
                 best_action = move_a
@@ -178,14 +201,28 @@ class InspectionTreeSearchAgent:
 
                     new_beliefs = fault_beliefs.copy()
                     new_beliefs[comp_idx] = p_post
-                    _, cont_val = self._evaluate(
+                    _, cont_val, _ = self._evaluate(
                         pos, new_beliefs, diagnosed, depth + 1, comp_positions
                     )
                     expected_cont += p_obs * cont_val
 
                 ig = prior_h - expected_post_h
+                weighted_ig = self.info_weight * ig
                 test_action = self.env.test_action_start + test_type
-                val = cost + self.info_weight * ig + expected_cont
+                val = cost + weighted_ig + expected_cont
+                if collect:
+                    candidates.append(
+                        ActionAudit(
+                            action=test_action,
+                            kind="observe",
+                            sensing_cost=-cost,
+                            info_gain_weight=self.info_weight,
+                            expected_info_gain=ig,
+                            weighted_info_gain=weighted_ig,
+                            expected_task_value=val - weighted_ig,
+                            total_score=val,
+                        )
+                    )
                 if val > best_value:
                     best_value = val
                     best_action = test_action
@@ -205,31 +242,52 @@ class InspectionTreeSearchAgent:
                 new_diagnosed = diagnosed.copy()
                 new_diagnosed[comp_idx] = True
                 new_beliefs = fault_beliefs.copy()
-                _, cont_val = self._evaluate(
+                _, cont_val, _ = self._evaluate(
                     pos, new_beliefs, new_diagnosed, depth + 1, comp_positions
                 )
                 val = ev + cont_val
                 diag_action = self.env.diagnose_action_start + diag_val
+                if collect:
+                    candidates.append(
+                        ActionAudit(
+                            action=diag_action,
+                            kind="commit",
+                            sensing_cost=0.0,
+                            info_gain_weight=self.info_weight,
+                            expected_info_gain=0.0,
+                            weighted_info_gain=0.0,
+                            expected_task_value=val,
+                            total_score=val,
+                        )
+                    )
                 if val > best_value:
                     best_value = val
                     best_action = diag_action
 
-        self._cache[cache_key] = (best_action, best_value)
-        return best_action, best_value
+        if not collect:
+            self._cache[cache_key] = (best_action, best_value)
+        return best_action, best_value, candidates
 
     def select_action(self) -> int:
         self._cache = {}
         pos = self.env._agent_pos
         comp_positions = self.env.get_component_positions()
-        action, _ = self._evaluate(
+        action, _, candidates = self._evaluate(
             pos,
             self.belief.fault_beliefs.copy(),
             self.belief.diagnosed.copy(),
             0,
             comp_positions,
+            collect=self.record_audit,
         )
         if action < 0:
-            return 0
+            action = 0
+        if self.record_audit and candidates is not None:
+            for c in candidates:
+                c.chosen = c.action == action
+            self.audit_log.append(
+                DecisionAudit(step=len(self.audit_log), candidates=candidates, chosen_action=action)
+            )
         return action
 
     def update(self, action: int, observation: int):

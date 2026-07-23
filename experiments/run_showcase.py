@@ -118,7 +118,7 @@ def trace_efe_episode(env, agent, max_steps: int = 30) -> Tuple[List[StepTrace],
                 posterior = posterior / posterior.sum()
                 post_h += p_o * scipy_entropy(posterior, base=2)
             ig = prior_h - post_h
-            g = agent._efe_observe(k, belief, 0)
+            g, _ = agent._efe_observe(k, belief, 0)
             if g < best_obs_g:
                 best_obs_g = g
                 best_ig = ig

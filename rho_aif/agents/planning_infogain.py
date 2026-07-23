@@ -14,8 +14,9 @@ Action evaluation (maximizing expected reward + weighted info gain):
 
 import numpy as np
 from scipy.stats import entropy as scipy_entropy
-from typing import Union, List
+from typing import List, Tuple, Union
 from rho_aif.agents.base import BaseAgent
+from rho_aif.audit import ActionAudit, DecisionAudit
 
 
 class PlanningInfoGainAgent(BaseAgent):
@@ -34,15 +35,60 @@ class PlanningInfoGainAgent(BaseAgent):
         planning_horizon: int = 4,
         info_gain_weight: float = 1.0,
         discount: float = 1.0,
+        record_audit: bool = False,
     ):
         super().__init__(observation_models, env_config)
         self.planning_horizon = planning_horizon
         self.info_gain_weight = info_gain_weight
         self.discount = discount
+        self.record_audit = record_audit
+        self.audit_log: List[DecisionAudit] = []
 
     def select_action(self) -> int:
-        best_action, _ = self._evaluate(self.belief.belief, depth=0)
+        belief = self.belief.belief
+        candidates = self._decision_candidates(belief) if self.record_audit else None
+        best_action, _ = self._evaluate(belief, depth=0)
+        if candidates is not None:
+            for c in candidates:
+                c.chosen = c.action == best_action
+            self.audit_log.append(
+                DecisionAudit(step=len(self.audit_log), candidates=candidates, chosen_action=best_action)
+            )
         return best_action
+
+    def _decision_candidates(self, belief: np.ndarray) -> List[ActionAudit]:
+        """Top-level (depth-0) task/information decomposition of every candidate action."""
+        candidates: List[ActionAudit] = []
+        for i in range(self.num_commit_actions):
+            value = float(np.dot(belief, self.commit_rewards[i]))
+            candidates.append(
+                ActionAudit(
+                    action=self.num_observe_actions + i,
+                    kind="commit",
+                    sensing_cost=0.0,
+                    info_gain_weight=self.info_gain_weight,
+                    expected_info_gain=0.0,
+                    weighted_info_gain=0.0,
+                    expected_task_value=value,
+                    total_score=value,
+                )
+            )
+        for k in range(self.num_observe_actions):
+            total_score, info_gain = self._expected_value_of_observe(k, belief, depth=0)
+            weighted_ig = self.info_gain_weight * info_gain
+            candidates.append(
+                ActionAudit(
+                    action=k,
+                    kind="observe",
+                    sensing_cost=self.obs_costs[k],
+                    info_gain_weight=self.info_gain_weight,
+                    expected_info_gain=info_gain,
+                    weighted_info_gain=weighted_ig,
+                    expected_task_value=total_score - weighted_ig,
+                    total_score=total_score,
+                )
+            )
+        return candidates
 
     def _evaluate(self, belief: np.ndarray, depth: int):
         if depth >= self.planning_horizon:
@@ -53,7 +99,7 @@ class PlanningInfoGainAgent(BaseAgent):
         best_obs_action = None
         best_obs_value = -float("inf")
         for k in range(self.num_observe_actions):
-            v = self._expected_value_of_observe(k, belief, depth)
+            v, _ = self._expected_value_of_observe(k, belief, depth)
             # Strict improvement only; ties keep the lower action index so
             # Planning+IG(w=1) matches EFE's deterministic tie-break.
             if v > best_obs_value + 1e-12:
@@ -64,7 +110,10 @@ class PlanningInfoGainAgent(BaseAgent):
             return best_obs_action, best_obs_value
         return best_commit_action, best_commit_value
 
-    def _expected_value_of_observe(self, obs_action: int, belief: np.ndarray, depth: int) -> float:
+    def _expected_value_of_observe(
+        self, obs_action: int, belief: np.ndarray, depth: int
+    ) -> Tuple[float, float]:
+        """Return (total_score, immediate one-step information gain in bits)."""
         model = self.obs_models[obs_action]
         num_outcomes = model.shape[1]
         prior_entropy = scipy_entropy(belief, base=2)
@@ -87,4 +136,4 @@ class PlanningInfoGainAgent(BaseAgent):
         info_gain = prior_entropy - expected_posterior_entropy
         expected_value += self.info_gain_weight * info_gain
 
-        return expected_value
+        return expected_value, info_gain
