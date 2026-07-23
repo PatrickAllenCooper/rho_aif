@@ -7,7 +7,7 @@
 ### Full-battery verdicts (see `research_plan.md` for detail)
 1. **Curve collapse HOLD** — `U` vs `w/α` collapses across α∈{0.1,1,10} on Diagnosis and Bandit (100% of matched points within 2·SE). Crossing brackets in `w/α` units **coincide** across scales (set-valued shadow price at gap budgets); do not report point-valued `w*(B)` alone when `B` sits in a usage gap.
 2. **Prop 2 onset HOLD** — refined grid: onset bracket `(w_thresh, 1.03·w_thresh]` on both positive-threshold Testbeds (upper relative error 3%); `U=0` at and below `w_thresh`.
-3. **Dual rescale HOLD** — usage pinned at `B=8.1`; after ×10 reward rescale, windowed `w` ratio ≈9.3. Stronger set-valued agreement: pre-rescale `w=0.29` lies inside the offline crossing bracket `(0.141, 0.323]`, and post-rescale `w=2.71` lies inside the ×10-scaled bracket `(1.41, 3.23]` — the controller lands in the offline solution set at both scales. Re-adaptation takes ~150 episodes under lr decay (trade-off for steady-state stability).
+3. **Dual rescale HOLD** — usage pinned at `B=8.1`; after ×10 reward rescale, windowed `w` ratio ≈9.3. Stronger set-valued agreement: pre-rescale `w=0.29` lies inside the offline crossing bracket `(0.141, 0.323]`, and post-rescale `w=2.71` lies inside the ×10-scaled bracket `(1.41, 3.23]` — the controller lands in the offline solution set at both scales. Re-adaptation (rolling-20 within ±1 of B for 20 consecutive episodes): **157 → 45** with lr reset-on-shift (reset at episode 217; window=20, k=3, abs floor 0.5).
 
 Shadow-price staircases remain supporting (report brackets + SEs; local non-monotonicity persists on Tiger/Diagnosis/Tileworld).
 
@@ -116,21 +116,24 @@ Predictions for budget-derived weights:
 2. The shadow price itself rescales: `w*(B; α) ≈ α · w*(B; 1)`, matching a price measured in reward units per bit.
 3. When `B` falls inside a discrete usage gap, `w*` is **set-valued**: the scale-invariant object is the crossing bracket `(w_lo, w_hi]` in `w/α` units (`crossing_bracket` in `rho_aif/budget.py`), not a single argmin grid point.
 
-Dual descent with a fixed usage target inherits the same invariance: when rewards are rescaled mid-run, a fixed `w` breaks the budget while the controller re-converges. Under learning-rate decay, re-adaptation after a mid-run rescale can take on the order of 100+ episodes (observed ~150 on Diagnosis).
+Dual descent with a fixed usage target inherits the same invariance: when rewards are rescaled mid-run, a fixed `w` breaks the budget while the controller re-converges. Under learning-rate decay alone, re-adaptation after a mid-run rescale took 157 episodes on Diagnosis; with optional lr reset-on-shift it took 45.
 
 ## 6. Online dual control of w
 
 Projected update that drives count/cost usage to budget `B` when `U` increases with `w`:
 
 ```text
-w ← max(0, w + η (B − U_episode))
+w ← max(0, w + η_t (B − U_episode))
+η_t = η0 / (1 + decay · t)
 ```
 
 - If the episode overspent (`U > B`), decrease `w`.
 - If it underspent (`U < B`), increase `w`.
 - Project onto `w ≥ 0`.
 
-This mirrors SAC's dual temperature update (Haarnoja et al., 2018, arXiv:1812.05905), with sensing usage in place of policy entropy and `B` in place of the target entropy. Implementation target: `rho_aif/agents/dual_descent.py::DualWeightAgent`.
+**Shift-aware reset** (optional, `reset_window` set): when `η_t < η0/2` and the last `reset_window` usages have `|mean − B| > max(k·SE, abs_floor)`, set `t ← 0` (restore `η_t` to `η0`) and cool down for one window. Experiment defaults: window=20, k=3, abs_floor=0.5. Result on Diagnosis ×10 mid-run rescale: re-adaptation 157 (decay-only) vs 45 (reset); single reset at episode 217. Figure: `figures/price_dual_reset.{png,pdf}`.
+
+This mirrors SAC's dual temperature update (Haarnoja et al., 2018, arXiv:1812.05905), with sensing usage in place of policy entropy and `B` in place of the target entropy. Implementation: `rho_aif/agents/dual_descent.py::DualWeightAgent`.
 
 Sign note: an update written as `w ← w + η (U − B)` has the wrong sign for an upper-bound usage target when `w` encourages sensing. The code uses `(B − U)`.
 

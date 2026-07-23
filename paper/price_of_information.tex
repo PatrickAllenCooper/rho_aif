@@ -30,7 +30,7 @@ $w$ as a Shadow Price on a Sensing Budget}
 \maketitle
 
 \begin{abstract}
-In $\rho$-POMDPs and Expected Free Energy (EFE) planning, information seeking is weighted by a coefficient~$w$. The canonical choice $w{=}1$ is not reward-scale invariant: multiplying all rewards by $\alpha$ leaves the information term unchanged and silently shifts the observe/commit tradeoff. We recast $w$ as an \emph{operational shadow price} of a sensing budget~$B$. Offline, a usage curve $U(w)$ yields a (possibly set-valued) weight $w^*(B)$ that spends about~$B$ observations per episode. Online, a projected dual update adapts~$w$ to hit~$B$, mirroring Soft Actor-Critic's automatic temperature tuning. Three experiments support the account: (i)~usage curves collapse across reward scales when plotted against $w/\alpha$, and crossing brackets in $w/\alpha$ units coincide; (ii)~on deliberately positive-threshold testbeds, the onset of observing matches the closed-form Proposition~2 threshold of the companion IWAI paper to within~$3\%$; (iii)~after a mid-run $\times 10$ reward rescale, dual control re-pins usage and converges into the $\times 10$-scaled offline bracket ($w$ ratio $\approx 9.3$). The construction turns ``choose~$w$'' into ``choose how much sensing to buy.''
+In $\rho$-POMDPs and Expected Free Energy (EFE) planning, information seeking is weighted by a coefficient~$w$. The canonical choice $w{=}1$ is not reward-scale invariant: multiplying all rewards by $\alpha$ leaves the information term unchanged and silently shifts the observe/commit tradeoff. We recast $w$ as an \emph{operational shadow price} of a sensing budget~$B$. Offline, a usage curve $U(w)$ yields a (possibly set-valued) weight $w^*(B)$ that spends about~$B$ observations per episode. Online, a projected dual update adapts~$w$ to hit~$B$, mirroring Soft Actor-Critic's automatic temperature tuning. Three experiments support the account: (i)~usage curves collapse across reward scales when plotted against $w/\alpha$, and crossing brackets in $w/\alpha$ units coincide; (ii)~on deliberately positive-threshold testbeds, the onset of observing matches the closed-form Proposition~2 threshold of the companion IWAI paper to within~$3\%$; (iii)~after a mid-run $\times 10$ reward rescale, dual control re-pins usage and converges into the $\times 10$-scaled offline bracket ($w$ ratio $\approx 9.3$), with lr reset-on-shift cutting re-adaptation from $157$ to $45$ episodes. The construction turns ``choose~$w$'' into ``choose how much sensing to buy.''
 \keywords{Active inference \and Expected free energy \and $\rho$-POMDPs \and Sensing budgets \and Shadow prices \and Dual control}
 \end{abstract}
 
@@ -111,7 +111,7 @@ A \texttt{DualWeightAgent} wraps Planning+IG and after each episode applies the 
 \label{eq:dual}
 w \;\leftarrow\; \max\bigl(0,\; w + \eta_t\,(B - U_{\mathrm{episode}})\bigr),
 \end{equation}
-with schedule $\eta_t=\eta_0/(1+\delta t)$. We also track a Polyak average $w_{\mathrm{avg}}$ for monitoring. Sign: when $U$ increases with~$w$, overspend decreases~$w$ and underspend increases it---the same dual logic as SAC temperature tuning~\citep{haarnoja2018sac}, with sensing in place of entropy.
+with schedule $\eta_t=\eta_0/(1+\delta t)$. We also track a Polyak average $w_{\mathrm{avg}}$ for monitoring. Sign: when $U$ increases with~$w$, overspend decreases~$w$ and underspend increases it---the same dual logic as SAC temperature tuning~\citep{haarnoja2018sac}, with sensing in place of entropy. Optionally, when a rolling window of usage persistently misses~$B$ after $\eta_t$ has decayed below $\eta_0/2$, the decay clock is reset ($t\leftarrow 0$), restoring the step size for faster re-adaptation after distribution shift.
 
 %----------------------------------------------------------------------
 \section{Experiments}
@@ -149,13 +149,22 @@ Standard Tiger / Testbed parameters yield \emph{negative} $w_{\mathrm{thresh}}$,
 
 On Diagnosis with target $B{=}8$, learning rate $\eta_0{=}0.05$ and decay $\delta{=}0.02$, the dual controller pins rolling usage near the budget for $400$ episodes (Figure~\ref{fig:dual}). At episode~$200$ all rewards and costs are multiplied by~$10$ while $w$ is left unchanged. Usage drops, then recovers as $w$ climbs; windowed mean $w$ near the end of each half rises from $0.29$ to $2.71$ (ratio $9.3\approx 10$), matching~\eqref{eq:scale}.
 
-The online and offline solutions agree in a stronger, set-valued sense as well. The shaded band in Figure~\ref{fig:dual} is the offline Diagnosis $\alpha{=}1$ crossing bracket $(0.141,0.323]$ for $B{=}8$, not a point estimate. The pre-rescale controller settles \emph{inside} that bracket ($0.29$), and the post-rescale controller settles at $2.71$---inside the $\times 10$-scaled bracket $(1.41,3.23]$ predicted by~\eqref{eq:scale}. The controller thus lands in the offline solution set at both reward scales without access to the usage curve, and the $9.3$ ratio is a consequence rather than a coincidence. Learning-rate decay stabilizes the steady state but costs a $\sim\!150$-episode re-adaptation transient---a limitation we state rather than hide; resetting $\eta_t$ on detected shifts is an obvious remedy we leave to future work.
+The online and offline solutions agree in a stronger, set-valued sense as well. The shaded band in Figure~\ref{fig:dual} is the offline Diagnosis $\alpha{=}1$ crossing bracket $(0.141,0.323]$ for $B{=}8$, not a point estimate. The pre-rescale controller settles \emph{inside} that bracket ($0.29$), and the post-rescale controller settles at $2.71$---inside the $\times 10$-scaled bracket $(1.41,3.23]$ predicted by~\eqref{eq:scale}. The controller thus lands in the offline solution set at both reward scales without access to the usage curve, and the $9.3$ ratio is a consequence rather than a coincidence.
+
+Learning-rate decay stabilizes the steady state but slows re-adaptation after the rescale. Measuring re-adaptation as the episodes from rescale until rolling-20 usage stays within $\pm 1$ of~$B$ for $20$ consecutive episodes, decay-only recovers in $157$ episodes. Enabling the shift detector (window~$20$, $k{=}3$, absolute floor $0.5$) fires a single lr reset at episode~$217$ and cuts re-adaptation to $45$ episodes (Figure~\ref{fig:dualreset}). Detection thresholds are a design choice; the point is that the stated remedy works under a simple, transparent rule.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.85\textwidth]{price_dual_descent.pdf}
 \caption{Dual control of $w$ on Diagnosis. Top: $w_t$, Polyak $w_{\mathrm{avg}}$, and offline crossing bracket. Bottom: rolling usage vs.\ budget. Vertical line: $\times 10$ reward rescale.}
 \label{fig:dual}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{price_dual_reset.pdf}
+\caption{Decay-only (left) vs.\ reset-on-shift (right) after the mid-run $\times 10$ rescale. Red dashed line: lr reset. Both controllers land in the $\times 10$ offline bracket; reset recovers the budget in $45$ episodes vs.\ $157$ under decay alone.}
+\label{fig:dualreset}
 \end{figure}
 
 \subsection{Supporting: shadow-price staircases}
@@ -179,7 +188,7 @@ Implicit EFE budgets $B_{\mathrm{EFE}}=U(w{=}1)$ on the same suite are: Tiger $4
 
 The three headline results jointly support reading $w$ as a budget-derived, scale-correct price of information. Curve collapse and coinciding brackets make the scale story visual; Proposition~2 onset ties the dual formulation back to the closed-form theory of the companion paper; and the dual controller independently converges into the offline crossing bracket at both reward scales, showing the online and offline views of the shadow price agree as sets, not just as ratios.
 
-Limitations. (i)~At gap budgets the shadow price is set-valued---report brackets, not argmins. (ii)~$U(w)$ is only roughly monotone; grid solve with SEs is the default. (iii)~Budgets below $U(0)$ are unachievable with nonnegative~$w$ (instrumental sensing). (iv)~Dual learning-rate decay trades steady-state stability for slower re-adaptation after distribution shift. (v)~We have not yet reported cost-usage curves alongside count usage.
+Limitations. (i)~At gap budgets the shadow price is set-valued---report brackets, not argmins. (ii)~$U(w)$ is only roughly monotone; grid solve with SEs is the default. (iii)~Budgets below $U(0)$ are unachievable with nonnegative~$w$ (instrumental sensing). (iv)~Shift detection thresholds ($k$, window, absolute floor) are design choices; we report one working setting rather than a full sensitivity sweep. (v)~We have not yet reported cost-usage curves alongside count usage.
 
 Operationally, the designer's question becomes ``how much sensing can we afford?'' rather than ``what should $w$ be?'' EFE's $w{=}1$ is then the special case that buys $B_{\mathrm{EFE}}$ at the ambient scale---useful as a default, and now equipped with a budgeted escape hatch when the scale changes.
 
@@ -187,7 +196,7 @@ Operationally, the designer's question becomes ``how much sensing can we afford?
 \section{Conclusion}
 %----------------------------------------------------------------------
 
-We recast the Planning+IG / EFE information weight as an operational shadow price of a sensing budget, with offline curve solves, set-valued crossing brackets, and an online dual controller. Empirically, usage curves collapse across reward scales, Proposition~2 onset matches the closed form to within~$3\%$, and dual control tracks a budget through a $\times 10$ reward rescale, landing inside the scaled offline bracket with $w$ ratio~$\approx 9.3$. The price of information, in this sense, is whatever $w$ the budget requires.
+We recast the Planning+IG / EFE information weight as an operational shadow price of a sensing budget, with offline curve solves, set-valued crossing brackets, and an online dual controller. Empirically, usage curves collapse across reward scales, Proposition~2 onset matches the closed form to within~$3\%$, and dual control tracks a budget through a $\times 10$ reward rescale, landing inside the scaled offline bracket with $w$ ratio~$\approx 9.3$; lr reset-on-shift cuts re-adaptation from $157$ to $45$ episodes. The price of information, in this sense, is whatever $w$ the budget requires.
 
 \subsubsection*{Acknowledgements}
 This is a first draft extending~\citep{cooper2026efe}; venue and anonymization TBD.

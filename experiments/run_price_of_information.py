@@ -674,7 +674,10 @@ def run_dual_descent(
     rescale_at: Optional[int],
     rescale_factor: float,
     seed: int = 42,
-) -> pd.DataFrame:
+    reset_window: Optional[int] = None,
+    reset_k: float = 3.0,
+    variant: str = "decay",
+) -> Tuple[pd.DataFrame, DualWeightAgent]:
     np.random.seed(seed)
     env = make_scaled_diagnosis(1.0)
     agent = DualWeightAgent(
@@ -685,6 +688,8 @@ def run_dual_descent(
         lr_decay=lr_decay,
         planning_horizon=3,
         initial_weight=1.0,
+        reset_window=reset_window,
+        reset_k=reset_k,
     )
     # Reference from a quick curve
     ref_curve = estimate_usage_curve(
@@ -697,8 +702,8 @@ def run_dual_descent(
     ref = solve_shadow_price_from_curve(ref_curve, budget=budget, tol=1.0)
     rows = []
     print(
-        f"\n=== Dual descent Diagnosis  B={budget}  lr0={lr}  decay={lr_decay}  "
-        f"curve w*≈{ref.w_star:.4g} ===",
+        f"\n=== Dual descent Diagnosis ({variant})  B={budget}  lr0={lr}  "
+        f"decay={lr_decay}  reset_window={reset_window}  curve w*≈{ref.w_star:.4g} ===",
         flush=True,
     )
     for t in range(n_episodes):
@@ -709,8 +714,10 @@ def run_dual_descent(
             old_avg_hist = list(agent.avg_weight_history)
             old_u_hist = list(agent.usage_history)
             old_lr_hist = list(agent.lr_history)
+            old_reset_events = list(agent.reset_events)
             old_n = agent._n_updates
             old_sum = agent._w_sum
+            old_cooldown = agent._cooldown_remaining
             agent = DualWeightAgent(
                 get_obs_models(env),
                 make_env_config(env),
@@ -719,13 +726,17 @@ def run_dual_descent(
                 lr_decay=lr_decay,
                 planning_horizon=3,
                 initial_weight=cur_w,
+                reset_window=reset_window,
+                reset_k=reset_k,
             )
             agent.weight_history = old_w_hist
             agent.avg_weight_history = old_avg_hist
             agent.usage_history = old_u_hist
             agent.lr_history = old_lr_hist
+            agent.reset_events = old_reset_events
             agent._n_updates = old_n
             agent._w_sum = old_sum
+            agent._cooldown_remaining = old_cooldown
             print(f"  t={t}: rescale rewards ×{rescale_factor}, keep w={cur_w:.4g}", flush=True)
 
         result = run_otc_episode(agent, env)
@@ -743,16 +754,47 @@ def run_dual_descent(
                 "rescaled": bool(rescale_at is not None and t >= rescale_at),
                 "reward": result["total_reward"],
                 "success": result["success"],
+                "variant": variant,
+                "n_resets": len(agent.reset_events),
             }
         )
         if (t + 1) % max(1, n_episodes // 10) == 0:
             recent = np.mean([r["usage"] for r in rows[-20:]])
             print(
                 f"  t={t+1}/{n_episodes}  w={new_w:.4g}  w_avg={agent.w_avg:.4g}  "
-                f"recent_U={recent:.2f}",
+                f"recent_U={recent:.2f}  resets={len(agent.reset_events)}",
                 flush=True,
             )
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows), agent
+
+
+def readaptation_episodes(
+    df: pd.DataFrame,
+    rescale_at: int,
+    tol: float = 1.0,
+    hold: int = 20,
+    roll: int = 20,
+) -> Optional[int]:
+    """
+    Episodes from rescale until rolling usage returns within tol of B and
+    stays there for ``hold`` consecutive episodes. None if never recovered.
+    """
+    if df.empty or "usage" not in df.columns:
+        return None
+    budget = float(df["budget"].iloc[0])
+    usages = df["usage"].to_numpy(dtype=float)
+    smooth = (
+        pd.Series(usages)
+        .rolling(roll, min_periods=1)
+        .mean()
+        .to_numpy(dtype=float)
+    )
+    within = np.abs(smooth - budget) <= tol
+    # Search only after rescale
+    for t in range(rescale_at, len(within) - hold + 1):
+        if bool(np.all(within[t : t + hold])):
+            return int(t - rescale_at)
+    return None
 
 
 def plot_dual_descent(
@@ -808,6 +850,123 @@ def _diagnosis_crossing_from_scale_csv(budget: float) -> Optional[Tuple[float, f
     return (br.w_lo, br.w_hi)
 
 
+def run_dual_reset_comparison(
+    n_episodes: int,
+    budget: float,
+    lr: float,
+    lr_decay: float,
+    rescale_at: int,
+    rescale_factor: float = 10.0,
+    seed: int = 42,
+    reset_window: int = 20,
+    reset_k: float = 3.0,
+) -> Tuple[pd.DataFrame, dict]:
+    """
+    Run decay-only vs reset-on-shift dual controllers on the same protocol.
+    """
+    df_decay, agent_decay = run_dual_descent(
+        n_episodes=n_episodes,
+        budget=budget,
+        lr=lr,
+        lr_decay=lr_decay,
+        rescale_at=rescale_at,
+        rescale_factor=rescale_factor,
+        seed=seed,
+        reset_window=None,
+        variant="decay",
+    )
+    df_reset, agent_reset = run_dual_descent(
+        n_episodes=n_episodes,
+        budget=budget,
+        lr=lr,
+        lr_decay=lr_decay,
+        rescale_at=rescale_at,
+        rescale_factor=rescale_factor,
+        seed=seed,
+        reset_window=reset_window,
+        reset_k=reset_k,
+        variant="reset",
+    )
+    combined = pd.concat([df_decay, df_reset], ignore_index=True)
+    metrics = {
+        "dual_readapt_decay": readaptation_episodes(df_decay, rescale_at),
+        "dual_readapt_reset": readaptation_episodes(df_reset, rescale_at),
+        "dual_reset_events": list(agent_reset.reset_events),
+        "dual_decay_reset_events": list(agent_decay.reset_events),
+    }
+    print(
+        f"\n=== Re-adaptation: decay={metrics['dual_readapt_decay']}  "
+        f"reset={metrics['dual_readapt_reset']}  "
+        f"reset_events={metrics['dual_reset_events']} ===",
+        flush=True,
+    )
+    return combined, metrics
+
+
+def plot_dual_reset(
+    df: pd.DataFrame,
+    path: Path,
+    bracket: Optional[Tuple[float, float]] = None,
+    reset_events: Optional[Sequence[int]] = None,
+) -> None:
+    """Two-column comparison: decay-only vs reset-on-shift."""
+    fig, axes = plt.subplots(2, 2, figsize=(10.5, 6.0), sharex="col")
+    variants = [("decay", "Decay only"), ("reset", "Reset on shift")]
+    for col, (variant, title) in enumerate(variants):
+        sub = df[df["variant"] == variant].sort_values("episode")
+        if sub.empty:
+            continue
+        ax_w, ax_u = axes[0, col], axes[1, col]
+        ax_w.plot(sub["episode"], sub["weight"], label="w_t", alpha=0.75, color="C0")
+        ax_w.plot(sub["episode"], sub["w_avg"], label="w_avg", lw=2, color="C1")
+        if bracket is not None and np.isfinite(bracket[0]) and np.isfinite(bracket[1]):
+            ax_w.axhspan(
+                bracket[0],
+                bracket[1],
+                color="C2",
+                alpha=0.15,
+                label=f"α=1 bracket",
+            )
+            ax_w.axhspan(
+                10.0 * bracket[0],
+                10.0 * bracket[1],
+                color="C3",
+                alpha=0.12,
+                label="×10 bracket",
+            )
+        if sub["rescaled"].any():
+            t0 = int(sub.loc[sub["rescaled"], "episode"].iloc[0])
+            ax_w.axvline(t0, color="gray", ls=":", label="rescale")
+            ax_u.axvline(t0, color="gray", ls=":")
+        if variant == "reset" and reset_events:
+            for i, ep in enumerate(reset_events):
+                ax_w.axvline(
+                    ep,
+                    color="C3",
+                    ls="--",
+                    alpha=0.8,
+                    label="lr reset" if i == 0 else None,
+                )
+                ax_u.axvline(ep, color="C3", ls="--", alpha=0.8)
+        ax_w.set_title(title)
+        ax_w.set_ylabel("Weight w")
+        ax_w.legend(fontsize=7)
+        ax_w.grid(True, alpha=0.3)
+
+        window = 20
+        smooth = sub["usage"].rolling(window, min_periods=1).mean()
+        ax_u.plot(sub["episode"], smooth, label=f"usage (roll-{window})", color="C0")
+        ax_u.axhline(sub["budget"].iloc[0], color="C1", ls="--", label="budget B")
+        ax_u.set_xlabel("Episode")
+        ax_u.set_ylabel("Usage")
+        ax_u.legend(fontsize=7)
+        ax_u.grid(True, alpha=0.3)
+    fig.suptitle("Dual control: lr decay vs reset-on-shift after reward rescale")
+    fig.tight_layout()
+    _savefig(fig, path)
+    plt.close(fig)
+
+
 # ---------------------------------------------------------------------------
 # 5. Implicit EFE budget B(w=1)
 # ---------------------------------------------------------------------------
@@ -861,7 +1020,7 @@ def parse_args() -> argparse.Namespace:
         "--only",
         nargs="*",
         default=None,
-        help="Subset: curves scale prop2 dual efe",
+        help="Subset: curves scale prop2 dual dual-reset efe",
     )
     p.add_argument(
         "--replot",
@@ -1039,7 +1198,7 @@ def main() -> None:
             df = pd.read_csv(dual_csv)
             print("\n=== Dual descent (replot from saved CSV) ===", flush=True)
         else:
-            df = run_dual_descent(
+            df, _agent = run_dual_descent(
                 n_episodes=dual_episodes,
                 budget=dual_budget,
                 lr=dual_lr0,
@@ -1067,13 +1226,63 @@ def main() -> None:
             summary["dual_crossing_bracket"] = {"w_lo": bracket[0], "w_hi": bracket[1]}
         summary["dual_rows"] = len(df)
 
+    if "dual-reset" in only:
+        reset_csv = RESULTS / "results_price_dual_reset.csv"
+        rescale_at = dual_episodes // 2
+        if args.replot and reset_csv.exists():
+            combined = pd.read_csv(reset_csv)
+            print("\n=== Dual reset comparison (replot from saved CSV) ===", flush=True)
+            metrics = {
+                "dual_readapt_decay": readaptation_episodes(
+                    combined[combined["variant"] == "decay"], rescale_at
+                ),
+                "dual_readapt_reset": readaptation_episodes(
+                    combined[combined["variant"] == "reset"], rescale_at
+                ),
+                "dual_reset_events": [],
+            }
+            # Recover reset markers from lr jumps if present
+            reset_sub = combined[combined["variant"] == "reset"].sort_values("episode")
+            if not reset_sub.empty and "lr" in reset_sub.columns:
+                lrs = reset_sub["lr"].to_numpy()
+                eps = reset_sub["episode"].to_numpy()
+                events = []
+                for i in range(1, len(lrs)):
+                    if lrs[i] > lrs[i - 1] + 1e-12 and abs(lrs[i] - dual_lr0) < 1e-9:
+                        events.append(int(eps[i]))
+                metrics["dual_reset_events"] = events
+        else:
+            combined, metrics = run_dual_reset_comparison(
+                n_episodes=dual_episodes,
+                budget=dual_budget,
+                lr=dual_lr0,
+                lr_decay=dual_decay,
+                rescale_at=rescale_at,
+                rescale_factor=10.0,
+                seed=42,
+                reset_window=20,
+                reset_k=3.0,
+            )
+            combined.to_csv(reset_csv, index=False)
+        bracket = _diagnosis_crossing_from_scale_csv(dual_budget)
+        plot_dual_reset(
+            combined,
+            FIGURES / "price_dual_reset.png",
+            bracket=bracket,
+            reset_events=metrics.get("dual_reset_events"),
+        )
+        summary["dual_readapt_decay"] = metrics["dual_readapt_decay"]
+        summary["dual_readapt_reset"] = metrics["dual_readapt_reset"]
+        summary["dual_reset_events"] = metrics["dual_reset_events"]
+        summary["dual_reset_rows"] = len(combined)
+
     if "efe" in only and not args.replot:
         df = run_implicit_efe_budget(env_names, seeds, ep)
         df.to_csv(RESULTS / "results_price_efe_implicit_budget.csv", index=False)
         summary["efe_rows"] = len(df)
 
     # Refresh headline verdicts when the relevant protocols ran.
-    if "scale" in only or "prop2" in only or "dual" in only:
+    if "scale" in only or "prop2" in only or "dual" in only or "dual-reset" in only:
         verdict = {}
         if "collapse_frac_within_noise" in summary:
             coinc = summary.get("brackets_coincide", False)
@@ -1090,10 +1299,20 @@ def main() -> None:
                 f"{rels}; U=0 below closed-form threshold"
             )
         if "dual_w_ratio_post_pre" in summary:
+            readapt_note = ""
+            if summary.get("dual_readapt_decay") is not None and summary.get("dual_readapt_reset") is not None:
+                readapt_note = (
+                    f"; re-adaptation {summary['dual_readapt_decay']}→"
+                    f"{summary['dual_readapt_reset']} episodes with lr reset-on-shift"
+                )
+            elif summary.get("dual_readapt_decay") is not None:
+                readapt_note = f"; re-adaptation ~{summary['dual_readapt_decay']} episodes under lr decay"
+            else:
+                readapt_note = "; ~150-episode re-adaptation transient under lr decay"
             verdict["dual_rescale"] = (
                 f"HOLD — usage pinned near B; windowed w ratio post/pre "
-                f"≈{summary['dual_w_ratio_post_pre']:.2f} after ×10 reward rescale; "
-                f"~150-episode re-adaptation transient under lr decay"
+                f"≈{summary['dual_w_ratio_post_pre']:.2f} after ×10 reward rescale"
+                f"{readapt_note}"
             )
         if verdict:
             summary["verdict"] = {**summary.get("verdict", {}), **verdict}

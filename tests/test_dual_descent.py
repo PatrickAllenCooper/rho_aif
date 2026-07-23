@@ -16,6 +16,9 @@ def _make_tiger_agent(
     lr: float = 0.2,
     w0: float = 1.0,
     lr_decay: float = 0.0,
+    reset_window=None,
+    reset_k: float = 3.0,
+    reset_abs_floor: float = 0.5,
 ):
     env = TigerEnv()
     agent = DualWeightAgent(
@@ -26,6 +29,9 @@ def _make_tiger_agent(
         planning_horizon=6,
         initial_weight=w0,
         lr_decay=lr_decay,
+        reset_window=reset_window,
+        reset_k=reset_k,
+        reset_abs_floor=reset_abs_floor,
     )
     return agent, env
 
@@ -81,3 +87,51 @@ class TestDualWeightAgent:
         assert agent.weight_history == pytest.approx([0.0, 2.0, 4.0])
         assert agent.w_avg == pytest.approx(2.0)
         assert agent.avg_weight_history[-1] == pytest.approx(2.0)
+
+    def test_reset_disabled_by_default(self):
+        agent, _ = _make_tiger_agent(budget=2.0, lr=0.1, w0=1.0, lr_decay=1.0)
+        for _ in range(10):
+            agent.end_episode(usage=10.0)
+        assert agent.reset_events == []
+        assert agent.reset_window is None
+
+    def test_no_reset_when_usage_near_budget(self):
+        agent, _ = _make_tiger_agent(
+            budget=5.0,
+            lr=0.1,
+            w0=1.0,
+            lr_decay=1.0,
+            reset_window=5,
+            reset_k=3.0,
+            reset_abs_floor=0.5,
+        )
+        # Decay lr below half (need t>=2 with decay=1), then stay near budget.
+        for _ in range(20):
+            agent.end_episode(usage=5.0)
+        assert agent.reset_events == []
+
+    def test_reset_fires_once_on_sustained_deviation(self):
+        agent, _ = _make_tiger_agent(
+            budget=5.0,
+            lr=0.1,
+            w0=1.0,
+            lr_decay=1.0,
+            reset_window=5,
+            reset_k=3.0,
+            reset_abs_floor=0.5,
+        )
+        # Burn in near budget so lr decays (t grows) without triggering.
+        for _ in range(8):
+            agent.end_episode(usage=5.0)
+        assert agent.current_lr() < 0.5 * agent.lr
+        assert agent.reset_events == []
+        # Sustained deviation: mean far from B, zero variance => floor threshold.
+        for _ in range(5):
+            agent.end_episode(usage=0.0)
+        assert len(agent.reset_events) == 1
+        # After reset, the step that fired used lr0 again.
+        assert agent.lr_history[agent.reset_events[0]] == pytest.approx(0.1)
+        # Cooldown: more deviation immediately after should not re-fire.
+        for _ in range(4):
+            agent.end_episode(usage=0.0)
+        assert len(agent.reset_events) == 1

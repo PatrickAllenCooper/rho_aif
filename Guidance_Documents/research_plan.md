@@ -807,7 +807,7 @@ git push origin main --tags
 |---|---|---|
 | Curve collapse | **HOLD** | Diagnosis/Bandit: 100% matched `w/α` points within 2·SE; max spread ≤0.48. Crossing brackets in `w/α` **coincide** across α∈{0.1,1,10} (Diagnosis `(0.141,0.323]`, Bandit `(3.84,8.76]`). |
 | Prop 2 onset | **HOLD** | Refined grid: both Testbeds onset in `(w_thresh, 1.03·w_thresh]` (upper rel 3%). `U=0` at and below threshold. |
-| Dual rescale | **HOLD** | Usage pinned at 8.1 both halves. Windowed `w` 0.29 → 2.71 after ×10 rescale (ratio **9.3 ≈ 10**). ~150-episode re-adaptation under lr decay. |
+| Dual rescale | **HOLD** | Usage pinned at 8.1 both halves. Windowed `w` 0.29 → 2.71 after ×10 rescale (ratio **9.3 ≈ 10**). Re-adaptation **157 → 45** with lr reset-on-shift (reset at ep 217). |
 | Shadow staircases | **PARTIAL** | Bandit/Inspection roughly monotone; Tiger/Diagnosis/Tileworld local non-monotonicity — report brackets+SEs. |
 
 Implicit EFE budgets `B_EFE=U(w=1)`: Tiger 4.21±0.07, Diagnosis 9.68±0.15, Bandit 5.03±0.17, Tileworld-6x6 14.83±0.22, Inspection-N8 18.24±0.19.
@@ -820,13 +820,14 @@ Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_
 - Gap budgets make `w*` set-valued; report `crossing_bracket`, not a single argmin.
 - Environments have a usage ceiling `U_max` (belief saturation / episode caps).
 - H=1 Prop 2 closed form predicts zero observing for `w ≤ w_thresh`; multi-step onset is just above (3% after grid refinement; previously 32% was a coarse-grid artifact).
-- Dual lr decay stabilizes the steady state but slows re-adaptation after reward rescale.
+- Dual lr decay stabilizes the steady state but slows re-adaptation after reward rescale; lr reset-on-shift (window=20, k=3) recovers in 45 vs 157 episodes.
 
 ### Still open
 - [ ] Optional: cost-usage (`usage_kind='cost'`) curves alongside count usage
 - [x] Full battery confirms the scale story
 - [x] Presentation fixes (interval brackets, Prop 2 refinement, dual band)
 - [x] Start paper draft (`paper/price_of_information.tex`)
+- [x] LR reset-on-shift experiment (157→45 re-adaptation; figure `price_dual_reset`)
 - [ ] Revise / expand paper draft toward a submission venue
 
 ---
