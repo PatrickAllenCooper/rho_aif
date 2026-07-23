@@ -86,6 +86,8 @@ This is the same dual-control idea as SAC's automatic temperature (Haarnoja et a
 
 **Solver:** `solve_shadow_price` defaults to a log-spaced **grid search** minimizing `|U(w) - B|` (`grid_solve_usage_fn`). Bisection (`bisect_usage_fn`) remains available for synthetic monotone oracles and for Prop 2 boundary checks where a clean bracket is known.
 
+**Interleaved settings (Stage B, July 23, 2026):** on RockSample RS[5,3], RS[7,4], and Inspection-N16 the estimated `U(w)` was nondecreasing at every sampled grid point — cleaner than the OTC staircases. Instrumental floors are large (`U(0)` = 3.81, 2.00, 22.42 checks respectively), so the unachievable-low-budget regime is prominent. Usage accounting: `family="rocksample"` in `estimate_usage` counts check actions; per-check cost is the uniform action cost.
+
 Also: in environments with large instrumental VoI (Tiger, Diagnosis), `U(0)` is already large. Budgets `B < U(0)` are **unachievable** with nonnegative `w` (would require penalizing information gain). The solver reports `achievable=False` in that case.
 
 Implementation: `rho_aif/budget.py`.

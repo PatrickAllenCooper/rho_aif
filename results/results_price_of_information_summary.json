@@ -65,5 +65,12 @@
   "dual_reset_events": [
     217
   ],
-  "dual_reset_rows": 800
+  "dual_reset_rows": 800,
+  "interleaved_rows": 12,
+  "interleaved_curve_rows": 28,
+  "interleaved_envs": [
+    "RS[5,3]",
+    "RS[7,4]",
+    "Inspection-N16"
+  ]
 }

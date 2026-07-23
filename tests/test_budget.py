@@ -260,6 +260,38 @@ class TestCrossingBracket:
             crossing_bracket([], budget=1.0)
 
 
+class TestRockSampleUsageFamily:
+    """Stage B: usage accounting for the interleaved RockSample family."""
+
+    @staticmethod
+    def _env():
+        from rho_aif.environments.rocksample import RockSampleEnv
+
+        return RockSampleEnv(
+            grid_size=3,
+            num_rocks=1,
+            rock_positions=[(1, 1)],
+            move_cost=-0.5,
+            max_steps=20,
+        )
+
+    def test_count_usage_responds_to_weight(self):
+        env = self._env()
+        kwargs = dict(seeds=[0, 1], num_episodes=5, family="rocksample", tree_depth=2, max_steps=20)
+        u_low = estimate_usage(env, w=0.0, **kwargs)
+        u_high = estimate_usage(env, w=10.0, **kwargs)
+        assert u_low >= 0.0
+        assert u_high > 0.0
+        assert u_high >= u_low
+
+    def test_cost_usage_scales_with_action_cost(self):
+        env = self._env()
+        kwargs = dict(seeds=[0], num_episodes=3, family="rocksample", tree_depth=2, max_steps=20)
+        u_count = estimate_usage(env, w=10.0, **kwargs)
+        u_cost = estimate_usage(env, w=10.0, usage_kind="cost", **kwargs)
+        assert u_cost == pytest.approx(0.5 * u_count)
+
+
 class TestProp2OnsetExact:
     """
     Stage A numeric check (Corollary PI-4 in the theory notes): at H=1 the

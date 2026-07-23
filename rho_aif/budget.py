@@ -134,6 +134,22 @@ def _obs_costs_from_env(env) -> List[float]:
     return [1.0]
 
 
+def _run_rocksample_episode_checks(agent, env, seed: Optional[int], max_steps: int) -> int:
+    """Run one RockSample episode and return the number of check actions taken."""
+    obs, info = env.reset(seed=seed)
+    agent.reset()
+    n_checks = 0
+    for _ in range(max_steps):
+        action = agent.select_action()
+        obs, reward, terminated, truncated, info = env.step(action)
+        agent.update(action, obs)
+        if env.NUM_MOVE_ACTIONS <= action < env.NUM_MOVE_ACTIONS + env.num_rocks:
+            n_checks += 1
+        if terminated or truncated:
+            break
+    return n_checks
+
+
 def estimate_usage(
     env,
     w: float,
@@ -146,9 +162,11 @@ def estimate_usage(
     max_steps: int = 200,
 ) -> float:
     """
-    Estimate mean sensing usage U(w) under Planning+IG (or inspection tree search).
+    Estimate mean sensing usage U(w) under Planning+IG (or a domain tree-search
+    agent for the ``inspection`` and ``rocksample`` families).
 
-    Multi-seed average of per-episode usage.
+    Multi-seed average of per-episode usage. For ``rocksample``, usage counts
+    check actions and the per-check cost is the uniform action cost.
     """
     # Lazy imports avoid circular dependency through rho_aif.agents.__init__.
     from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
@@ -171,6 +189,23 @@ def estimate_usage(
             for ep in range(num_episodes):
                 result = run_inspection_episode(agent, env, seed=int(seed) + ep)
                 u = episode_sensing_usage(result, obs_costs=costs, usage_kind=usage_kind)
+                usages.append(usage_value(u, usage_kind))
+        elif family == "rocksample":
+            from rho_aif.agents.rocksample_agents import RockSampleTreeSearchAgent
+
+            depth = tree_depth if tree_depth is not None else 3
+            agent = RockSampleTreeSearchAgent(env, info_weight=w, max_depth=depth)
+            # In RockSample every action (including check) has the uniform cost.
+            rs_costs = [abs(float(getattr(env, "move_cost", 1.0)))]
+            for ep in range(num_episodes):
+                n_checks = _run_rocksample_episode_checks(
+                    agent, env, seed=int(seed) + ep, max_steps=max_steps
+                )
+                u = episode_sensing_usage(
+                    {"num_observations": n_checks},
+                    obs_costs=rs_costs,
+                    usage_kind=usage_kind,
+                )
                 usages.append(usage_value(u, usage_kind))
         else:
             obs_models = get_obs_models(env)

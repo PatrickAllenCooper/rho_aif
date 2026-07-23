@@ -118,12 +118,13 @@ Each stage lists its code work, experiment protocol, artifacts, and an acceptanc
   - PI-4: at H=1 the usage staircase is exactly `1{w > w_thresh}`, so Prop 2's closed form is the first knot of U. Verified numerically by `tests/test_budget.py::TestProp2OnsetExact` (usage 0 at 0.9 w_thresh, >= 1 at 1.2 w_thresh; passes).
   - No new citations introduced; all references already in the verified table.
 
-### Stage B -- Interleaved usage curves (M2)
+### Stage B -- Interleaved usage curves (M2) -- DONE, verdict HOLD
 
 - **Code work**: `rho_aif/budget.py::estimate_usage` currently supports the `observe_then_commit` and inspection families only. Add a RockSample family that runs the depth-limited tree-search agents used in the arXiv paper's Section 5.4, counting sensing (check) actions as usage. Add unit tests mirroring `tests/test_budget.py` coverage for the new family.
 - **Protocol**: RS[5,3] at minimum (RS[7,4] if runtime allows) and Inspection-N16, log-grid of about 10 w points, 5 seeds x 50 episodes (RockSample episodes are expensive; scale down before scaling up).
 - **Artifacts**: new rows in `results/results_price_curves.csv` (or a sibling CSV), staircase figures `figures/price_staircase_rocksample*.{png,pdf}` and `figures/price_staircase_inspection_n16.{png,pdf}`.
 - **Acceptance**: crossing brackets with SEs exist for at least two canonical budgets per environment; the monotonicity verdict (rough or clean) is recorded.
+- **Outcome (July 23, 2026)**: `family="rocksample"` added to `estimate_usage` (checks counted as usage, per-check cost = uniform action cost); two unit tests added (`TestRockSampleUsageFamily`). New protocol `--only interleaved` in `experiments/run_price_of_information.py`; full run covered RS[5,3] (10-point grid, 5 seeds x 50 eps), RS[7,4] (8-point grid, 30 eps), Inspection-N16 (10-point grid, 50 eps) -- about 10 minutes total, so RS[7,4] made the cut. Four budgets bracketed per environment with SEs. Monotonicity verdict: **clean** -- U(w) is nondecreasing at every sampled grid point on all three interleaved settings (RS[5,3] 3.81 to 9.10; RS[7,4] 2.00 to 14.73; Inspection-N16 22.42 to 46.04), cleaner than the observe-then-commit staircases (Tiger/Diagnosis/Tileworld still show local dips). Instrumental floors are large (U(0) = 3.81 / 2.00 / 22.42), confirming the unachievable-low-budget regime matters in interleaved settings too. Artifacts: `results/results_price_interleaved_curves.csv`, `results/results_price_interleaved_prices.csv`, single combined figure `figures/price_staircase_interleaved.{png,pdf}` (one figure supersedes the two per-env figures named above). Full suite: 307 passed.
 
 ### Stage C -- Multi-seed dual control (M2)
 

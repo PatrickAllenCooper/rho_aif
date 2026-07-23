@@ -217,6 +217,136 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
+# 1b. Interleaved usage curves (Stage B of the full-paper plan)
+# ---------------------------------------------------------------------------
+
+def _interleaved_configs() -> Dict[str, dict]:
+    """
+    Interleaved observe-act settings: RockSample (research code, configs from
+    run_rocksample.py) and Inspection-N16 (benchmark config).
+    """
+    from run_rocksample import ROCKSAMPLE_CONFIGS
+    from rho_aif.environments.rocksample import RockSampleEnv
+
+    def make_rs(config_name: str):
+        cfg = ROCKSAMPLE_CONFIGS[config_name]
+        max_steps = cfg["grid_size"] ** 2 + cfg["num_rocks"] * 10
+        env = RockSampleEnv(
+            grid_size=cfg["grid_size"],
+            num_rocks=cfg["num_rocks"],
+            rock_positions=cfg["rock_positions"],
+            move_cost=-0.5,
+            max_steps=max_steps,
+        )
+        return env, cfg["tree_depth"], max_steps
+
+    out: Dict[str, dict] = {}
+    for rs_name in ("RS[5,3]", "RS[7,4]"):
+        env, depth, max_steps = make_rs(rs_name)
+        out[rs_name] = {
+            "env": env,
+            "family": "rocksample",
+            "tree_depth": depth,
+            "max_steps": max_steps,
+            "planning_horizon": depth,
+        }
+    insp = get_benchmark("Inspection-N16")
+    out["Inspection-N16"] = {
+        "env": insp.env_factory(),
+        "family": insp.family,
+        "tree_depth": insp.tree_depth,
+        "max_steps": 200,
+        "planning_horizon": insp.planning_horizon,
+    }
+    return out
+
+
+def run_interleaved_curves(
+    env_names: Sequence[str],
+    seeds: Sequence[int],
+    num_episodes: int,
+    n_grid: int = 10,
+    n_budgets: int = 4,
+    episodes_by_env: Optional[Dict[str, int]] = None,
+    grid_by_env: Optional[Dict[str, int]] = None,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """Usage curves + crossing brackets on interleaved observe-act settings."""
+    configs = _interleaved_configs()
+    curve_rows: List[dict] = []
+    price_rows: List[dict] = []
+    episodes_by_env = episodes_by_env or {}
+    grid_by_env = grid_by_env or {}
+
+    for name in env_names:
+        cfg = configs[name]
+        ep = int(episodes_by_env.get(name, num_episodes))
+        ng = int(grid_by_env.get(name, n_grid))
+        print(
+            f"\n=== Interleaved: {name} ({cfg['family']})  ep={ep} grid={ng} ===",
+            flush=True,
+        )
+        w_grid = make_log_w_grid(0.0, 100.0, ng)
+        curve = []
+        for i, w in enumerate(w_grid):
+            print(f"  [{i+1}/{len(w_grid)}] estimating U(w={float(w):.4g}) ...", flush=True)
+            pts = estimate_usage_curve(
+                cfg["env"],
+                w_grid=[float(w)],
+                seeds=seeds,
+                num_episodes=ep,
+                planning_horizon=cfg["planning_horizon"],
+                usage_kind="count",
+                family=cfg["family"],
+                tree_depth=cfg["tree_depth"],
+                max_steps=cfg["max_steps"],
+            )
+            curve.extend(pts)
+            p = pts[0]
+            print(f"    U={p.mean_usage:.3f}±{p.se_usage:.3f}", flush=True)
+        curve_rows.extend(curve_to_rows(name, curve))
+        u_min = min(p.mean_usage for p in curve)
+        u_max = max(p.mean_usage for p in curve)
+        print(f"  U range [{u_min:.3f}, {u_max:.3f}]", flush=True)
+
+        budgets = identifiable_budgets(curve, n_budgets=n_budgets, margin=0.08)
+        for B in budgets:
+            res = solve_shadow_price_from_curve(
+                curve, budget=float(B), tol=max(0.3, 0.1 * float(B))
+            )
+            price_rows.append(
+                {
+                    "env": name,
+                    "budget": float(B),
+                    "w_star": res.w_star,
+                    "w_lo": res.w_lo,
+                    "w_hi": res.w_hi,
+                    "usage_at_star": res.usage_at_star,
+                    "usage_lo": res.usage_lo,
+                    "usage_hi": res.usage_hi,
+                    "usage_se_at_star": res.usage_se_at_star,
+                    "bracketed": res.bracketed,
+                    "achievable": res.achievable,
+                    "u_min": res.u_min,
+                    "u_max": res.u_max,
+                    "note": res.note,
+                }
+            )
+            print(
+                f"  B={B:.3f}: w*={res.w_star:.4g}  bracket=[{res.w_lo:.3g},{res.w_hi:.3g}]  "
+                f"U={res.usage_at_star:.3f}±{res.usage_se_at_star:.3f}",
+                flush=True,
+            )
+        # Incremental save so a slow later env cannot erase prior results
+        pd.DataFrame(curve_rows).to_csv(
+            RESULTS / "results_price_interleaved_curves.csv", index=False
+        )
+        pd.DataFrame(price_rows).to_csv(
+            RESULTS / "results_price_interleaved_prices.csv", index=False
+        )
+    return pd.DataFrame(curve_rows), pd.DataFrame(price_rows)
+
+
+# ---------------------------------------------------------------------------
 # 2. Curve-collapse scale test
 # ---------------------------------------------------------------------------
 
@@ -1020,7 +1150,7 @@ def parse_args() -> argparse.Namespace:
         "--only",
         nargs="*",
         default=None,
-        help="Subset: curves scale prop2 dual dual-reset efe",
+        help="Subset: curves interleaved scale prop2 dual dual-reset efe",
     )
     p.add_argument(
         "--replot",
@@ -1033,7 +1163,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     _ensure_dirs()
-    only = set(args.only) if args.only else {"curves", "scale", "prop2", "dual", "efe"}
+    only = set(args.only) if args.only else {"curves", "interleaved", "scale", "prop2", "dual", "efe"}
 
     if args.mode == "full":
         seeds = [42, 123, 456, 789, 1024]
@@ -1056,6 +1186,11 @@ def main() -> None:
         dual_budget = 8.0
         dual_lr0 = 0.05
         dual_decay = 0.02
+        interleaved_envs = ["RS[5,3]", "RS[7,4]", "Inspection-N16"]
+        interleaved_ep = 50
+        interleaved_grid = 10
+        interleaved_episodes_by_env = {"RS[7,4]": 30}
+        interleaved_grid_by_env = {"RS[7,4]": 8}
     else:
         seeds = [42, 123, 456]
         ep = 40
@@ -1069,6 +1204,11 @@ def main() -> None:
         dual_budget = 8.0
         dual_lr0 = 0.05
         dual_decay = 0.02
+        interleaved_envs = ["RS[5,3]", "Inspection-N16"]
+        interleaved_ep = 10
+        interleaved_grid = 6
+        interleaved_episodes_by_env = {}
+        interleaved_grid_by_env = {}
 
     summary: dict = {
         "mode": args.mode,
@@ -1110,6 +1250,32 @@ def main() -> None:
                 plot_shadow_price_curves(price_df, FIGURES / "price_shadow_curves.png")
             summary["curves_rows"] = len(price_df)
             summary["usage_curve_rows"] = len(curve_df)
+
+    if "interleaved" in only:
+        saved = RESULTS / "results_price_interleaved_prices.csv"
+        if args.replot and saved.exists():
+            iprice_df = pd.read_csv(saved)
+            plot_shadow_price_curves(
+                iprice_df, FIGURES / "price_staircase_interleaved.png"
+            )
+            summary["interleaved_rows"] = len(iprice_df)
+        else:
+            icurve_df, iprice_df = run_interleaved_curves(
+                interleaved_envs,
+                seeds,
+                interleaved_ep,
+                n_grid=interleaved_grid,
+                n_budgets=4,
+                episodes_by_env=interleaved_episodes_by_env,
+                grid_by_env=interleaved_grid_by_env,
+            )
+            if not iprice_df.empty:
+                plot_shadow_price_curves(
+                    iprice_df, FIGURES / "price_staircase_interleaved.png"
+                )
+            summary["interleaved_rows"] = len(iprice_df)
+            summary["interleaved_curve_rows"] = len(icurve_df)
+            summary["interleaved_envs"] = list(interleaved_envs)
 
     if "scale" in only:
         existing = None
