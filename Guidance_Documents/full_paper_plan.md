@@ -142,12 +142,17 @@ Each stage lists its code work, experiment protocol, artifacts, and an acceptanc
 - **Acceptance**: the cost-denominated solve produces a different (and interpretable) bracket than the count-denominated one on the heterogeneous-cost variant, demonstrating the units story end to end.
 - **Outcome (July 23, 2026)**: more code work was needed than planned -- the old cost accounting was count times mean cost, which cannot express heterogeneity. Three changes: `DiagnosisEnv` gained per-test `test_costs` (variant: costs [0.5, 2.5], same accuracy); `run_otc_episode` now records the actual `sensing_cost` paid; `episode_sensing_usage` prefers the explicit cost over the count-times-mean fallback. The planning agent needed no change (it already prices plans with per-action costs). Four unit tests added. Full run (`--only cost`, 5 seeds x 100 episodes, 12-point grid): mean cost per test `U_cost/U_count` varies systematically with w -- 1.21 to 1.39 (13.5% relative spread), flat near 1.25 through w around 3 and rising toward 1.39 as high w pushes the agent onto relatively more of the expensive test. Cost and count brackets disagree as units should: cost solve at B_cost = 11.15 brackets `(3.16, 10]` while the count solve at B = 8.64 brackets `(10, 31.6]`. Acceptance met. Artifacts: `results/results_price_cost_curves.csv`, `results/results_price_cost_prices.csv`, `figures/price_cost_budget.{png,pdf}`. Note: dual control against a cost target is supported by the same accounting but was not run; fold into Stage H's experiment section only if needed.
 
-### Stage E -- Curve-collapse breadth (M2)
+### Stage E -- Curve-collapse breadth (M2) -- DONE, verdict HOLD (Tileworld PARTIAL, explained)
 
 - **Code work**: none; `run_scale_collapse` already parameterizes environments.
 - **Protocol**: add Tiger (and Tileworld-6x6 if runtime allows) to the alpha in {0.1, 1, 10} collapse test, same settings as the existing full battery (5 seeds x 100 episodes).
 - **Artifacts**: extended collapse figure and matched-point statistics per environment.
 - **Acceptance**: matched w/alpha points within 2 SE and coinciding crossing brackets, as already holds for Diagnosis and Bandit. A failure on a specific environment is reported as a scoped limitation, not hidden.
+- **Outcome (July 23, 2026)**: small code work was needed after all -- `make_scaled_tiger` and `make_scaled_tileworld` factories plus per-env collapse budgets (Tiger B=4, Tileworld B=15) and lighter Tileworld settings (30 episodes, 10-point grid). Full run, all four environments:
+  - Diagnosis and Bandit: 100% within 2 SE, brackets coincide (re-confirmed).
+  - Tiger: 100% within 2 SE and brackets coincide, but trivially -- Tiger's usage is flat (~4.1-4.35) across the whole w/alpha in [0, 20] range. Instrumental sensing saturates usage, so Tiger has no usable budget dial in this window. Worth a sentence in the paper: the budget formulation is informative only where U(w) actually varies.
+  - Tileworld-6x6: 90% of matched points within 2 SE (max spread 0.91); the alpha=10 bracket (1.68, 5.8] is adjacent to the alpha in {0.1, 1} bracket (5.8, 20], sharing the knot w/alpha = 5.8 where measured usage straddles B=15 by less than one SE (14.66 / 14.95 / 15.07). This is a budget-at-knot Monte Carlo artifact, consistent with the PI-1 exactness theorem, not a scale-invariance failure; report it as such with the numbers.
+  - Since PI-1 (Stage A) proves collapse exactly for the implemented agent, this test now functions as a Monte Carlo sanity check rather than the primary evidence; the paper should present it that way.
 
 ### Stage F -- SARSOP baseline and POMCPOW decision (M3)
 

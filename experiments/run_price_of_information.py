@@ -84,6 +84,27 @@ def make_scaled_bandit(k: float) -> BanditEnv:
     )
 
 
+def make_scaled_tiger(k: float) -> TigerEnv:
+    return TigerEnv(
+        listen_accuracy=0.85,
+        listen_cost=1.0 * k,
+        correct_reward=10.0 * k,
+        incorrect_penalty=-100.0 * k,
+    )
+
+
+def make_scaled_tileworld(k: float):
+    from rho_aif.environments.tileworld import TileworldEnv
+
+    return TileworldEnv(
+        grid_size=6,
+        scan_accuracy=0.80,
+        scan_cost=1.0 * k,
+        correct_reward=10.0 * k,
+        incorrect_penalty=-50.0 * k,
+    )
+
+
 def curve_to_rows(env_name: str, curve, extra: Optional[dict] = None) -> List[dict]:
     rows = []
     for p in curve:
@@ -620,6 +641,8 @@ def run_scale_collapse(
     makers: Dict[str, Tuple[Callable[[float], object], int]] = {
         "Diagnosis": (make_scaled_diagnosis, 3),
         "Bandit": (make_scaled_bandit, 2),
+        "Tiger": (make_scaled_tiger, 6),
+        "Tileworld-6x6": (make_scaled_tileworld, 2),
     }
     make_env, horizon = makers[env_kind]
     base_grid = make_log_w_grid(0.0, 20.0, n_grid)  # base = alpha=1 grid
@@ -1513,8 +1536,12 @@ def main() -> None:
             "Tileworld-6x6": 10,
             "Inspection-N8": 8,
         }
-        scale_envs = ["Diagnosis", "Bandit"]
+        scale_envs = ["Diagnosis", "Bandit", "Tiger", "Tileworld-6x6"]
         scale_budget = 8.0
+        # Budgets sized to each env's usage range (Tiger B_EFE 4.2, Tileworld 14.8)
+        scale_budgets = {"Diagnosis": 8.0, "Bandit": 8.0, "Tiger": 4.0, "Tileworld-6x6": 15.0}
+        scale_episodes_by_env = {"Tileworld-6x6": 30}
+        scale_grid_by_env = {"Tileworld-6x6": 10}
         dual_budget = 8.0
         dual_lr0 = 0.05
         dual_decay = 0.02
@@ -1536,6 +1563,9 @@ def main() -> None:
         grid_by_env = {}
         scale_envs = ["Diagnosis"]
         scale_budget = 8.0
+        scale_budgets = {"Diagnosis": 8.0}
+        scale_episodes_by_env = {}
+        scale_grid_by_env = {}
         dual_budget = 8.0
         dual_lr0 = 0.05
         dual_decay = 0.02
@@ -1646,9 +1676,9 @@ def main() -> None:
             out = run_scale_collapse(
                 scales=[0.1, 1.0, 10.0],
                 seeds=seeds,
-                num_episodes=ep,
-                n_grid=max(10, n_grid - 2),
-                budget=scale_budget,
+                num_episodes=int(scale_episodes_by_env.get(env_kind, ep)),
+                n_grid=int(scale_grid_by_env.get(env_kind, max(10, n_grid - 2))),
+                budget=float(scale_budgets.get(env_kind, scale_budget)),
                 env_kind=env_kind,
                 existing_curve_df=existing,
             )

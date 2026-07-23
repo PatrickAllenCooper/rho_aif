@@ -832,7 +832,7 @@ Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_
 
 ## Phase: Full-Length Paper (July 23, 2026 –)
 
-**Status**: Stages A (propositions), B (interleaved usage curves), C (multi-seed dual control), D (cost-denominated budgets) complete, all verdict HOLD; Stages E–I pending
+**Status**: Stages A–E complete (propositions, interleaved curves, multi-seed dual, cost budgets, collapse breadth), verdicts HOLD (Tileworld collapse PARTIAL, explained as budget-at-knot noise); Stages F–I pending
 **Goal**: One integrated full-length publication merging the IWAI 2026 workshop paper (EFE-as-rho, Props 1–3) with the Price of Information extension (w as operational shadow price), turning the conceded w-scale limitation into the new headline contribution. Venue deliberately open; decision gate after the science is settled.
 
 The complete plan — thesis, source-material inventory, gap analysis (new budgeted-rho-POMDP proposition, interleaved and multi-seed experiments, SARSOP/POMCPOW baseline debt, w* atlas appendix, merged related work), assembly outline for `paper/full_paper.tex`, milestones M1–M6 broken into development/experiment stages A–I with acceptance criteria, and the submission checklist (including the deferred PyPI release above) — lives in `Guidance_Documents/full_paper_plan.md`. That document is the living guide for this phase; update it with every change.
@@ -848,6 +848,9 @@ Formal propositions PI-1 to PI-4 drafted in `price_of_information.md` Section 9.
 
 ### Stage D delivered (July 23, 2026)
 Heterogeneous sensing costs end to end: `DiagnosisEnv(test_costs=[0.5, 2.5])`, `run_otc_episode` records actual `sensing_cost` paid, `episode_sensing_usage` prefers the explicit cost. New `--only cost` protocol. Verdict **HOLD**: mean cost per test varies 1.21–1.39 with w (13.5% relative spread; the agent shifts toward the expensive test at high w), and cost-denominated brackets disagree with count-denominated ones (B_cost=11.15 → `(3.16, 10]` vs B_count=8.64 → `(10, 31.6]`). Artifacts: `results/results_price_cost_{curves,prices}.csv`, `figures/price_cost_budget.{png,pdf}`. Full suite: 311 passed.
+
+### Stage E delivered (July 23, 2026)
+Collapse test extended to Tiger (B=4) and Tileworld-6x6 (B=15) via `make_scaled_tiger`/`make_scaled_tileworld` and per-env scale budgets. Diagnosis/Bandit re-confirm (100% within 2·SE, brackets coincide). Tiger passes trivially: usage flat ~4.2 over w/α∈[0,20] — instrumental sensing saturates, no usable budget dial there (paper-worthy caveat). Tileworld **PARTIAL**: 90% within 2·SE; α=10 bracket adjacent to α∈{0.1,1} bracket sharing knot w/α=5.8 where U straddles B=15 within one SE — budget-at-knot noise, consistent with the PI-1 theorem. Since PI-1 proves collapse exactly, the empirical test is now a sanity check, not primary evidence.
 
 ---
 

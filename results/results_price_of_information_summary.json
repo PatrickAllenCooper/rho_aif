@@ -8,7 +8,7 @@
     1024
   ],
   "episodes": 100,
-  "replot": true,
+  "replot": false,
   "prop2_jump_ok": true,
   "prop2_onset_brackets": {
     "TestbedPos-p06": {
@@ -27,13 +27,13 @@
   "prop2_rows": 2,
   "verdict": {
     "prop2_jump": "HOLD \u2014 onset brackets {'TestbedPos-p06': 0.030000000000000027, 'TestbedPos-p058': 0.030000000000000027}; U=0 below closed-form threshold",
-    "curve_collapse": "HOLD \u2014 100% of matched w/\u03b1 points within 2\u00b7SE; max spread \u22640.48; crossing brackets coincide across \u03b1",
+    "curve_collapse": "HOLD \u2014 98% of matched w/\u03b1 points within 2\u00b7SE; max spread \u22640.91; crossing brackets differ across \u03b1",
     "dual_rescale": "HOLD \u2014 usage pinned near B; windowed w ratio post/pre \u22489.33 after \u00d710 reward rescale; re-adaptation 157\u219245 episodes with lr reset-on-shift",
     "shadow_staircases": "PARTIAL \u2014 Bandit/Inspection roughly monotone with SEs; Tiger/Diagnosis/Tileworld still show local non-monotonicity; report brackets+SEs"
   },
   "curves_rows": 25,
-  "collapse_frac_within_noise": 1.0,
-  "collapse_max_spread": 0.4759999999999991,
+  "collapse_frac_within_noise": 0.9807692307692307,
+  "collapse_max_spread": 0.9066666666666663,
   "bracket_coincidence": {
     "Bandit": {
       "lo_spread": 0.0,
@@ -41,13 +41,23 @@
       "coincide": true
     },
     "Diagnosis": {
-      "lo_spread": 4.996003610813204e-16,
-      "hi_spread": 1.1102230246251565e-16,
+      "lo_spread": 0.0,
+      "hi_spread": 0.0,
       "coincide": true
+    },
+    "Tiger": {
+      "lo_spread": 0.0,
+      "hi_spread": 0.0,
+      "coincide": true
+    },
+    "Tileworld-6x6": {
+      "lo_spread": 4.117849969712994,
+      "hi_spread": 14.200357199779582,
+      "coincide": false
     }
   },
-  "brackets_coincide": true,
-  "scale_rows": 6,
+  "brackets_coincide": false,
+  "scale_rows": 12,
   "dual_w_ratio_post_pre": 9.326643899090774,
   "dual_pre_w": 0.291037748361365,
   "dual_post_w": 2.7144054401596405,
