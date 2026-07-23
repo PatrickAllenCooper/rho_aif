@@ -107,25 +107,40 @@ def run_shadow_price_curves(
     num_episodes: int,
     n_grid: int = 16,
     n_budgets: int = 5,
+    episodes_by_env: Optional[Dict[str, int]] = None,
+    grid_by_env: Optional[Dict[str, int]] = None,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     curve_rows: List[dict] = []
     price_rows: List[dict] = []
+    episodes_by_env = episodes_by_env or {}
+    grid_by_env = grid_by_env or {}
 
     for name in env_names:
         cfg = get_benchmark(name)
         env = cfg.env_factory()
-        print(f"\n=== Shadow prices: {name} ({cfg.family}) ===", flush=True)
-        w_grid = make_log_w_grid(0.0, 100.0, n_grid)
-        curve = estimate_usage_curve(
-            env,
-            w_grid=w_grid,
-            seeds=seeds,
-            num_episodes=num_episodes,
-            planning_horizon=cfg.planning_horizon,
-            usage_kind="count",
-            family=cfg.family,
-            tree_depth=cfg.tree_depth,
-        )
+        ep = int(episodes_by_env.get(name, num_episodes))
+        ng = int(grid_by_env.get(name, n_grid))
+        print(f"\n=== Shadow prices: {name} ({cfg.family})  ep={ep} grid={ng} ===", flush=True)
+        w_grid = make_log_w_grid(0.0, 100.0, ng)
+        curve = []
+        for i, w in enumerate(w_grid):
+            print(f"  [{i+1}/{len(w_grid)}] estimating U(w={float(w):.4g}) ...", flush=True)
+            pts = estimate_usage_curve(
+                env,
+                w_grid=[float(w)],
+                seeds=seeds,
+                num_episodes=ep,
+                planning_horizon=cfg.planning_horizon,
+                usage_kind="count",
+                family=cfg.family,
+                tree_depth=cfg.tree_depth,
+            )
+            curve.extend(pts)
+            p = pts[0]
+            print(
+                f"    U={p.mean_usage:.3f}±{p.se_usage:.3f}",
+                flush=True,
+            )
         curve_rows.extend(curve_to_rows(name, curve))
         u_min = min(p.mean_usage for p in curve)
         u_max = max(p.mean_usage for p in curve)
@@ -157,6 +172,9 @@ def run_shadow_price_curves(
                 f"U={res.usage_at_star:.3f}±{res.usage_se_at_star:.3f}",
                 flush=True,
             )
+        # Incremental save so a slow later env cannot erase prior results
+        pd.DataFrame(curve_rows).to_csv(RESULTS / "results_price_usage_curves.csv", index=False)
+        pd.DataFrame(price_rows).to_csv(RESULTS / "results_price_shadow_curves.csv", index=False)
     return pd.DataFrame(curve_rows), pd.DataFrame(price_rows)
 
 
@@ -709,7 +727,17 @@ def main() -> None:
         ep = 100
         n_grid = 16
         dual_episodes = 400
+        # OTC envs at full power; Tileworld/Inspection use lighter settings
+        # (tree search cost) while remaining in the battery.
         env_names = ["Tiger", "Diagnosis", "Bandit", "Tileworld-6x6", "Inspection-N8"]
+        episodes_by_env = {
+            "Tileworld-6x6": 40,
+            "Inspection-N8": 30,
+        }
+        grid_by_env = {
+            "Tileworld-6x6": 10,
+            "Inspection-N8": 8,
+        }
         scale_envs = ["Diagnosis", "Bandit"]
         scale_budget = 8.0
         dual_budget = 8.0
@@ -721,6 +749,8 @@ def main() -> None:
         n_grid = 10
         dual_episodes = 200
         env_names = ["Tiger", "Diagnosis", "Bandit"]
+        episodes_by_env = {}
+        grid_by_env = {}
         scale_envs = ["Diagnosis"]
         scale_budget = 8.0
         dual_budget = 8.0
@@ -731,7 +761,13 @@ def main() -> None:
 
     if "curves" in only:
         curve_df, price_df = run_shadow_price_curves(
-            env_names, seeds, ep, n_grid=n_grid, n_budgets=5
+            env_names,
+            seeds,
+            ep,
+            n_grid=n_grid,
+            n_budgets=5,
+            episodes_by_env=episodes_by_env,
+            grid_by_env=grid_by_env,
         )
         curve_df.to_csv(RESULTS / "results_price_usage_curves.csv", index=False)
         price_df.to_csv(RESULTS / "results_price_shadow_curves.csv", index=False)
