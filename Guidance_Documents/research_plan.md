@@ -828,7 +828,14 @@ Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_
 - [x] Presentation fixes (interval brackets, Prop 2 refinement, dual band)
 - [x] Start paper draft (`paper/price_of_information.tex`)
 - [x] LR reset-on-shift experiment (157→45 re-adaptation; figure `price_dual_reset`)
-- [ ] Revise / expand paper draft toward a submission venue
+- [ ] Revise / expand paper draft toward a submission venue → superseded by the Full-Length Paper phase below
+
+## Phase: Full-Length Paper (July 23, 2026 –)
+
+**Status**: Planning document created; work not yet started
+**Goal**: One integrated full-length publication merging the IWAI 2026 workshop paper (EFE-as-rho, Props 1–3) with the Price of Information extension (w as operational shadow price), turning the conceded w-scale limitation into the new headline contribution. Venue deliberately open; decision gate after the science is settled.
+
+The complete plan — thesis, source-material inventory, gap analysis (new budgeted-rho-POMDP proposition, interleaved and multi-seed experiments, SARSOP/POMCPOW baseline debt, w* atlas appendix, merged related work), assembly outline for `paper/full_paper.tex`, milestones M1–M6, and the submission checklist (including the deferred PyPI release above) — lives in `Guidance_Documents/full_paper_plan.md`. That document is the living guide for this phase; update it with every change.
 
 ---
 
