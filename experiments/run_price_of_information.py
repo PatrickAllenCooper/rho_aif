@@ -426,11 +426,11 @@ def run_prop2_duality(
             num_episodes=num_episodes,
             planning_horizon=cfg["horizon"],
         )
-        # Empirical jump: first w where U exceeds mid of [U_min, U_max]
+        # Empirical jump: first w with U > 0.5 (onset of observing).
+        # Mid-range level is too high when U later climbs to many observations.
         us = [p.mean_usage for p in curve]
         u_floor = min(us)
         u_ceil = max(us)
-        jump_level = 0.5 * (u_floor + u_ceil)
         jump_w = None
         for p in sorted(curve, key=lambda x: x.w):
             curve_rows.append(
@@ -443,18 +443,22 @@ def run_prop2_duality(
                     "w_thresh": w_closed,
                 }
             )
-            if jump_w is None and p.mean_usage >= jump_level and p.w > 0:
+            if jump_w is None and p.mean_usage > 0.5 and p.w > 0:
                 jump_w = p.w
         if jump_w is None:
             jump_w = float("nan")
-        # Also: mean U below vs above threshold
         below = [p.mean_usage for p in curve if p.w < w_closed]
         above = [p.mean_usage for p in curve if p.w >= w_closed]
         u_below = float(np.mean(below)) if below else float("nan")
         u_above = float(np.mean(above)) if above else float("nan")
-        # Jump lands near closed form if relative error within a factor of ~2 (grid)
+        # Onset should be near the H=1 closed form (within one grid step / factor 2).
         rel = abs(jump_w - w_closed) / w_closed if (w_closed > 0 and np.isfinite(jump_w)) else float("nan")
-        jump_ok = bool(np.isfinite(rel) and rel <= 1.0 and u_above > u_below + 0.25)
+        jump_ok = bool(
+            np.isfinite(rel)
+            and rel <= 1.0
+            and u_floor <= 0.25
+            and u_above > u_below + 0.25
+        )
         jump_rows.append(
             {
                 "env": name,
@@ -832,14 +836,17 @@ def main() -> None:
         )
         df.to_csv(RESULTS / "results_price_dual_descent.csv", index=False)
         plot_dual_descent(df, FIGURES / "price_dual_descent.png")
-        # Ratio of post/pre Polyak averages near the end of each half
-        pre = df.loc[~df["rescaled"], "w_avg"]
-        post = df.loc[df["rescaled"], "w_avg"]
+        # Windowed averages of raw w near the end of each half (Polyak avg is
+        # contaminated by the whole-run history after a mid-run rescale).
+        pre = df.loc[~df["rescaled"], "weight"]
+        post = df.loc[df["rescaled"], "weight"]
         if len(pre) and len(post):
-            pre_avg = float(pre.iloc[-min(20, len(pre)):].mean())
-            post_avg = float(post.iloc[-min(20, len(post)):].mean())
-            ratio = post_avg / pre_avg if pre_avg > 1e-9 else float("nan")
-            summary["dual_w_avg_ratio_post_pre"] = ratio
+            pre_w = float(pre.iloc[-min(20, len(pre)) :].mean())
+            post_w = float(post.iloc[-min(20, len(post)) :].mean())
+            ratio = post_w / pre_w if pre_w > 1e-9 else float("nan")
+            summary["dual_w_ratio_post_pre"] = ratio
+            summary["dual_pre_w"] = pre_w
+            summary["dual_post_w"] = post_w
             summary["dual_pre_usage"] = float(df.loc[~df["rescaled"], "usage"].tail(20).mean())
             summary["dual_post_usage"] = float(df.loc[df["rescaled"], "usage"].tail(20).mean())
         summary["dual_rows"] = len(df)
