@@ -177,16 +177,80 @@ Each stage lists its code work, experiment protocol, artifacts, and an acceptanc
 - **Acceptance**: every benchmark instance has a row; no meta-model claims.
 - **Outcome (July 23, 2026)**: `experiments/run_w_atlas.py` reuses the saved full-battery and interleaved curves and measures fresh B_EFE = U(1) for the three interleaved instances (w=1 is not on their log grid): RS[5,3] 4.90 +- 0.08, RS[7,4] 5.49 +- 0.14, Inspection-N16 33.46 +- 0.19. All eight instances have rows (Tiger, Diagnosis, Bandit, Tileworld-6x6, Inspection-N8, Inspection-N16, RS[5,3], RS[7,4]) with usage range, B_EFE +- SE, and two canonical-budget brackets. Tiger's low budget is honestly unbracketed (flat usage curve, consistent with Stage E). The LaTeX caption states brackets are set-valued per Definition PI-3 and explicitly disclaims any closed-form meta-model. Artifacts: `results/results_w_atlas.csv`, `paper/tables/w_atlas.tex` (auto-generated, do-not-edit header).
 
+### Stage G2 -- Distractor robustness (from review feedback)
+
+Added July 23, 2026 in response to Reviewer 8Evk's question: "How poorly would these methods work in settings where there is uncertainty over state components that happen to be unimportant?" This is a genuine gap -- information gain is reward-blind, and no current experiment quantifies it.
+
+- **Code work**: a Diagnosis variant whose state space carries an extra reward-irrelevant nuisance bit (8 joint states, commit rewards depend only on the 4-way condition), with one additional test that is informative only about the nuisance bit. Buildable in the experiment file from the existing DiagnosisEnv machinery (custom observation models and commit matrix); no core-library change expected.
+- **Protocol**: usage-composition curves -- for a log grid of w, measure total usage and the fraction spent on the distractor test; 5 seeds x 100 episodes. Optionally compare IDS (already in `rho_aif/agents/ids.py`) as a reward-aware contrast.
+- **Artifacts**: composition CSV and a stacked usage figure; a paragraph for the limitations section.
+- **Acceptance**: an honest quantification either way. Expected finding: Planning+IG/EFE does spend budget on the distractor (IG does not discriminate reward-relevance); the budget formulation caps total spend but does not redirect it. If so, state it as a scoped limitation and cite reward-aware alternatives rather than hiding it.
+
 ### Stage H -- Paper assembly (M4)
 
 - **Work**: create `paper/full_paper.tex` per the Section 4 outline, merging the two sources without editing them in place; merge related work per Section 3.4; write the new experiment sections from Stages B-F; build the atlas appendix from Stage G; run the full citation verification pass (every entry checked against publisher or arXiv record, results recorded here).
-- **Acceptance**: the master compiles standalone, every table and figure has a reproduction command in the README mapping, and the writing conventions in Section 5 hold throughout.
+- **Additional requirement (July 23, 2026)**: walk the review-response ledger in Section 8 end to end -- the theory corrections (8.2), empirical hygiene rules (8.3), citation additions (8.4), and written answers to reviewer questions (8.5) are Stage H acceptance criteria alongside the original ones.
+- **Acceptance**: the master compiles standalone, every table and figure has a reproduction command in the README mapping, the writing conventions in Section 5 hold throughout, and every ledger item in Sections 8.1-8.5 is either implemented or explicitly waived with a reason recorded here.
 
 ### Stage I -- Venue gate and submission (M5-M6)
 
 - **Work**: with all verdicts in hand, decide conference cut (8-10 pages plus appendix) vs journal; produce the derived version; execute the M6 submission checklist including the PyPI release.
+- **Additional requirement (July 23, 2026)**: the logistics items in ledger Section 8.6 -- artifact link verified from a logged-out browser, limitations foregrounded in intro and conclusion, abstract rewritten POMDP-first for readers outside active inference.
 - **Acceptance**: submission package verified to compile standalone; `pip install rho-aif` works from a clean venv; checklist in `research_plan.md` fully ticked.
 
-## 8. Document evolution
+## 8. Review-response ledger (NeurIPS 2026 submission 30092)
+
+Reviews of the earlier NeurIPS version (Reviewers 8Evk, Nzm2, vnDs, all reject; plus the PAT automated feedback) were folded into this plan on July 23, 2026. Every substantive point is listed here with its disposition. Stage H must walk this ledger before the draft is called assembled; Stage I inherits the logistics items.
+
+### 8.1 Core objections that the reframed paper turns into its thesis
+
+- **w=1 is scale-dependent; substituting rewards for log-preferences breaks the "canonical weight" claim** (all three reviewers; PAT at length). PIVOTED: this is now the headline. PI-1 proves exact scale equivariance (w must co-scale with rewards; fixed w=1 at scale alpha behaves as w=1/alpha), and the paper's contribution is the reinterpretation of w as an operational shadow price with B_EFE(alpha) = U(1/alpha). Per Reviewer vnDs: the concession must appear in the abstract, introduction, and conclusion, not only in a limitations subsection.
+- **"Complete a sensitivity sweep on reward scaling"** (vnDs question). DONE before it was asked, at full power: the alpha in {0.1, 1, 10} collapse battery on Diagnosis, Bandit, Tiger, Tileworld (Stage E) plus the PI-1 theorem making the sweep's outcome provable.
+- **"Why is there no variable controlling the pragmatic/epistemic ratio in AIF?"** (8Evk question). Answer to write explicitly: there is -- once rewards replace log-preferences, the exchange rate IS w; w=1 is a unit convention ("one bit = one reward unit"), not a law. This is the cleanest one-sentence statement of the pivot and should appear early.
+- **"Proposition 3.1 is a change of representation, not an algorithmic insight"** (Nzm2). Concede and reposition: the equivalence is the vocabulary of the paper, not its result; the budgeted formulation, exactness theorems, and solver/controller are the results.
+- **Zero-shot transfer claim unconvincing; tuned hyperparameters degrade under transfer generically** (Nzm2). Drop the transfer framing as headline. The defensible successor claims: (i) EFE w=1 is statistically indistinguishable from the SARSOP near-optimal reference on the OTC suite at the tested scales (Stage F), and (ii) the right way to choose w is budget-first via the usage curve, which removes the tuning question entirely.
+
+### 8.2 Theory corrections to carry into full_paper.tex
+
+- **Convexity claim is wrong** (PAT): expected information gain is concave in the belief, so the EFE-derived rho does NOT preserve PWLC; do not claim inherited convexity. Cite Fehr et al. 2018 for Lipschitz non-convex rho instead. (The old line 131 claim must not survive assembly.)
+- **Imprecise rho-POMDP reward definition** (Nzm2): define rho and the expectations explicitly; a belief-dependent reward can absorb the state-dependent expectation, so present R(b,a) = E_{s~b}[R(s,a)] + rho(b,a) with the outer expectation over observations/beliefs written out.
+- **Prop 3.2 threshold table contradictions** (PAT: Testbed sign, Tiger magnitude, Bandit's positive R- violating the assumption, 2-state formula applied to N>2): regenerate every threshold from `experiments/run_thresholds.py`; state the proposition strictly for two states with R- < 0; Stage A's PI-4 already re-derives the positive-threshold testbeds and verifies them numerically (`TestProp2OnsetExact`).
+- **Prop 3.3 exploitation branches** (PAT; 8Evk's generality concern): clarify that the factored equivalence holds along branches of observation/navigation actions and state precisely what happens when a branch contains a state-changing exploitation action (the coupling term no longer vanishes); scope the proposition accordingly.
+- **Notation and presentation debts** (8Evk, PAT): define w and kappa at first use; define C and Q in equation 1; "open-loop" not "myopic" for standard AIF; say what is Lipschitz; fix the observation-cost sign convention (costs are magnitudes); conditional-entropy notation E_{o|obs_k}[H(b'_o)]; rename the observation set to avoid the Omega/O collision; add the missing outer expectation in the Prop 3.2 proof sketch; fix the Eq. 6 vs Eq. 8 proof reference; fill or delete the empty Appendix P.
+
+### 8.3 Empirical hygiene rules for assembly
+
+- **One battery, one table** (PAT found RockSample Table 6 vs 23 contradictions, missing promised baselines, Tileworld 66.5 vs 74.2, Bandit/Diagnosis reward drift across sections, swapped effect sizes, SD-vs-SE mislabels): every number in the full paper must be generated from a current results CSV by a scripted table builder; no hand-carried numbers from older runs. The README reproduction map (already a Stage H acceptance item) is the enforcement mechanism.
+- **Baseline tuning confound** (PAT): when comparing on expected reward, baselines must be reward-tuned (or both tunings reported); never evaluate success-tuned baselines on reward alone.
+- **Model-misspecification prose must be rewritten from the tables** (PAT caught text claiming "excessive testing" where counts decrease).
+- **POMCP parity** (PAT): state the UCB1 exploration constant and scale it with the environment reward range, or explicitly flag the parity limitation.
+- **Discount-factor limitation** (PAT): gamma >= 0.99 baseline requirement belongs in the practitioner checklist, not only in the discussion body.
+- **Tree-search complexity** (PAT): quote O((A x Z)^H) style scaling correctly.
+
+### 8.4 Citation status (verified July 23, 2026)
+
+The five entries Reviewer vnDs flagged as erroneous were already corrected in the current `paper/paper.tex` / `paper_arxiv.tex` sources; each was re-verified against its source today:
+
+- Benchetrit, Lev-Yehudi, Zhitnikov, Indelman, "Anytime incremental rhoPOMDP planning in continuous spaces," arXiv:2502.02549 (title and authors confirmed on the arXiv page; the old "rho-POMCPOW" title was wrong). REMAINING: the related-work prose still calls this method "rho-POMCPOW" -- fix the name in prose during assembly.
+- Friston, Rigoli, Ognibene, Mathys, FitzGerald, Pezzulo, "Active inference and epistemic value," Cognitive Neuroscience 6(4):187-214, 2015 (Parr removed, Mathys added).
+- Champion, Bowman, Markovic, Grzes, "Reframing the expected free energy: Four formulations and a unification," Neural Computation 38(3):439-469, 2026 (author order and journal venue fixed; matches the MIT Press record).
+- de Vries, Nuijten, van de Laar, et al., arXiv:2504.14898 (first three of seventeen authors confirmed against the arXiv page; et al. covers the rest).
+- Millidge, Tschantz, Seth, Buckley, IWAI 2020 (Seth restored).
+
+REMAINING additions for Stage H: Towers et al., "Gymnasium: A Standard Interface for Reinforcement Learning Environments," arXiv:2407.17032, 2024 (used in the text, never cited; BibTeX verified against the official Farama repository); SARSOP (Kurniawati, Hsu, Lee, RSS 2008) and POMCPOW (Sunberg and Kochenderfer, ICAPS 2018) from Stage F. The full re-verification pass over every legacy entry remains a Stage H acceptance item; Reviewer vnDs's question "can the authors confirm all cited works were read and verified" must be answerable with yes and a record.
+
+### 8.5 Answers to reviewer questions to write into the paper
+
+- **8Evk: distractor uncertainty** -- Stage G2 experiment (above) plus a limitations paragraph; IG is reward-blind and the budget caps but does not redirect spend; cite reward-aware alternatives (IDS is already implemented in-repo).
+- **8Evk: alternatives to IG as belief-based reward** -- expand related work: negative entropy and error-based rho (Araya et al.), POMDP-IR per-fact information rewards (Spaan et al.), KL-to-target-belief; one paragraph comparing to IG.
+- **8Evk: why observe-then-commit** -- motivate the class (clean theory, exact solvers feasible) and point to the Stage B interleaved results as the beyond-OTC evidence.
+
+### 8.6 Logistics (Stage I checklist additions)
+
+- Verify the anonymized artifact link resolves from a logged-out browser before submission; the checklist must never claim code availability that a reviewer cannot reach (vnDs).
+- Foreground limitations in the introduction and conclusion, not only a back section (vnDs).
+- Rewrite the abstract for a reader outside active inference; Nzm2 found it "very difficult to comprehend" -- lead with the POMDP-native statement (budgeted sensing, shadow price), not the EFE vocabulary.
+
+## 9. Document evolution
 
 This plan is a Guidance_Documents artifact under the project's virtuous-cycle rule: every change made toward the full paper edits this document to reflect what was done and what it changed about the plan. Verdicts (HOLD / PARTIAL / FAIL) for new experiments are recorded here and mirrored in `research_plan.md`.
