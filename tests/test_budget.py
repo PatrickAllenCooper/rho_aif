@@ -12,6 +12,7 @@ from rho_aif.budget import (
     crossing_bracket,
     dual_update,
     episode_sensing_usage,
+    estimate_usage,
     estimate_usage_curve,
     grid_solve_usage_fn,
     identifiable_budgets,
@@ -21,6 +22,7 @@ from rho_aif.budget import (
     usage_value,
 )
 from rho_aif.environments.diagnosis import DiagnosisEnv
+from rho_aif.environments.info_seeking import InfoSeekingEnv
 from rho_aif.environments.tiger import TigerEnv
 
 
@@ -256,3 +258,40 @@ class TestCrossingBracket:
     def test_empty_curve_raises(self):
         with pytest.raises(ValueError):
             crossing_bracket([], budget=1.0)
+
+
+class TestProp2OnsetExact:
+    """
+    Stage A numeric check (Corollary PI-4 in the theory notes): at H=1 the
+    usage staircase steps from 0 to 1 exactly at the closed-form Prop 2
+    threshold on a positive-threshold two-state testbed.
+    """
+
+    @staticmethod
+    def _w_thresh(p: float, c: float, r_plus: float, r_minus: float) -> float:
+        from scipy.stats import entropy
+
+        i_max = float(entropy([0.5, 0.5], base=2)) - float(entropy([p, 1.0 - p], base=2))
+        return (c - (p - 0.5) * (r_plus - r_minus)) / i_max
+
+    def test_h1_usage_steps_at_threshold(self):
+        p, c = 0.60, 0.3
+        w_th = self._w_thresh(p, c, 1.0, -1.0)
+        assert w_th > 0, "config must have a positive threshold for this check"
+
+        env = InfoSeekingEnv(
+            observation_accuracy=p,
+            observation_cost=c,
+            correct_reward=1.0,
+            incorrect_penalty=-1.0,
+        )
+        below = estimate_usage(
+            env, w=0.9 * w_th, seeds=[0, 1], num_episodes=20, planning_horizon=1
+        )
+        above = estimate_usage(
+            env, w=1.2 * w_th, seeds=[0, 1], num_episodes=20, planning_horizon=1
+        )
+        # Below threshold the H=1 agent commits immediately: zero usage.
+        assert below == pytest.approx(0.0)
+        # Above threshold every episode starts with at least one observation.
+        assert above >= 1.0

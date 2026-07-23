@@ -106,11 +106,17 @@ Ordered; each milestone updates this document and commits. Section 7 breaks thes
 
 Each stage lists its code work, experiment protocol, artifacts, and an acceptance criterion that decides a HOLD / PARTIAL / FAIL verdict. Verdicts are recorded here and mirrored in `research_plan.md`. Dependency order: Stage A is independent and can run first or in parallel with B-E; Stages B-E are mutually independent; Stage F is independent; Stage G depends on B; Stage H depends on everything before it; Stage I closes.
 
-### Stage A -- Budgeted rho-POMDP proposition (M1)
+### Stage A -- Budgeted rho-POMDP proposition (M1) -- DONE, verdict HOLD
 
 - **Code work**: none required. Optional: a small script or test that numerically checks the corollary claim (onset budget equals the first bracket leaving zero) on the positive-threshold Testbeds already configured in `experiments/run_price_of_information.py`.
 - **Writing work**: draft the proposition, proof or proof sketch, and the Prop 2 corollary derivation in `Guidance_Documents/price_of_information.md` first; port to LaTeX once stable. State assumptions honestly (observe-then-commit or factored observation classes; empirical nondecreasing U(w); instrumental sensing so U(0) > 0 is possible).
 - **Acceptance**: the statement is consistent with every recorded empirical caveat (rough monotonicity, gap budgets, unachievable low budgets, usage ceiling U_max) and introduces no unverified citation.
+- **Outcome (July 23, 2026)**: Section 9 of `price_of_information.md` drafts PI-1 through PI-4. The result is stronger than planned in one place and honest in another:
+  - PI-1 (scale equivariance) is an exact theorem for the implemented receding-horizon agent, not just for idealized maximizers: every lookahead value scales linearly, so `U_alpha(alpha w) = U(w)` as distributions. Curve collapse is thereby a theorem; the empirical 2 SE test measures Monte Carlo noise. Corollary: fixed w=1 at scale alpha behaves as w=1/alpha at scale 1, so `B_EFE(alpha) = U(1/alpha)`.
+  - PI-2 (monotonicity) is exact only for cumulative information gain of exact maximizers at a fixed belief; neither the count-usage bridge nor receding-horizon composition is automatic. This is stated as the formal reason the staircases are only roughly monotone and the solver uses grid plus brackets.
+  - PI-3 defines the set-valued shadow price with feasibility bounds `U(0) <= B <= U_max` and an exact randomized-mixture attainment statement at gap budgets (CMDP parallel, Altman 1999).
+  - PI-4: at H=1 the usage staircase is exactly `1{w > w_thresh}`, so Prop 2's closed form is the first knot of U. Verified numerically by `tests/test_budget.py::TestProp2OnsetExact` (usage 0 at 0.9 w_thresh, >= 1 at 1.2 w_thresh; passes).
+  - No new citations introduced; all references already in the verified table.
 
 ### Stage B -- Interleaved usage curves (M2)
 

@@ -163,7 +163,69 @@ What this project contributes:
 3. Scale-invariant dual control of `w` under reward rescaling.
 4. Implicit-budget reading of EFE's `w=1`.
 
-## 9. Implementation map
+## 9. Formal propositions (Stage A draft for the full paper)
+
+Drafted here first per the Stage A protocol in `full_paper_plan.md`; port to LaTeX during assembly (Stage H). Numbering PI-1..PI-4 is provisional. Every statement below is checked against the recorded empirical caveats: rough monotonicity, gap budgets, unachievable low budgets, and the usage ceiling.
+
+### Setting and assumptions
+
+The Planning+IG agent at belief `b` enumerates depth-`H` plans; a plan's value is the expected sum of environment rewards along the plan (commit rewards, penalties, observation costs) plus `w` times the plan's cumulative expected information gain (entropy in bits, base 2, matching the implementation). The agent takes the argmax action and re-plans each step (receding horizon).
+
+- **(A1) Scale-free tie-breaking.** Argmax ties are broken by a fixed rule independent of the reward scale (the implementation uses first-index `argmax`).
+- **(A2) Pragmatic rescaling.** The `α`-rescaled environment multiplies all pragmatic quantities — commit rewards, penalties, and observation costs — by `α > 0`. Observation models and belief updates are untouched, so information gain is unchanged.
+
+### Proposition PI-1 (exact scale equivariance of the implemented agent)
+
+Under A1–A2, for every `α > 0` and `w ≥ 0`, the agent facing the `α`-scaled environment with weight `αw` selects the same action as the agent facing the unscaled environment with weight `w`, at every belief. Consequently the closed-loop policies coincide, the induced usage distributions are identical, and
+
+```text
+U_α(αw) = U(w)   exactly (not just in expectation).
+```
+
+**Proof.** For any plan, the `α`-scaled value is `α·(pragmatic sum) + αw·(IG sum) = α·[pragmatic sum + w·IG sum]`, i.e. `α` times the unscaled value. Positive scaling preserves the argmax set; A1 breaks any ties identically. By induction over decision points the closed-loop policies are equal, and since the environment stochasticity is the same, so are the trajectory and usage distributions. ∎
+
+**Corollaries.**
+1. Curve collapse is a theorem for the implemented agent: `U` plotted against `w/α` is the same curve at every scale. The empirical 2·SE collapse (Diagnosis, Bandit) measures Monte Carlo noise only, which is why it HOLDs.
+2. Crossing brackets rescale as sets: `w*(B; α) = α · w*(B; 1)`, including at gap budgets where `w*` is interval-valued.
+3. Fixed `w = 1` at scale `α` is behaviorally identical to `w = 1/α` at scale 1. The implicit EFE budget therefore drifts with scale as `B_EFE(α) = U(1/α)`. This is the precise sense in which the canonical weight is not scale-invariant.
+
+### Proposition PI-2 (monotone comparative statics for exact maximizers)
+
+Let `Π` be any fixed set of plans or policies. For `w ≥ 0` let `π_w ∈ argmax_{π∈Π} R(π) + w·I(π)`, where `I` is cumulative expected information gain. Then for `w₂ > w₁`:
+
+```text
+I(π_{w₂}) ≥ I(π_{w₁})    and    R(π_{w₂}) ≤ R(π_{w₁}).
+```
+
+**Proof** (interchange argument). Optimality of `π_{w₁}` at `w₁` and of `π_{w₂}` at `w₂` gives `R(π_{w₁}) + w₁ I(π_{w₁}) ≥ R(π_{w₂}) + w₁ I(π_{w₂})` and `R(π_{w₂}) + w₂ I(π_{w₂}) ≥ R(π_{w₁}) + w₂ I(π_{w₁})`. Adding yields `(w₂ − w₁)(I(π_{w₂}) − I(π_{w₁})) ≥ 0`, so `I` is nondecreasing. Substituting back into the first inequality gives `R(π_{w₁}) − R(π_{w₂}) ≥ w₁ (I(π_{w₂}) − I(π_{w₁})) ≥ 0`. ∎
+
+**Scope, stated honestly.** The proposition applies to the `H`-step plan chosen at each fixed belief (`Π` = depth-`H` plans). Two gaps separate it from clean monotonicity of the count-usage staircase: (i) the monotone quantity is cumulative information gain, not the observation count, and the two can locally disagree (a cheaper low-IG observation pattern versus fewer high-IG ones); (ii) receding-horizon re-planning composes plan choices across steps, and monotonicity does not compose automatically. Both gaps are visible in the data — the count staircases on Tiger, Diagnosis, and Tileworld are only roughly monotone — and are the reason `solve_shadow_price` defaults to grid search with step brackets rather than bisection.
+
+### Definition PI-3 (operational shadow price, set-valued)
+
+Given the usage curve `U(w)` of the Planning+IG family, define `w*(B)` as the crossing bracket `(w_lo, w_hi]` where `U` passes `B` (implementation: `crossing_bracket` in `rho_aif/budget.py`). Feasibility: budgets are achievable with `w ≥ 0` iff `U(0) ≤ B` (instrumental sensing sets a usage floor) and `B ≤ U_max` (belief saturation and episode caps set a ceiling). When `B` falls in a usage gap, `w*` is genuinely interval-valued, and randomizing per episode between the endpoint policies with probability `q = (B − U(w_lo)) / (U(w_hi) − U(w_lo))` attains expected usage exactly `B` by linearity. The need for randomization at gap budgets mirrors the CMDP fact that optimal budget-constrained policies may be randomized (Altman 1999).
+
+### Corollary PI-4 (Prop 2 thresholds are the knots of the usage staircase)
+
+In the two-state setting of the companion paper's Proposition 2 at `H = 1`, the plan set is `{commit now, observe once then commit}`, and the observe plan is preferred iff `w > w*_thresh` (the closed form in Section 4). Therefore
+
+```text
+U(w) = 1{w > w*_thresh}    exactly at H = 1 (ties broken toward commit),
+```
+
+and for any budget `B ∈ (0, 1)` the crossing bracket leaves zero exactly at `w*_thresh`: the onset boundary of the budgeted problem recovers Proposition 2's closed form as the first knot of the usage staircase. At `H = 2` the second knot is the over-observation threshold `w*_over`. For multi-step receding-horizon agents the onset can shift slightly; the horizon-4 positive-threshold Testbeds put it in `(w_thresh, 1.03·w_thresh]` (3% above), consistent with the corollary.
+
+**Numeric check**: `tests/test_budget.py::TestProp2OnsetExact` verifies the `H = 1` step directly — usage exactly 0 at `0.9·w*_thresh` and at least 1 at `1.2·w*_thresh` on the positive-threshold Testbed (`p = 0.6`, `c = 0.3`, `R = ±1`, `w*_thresh ≈ 3.44` in bits).
+
+### Non-claims (verifier cautions honored)
+
+- `w` is not the literal Lagrange multiplier of the count constraint; that multiplier is `λ` in Section 2b. PI-3 is an operational inverse, not a duality theorem.
+- No universal closed form `w*(R, γ, |S|, H)` is claimed.
+- The abstract idea of dualizing a resource constraint is prior art (Sims 2003; Matějka and McKay 2015; Altman 1999; Haarnoja et al. 2018). The claims above are specific to the Planning+IG / EFE family on this benchmark.
+
+Citation check: no new citations are introduced in this section; all references appear in the verified table at the top of this file.
+
+## 10. Implementation map
 
 | Piece | Path |
 |---|---|

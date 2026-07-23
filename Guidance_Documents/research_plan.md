@@ -832,10 +832,13 @@ Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_
 
 ## Phase: Full-Length Paper (July 23, 2026 –)
 
-**Status**: Planning document created; work not yet started
+**Status**: Stage A (budgeted rho-POMDP propositions) complete, verdict HOLD; Stages B–I pending
 **Goal**: One integrated full-length publication merging the IWAI 2026 workshop paper (EFE-as-rho, Props 1–3) with the Price of Information extension (w as operational shadow price), turning the conceded w-scale limitation into the new headline contribution. Venue deliberately open; decision gate after the science is settled.
 
 The complete plan — thesis, source-material inventory, gap analysis (new budgeted-rho-POMDP proposition, interleaved and multi-seed experiments, SARSOP/POMCPOW baseline debt, w* atlas appendix, merged related work), assembly outline for `paper/full_paper.tex`, milestones M1–M6 broken into development/experiment stages A–I with acceptance criteria, and the submission checklist (including the deferred PyPI release above) — lives in `Guidance_Documents/full_paper_plan.md`. That document is the living guide for this phase; update it with every change.
+
+### Stage A delivered (July 23, 2026)
+Formal propositions PI-1 to PI-4 drafted in `price_of_information.md` Section 9. Headline: scale equivariance (PI-1) is an exact theorem for the implemented receding-horizon Planning+IG agent — curve collapse is provable, and `B_EFE(alpha) = U(1/alpha)` gives the precise sense in which w=1 is not scale-invariant. Monotonicity (PI-2) holds exactly only for cumulative IG of exact maximizers, which formally explains the rough count staircases and the grid-plus-brackets solver default. PI-4 makes Prop 2's closed form the first knot of the H=1 usage staircase; verified by the new `TestProp2OnsetExact` unit test. No new citations. Full suite: 305 passed.
 
 ---
 
