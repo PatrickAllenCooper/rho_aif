@@ -93,15 +93,77 @@ Carry over the conventions already enforced on the arXiv paper: no prose semicol
 
 ## 6. Milestones
 
-Ordered; each milestone updates this document and commits.
+Ordered; each milestone updates this document and commits. Section 7 breaks these into concrete development/experiment stages.
 
-1. **M1 -- Theory**: budgeted rho-POMDP proposition drafted with proof or proof sketch; Prop 2 corollary derivation written (Section 3.1).
-2. **M2 -- Experiment extensions**: interleaved usage curves, multi-seed dual control, cost budgets, collapse breadth (Section 3.2, all but baselines).
-3. **M3 -- Baseline debt**: SARSOP reference runs; POMCPOW decision made and documented (Section 3.2 last item).
-4. **M4 -- Assembly**: `paper/full_paper.tex` drafted per Section 4 outline; w* atlas appendix built (Section 3.3); related work merged (Section 3.4); full citation verification pass.
-5. **M5 -- Venue decision gate**: with results in hand, choose conference cut vs journal submission; produce the derived version.
-6. **M6 -- Submission checklist**: PyPI release of `rho-aif` (TestPyPI verify, upload, tag -- the standing checklist in `research_plan.md` under "Deferred until next venue submission"), public code link and README install instructions pointed at PyPI, reproduction command table updated for every new figure and table, final compile and package.
+1. **M1 -- Theory**: budgeted rho-POMDP proposition drafted with proof or proof sketch; Prop 2 corollary derivation written (Section 3.1). Stage A.
+2. **M2 -- Experiment extensions**: interleaved usage curves, multi-seed dual control, cost budgets, collapse breadth (Section 3.2, all but baselines). Stages B-E.
+3. **M3 -- Baseline debt**: SARSOP reference runs; POMCPOW decision made and documented (Section 3.2 last item). Stage F.
+4. **M4 -- Assembly**: `paper/full_paper.tex` drafted per Section 4 outline; w* atlas appendix built (Section 3.3); related work merged (Section 3.4); full citation verification pass. Stages G-H.
+5. **M5 -- Venue decision gate**: with results in hand, choose conference cut vs journal submission; produce the derived version. Stage I.
+6. **M6 -- Submission checklist**: PyPI release of `rho-aif` (TestPyPI verify, upload, tag -- the standing checklist in `research_plan.md` under "Deferred until next venue submission"), public code link and README install instructions pointed at PyPI, reproduction command table updated for every new figure and table, final compile and package. Stage I.
 
-## 7. Document evolution
+## 7. Development and experiment stages
+
+Each stage lists its code work, experiment protocol, artifacts, and an acceptance criterion that decides a HOLD / PARTIAL / FAIL verdict. Verdicts are recorded here and mirrored in `research_plan.md`. Dependency order: Stage A is independent and can run first or in parallel with B-E; Stages B-E are mutually independent; Stage F is independent; Stage G depends on B; Stage H depends on everything before it; Stage I closes.
+
+### Stage A -- Budgeted rho-POMDP proposition (M1)
+
+- **Code work**: none required. Optional: a small script or test that numerically checks the corollary claim (onset budget equals the first bracket leaving zero) on the positive-threshold Testbeds already configured in `experiments/run_price_of_information.py`.
+- **Writing work**: draft the proposition, proof or proof sketch, and the Prop 2 corollary derivation in `Guidance_Documents/price_of_information.md` first; port to LaTeX once stable. State assumptions honestly (observe-then-commit or factored observation classes; empirical nondecreasing U(w); instrumental sensing so U(0) > 0 is possible).
+- **Acceptance**: the statement is consistent with every recorded empirical caveat (rough monotonicity, gap budgets, unachievable low budgets, usage ceiling U_max) and introduces no unverified citation.
+
+### Stage B -- Interleaved usage curves (M2)
+
+- **Code work**: `rho_aif/budget.py::estimate_usage` currently supports the `observe_then_commit` and inspection families only. Add a RockSample family that runs the depth-limited tree-search agents used in the arXiv paper's Section 5.4, counting sensing (check) actions as usage. Add unit tests mirroring `tests/test_budget.py` coverage for the new family.
+- **Protocol**: RS[5,3] at minimum (RS[7,4] if runtime allows) and Inspection-N16, log-grid of about 10 w points, 5 seeds x 50 episodes (RockSample episodes are expensive; scale down before scaling up).
+- **Artifacts**: new rows in `results/results_price_curves.csv` (or a sibling CSV), staircase figures `figures/price_staircase_rocksample*.{png,pdf}` and `figures/price_staircase_inspection_n16.{png,pdf}`.
+- **Acceptance**: crossing brackets with SEs exist for at least two canonical budgets per environment; the monotonicity verdict (rough or clean) is recorded.
+
+### Stage C -- Multi-seed dual control (M2)
+
+- **Code work**: extend `run_dual_descent` / `run_dual_reset_comparison` in `experiments/run_price_of_information.py` to sweep controller seeds (at least 10) rather than a single trajectory per configuration.
+- **Protocol**: Diagnosis, B = 8, 400 episodes, x10 reward rescale at the midpoint, decay-only vs reset-on-shift, 10+ seeds each.
+- **Artifacts**: per-seed CSV, figure with median trajectory and interquartile band, summary JSON with re-adaptation time and steady-state |U - B| as mean plus CI.
+- **Acceptance**: reset-on-shift re-adapts faster than decay-only with non-overlapping CIs, and both controllers pin usage within SE of B in steady state. If CIs overlap, report the honest verdict and keep the single-trajectory claim out of the paper's headline.
+
+### Stage D -- Cost-denominated budgets (M2)
+
+- **Code work**: the `usage_kind='cost'` path already exists end to end in `budget.py`. For a nontrivial demonstration the environment needs heterogeneous observation costs (with homogeneous costs the cost curve is a scalar multiple of the count curve); add a Diagnosis variant with per-test costs or use an existing config with unequal costs if one exists.
+- **Protocol**: one environment, cost-usage curve over the standard grid, solve w*(B_cost) at two budgets, 5 seeds x 100 episodes.
+- **Artifacts**: cost-curve CSV and figure; a short table comparing count-budget and cost-budget solutions.
+- **Acceptance**: the cost-denominated solve produces a different (and interpretable) bracket than the count-denominated one on the heterogeneous-cost variant, demonstrating the units story end to end.
+
+### Stage E -- Curve-collapse breadth (M2)
+
+- **Code work**: none; `run_scale_collapse` already parameterizes environments.
+- **Protocol**: add Tiger (and Tileworld-6x6 if runtime allows) to the alpha in {0.1, 1, 10} collapse test, same settings as the existing full battery (5 seeds x 100 episodes).
+- **Artifacts**: extended collapse figure and matched-point statistics per environment.
+- **Acceptance**: matched w/alpha points within 2 SE and coinciding crossing brackets, as already holds for Diagnosis and Bandit. A failure on a specific environment is reported as a scoped limitation, not hidden.
+
+### Stage F -- SARSOP baseline and POMCPOW decision (M3)
+
+- **Code work**: select a maintained SARSOP implementation (candidates: `pomdp_py`, the original APPL toolkit, or Julia POMDPs.jl via a thin export script); write model-export code for the discrete observe-then-commit suite.
+- **Protocol**: SARSOP reference values (expected reward, expected usage) on Tiger, Diagnosis, Bandit at matched horizons or discounting; compare EFE (w=1) and shadow-priced Planning+IG against the reference.
+- **Artifacts**: baseline table CSV and a paper table; a written go/no-go decision on POMCPOW with rationale recorded here.
+- **Acceptance**: SARSOP numbers exist for at least three environments and the deferred-baseline debt from the camera-ready replies is either retired or explicitly re-scoped with justification.
+
+### Stage G -- w* atlas appendix (M4)
+
+- **Code work**: a small driver that reuses `estimate_usage_curve` and `crossing_bracket` over all `rho_aif/benchmark.py` configs plus the Stage B interleaved settings.
+- **Protocol**: implicit budgets B_EFE = U(w=1) with SEs and crossing brackets at two canonical budgets per instance; five instances already have B_EFE numbers (Tiger 4.21, Diagnosis 9.68, Bandit 5.03, Tileworld-6x6 14.83, Inspection-N8 18.24).
+- **Artifacts**: appendix table (LaTeX) plus backing CSV committed to `results/`.
+- **Acceptance**: every benchmark instance has a row; no meta-model claims.
+
+### Stage H -- Paper assembly (M4)
+
+- **Work**: create `paper/full_paper.tex` per the Section 4 outline, merging the two sources without editing them in place; merge related work per Section 3.4; write the new experiment sections from Stages B-F; build the atlas appendix from Stage G; run the full citation verification pass (every entry checked against publisher or arXiv record, results recorded here).
+- **Acceptance**: the master compiles standalone, every table and figure has a reproduction command in the README mapping, and the writing conventions in Section 5 hold throughout.
+
+### Stage I -- Venue gate and submission (M5-M6)
+
+- **Work**: with all verdicts in hand, decide conference cut (8-10 pages plus appendix) vs journal; produce the derived version; execute the M6 submission checklist including the PyPI release.
+- **Acceptance**: submission package verified to compile standalone; `pip install rho-aif` works from a clean venv; checklist in `research_plan.md` fully ticked.
+
+## 8. Document evolution
 
 This plan is a Guidance_Documents artifact under the project's virtuous-cycle rule: every change made toward the full paper edits this document to reflect what was done and what it changed about the plan. Verdicts (HOLD / PARTIAL / FAIL) for new experiments are recorded here and mirrored in `research_plan.md`.
