@@ -92,3 +92,4 @@ linkedin_post/
 
 # Experiment checkpoints
 checkpoint_overnight.json
+tools/sarsop/

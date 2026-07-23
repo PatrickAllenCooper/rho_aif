@@ -832,7 +832,7 @@ Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_
 
 ## Phase: Full-Length Paper (July 23, 2026 –)
 
-**Status**: Stages A–E complete (propositions, interleaved curves, multi-seed dual, cost budgets, collapse breadth), verdicts HOLD (Tileworld collapse PARTIAL, explained as budget-at-knot noise); Stages F–I pending
+**Status**: Stages A–F complete (propositions, interleaved curves, multi-seed dual, cost budgets, collapse breadth, SARSOP baseline), verdicts HOLD (Tileworld collapse PARTIAL, explained as budget-at-knot noise); Stages G–I pending
 **Goal**: One integrated full-length publication merging the IWAI 2026 workshop paper (EFE-as-rho, Props 1–3) with the Price of Information extension (w as operational shadow price), turning the conceded w-scale limitation into the new headline contribution. Venue deliberately open; decision gate after the science is settled.
 
 The complete plan — thesis, source-material inventory, gap analysis (new budgeted-rho-POMDP proposition, interleaved and multi-seed experiments, SARSOP/POMCPOW baseline debt, w* atlas appendix, merged related work), assembly outline for `paper/full_paper.tex`, milestones M1–M6 broken into development/experiment stages A–I with acceptance criteria, and the submission checklist (including the deferred PyPI release above) — lives in `Guidance_Documents/full_paper_plan.md`. That document is the living guide for this phase; update it with every change.
@@ -851,6 +851,9 @@ Heterogeneous sensing costs end to end: `DiagnosisEnv(test_costs=[0.5, 2.5])`, `
 
 ### Stage E delivered (July 23, 2026)
 Collapse test extended to Tiger (B=4) and Tileworld-6x6 (B=15) via `make_scaled_tiger`/`make_scaled_tileworld` and per-env scale budgets. Diagnosis/Bandit re-confirm (100% within 2·SE, brackets coincide). Tiger passes trivially: usage flat ~4.2 over w/α∈[0,20] — instrumental sensing saturates, no usable budget dial there (paper-worthy caveat). Tileworld **PARTIAL**: 90% within 2·SE; α=10 bracket adjacent to α∈{0.1,1} bracket sharing knot w/α=5.8 where U straddles B=15 within one SE — budget-at-knot noise, consistent with the PI-1 theorem. Since PI-1 proves collapse exactly, the empirical test is now a sanity check, not primary evidence.
+
+### Stage F delivered (July 23, 2026)
+SARSOP baseline debt retired. APPL `pomdpsol` built from source (`tools/build_sarsop.sh`, four patches for modern clang/Apple Silicon); `experiments/run_sarsop_baseline.py` exports the OTC suite to .pomdp, solves to 1e-3, and evaluates the alpha-vector policy through `run_otc_episode`. Verdict **HOLD**: EFE (w=1) is statistically indistinguishable from the SARSOP near-optimal reference on all three OTC benchmarks — identical action-for-action on Tiger (5.061±0.158), within 0.6 SE on Diagnosis (−1.217±0.184 vs −1.452±0.336), within noise on Bandit (6.261±0.112 vs 6.280±0.134). POMCPOW: NO-GO — it targets continuous spaces (Sunberg and Kochenderfer, ICAPS 2018, verified); our discrete suite is covered by SARSOP plus the existing POMCP RockSample baselines. Artifacts: `results/results_sarsop_baseline.{csv,json}`, `results/sarsop_models/`, `tests/test_sarsop_export.py`. Full suite: 315 passed.
 
 ---
 
