@@ -72,5 +72,42 @@
     "RS[5,3]",
     "RS[7,4]",
     "Inspection-N16"
-  ]
+  ],
+  "dual_ms_n_seeds": 10,
+  "dual_ms_readapt_decay": {
+    "mean": 126.75,
+    "ci_lo": 90.50371881144218,
+    "ci_hi": 162.99628118855782,
+    "n_recovered": 8,
+    "n_total": 10
+  },
+  "dual_ms_pre_err_decay": {
+    "mean": 0.039999999999999855,
+    "ci_lo": 0.006943657525706366,
+    "ci_hi": 0.07305634247429335
+  },
+  "dual_ms_post_err_decay": {
+    "mean": 0.4999999999999997,
+    "ci_lo": 0.14124919945888748,
+    "ci_hi": 0.858750800541112
+  },
+  "dual_ms_readapt_reset": {
+    "mean": 53.3,
+    "ci_lo": 48.65214056437446,
+    "ci_hi": 57.94785943562553,
+    "n_recovered": 10,
+    "n_total": 10
+  },
+  "dual_ms_pre_err_reset": {
+    "mean": 0.0919999999999999,
+    "ci_lo": 0.04234666666666657,
+    "ci_hi": 0.14165333333333324
+  },
+  "dual_ms_post_err_reset": {
+    "mean": 0.10799999999999974,
+    "ci_lo": 0.06578030791206509,
+    "ci_hi": 0.1502196920879344
+  },
+  "dual_ms_cis_disjoint": true,
+  "dual_multiseed_rows": 8000
 }

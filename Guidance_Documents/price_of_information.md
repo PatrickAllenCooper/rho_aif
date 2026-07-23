@@ -135,6 +135,8 @@ w ← max(0, w + η_t (B − U_episode))
 
 **Shift-aware reset** (optional, `reset_window` set): when `η_t < η0/2` and the last `reset_window` usages have `|mean − B| > max(k·SE, abs_floor)`, set `t ← 0` (restore `η_t` to `η0`) and cool down for one window. Experiment defaults: window=20, k=3, abs_floor=0.5. Result on Diagnosis ×10 mid-run rescale: re-adaptation 157 (decay-only) vs 45 (reset); single reset at episode 217. Figure: `figures/price_dual_reset.{png,pdf}`.
 
+**Multi-seed confirmation (Stage C, July 23, 2026):** 10 controller seeds per variant on the same protocol. Re-adaptation 53.3 episodes, 95% CI [48.7, 57.9] (reset, 10/10 recovered, one reset each) vs 126.8, CI [90.5, 163.0] (decay-only, 8/10 recovered — two seeds never re-adapted within the run). CIs disjoint. Post-rescale steady-state `|U − B|`: 0.11 vs 0.50. Figure: `figures/price_dual_multiseed.{png,pdf}`.
+
 This mirrors SAC's dual temperature update (Haarnoja et al., 2018, arXiv:1812.05905), with sensing usage in place of policy entropy and `B` in place of the target entropy. Implementation: `rho_aif/agents/dual_descent.py::DualWeightAgent`.
 
 Sign note: an update written as `w ← w + η (U − B)` has the wrong sign for an upper-bound usage target when `w` encourages sensing. The code uses `(B − U)`.

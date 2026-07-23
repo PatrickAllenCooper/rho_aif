@@ -832,7 +832,7 @@ Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_
 
 ## Phase: Full-Length Paper (July 23, 2026 –)
 
-**Status**: Stages A (propositions) and B (interleaved usage curves) complete, both verdict HOLD; Stages C–I pending
+**Status**: Stages A (propositions), B (interleaved usage curves), C (multi-seed dual control) complete, all verdict HOLD; Stages D–I pending
 **Goal**: One integrated full-length publication merging the IWAI 2026 workshop paper (EFE-as-rho, Props 1–3) with the Price of Information extension (w as operational shadow price), turning the conceded w-scale limitation into the new headline contribution. Venue deliberately open; decision gate after the science is settled.
 
 The complete plan — thesis, source-material inventory, gap analysis (new budgeted-rho-POMDP proposition, interleaved and multi-seed experiments, SARSOP/POMCPOW baseline debt, w* atlas appendix, merged related work), assembly outline for `paper/full_paper.tex`, milestones M1–M6 broken into development/experiment stages A–I with acceptance criteria, and the submission checklist (including the deferred PyPI release above) — lives in `Guidance_Documents/full_paper_plan.md`. That document is the living guide for this phase; update it with every change.
@@ -842,6 +842,9 @@ Formal propositions PI-1 to PI-4 drafted in `price_of_information.md` Section 9.
 
 ### Stage B delivered (July 23, 2026)
 `estimate_usage` gained a `rocksample` family (depth-limited `RockSampleTreeSearchAgent`, check actions as usage); new `--only interleaved` protocol in `run_price_of_information.py`. Full run: RS[5,3], RS[7,4], Inspection-N16, four bracketed budgets each with SEs. Verdict **HOLD**, and stronger than the OTC battery: U(w) is cleanly nondecreasing at every sampled point on all three interleaved settings (no local dips). Instrumental floors are large (RS[5,3] 3.81, RS[7,4] 2.00, Inspection-N16 22.42 checks at w=0). Artifacts: `results/results_price_interleaved_{curves,prices}.csv`, `figures/price_staircase_interleaved.{png,pdf}`. Full suite: 307 passed.
+
+### Stage C delivered (July 23, 2026)
+`run_dual_multiseed` (`--only dual-multiseed`) sweeps 10 controller seeds per variant on the Diagnosis ×10 mid-run rescale protocol. Verdict **HOLD** with disjoint 95% CIs: re-adaptation reset-on-shift 53.3 [48.7, 57.9] (10/10 recovered, one reset each) vs decay-only 126.8 [90.5, 163.0] (8/10 recovered — two seeds never re-adapted). Post-rescale steady-state |U−B|: 0.11 vs 0.50. Artifacts: `results/results_price_dual_multiseed{,_metrics}.csv`, `figures/price_dual_multiseed.{png,pdf}`.
 
 ---
 

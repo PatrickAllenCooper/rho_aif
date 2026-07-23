@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Sequence, Tuple
@@ -807,6 +808,8 @@ def run_dual_descent(
     reset_window: Optional[int] = None,
     reset_k: float = 3.0,
     variant: str = "decay",
+    ref=None,
+    verbose: bool = True,
 ) -> Tuple[pd.DataFrame, DualWeightAgent]:
     np.random.seed(seed)
     env = make_scaled_diagnosis(1.0)
@@ -821,21 +824,23 @@ def run_dual_descent(
         reset_window=reset_window,
         reset_k=reset_k,
     )
-    # Reference from a quick curve
-    ref_curve = estimate_usage_curve(
-        env,
-        w_grid=make_log_w_grid(0.0, 50.0, 10),
-        seeds=[seed],
-        num_episodes=max(20, n_episodes // 20),
-        planning_horizon=3,
-    )
-    ref = solve_shadow_price_from_curve(ref_curve, budget=budget, tol=1.0)
+    if ref is None:
+        # Reference from a quick curve
+        ref_curve = estimate_usage_curve(
+            env,
+            w_grid=make_log_w_grid(0.0, 50.0, 10),
+            seeds=[seed],
+            num_episodes=max(20, n_episodes // 20),
+            planning_horizon=3,
+        )
+        ref = solve_shadow_price_from_curve(ref_curve, budget=budget, tol=1.0)
     rows = []
-    print(
-        f"\n=== Dual descent Diagnosis ({variant})  B={budget}  lr0={lr}  "
-        f"decay={lr_decay}  reset_window={reset_window}  curve w*≈{ref.w_star:.4g} ===",
-        flush=True,
-    )
+    if verbose:
+        print(
+            f"\n=== Dual descent Diagnosis ({variant})  B={budget}  lr0={lr}  "
+            f"decay={lr_decay}  reset_window={reset_window}  curve w*≈{ref.w_star:.4g} ===",
+            flush=True,
+        )
     for t in range(n_episodes):
         if rescale_at is not None and t == rescale_at:
             env = make_scaled_diagnosis(rescale_factor)
@@ -867,7 +872,8 @@ def run_dual_descent(
             agent._n_updates = old_n
             agent._w_sum = old_sum
             agent._cooldown_remaining = old_cooldown
-            print(f"  t={t}: rescale rewards ×{rescale_factor}, keep w={cur_w:.4g}", flush=True)
+            if verbose:
+                print(f"  t={t}: rescale rewards ×{rescale_factor}, keep w={cur_w:.4g}", flush=True)
 
         result = run_otc_episode(agent, env)
         u = usage_value(episode_sensing_usage(result), "count")
@@ -888,7 +894,7 @@ def run_dual_descent(
                 "n_resets": len(agent.reset_events),
             }
         )
-        if (t + 1) % max(1, n_episodes // 10) == 0:
+        if verbose and (t + 1) % max(1, n_episodes // 10) == 0:
             recent = np.mean([r["usage"] for r in rows[-20:]])
             print(
                 f"  t={t+1}/{n_episodes}  w={new_w:.4g}  w_avg={agent.w_avg:.4g}  "
@@ -1098,6 +1104,184 @@ def plot_dual_reset(
 
 
 # ---------------------------------------------------------------------------
+# 4c. Multi-seed dual control (Stage C of the full-paper plan)
+# ---------------------------------------------------------------------------
+
+def _mean_ci(values: Sequence[float]) -> Tuple[float, float, float]:
+    """Mean and normal-approximation 95% CI half-width; (mean, lo, hi)."""
+    arr = np.asarray([v for v in values if v is not None and np.isfinite(v)], dtype=float)
+    if arr.size == 0:
+        return float("nan"), float("nan"), float("nan")
+    m = float(arr.mean())
+    if arr.size == 1:
+        return m, m, m
+    half = 1.96 * float(arr.std(ddof=1)) / math.sqrt(arr.size)
+    return m, m - half, m + half
+
+
+def run_dual_multiseed(
+    n_episodes: int,
+    budget: float,
+    lr: float,
+    lr_decay: float,
+    rescale_at: int,
+    rescale_factor: float,
+    controller_seeds: Sequence[int],
+    reset_window: int = 20,
+    reset_k: float = 3.0,
+    steady_window: int = 50,
+) -> Tuple[pd.DataFrame, dict]:
+    """
+    Stage C: sweep controller seeds for decay-only vs reset-on-shift dual
+    control. Reports per-seed re-adaptation times and steady-state usage
+    error with 95% CIs.
+    """
+    env = make_scaled_diagnosis(1.0)
+    ref_curve = estimate_usage_curve(
+        env,
+        w_grid=make_log_w_grid(0.0, 50.0, 10),
+        seeds=[42],
+        num_episodes=30,
+        planning_horizon=3,
+    )
+    ref = solve_shadow_price_from_curve(ref_curve, budget=budget, tol=1.0)
+
+    all_rows: List[pd.DataFrame] = []
+    per_seed: List[dict] = []
+    for variant, window in (("decay", None), ("reset", reset_window)):
+        for s in controller_seeds:
+            df, agent = run_dual_descent(
+                n_episodes=n_episodes,
+                budget=budget,
+                lr=lr,
+                lr_decay=lr_decay,
+                rescale_at=rescale_at,
+                rescale_factor=rescale_factor,
+                seed=int(s),
+                reset_window=window,
+                reset_k=reset_k,
+                variant=variant,
+                ref=ref,
+                verbose=False,
+            )
+            df["controller_seed"] = int(s)
+            all_rows.append(df)
+            usages = df["usage"].to_numpy(dtype=float)
+            pre_err = abs(float(np.mean(usages[rescale_at - steady_window : rescale_at])) - budget)
+            post_err = abs(float(np.mean(usages[-steady_window:])) - budget)
+            readapt = readaptation_episodes(df, rescale_at)
+            per_seed.append(
+                {
+                    "variant": variant,
+                    "controller_seed": int(s),
+                    "readapt": readapt,
+                    "pre_steady_err": pre_err,
+                    "post_steady_err": post_err,
+                    "n_resets": len(agent.reset_events),
+                }
+            )
+            print(
+                f"  [{variant} seed={s}] readapt={readapt}  "
+                f"pre_err={pre_err:.2f}  post_err={post_err:.2f}  "
+                f"resets={len(agent.reset_events)}",
+                flush=True,
+            )
+        # Incremental save after each variant completes
+        pd.concat(all_rows, ignore_index=True).to_csv(
+            RESULTS / "results_price_dual_multiseed.csv", index=False
+        )
+
+    combined = pd.concat(all_rows, ignore_index=True)
+    seed_df = pd.DataFrame(per_seed)
+    metrics: dict = {"dual_ms_n_seeds": len(list(controller_seeds))}
+    for variant in ("decay", "reset"):
+        sub = seed_df[seed_df["variant"] == variant]
+        readapts = sub["readapt"].tolist()
+        recovered = [r for r in readapts if r is not None and np.isfinite(r)]
+        m, lo, hi = _mean_ci(recovered)
+        metrics[f"dual_ms_readapt_{variant}"] = {
+            "mean": m,
+            "ci_lo": lo,
+            "ci_hi": hi,
+            "n_recovered": len(recovered),
+            "n_total": len(readapts),
+        }
+        for phase in ("pre", "post"):
+            m2, lo2, hi2 = _mean_ci(sub[f"{phase}_steady_err"].tolist())
+            metrics[f"dual_ms_{phase}_err_{variant}"] = {
+                "mean": m2,
+                "ci_lo": lo2,
+                "ci_hi": hi2,
+            }
+    d = metrics["dual_ms_readapt_decay"]
+    r = metrics["dual_ms_readapt_reset"]
+    metrics["dual_ms_cis_disjoint"] = bool(
+        np.isfinite(d["ci_lo"]) and np.isfinite(r["ci_hi"]) and r["ci_hi"] < d["ci_lo"]
+    )
+    print(
+        f"\n=== Multi-seed dual: readapt decay {d['mean']:.1f} "
+        f"[{d['ci_lo']:.1f},{d['ci_hi']:.1f}] ({d['n_recovered']}/{d['n_total']} recovered)  "
+        f"vs reset {r['mean']:.1f} [{r['ci_lo']:.1f},{r['ci_hi']:.1f}] "
+        f"({r['n_recovered']}/{r['n_total']})  disjoint={metrics['dual_ms_cis_disjoint']} ===",
+        flush=True,
+    )
+    seed_df.to_csv(RESULTS / "results_price_dual_multiseed_metrics.csv", index=False)
+    return combined, metrics
+
+
+def plot_dual_multiseed(df: pd.DataFrame, path: Path, roll: int = 20) -> None:
+    """Median trajectory with interquartile band per variant."""
+    fig, axes = plt.subplots(2, 2, figsize=(10.5, 6.0), sharex="col")
+    variants = [("decay", "Decay only"), ("reset", "Reset on shift")]
+    budget = float(df["budget"].iloc[0])
+    for col, (variant, title) in enumerate(variants):
+        sub = df[df["variant"] == variant]
+        if sub.empty:
+            continue
+        ax_w, ax_u = axes[0, col], axes[1, col]
+        w_piv = sub.pivot_table(index="episode", columns="controller_seed", values="weight")
+        u_piv = sub.pivot_table(index="episode", columns="controller_seed", values="usage")
+        u_roll = u_piv.rolling(roll, min_periods=1).mean()
+        eps = w_piv.index.to_numpy()
+
+        ax_w.plot(eps, w_piv.median(axis=1), color="C0", lw=1.8, label="median w")
+        ax_w.fill_between(
+            eps,
+            w_piv.quantile(0.25, axis=1),
+            w_piv.quantile(0.75, axis=1),
+            color="C0",
+            alpha=0.25,
+            label="IQR",
+        )
+        ax_u.plot(eps, u_roll.median(axis=1), color="C0", lw=1.8, label=f"median usage (roll-{roll})")
+        ax_u.fill_between(
+            eps,
+            u_roll.quantile(0.25, axis=1),
+            u_roll.quantile(0.75, axis=1),
+            color="C0",
+            alpha=0.25,
+            label="IQR",
+        )
+        ax_u.axhline(budget, color="C1", ls="--", label="budget B")
+        if sub["rescaled"].any():
+            t0 = int(sub.loc[sub["rescaled"], "episode"].iloc[0])
+            ax_w.axvline(t0, color="gray", ls=":", label="rescale")
+            ax_u.axvline(t0, color="gray", ls=":")
+        ax_w.set_title(title)
+        ax_w.set_ylabel("Weight w")
+        ax_w.legend(fontsize=7)
+        ax_w.grid(True, alpha=0.3)
+        ax_u.set_xlabel("Episode")
+        ax_u.set_ylabel("Usage")
+        ax_u.legend(fontsize=7)
+        ax_u.grid(True, alpha=0.3)
+    fig.suptitle("Multi-seed dual control after reward rescale (median, IQR)")
+    fig.tight_layout()
+    _savefig(fig, path)
+    plt.close(fig)
+
+
+# ---------------------------------------------------------------------------
 # 5. Implicit EFE budget B(w=1)
 # ---------------------------------------------------------------------------
 
@@ -1150,7 +1334,7 @@ def parse_args() -> argparse.Namespace:
         "--only",
         nargs="*",
         default=None,
-        help="Subset: curves interleaved scale prop2 dual dual-reset efe",
+        help="Subset: curves interleaved scale prop2 dual dual-reset dual-multiseed efe",
     )
     p.add_argument(
         "--replot",
@@ -1191,6 +1375,7 @@ def main() -> None:
         interleaved_grid = 10
         interleaved_episodes_by_env = {"RS[7,4]": 30}
         interleaved_grid_by_env = {"RS[7,4]": 8}
+        dual_ms_seeds = 10
     else:
         seeds = [42, 123, 456]
         ep = 40
@@ -1209,6 +1394,7 @@ def main() -> None:
         interleaved_grid = 6
         interleaved_episodes_by_env = {}
         interleaved_grid_by_env = {}
+        dual_ms_seeds = 3
 
     summary: dict = {
         "mode": args.mode,
@@ -1441,6 +1627,30 @@ def main() -> None:
         summary["dual_readapt_reset"] = metrics["dual_readapt_reset"]
         summary["dual_reset_events"] = metrics["dual_reset_events"]
         summary["dual_reset_rows"] = len(combined)
+
+    if "dual-multiseed" in only:
+        ms_csv = RESULTS / "results_price_dual_multiseed.csv"
+        rescale_at = dual_episodes // 2
+        if args.replot and ms_csv.exists():
+            ms_df = pd.read_csv(ms_csv)
+            print("\n=== Multi-seed dual (replot from saved CSV) ===", flush=True)
+            ms_metrics = {}
+        else:
+            controller_seeds = list(range(101, 101 + dual_ms_seeds))
+            ms_df, ms_metrics = run_dual_multiseed(
+                n_episodes=dual_episodes,
+                budget=dual_budget,
+                lr=dual_lr0,
+                lr_decay=dual_decay,
+                rescale_at=rescale_at,
+                rescale_factor=10.0,
+                controller_seeds=controller_seeds,
+                reset_window=20,
+                reset_k=3.0,
+            )
+        plot_dual_multiseed(ms_df, FIGURES / "price_dual_multiseed.png")
+        summary.update(ms_metrics)
+        summary["dual_multiseed_rows"] = len(ms_df)
 
     if "efe" in only and not args.replot:
         df = run_implicit_efe_budget(env_names, seeds, ep)
