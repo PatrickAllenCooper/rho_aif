@@ -169,12 +169,13 @@ Each stage lists its code work, experiment protocol, artifacts, and an acceptanc
 - **POMCPOW decision: NO-GO.** POMCPOW exists to handle continuous state, action, and observation spaces via observation widening and weighted particle filtering (Sunberg and Kochenderfer, ICAPS 2018, 28(1):259-263, DOI 10.1609/icaps.v28i1.13882 -- verified against the AAAI proceedings page July 23, 2026). Every benchmark in this paper is a small discrete POMDP: SARSOP provides a near-optimal reference there, and discrete POMCP is already among the RockSample baselines. Adding POMCPOW would require building continuous-observation benchmark variants, which none of the paper's claims need. If a reviewer asks, this rationale plus the SARSOP table is the response.
 - **Citation check**: SARSOP -- Kurniawati, Hsu, and Lee, "SARSOP: Efficient point-based POMDP planning by approximating optimally reachable belief spaces," RSS 2008 (verified via the official AdaCompNUS/sarsop repository and roboticsproceedings.org). POMCPOW -- verified above. Both must be added to the paper's bibliography during Stage H with these records.
 
-### Stage G -- w* atlas appendix (M4)
+### Stage G -- w* atlas appendix (M4) -- DONE, verdict HOLD
 
 - **Code work**: a small driver that reuses `estimate_usage_curve` and `crossing_bracket` over all `rho_aif/benchmark.py` configs plus the Stage B interleaved settings.
 - **Protocol**: implicit budgets B_EFE = U(w=1) with SEs and crossing brackets at two canonical budgets per instance; five instances already have B_EFE numbers (Tiger 4.21, Diagnosis 9.68, Bandit 5.03, Tileworld-6x6 14.83, Inspection-N8 18.24).
 - **Artifacts**: appendix table (LaTeX) plus backing CSV committed to `results/`.
 - **Acceptance**: every benchmark instance has a row; no meta-model claims.
+- **Outcome (July 23, 2026)**: `experiments/run_w_atlas.py` reuses the saved full-battery and interleaved curves and measures fresh B_EFE = U(1) for the three interleaved instances (w=1 is not on their log grid): RS[5,3] 4.90 +- 0.08, RS[7,4] 5.49 +- 0.14, Inspection-N16 33.46 +- 0.19. All eight instances have rows (Tiger, Diagnosis, Bandit, Tileworld-6x6, Inspection-N8, Inspection-N16, RS[5,3], RS[7,4]) with usage range, B_EFE +- SE, and two canonical-budget brackets. Tiger's low budget is honestly unbracketed (flat usage curve, consistent with Stage E). The LaTeX caption states brackets are set-valued per Definition PI-3 and explicitly disclaims any closed-form meta-model. Artifacts: `results/results_w_atlas.csv`, `paper/tables/w_atlas.tex` (auto-generated, do-not-edit header).
 
 ### Stage H -- Paper assembly (M4)
 
