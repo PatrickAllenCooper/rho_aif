@@ -19,8 +19,10 @@ Shadow-price staircases remain supporting (report brackets + SEs; local non-mono
 | Discrete-choice rational inattention yields (generalized) multinomial logit; costly information acquisition before choice | Matějka, F., and McKay, A. (2015). Rational inattention to discrete choices: A new foundation for the multinomial logit model. *American Economic Review*, 105(1), 272–298. DOI: 10.1257/aer.20130047 |
 | Soft Actor-Critic with constrained formulation that automatically tunes the entropy temperature by dual gradient descent | Haarnoja, T., Zhou, A., Hartikainen, K., Tucker, G., Ha, S., Tan, J., Kumar, V., Zhu, H., Gupta, A., Abbeel, P., and Levine, S. (2018). Soft Actor-Critic Algorithms and Applications. arXiv:1812.05905. (This is the applications / auto-temperature paper. The earlier ICML 2018 paper introduces SAC with a fixed temperature and does **not** contain the dual auto-tuning rule.) |
 | Constrained MDPs: Lagrangian / dual LP treatment of expected-cost constraints | Altman, E. (1999). *Constrained Markov Decision Processes*. Chapman & Hall/CRC. |
+| Stochastic approximation converges to the root of a monotone regression function under Robbins-Monro step-size conditions (`Σaₜ=∞`, `Σaₜ²<∞`) | Robbins, H., and Monro, S. (1951). A stochastic approximation method. *Annals of Mathematical Statistics*, 22(3), 400–407. DOI: 10.1214/aoms/1177729586 |
+| Extension of the Robbins-Monro convergence theorem to a broader class of noisy monotone update schemes, giving almost-sure convergence under weaker conditions | Blum, J. R. (1954). Approximation methods which converge with probability one. *Annals of Mathematical Statistics*, 25(3), 382–386. DOI: 10.1214/aoms/1177728794 |
 
-Check step: each row above was verified against the publisher / arXiv record on 2026-07-22 (Altman verified via publisher record / author PDF). Do not cite the ICML SAC paper alone for automatic temperature tuning.
+Check step: each row above was verified against the publisher / arXiv record on 2026-07-22 (Altman verified via publisher record / author PDF; Robbins-Monro and Blum verified against the Project Euclid / JSTOR record on 2026-07-23 ahead of Proposition PI-5). Do not cite the ICML SAC paper alone for automatic temperature tuning.
 
 ## 1. Budgeted problem
 
@@ -171,7 +173,7 @@ What this project contributes:
 
 ## 9. Formal propositions (Stage A draft for the full paper)
 
-Drafted here first per the Stage A protocol in `full_paper_plan.md`; port to LaTeX during assembly (Stage H). Numbering PI-1..PI-4 is provisional. Every statement below is checked against the recorded empirical caveats: rough monotonicity, gap budgets, unachievable low budgets, and the usage ceiling.
+Drafted here first per the Stage A protocol in `full_paper_plan.md`; port to LaTeX during assembly (Stage H). Numbering PI-1..PI-5 is provisional. Every statement below is checked against the recorded empirical caveats: rough monotonicity, gap budgets, unachievable low budgets, and the usage ceiling.
 
 ### Setting and assumptions
 
@@ -222,6 +224,23 @@ U(w) = 1{w > w*_thresh}    exactly at H = 1 (ties broken toward commit),
 and for any budget `B ∈ (0, 1)` the crossing bracket leaves zero exactly at `w*_thresh`: the onset boundary of the budgeted problem recovers Proposition 2's closed form as the first knot of the usage staircase. At `H = 2` the second knot is the over-observation threshold `w*_over`. For multi-step receding-horizon agents the onset can shift slightly; the horizon-4 positive-threshold Testbeds put it in `(w_thresh, 1.03·w_thresh]` (3% above), consistent with the corollary.
 
 **Numeric check**: `tests/test_budget.py::TestProp2OnsetExact` verifies the `H = 1` step directly — usage exactly 0 at `0.9·w*_thresh` and at least 1 at `1.2·w*_thresh` on the positive-threshold Testbed (`p = 0.6`, `c = 0.3`, `R = ±1`, `w*_thresh ≈ 3.44` in bits).
+
+### Proposition PI-5 (dual-controller convergence and nonstationary tracking)
+
+Added July 23, 2026 per Phase 4.1 of the review-fix plan, addressing the gap between the offline `w*(B)` solve above and the online `DualWeightAgent` controller actually run in Stages C and the price-of-information dual experiments.
+
+**Stationary statement.** Suppose the expected usage function `Ū(w) = E[usage | w]` is continuous and strictly increasing on an interval containing the target budget `B` (a stronger, idealized assumption than the empirical staircase — see the caveat below), and the controller updates `w_{t+1} = Π_{[0,∞)}[w_t + a_t (usage_t − B)]` where `usage_t` is a noisy, bounded, unbiased (or asymptotically unbiased) sample of `Ū(w_t)` and the step sizes satisfy the Robbins-Monro conditions `Σ_t a_t = ∞` and `Σ_t a_t² < ∞` (Robbins and Monro 1951). Then `w_t → w*(B)` in probability, where `w*(B)` is the unique root of `Ū(w) = B` on that interval. Under the further conditions of Blum (1954) (bounded noise variance and a mild regularity condition on `Ū`), the convergence strengthens to almost sure convergence.
+
+**Proof sketch.** This is the classical Robbins-Monro stochastic-approximation result specialized to a one-dimensional monotone root-finding problem: `Ū(w) − B` is a monotone regression function crossing zero exactly at `w*(B)` by the strict-monotonicity assumption, the projection onto `[0,∞)` keeps the iterate in the domain where monotonicity holds, and the step-size conditions are exactly the Robbins-Monro hypotheses. No new proof is offered here beyond specializing the cited theorems; the contribution is the specialization and the connection to the budgeted rho-POMDP setting, not a new convergence result.
+
+**Why this is a stationary theorem, not a description of the implemented controller.** Two of its premises are false for the family studied in this paper, and both failures are already recorded above: (i) `Ū(w)` is empirically a step function with local non-monotone dips (Tiger, Diagnosis, Tileworld staircases; PI-2's scope note explains why exact monotonicity is not automatic), not a continuous strictly increasing function, so the root `w*(B)` may not be unique and can instead be a crossing bracket (Definition PI-3); (ii) the reward-rescale experiments (Stage C) deliberately move the target regression function `Ū` mid-run, violating stationarity outright. Consequently:
+
+1. **Decaying-step-size controllers** (`a_t → 0` satisfying the Robbins-Monro conditions) are the theoretically justified choice only while the environment and reward scale are fixed, and even then convergence is to a bracket rather than a point when `Ū` has a flat segment at `B`.
+2. **Reset-on-shift** (Stage C's `lr` reset mechanism, triggered when a rolling window of usage departs from `B` beyond a tolerance) is an empirical nonstationary-tracking heuristic, not an instance of the stationary theorem above: it deliberately violates `a_t → 0` by re-inflating the step size after a detected shift, trading the stationary theorem's asymptotic guarantee for faster re-adaptation under a nonstationary target. Stage C's 10-seed result (reset-on-shift re-adapts in 53.3 episodes, 95% CI [48.7, 57.9], vs. decay-only's 126.8, CI [90.5, 163.0], with 8/10 decay-only seeds never re-adapting inside the 200-episode post-rescale window) is reported as exactly this: an empirical nonstationary-tracking comparison, not a violation or extension of the Robbins-Monro theorem.
+
+**Connection to Stage C.** The pre-rescale and post-rescale steady states in Stage C's multi-seed sweep are each individually consistent with the stationary statement (the controller settles near the offline crossing bracket at each fixed scale, per the full-battery verdict at the top of this file), while the transition between them is governed by the reset-on-shift heuristic rather than the theorem. This is the precise, honest division the paper reports: a proved stationary convergence statement plus a measured nonstationary tracking mechanism, not one theorem covering both regimes.
+
+Citation check: Robbins and Monro (1951) and Blum (1954) verified against the Project Euclid record on 2026-07-23 (added to the citation-check table at the top of this file).
 
 ### Non-claims (verifier cautions honored)
 
