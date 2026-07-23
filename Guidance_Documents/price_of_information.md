@@ -7,7 +7,7 @@
 ### Full-battery verdicts (see `research_plan.md` for detail)
 1. **Curve collapse HOLD** — `U` vs `w/α` collapses across α∈{0.1,1,10} on Diagnosis and Bandit (100% of matched points within 2·SE). Crossing brackets in `w/α` units **coincide** across scales (set-valued shadow price at gap budgets); do not report point-valued `w*(B)` alone when `B` sits in a usage gap.
 2. **Prop 2 onset HOLD** — refined grid: onset bracket `(w_thresh, 1.03·w_thresh]` on both positive-threshold Testbeds (upper relative error 3%); `U=0` at and below `w_thresh`.
-3. **Dual rescale HOLD** — usage pinned at `B=8.1`; after ×10 reward rescale, windowed `w` ratio ≈9.3. Re-adaptation takes ~150 episodes under lr decay (trade-off for steady-state stability). Dual figure shows the Diagnosis α=1 crossing bracket, not a misleading point `w*`.
+3. **Dual rescale HOLD** — usage pinned at `B=8.1`; after ×10 reward rescale, windowed `w` ratio ≈9.3. Stronger set-valued agreement: pre-rescale `w=0.29` lies inside the offline crossing bracket `(0.141, 0.323]`, and post-rescale `w=2.71` lies inside the ×10-scaled bracket `(1.41, 3.23]` — the controller lands in the offline solution set at both scales. Re-adaptation takes ~150 episodes under lr decay (trade-off for steady-state stability).
 
 Shadow-price staircases remain supporting (report brackets + SEs; local non-monotonicity persists on Tiger/Diagnosis/Tileworld).
 
