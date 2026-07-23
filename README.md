@@ -133,8 +133,18 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | Core results (Tiger, Diagnosis, Bandit) | `python experiments/run_experiment.py all` |
 | Tileworld | `python experiments/run_tileworld.py all` |
 | Structural Inspection | `python experiments/run_inspection.py` |
-| RockSample | `python experiments/run_rocksample.py` |
+| RockSample (regenerated single-source tables) | `python experiments/build_rocksample_tables.py` (reads `results/results_rocksample_*.csv`) |
 | Pareto / transfer / POMCP / MCTS / ... | see `experiments/run_*.py` |
+| Near-optimality across planning horizons | `python experiments/run_nearopt_horizon.py` then `python experiments/build_horizon_map.py` |
+| Price-of-information: full battery (curves, collapse, Prop 2, dual control, cost budgets, interleaved) | `python experiments/run_price_of_information.py --mode full` |
+| Price-of-information: one sub-battery | `python experiments/run_price_of_information.py --only {curves,interleaved,cost,scale,prop2,dual-multiseed,efe}` |
+| SARSOP near-optimal baseline (requires `tools/build_sarsop.sh`) | `python experiments/run_sarsop_baseline.py` |
+| w* atlas appendix table | `python experiments/run_w_atlas.py` |
+| Distractor-robustness experiment (Stage G2) | `python experiments/run_distractor_diagnosis.py` |
+| Proper-scoring calibration table | `python experiments/run_calibration_table.py` |
+| Per-test value-of-information audit case study | `python experiments/run_audit_case_study.py` |
+| Destructive-sensing boundary example | `python -m pytest tests/test_destructive_boundary.py -v` |
+| Full-length integrated paper | `paper/full_paper.tex` (compile with `tectonic paper/full_paper.tex`) |
 
 ## Tests
 
