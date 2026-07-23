@@ -252,6 +252,7 @@ def run_otc_episode(agent, env, max_steps: int = 200) -> Dict[str, Any]:
     agent.reset()
     total_reward = 0.0
     observation_count = 0
+    sensing_cost = 0.0
     true_state = None
 
     for _ in range(max_steps):
@@ -264,6 +265,7 @@ def run_otc_episode(agent, env, max_steps: int = 200) -> Dict[str, Any]:
             return {
                 "total_reward": total_reward,
                 "num_observations": observation_count,
+                "sensing_cost": sensing_cost,
                 "success": bool(info.get("correct", False)),
                 "final_belief_entropy": agent.belief.entropy(),
                 "final_confidence": agent.belief.confidence(),
@@ -274,12 +276,15 @@ def run_otc_episode(agent, env, max_steps: int = 200) -> Dict[str, Any]:
             }
         agent.update_belief(obs, obs_action=action)
         observation_count += 1
+        # Observation steps in OTC environments carry a pure sensing cost.
+        sensing_cost += -reward
 
     true_state = extract_true_state(info, env) if info else extract_true_state({}, env)
     belief = agent.belief.belief.copy()
     return {
         "total_reward": total_reward,
         "num_observations": observation_count,
+        "sensing_cost": sensing_cost,
         "success": False,
         "final_belief_entropy": agent.belief.entropy(),
         "final_confidence": agent.belief.confidence(),

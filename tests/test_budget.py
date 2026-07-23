@@ -260,6 +260,48 @@ class TestCrossingBracket:
             crossing_bracket([], budget=1.0)
 
 
+class TestHeterogeneousCosts:
+    """Stage D: heterogeneous per-test costs and explicit cost accounting."""
+
+    def test_diagnosis_per_test_costs(self):
+        env = DiagnosisEnv(num_conditions=4, test_costs=[0.5, 2.5])
+        assert env.get_observation_costs() == [0.5, 2.5]
+        env.reset(seed=0)
+        _, r0, *_ = env.step(0)
+        assert r0 == pytest.approx(-0.5)
+        _, r1, *_ = env.step(1)
+        assert r1 == pytest.approx(-2.5)
+
+    def test_diagnosis_rejects_wrong_length(self):
+        with pytest.raises(ValueError):
+            DiagnosisEnv(num_conditions=4, test_costs=[1.0])
+
+    def test_explicit_sensing_cost_preferred(self):
+        u = episode_sensing_usage(
+            {"num_observations": 3, "sensing_cost": 4.5}, obs_costs=[1.0]
+        )
+        assert u.num_observations == 3
+        assert u.sensing_cost == pytest.approx(4.5)
+
+    def test_otc_episode_reports_actual_cost_paid(self):
+        from rho_aif.benchmark import get_obs_models, make_env_config, run_otc_episode
+        from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
+
+        env = DiagnosisEnv(num_conditions=4, test_costs=[0.5, 2.5])
+        agent = PlanningInfoGainAgent(
+            get_obs_models(env),
+            make_env_config(env),
+            planning_horizon=3,
+            info_gain_weight=5.0,
+        )
+        np.random.seed(0)
+        result = run_otc_episode(agent, env)
+        n = result["num_observations"]
+        cost = result["sensing_cost"]
+        assert cost >= 0.5 * n - 1e-9
+        assert cost <= 2.5 * n + 1e-9
+
+
 class TestRockSampleUsageFamily:
     """Stage B: usage accounting for the interleaved RockSample family."""
 

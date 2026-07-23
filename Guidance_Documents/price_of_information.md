@@ -34,6 +34,8 @@ Two natural usage measures, both supported by the code:
 1. **Count usage**: `U_count = E[number of observe / test actions]`.
 2. **Cost usage**: `U_cost = E[sum of sensing costs paid]` (absolute cost magnitude).
 
+**Heterogeneous costs (Stage D, July 23, 2026):** `DiagnosisEnv` supports per-test `test_costs`; `run_otc_episode` records the actual cost paid and `episode_sensing_usage` uses it directly (the count-times-mean-cost fallback remains for legacy results). On Diagnosis with test costs [0.5, 2.5], the mean cost per test `U_cost/U_count` varies 1.21–1.39 with `w` (13.5% relative spread), so cost budgets are not reducible to count budgets: the agent's test mix shifts toward the expensive test as `w` grows. Cost- and count-denominated brackets disagree accordingly. Figure: `figures/price_cost_budget.{png,pdf}`.
+
 **Budgeted rho-POMDP (sensing upper bound):**
 
 ```text

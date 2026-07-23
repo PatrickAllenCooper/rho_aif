@@ -8,7 +8,7 @@
     1024
   ],
   "episodes": 100,
-  "replot": false,
+  "replot": true,
   "prop2_jump_ok": true,
   "prop2_onset_brackets": {
     "TestbedPos-p06": {
@@ -109,5 +109,13 @@
     "ci_hi": 0.1502196920879344
   },
   "dual_ms_cis_disjoint": true,
-  "dual_multiseed_rows": 8000
+  "dual_multiseed_rows": 8000,
+  "cost_ratio_min": 1.2141783567134268,
+  "cost_ratio_max": 1.3880222104706506,
+  "cost_ratio_rel_spread": 0.13529623307404212,
+  "cost_test_costs": [
+    0.5,
+    2.5
+  ],
+  "cost_rows": 4
 }

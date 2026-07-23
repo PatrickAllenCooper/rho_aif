@@ -348,6 +348,154 @@ def run_interleaved_curves(
 
 
 # ---------------------------------------------------------------------------
+# 1c. Cost-denominated budgets (Stage D of the full-paper plan)
+# ---------------------------------------------------------------------------
+
+def make_hetero_diagnosis() -> DiagnosisEnv:
+    """Diagnosis with heterogeneous per-test costs (cheap 0.5, expensive 2.5)."""
+    return DiagnosisEnv(
+        num_conditions=4,
+        test_accuracy=0.80,
+        correct_reward=10.0,
+        incorrect_penalty=-50.0,
+        test_costs=[0.5, 2.5],
+    )
+
+
+def run_cost_budget(
+    seeds: Sequence[int],
+    num_episodes: int,
+    n_grid: int = 12,
+    n_budgets: int = 2,
+) -> Tuple[pd.DataFrame, pd.DataFrame, dict]:
+    """
+    Count- vs cost-denominated usage curves and shadow-price brackets on a
+    heterogeneous-cost Diagnosis variant. The unit story is nontrivial iff
+    the mean cost per test U_cost/U_count varies with w (test mix shifts).
+    """
+    env = make_hetero_diagnosis()
+    w_grid = make_log_w_grid(0.0, 100.0, n_grid)
+    curve_rows: List[dict] = []
+    curves: Dict[str, list] = {}
+    print(
+        f"\n=== Cost budgets: Diagnosis-hetero (test costs {env.get_observation_costs()}) ===",
+        flush=True,
+    )
+    for kind in ("count", "cost"):
+        curve = []
+        for i, w in enumerate(w_grid):
+            pts = estimate_usage_curve(
+                env,
+                w_grid=[float(w)],
+                seeds=seeds,
+                num_episodes=num_episodes,
+                planning_horizon=3,
+                usage_kind=kind,
+            )
+            curve.extend(pts)
+            print(
+                f"  [{kind} {i+1}/{len(w_grid)}] U(w={float(w):.4g}) = "
+                f"{pts[0].mean_usage:.3f}±{pts[0].se_usage:.3f}",
+                flush=True,
+            )
+        curves[kind] = curve
+        curve_rows.extend(curve_to_rows("Diagnosis-hetero", curve, extra={"usage_kind": kind}))
+        pd.DataFrame(curve_rows).to_csv(
+            RESULTS / "results_price_cost_curves.csv", index=False
+        )
+
+    price_rows: List[dict] = []
+    for kind in ("count", "cost"):
+        curve = curves[kind]
+        budgets = identifiable_budgets(curve, n_budgets=n_budgets, margin=0.15)
+        for B in budgets:
+            res = solve_shadow_price_from_curve(curve, budget=float(B), tol=max(0.3, 0.1 * float(B)))
+            price_rows.append(
+                {
+                    "env": "Diagnosis-hetero",
+                    "usage_kind": kind,
+                    "budget": float(B),
+                    "w_star": res.w_star,
+                    "w_lo": res.w_lo,
+                    "w_hi": res.w_hi,
+                    "usage_at_star": res.usage_at_star,
+                    "usage_se_at_star": res.usage_se_at_star,
+                    "bracketed": res.bracketed,
+                    "achievable": res.achievable,
+                }
+            )
+            print(
+                f"  {kind}: B={B:.3f}  w*={res.w_star:.4g}  "
+                f"bracket=[{res.w_lo:.3g},{res.w_hi:.3g}]",
+                flush=True,
+            )
+
+    # Mean cost per test as a function of w: constant iff units are trivially
+    # interchangeable (matched w grid, same seeds/episodes).
+    ratios = []
+    for pc, pg in zip(curves["count"], curves["cost"]):
+        if pc.mean_usage > 0:
+            ratios.append(pg.mean_usage / pc.mean_usage)
+    metrics = {
+        "cost_ratio_min": float(np.min(ratios)) if ratios else float("nan"),
+        "cost_ratio_max": float(np.max(ratios)) if ratios else float("nan"),
+        "cost_ratio_rel_spread": (
+            float((np.max(ratios) - np.min(ratios)) / np.mean(ratios)) if ratios else float("nan")
+        ),
+        "cost_test_costs": env.get_observation_costs(),
+    }
+    print(
+        f"  cost/test ratio range [{metrics['cost_ratio_min']:.3f}, "
+        f"{metrics['cost_ratio_max']:.3f}]  rel spread "
+        f"{100*metrics['cost_ratio_rel_spread']:.1f}%",
+        flush=True,
+    )
+    return pd.DataFrame(curve_rows), pd.DataFrame(price_rows), metrics
+
+
+def plot_cost_budget(curve_df: pd.DataFrame, path: Path) -> None:
+    """Left: count and cost usage curves. Right: mean cost per test vs w."""
+    fig, axes = plt.subplots(1, 2, figsize=(10.0, 4.2))
+    ax = axes[0]
+    for kind, color in (("count", "C0"), ("cost", "C1")):
+        sub = curve_df[curve_df["usage_kind"] == kind].sort_values("w")
+        ax.errorbar(
+            sub["w"],
+            sub["mean_usage"],
+            yerr=sub["se_usage"],
+            marker="o",
+            ms=4,
+            capsize=3,
+            color=color,
+            label=f"U_{kind}(w)",
+        )
+    ax.set_xscale("symlog", linthresh=0.01)
+    ax.set_xlabel("Info-gain weight w")
+    ax.set_ylabel("Expected usage per episode")
+    ax.set_title("Count vs cost usage (heterogeneous test costs)")
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3)
+
+    ax2 = axes[1]
+    piv = curve_df.pivot_table(index="w", columns="usage_kind", values="mean_usage")
+    piv = piv[piv["count"] > 0]
+    ratio = piv["cost"] / piv["count"]
+    ax2.plot(piv.index, ratio, marker="o", ms=4, color="C2")
+    for c, label in ((0.5, "cheap test"), (2.5, "expensive test"), (1.5, "uniform mix")):
+        ax2.axhline(c, ls="--", lw=1, alpha=0.5, color="gray")
+        ax2.annotate(label, (piv.index.max(), c), fontsize=7, va="bottom", ha="right")
+    ax2.set_xscale("symlog", linthresh=0.01)
+    ax2.set_xlim(ax.get_xlim())
+    ax2.set_xlabel("Info-gain weight w")
+    ax2.set_ylabel("Mean cost per test  U_cost / U_count")
+    ax2.set_title("Test mix shifts with w")
+    ax2.grid(True, alpha=0.3)
+    fig.tight_layout()
+    _savefig(fig, path)
+    plt.close(fig)
+
+
+# ---------------------------------------------------------------------------
 # 2. Curve-collapse scale test
 # ---------------------------------------------------------------------------
 
@@ -1334,7 +1482,7 @@ def parse_args() -> argparse.Namespace:
         "--only",
         nargs="*",
         default=None,
-        help="Subset: curves interleaved scale prop2 dual dual-reset dual-multiseed efe",
+        help="Subset: curves interleaved cost scale prop2 dual dual-reset dual-multiseed efe",
     )
     p.add_argument(
         "--replot",
@@ -1347,7 +1495,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     _ensure_dirs()
-    only = set(args.only) if args.only else {"curves", "interleaved", "scale", "prop2", "dual", "efe"}
+    only = set(args.only) if args.only else {"curves", "interleaved", "cost", "scale", "prop2", "dual", "efe"}
 
     if args.mode == "full":
         seeds = [42, 123, 456, 789, 1024]
@@ -1376,6 +1524,8 @@ def main() -> None:
         interleaved_episodes_by_env = {"RS[7,4]": 30}
         interleaved_grid_by_env = {"RS[7,4]": 8}
         dual_ms_seeds = 10
+        cost_ep = 100
+        cost_grid = 12
     else:
         seeds = [42, 123, 456]
         ep = 40
@@ -1395,6 +1545,8 @@ def main() -> None:
         interleaved_episodes_by_env = {}
         interleaved_grid_by_env = {}
         dual_ms_seeds = 3
+        cost_ep = 30
+        cost_grid = 8
 
     summary: dict = {
         "mode": args.mode,
@@ -1462,6 +1614,23 @@ def main() -> None:
             summary["interleaved_rows"] = len(iprice_df)
             summary["interleaved_curve_rows"] = len(icurve_df)
             summary["interleaved_envs"] = list(interleaved_envs)
+
+    if "cost" in only:
+        saved = RESULTS / "results_price_cost_curves.csv"
+        if args.replot and saved.exists():
+            cost_curve_df = pd.read_csv(saved)
+            plot_cost_budget(cost_curve_df, FIGURES / "price_cost_budget.png")
+        else:
+            cost_curve_df, cost_price_df, cost_metrics = run_cost_budget(
+                seeds,
+                cost_ep,
+                n_grid=cost_grid,
+                n_budgets=2,
+            )
+            cost_price_df.to_csv(RESULTS / "results_price_cost_prices.csv", index=False)
+            plot_cost_budget(cost_curve_df, FIGURES / "price_cost_budget.png")
+            summary.update(cost_metrics)
+            summary["cost_rows"] = len(cost_price_df)
 
     if "scale" in only:
         existing = None

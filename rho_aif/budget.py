@@ -93,7 +93,12 @@ def episode_sensing_usage(
       - EpisodeResult-like objects with ``num_observations``
       - dicts from ``run_otc_episode`` (``num_observations``) or
         ``run_inspection_episode`` (``tests``)
+
+    When the result carries an explicit ``sensing_cost`` (actual cost paid,
+    supporting heterogeneous per-test costs), it is used directly; otherwise
+    the cost falls back to count times the mean absolute observation cost.
     """
+    explicit_cost: Optional[float] = None
     if isinstance(result, dict):
         if "num_observations" in result:
             n = int(result["num_observations"])
@@ -103,8 +108,15 @@ def episode_sensing_usage(
             raise KeyError(
                 "Episode result must contain 'num_observations' or 'tests'"
             )
+        if "sensing_cost" in result:
+            explicit_cost = float(result["sensing_cost"])
     else:
         n = int(result.num_observations)
+        if hasattr(result, "sensing_cost"):
+            explicit_cost = float(result.sensing_cost)
+
+    if explicit_cost is not None:
+        return SensingUsage(num_observations=n, sensing_cost=explicit_cost)
 
     if obs_costs is None or len(obs_costs) == 0:
         unit_cost = 1.0

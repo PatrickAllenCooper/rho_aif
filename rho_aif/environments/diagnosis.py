@@ -44,6 +44,7 @@ class DiagnosisEnv(gym.Env):
         correct_reward: float = 10.0,
         incorrect_penalty: float = -50.0,
         num_tests: Optional[int] = None,
+        test_costs: Optional[List[float]] = None,
     ):
         super().__init__()
 
@@ -53,12 +54,21 @@ class DiagnosisEnv(gym.Env):
         self.correct_reward = correct_reward
         self.incorrect_penalty = incorrect_penalty
         self.num_tests = num_tests or max(1, math.ceil(math.log2(num_conditions)))
+        if test_costs is not None:
+            if len(test_costs) != self.num_tests:
+                raise ValueError(
+                    f"test_costs must have length {self.num_tests}, got {len(test_costs)}"
+                )
+            self.test_costs = [float(c) for c in test_costs]
+        else:
+            self.test_costs = [float(test_cost)] * self.num_tests
 
         self.action_space = spaces.Discrete(self.num_tests + self.num_conditions)
         self.observation_space = spaces.Discrete(3)  # 0=group_A, 1=group_B, 2=null
 
         self._true_condition: Optional[int] = None
         self._test_count = 0
+        self._cost_paid = 0.0
         self._obs_models = self._build_observation_models()
 
     @property
@@ -96,7 +106,7 @@ class DiagnosisEnv(gym.Env):
         return self._obs_models[0]
 
     def get_observation_costs(self) -> List[float]:
-        return [self.test_cost] * self.num_tests
+        return list(self.test_costs)
 
     def get_commit_reward_matrix(self) -> np.ndarray:
         """
@@ -113,18 +123,22 @@ class DiagnosisEnv(gym.Env):
         super().reset(seed=seed)
         self._true_condition = int(self.np_random.integers(0, self.num_conditions))
         self._test_count = 0
+        self._cost_paid = 0.0
         return 2, {"true_condition": self._true_condition}  # 2 = null obs
 
     def step(self, action: int) -> Tuple[int, float, bool, bool, Dict[str, Any]]:
         if action < self.num_tests:
             obs = self._run_test(action)
             self._test_count += 1
+            cost = self.test_costs[action]
+            self._cost_paid += cost
             info = {
                 "true_condition": self._true_condition,
                 "test_index": action,
                 "test_count": self._test_count,
+                "test_cost_paid": self._cost_paid,
             }
-            return obs, -self.test_cost, False, False, info
+            return obs, -cost, False, False, info
 
         diagnosed = action - self.num_tests
         correct = diagnosed == self._true_condition
@@ -134,7 +148,7 @@ class DiagnosisEnv(gym.Env):
             "diagnosed": diagnosed,
             "correct": correct,
             "test_count": self._test_count,
-            "total_reward": reward - self.test_cost * self._test_count,
+            "total_reward": reward - self._cost_paid,
         }
         return 2, reward, True, False, info
 
