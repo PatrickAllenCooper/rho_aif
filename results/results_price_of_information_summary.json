@@ -1,13 +1,35 @@
 {
-  "mode": "quick",
+  "mode": "full",
   "seeds": [
     42,
-    123
+    123,
+    456,
+    789,
+    1024
   ],
-  "episodes": 30,
-  "curves_rows": 10,
-  "scale_rows": 3,
+  "episodes": 100,
+  "collapse_frac_within_noise": 1.0,
+  "collapse_max_spread": 0.476,
+  "scale_rows": 6,
+  "prop2_jump_ok": true,
+  "prop2_jump_rel_errs": {
+    "TestbedPos-p06": 0.3195,
+    "TestbedPos-p058": 0.3195
+  },
   "prop2_rows": 2,
-  "dual_rows": 100,
-  "efe_rows": 3
+  "dual_w_ratio_post_pre": 9.327,
+  "dual_pre_w": 0.291,
+  "dual_post_w": 2.714,
+  "dual_pre_usage": 8.1,
+  "dual_post_usage": 8.1,
+  "dual_rows": 400,
+  "efe_rows": 5,
+  "curves_rows": 25,
+  "usage_curve_rows": 66,
+  "verdict": {
+    "curve_collapse": "HOLD \u2014 100% of matched w/\u03b1 points within 2\u00b7SE on Diagnosis and Bandit; max spread \u22640.48",
+    "prop2_jump": "HOLD \u2014 onset of observing within 32% of H=1 closed-form threshold on both positive-threshold Testbeds; U=0 below threshold",
+    "dual_rescale": "HOLD \u2014 usage pinned at B=8.1 both halves; windowed w ratio post/pre \u22489.3 \u224810 after \u00d710 reward rescale",
+    "shadow_staircases": "PARTIAL \u2014 Bandit/Inspection roughly monotone with SEs; Tiger/Diagnosis/Tileworld still show local non-monotonicity; report brackets+SEs"
+  }
 }

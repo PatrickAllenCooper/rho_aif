@@ -1,10 +1,15 @@
 # The Price of Information: w as a Shadow Price on a Sensing Budget
 
-**Status**: Derivation notes + implementation + quick experimental battery complete; full battery and paper draft still open  
-**Date**: July 22, 2026  
-**Relation to paper**: Addresses the accepted IWAI 2026 paper's limitation that the canonical weight `w=1` in Planning+IG / EFE is not reward-scale invariant. Paper draft deferred until fuller scale-invariance results hold.
+**Status**: Derivation notes + implementation + upgraded full battery complete; three headline claims HOLD; paper draft unblocked  
+**Date**: July 22–23, 2026  
+**Relation to paper**: Addresses the accepted IWAI 2026 paper's limitation that the canonical weight `w=1` in Planning+IG / EFE is not reward-scale invariant.
 
-Quick-battery summary (see also `Guidance_Documents/research_plan.md` phase entry): grid solver finds operational `w*(B)` above instrumental `U(0)`; fixed `w=1` usage moves under reward rescaling while dual control keeps usage near `B`; Prop 2 lower thresholds are negative on Testbed/Tiger and match `U(0)≫0`; implicit EFE budgets recorded per environment.
+### Full-battery verdicts (see `research_plan.md` for detail)
+1. **Curve collapse HOLD** — `U` vs `w/α` collapses across α∈{0.1,1,10} on Diagnosis and Bandit (100% of matched points within 2·SE).
+2. **Prop 2 jump HOLD** — on positive-threshold Testbeds, observing onsets within ~32% of the H=1 closed-form `w_thresh`; `U=0` below.
+3. **Dual rescale HOLD** — usage pinned at `B=8.1`; after ×10 reward rescale, windowed `w` ratio ≈9.3.
+
+Paper draft may proceed with these three figures as the core evidence. Shadow-price staircases remain supporting (report brackets + SEs; local non-monotonicity persists on Tiger/Diagnosis/Tileworld).
 
 ## Citation check (verified before writing)
 

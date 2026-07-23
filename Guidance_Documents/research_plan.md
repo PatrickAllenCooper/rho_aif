@@ -783,37 +783,47 @@ git push origin main --tags
 - [ ] Push `main` and tag `v1.0.0` (or bump version if the tree has moved on)
 - [ ] Point the next-venue paper / README install instructions at the live PyPI package
 
-## Phase: Price of Information (July 22, 2026)
+## Phase: Price of Information (July 22–23, 2026)
 
-**Status**: Machinery + quick experimental battery implemented; paper draft deferred until fuller scale-invariance / duality results hold  
+**Status**: Upgraded full battery complete; three headline claims HOLD; paper draft now unblocked  
 **Goal**: Recast the Planning+IG weight `w` as an operational shadow price of a sensing budget `B`, with offline solve and online dual control. Theory notes: `Guidance_Documents/price_of_information.md`.
 
 ### Delivered
-1. **Theory notes** — budgeted rho-POMDP, information-floor dual (exact match to Planning+IG) vs sensing-budget operational inverse, Prop 2 boundary reading, SAC-style dual control. Citations verified: Sims (2003, JME 50(3):665–690); Matějka and McKay (2015, AER 105(1):272–298); Haarnoja et al. (2018, arXiv:1812.05905) for automatic temperature (not the ICML fixed-temperature paper alone).
-2. **`rho_aif/budget.py`** — usage accounting, `estimate_usage`, `grid_solve_usage_fn` / `bisect_usage_fn`, `solve_shadow_price` (default: grid; robust to non-monotone `U(w)`).
-3. **`DualWeightAgent`** — projected update `w ← max(0, w + η(B − U))`; exported from `rho_aif.agents`.
-4. **Experiments** — `experiments/run_price_of_information.py` (`--mode quick|full`): shadow-price curves, scale invariance, Prop 2 consistency, dual-descent with mid-run rescale, implicit EFE budget `B_EFE = U(w=1)`.
-5. **Tests** — `tests/test_budget.py`, `tests/test_dual_descent.py`; full suite **289 passed**.
+1. **Theory notes** — budgeted rho-POMDP, information-floor dual vs sensing-budget operational inverse, Prop 2 boundary reading, SAC-style dual control. Citations verified (Sims 2003; Matějka and McKay 2015; Haarnoja et al. 2018 arXiv:1812.05905).
+2. **`rho_aif/budget.py`** — `estimate_usage_curve` with per-seed SEs, `solve_shadow_price_from_curve` step brackets, `identifiable_budgets`, grid/bisect solvers.
+3. **`DualWeightAgent`** — projected update with optional `lr_decay` and Polyak `w_avg`.
+4. **Upgraded experiments** — curve-collapse scale test; positive-threshold Prop 2 jump; powered staircases with SEs; dual with decay + mid-run rescale; implicit EFE budgets.
+5. **Tests** — full suite **296 passed**.
 
-### Quick-battery findings (`--mode quick`, 2 seeds × 30 episodes)
-| Result | Observation |
-|---|---|
-| Shadow curves | Diagnosis/Bandit recover distinct `w*(B)` above the instrumental baseline `U(0)`; Tiger’s `U(w)` range is narrow (~4–5.5), so prices are weakly identified. |
-| Scale invariance | Fixed `w=1` usage on Diagnosis moves with reward scale α∈{0.1,1,10}: ~9.67 / 9.97 / 5.87. Budget-derived `w*(B=8)` moves ~0.13 / ~0 / 36 and pulls usage back toward B at α=10 (`U*≈9.27`). Grid is coarse; needs `--mode full`. |
-| Prop 2 | Closed-form lower thresholds are largely **negative** (Testbed −2.12, Tiger −96.1 in bits); consistent with `U(0)≫0` (instrumental sensing alone overshoots a zero-observation budget). |
-| Dual descent | On Diagnosis with `B=8`, online `w_t` keeps recent usage near the budget (~8–9); after mid-run ×10 reward rescale, `w` rises (0.4 → ~3) while usage stays near B. |
-| Implicit EFE budget | `B_EFE`: Tiger 4.43, Diagnosis 9.63, Bandit 4.38 mean observations. |
+### Protocol upgrades (after quick battery failed)
+Quick mode used noisy argmin solves and vacuous (negative) Prop 2 checks. Upgrades:
+- **Scale**: plot `U` vs `w/α` on α-scaled grids (curve collapse), not paired argmins.
+- **Prop 2**: positive-threshold Testbeds (`p=0.60` and `p=0.58`, `c=0.3`, `R±=±1`); onset = first `U>0.5`.
+- **Curves**: dense grid, 5 seeds × 100 episodes (OTC); identifiable budgets inside `[U_min, U_max]`; staircase + brackets.
+- **Dual**: `lr0=0.05`, decay `0.02`, 400 episodes; metric = windowed raw `w` ratio (not whole-run Polyak).
 
-Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_summary.json`, `figures/price_*.png`.
+### Full-battery verdicts (`--mode full`, 5 seeds × 100 episodes)
+| Claim | Verdict | Evidence |
+|---|---|---|
+| Curve collapse | **HOLD** | Diagnosis and Bandit: 100% of matched `w/α` points within 2·SE; max spread 0.48 / 0.45. Jump from ~6→~9.5 obs occurs at the same `w/α≈0.32` across α∈{0.1,1,10}. |
+| Prop 2 jump | **HOLD** | `TestbedPos-p06`: onset `w=4.54` vs closed-form `3.44` (rel err 0.32); `p058`: `9.96` vs `7.55` (rel err 0.32). `U=0` below threshold on both. Negative-threshold sanity (Testbed/Tiger) still holds. |
+| Dual rescale | **HOLD** | Usage pinned at 8.1 both halves. After ×10 reward rescale, windowed `w` rises 0.29 → 2.71 (ratio **9.3 ≈ 10**). |
+| Shadow staircases | **PARTIAL** | Bandit and Inspection-N8 roughly monotone with SEs. Tiger/Diagnosis/Tileworld retain local non-monotonicity; report step brackets, not point estimates alone. |
 
-### Design note forced by data
-`U(w)` is only *roughly* monotone (discrete policy switches). Default solver is log-grid argmin `|U−B|`, not pure bisection. Budgets below `U(0)` are unachievable with nonnegative `w`.
+Implicit EFE budgets `B_EFE=U(w=1)`: Tiger 4.21±0.07, Diagnosis 9.68±0.15, Bandit 5.03±0.17, Tileworld-6x6 14.83±0.22, Inspection-N8 18.24±0.19.
 
-### Still open (before paper draft)
-- [ ] Re-run `--mode full` (more seeds/episodes, denser grid, include Tileworld + Inspection-N8)
-- [ ] Tighten scale-invariance headline: show `w*(B; α) / α` approximately constant and usage pinned at B across α
+Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_summary.json`, `figures/price_*.png` (including `price_prop2_jumps.png`, `price_scale_invariance.png`, `price_dual_descent.png`, `price_shadow_curves.png`).
+
+### Design notes forced by data
+- `U(w)` is only roughly monotone; default solver is log-grid + step brackets with SEs.
+- Budgets below `U(0)` are unachievable with nonnegative `w` (instrumental sensing).
+- Environments have a usage ceiling `U_max` (belief saturation / episode caps).
+- Multi-step Planning+IG onset sits slightly above the H=1 Prop 2 closed form (~32% on the positive Testbeds); still a clean qualitative match.
+
+### Still open
 - [ ] Optional: cost-usage (`usage_kind='cost'`) curves alongside count usage
-- [ ] Start paper draft only after the full battery confirms the scale story
+- [x] Full battery confirms the scale story — **paper draft unblocked**
+- [ ] Start paper draft for this extension (curve collapse + Prop 2 jump + dual rescale as the three figures)
 
 ---
 
