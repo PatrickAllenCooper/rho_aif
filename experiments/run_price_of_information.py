@@ -33,6 +33,8 @@ import pandas as pd
 from rho_aif.agents.dual_descent import DualWeightAgent
 from rho_aif.benchmark import get_benchmark, get_obs_models, make_env_config, run_otc_episode
 from rho_aif.budget import (
+    UsageCurvePoint,
+    crossing_bracket,
     episode_sensing_usage,
     estimate_usage,
     estimate_usage_curve,
@@ -178,6 +180,16 @@ def run_shadow_price_curves(
     return pd.DataFrame(curve_rows), pd.DataFrame(price_rows)
 
 
+def _savefig(fig, path: Path) -> None:
+    """Save figure as PNG (always) and PDF when path is .png or .pdf."""
+    path = Path(path)
+    fig.savefig(path, dpi=150)
+    if path.suffix.lower() == ".png":
+        fig.savefig(path.with_suffix(".pdf"))
+    elif path.suffix.lower() == ".pdf":
+        fig.savefig(path.with_suffix(".png"), dpi=150)
+
+
 def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
     fig, ax = plt.subplots(figsize=(7.5, 4.8))
     for env_name, sub in price_df.groupby("env"):
@@ -200,13 +212,97 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
     ax.legend(fontsize=8)
     ax.grid(True, alpha=0.3)
     fig.tight_layout()
-    fig.savefig(path, dpi=150)
+    _savefig(fig, path)
     plt.close(fig)
 
 
 # ---------------------------------------------------------------------------
 # 2. Curve-collapse scale test
 # ---------------------------------------------------------------------------
+
+def _curve_points_from_df(sub: pd.DataFrame) -> List[UsageCurvePoint]:
+    """Rebuild UsageCurvePoint list from a saved scale-curve subframe."""
+    pts: List[UsageCurvePoint] = []
+    for _, row in sub.sort_values("w").iterrows():
+        pts.append(
+            UsageCurvePoint(
+                w=float(row["w"]),
+                mean_usage=float(row["mean_usage"]),
+                se_usage=float(row["se_usage"]) if np.isfinite(row["se_usage"]) else float("nan"),
+                n_seeds=int(row["n_seeds"]) if "n_seeds" in row and pd.notna(row["n_seeds"]) else 0,
+                per_seed_means=[],
+            )
+        )
+    return pts
+
+
+def _scale_crossings_from_curves(
+    curve_df: pd.DataFrame,
+    budget: float,
+) -> pd.DataFrame:
+    """Compute crossing brackets in w and w/α units from saved usage curves."""
+    rows: List[dict] = []
+    for (env_kind, alpha), sub in curve_df.groupby(["env", "scale_k"]):
+        curve = _curve_points_from_df(sub)
+        br = crossing_bracket(curve, budget=budget)
+        a = float(alpha)
+        rows.append(
+            {
+                "env": env_kind,
+                "scale_k": a,
+                "budget": budget,
+                "w_lo": br.w_lo,
+                "w_hi": br.w_hi,
+                "w_lo_over_alpha": br.w_lo / a if a else float("nan"),
+                "w_hi_over_alpha": br.w_hi / a if a else float("nan"),
+                "usage_lo": br.usage_lo,
+                "usage_hi": br.usage_hi,
+                "bracketed": br.bracketed,
+                "achievable": br.achievable,
+                "note": br.note,
+                # Keep legacy point fields for compatibility (mid-bracket).
+                "w_star": 0.5 * (br.w_lo + br.w_hi),
+                "w_star_over_alpha": (
+                    0.5 * (br.w_lo + br.w_hi) / a if a else float("nan")
+                ),
+                "usage_at_star": 0.5 * (br.usage_lo + br.usage_hi),
+                "usage_se": float("nan"),
+            }
+        )
+        print(
+            f"  [{env_kind} α={a:g}] B={budget}: bracket w/α=("
+            f"{rows[-1]['w_lo_over_alpha']:.4g}, {rows[-1]['w_hi_over_alpha']:.4g}]  "
+            f"U=({br.usage_lo:.3f}, {br.usage_hi:.3f}]",
+            flush=True,
+        )
+    return pd.DataFrame(rows)
+
+
+def _collapse_stats(curve_df: pd.DataFrame, env_kind: Optional[str] = None) -> pd.DataFrame:
+    collapse_rows = []
+    if curve_df.empty:
+        return pd.DataFrame()
+    df = curve_df.copy()
+    if env_kind is not None:
+        df = df[df["env"] == env_kind]
+    df["w_key"] = df["w_over_alpha"].round(6)
+    for (env, key), sub in df.groupby(["env", "w_key"]):
+        if len(sub) < 2:
+            continue
+        spread = float(sub["mean_usage"].max() - sub["mean_usage"].min())
+        mean_se = float(np.nanmean(sub["se_usage"]))
+        collapse_rows.append(
+            {
+                "env": env,
+                "w_over_alpha": float(key),
+                "usage_spread": spread,
+                "mean_se": mean_se,
+                "n_scales": len(sub),
+                "within_noise": spread <= max(2.0 * mean_se, 0.5),
+            }
+        )
+    return pd.DataFrame(collapse_rows)
+
 
 def run_scale_collapse(
     scales: Sequence[float],
@@ -215,13 +311,33 @@ def run_scale_collapse(
     n_grid: int = 14,
     budget: float = 8.0,
     env_kind: str = "Diagnosis",
+    existing_curve_df: Optional[pd.DataFrame] = None,
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Estimate U(w; alpha) on alpha-scaled grids so w/alpha points align.
     Prediction: curves collapse when plotted vs w/alpha.
 
+    When ``existing_curve_df`` is provided (replot mode), skip simulation and
+    recompute crossing brackets + collapse stats from the saved curves.
+
     Returns (curve_df, cross_df, collapse_df).
     """
+    if existing_curve_df is not None and not existing_curve_df.empty:
+        sub = existing_curve_df[existing_curve_df["env"] == env_kind].copy()
+        if not sub.empty:
+            print(f"\n=== Scale collapse {env_kind} (replot from saved curves) ===", flush=True)
+            cross_df = _scale_crossings_from_curves(sub, budget=budget)
+            collapse_df = _collapse_stats(sub, env_kind=env_kind)
+            if not collapse_df.empty:
+                frac = float(collapse_df["within_noise"].mean())
+                max_spread = float(collapse_df["usage_spread"].max())
+                print(
+                    f"  Collapse: {frac:.0%} of matched points within 2·SE; "
+                    f"max spread={max_spread:.3f}",
+                    flush=True,
+                )
+            return sub, cross_df, collapse_df
+
     makers: Dict[str, Tuple[Callable[[float], object], int]] = {
         "Diagnosis": (make_scaled_diagnosis, 3),
         "Bandit": (make_scaled_bandit, 2),
@@ -229,7 +345,6 @@ def run_scale_collapse(
     make_env, horizon = makers[env_kind]
     base_grid = make_log_w_grid(0.0, 20.0, n_grid)  # base = alpha=1 grid
     curve_rows: List[dict] = []
-    cross_rows: List[dict] = []
 
     for alpha in scales:
         env = make_env(alpha)
@@ -269,48 +384,9 @@ def run_scale_collapse(
                 flush=True,
             )
 
-        res = solve_shadow_price_from_curve(curve, budget=budget, tol=max(0.4, 0.1 * budget))
-        w_star_over_a = res.w_star / float(alpha) if alpha else float("nan")
-        cross_rows.append(
-            {
-                "env": env_kind,
-                "scale_k": float(alpha),
-                "budget": budget,
-                "w_star": res.w_star,
-                "w_star_over_alpha": w_star_over_a,
-                "usage_at_star": res.usage_at_star,
-                "usage_se": res.usage_se_at_star,
-                "achievable": res.achievable,
-            }
-        )
-        print(
-            f"  B={budget}: w*={res.w_star:.4g}  w*/a={w_star_over_a:.4g}  "
-            f"U*={res.usage_at_star:.3f}",
-            flush=True,
-        )
-
     curve_df = pd.DataFrame(curve_rows)
-    # Collapse metric: at matched w/alpha, max vertical deviation across scales
-    collapse_rows = []
-    if not curve_df.empty:
-        # Round w_over_alpha for matching
-        curve_df["w_key"] = curve_df["w_over_alpha"].round(6)
-        for key, sub in curve_df.groupby("w_key"):
-            if len(sub) < 2:
-                continue
-            spread = float(sub["mean_usage"].max() - sub["mean_usage"].min())
-            mean_se = float(np.nanmean(sub["se_usage"]))
-            collapse_rows.append(
-                {
-                    "env": env_kind,
-                    "w_over_alpha": float(key),
-                    "usage_spread": spread,
-                    "mean_se": mean_se,
-                    "n_scales": len(sub),
-                    "within_noise": spread <= max(2.0 * mean_se, 0.5),
-                }
-            )
-    collapse_df = pd.DataFrame(collapse_rows)
+    cross_df = _scale_crossings_from_curves(curve_df, budget=budget) if not curve_df.empty else pd.DataFrame()
+    collapse_df = _collapse_stats(curve_df, env_kind=env_kind)
     if not collapse_df.empty:
         frac = float(collapse_df["within_noise"].mean())
         max_spread = float(collapse_df["usage_spread"].max())
@@ -319,7 +395,7 @@ def run_scale_collapse(
             f"max spread={max_spread:.3f}",
             flush=True,
         )
-    return curve_df.drop(columns=["w_key"], errors="ignore"), pd.DataFrame(cross_rows), collapse_df
+    return curve_df, cross_df, collapse_df
 
 
 def plot_scale_collapse(
@@ -350,18 +426,37 @@ def plot_scale_collapse(
     ax.grid(True, alpha=0.3)
 
     ax2 = axes[1]
-    if not cross_df.empty:
-        ax2.plot(cross_df["scale_k"], cross_df["w_star"], "o-", label="w*")
-        ax2.plot(cross_df["scale_k"], cross_df["w_star_over_alpha"], "s-", label="w*/α")
-        ax2.set_xscale("log")
+    if not cross_df.empty and "w_lo_over_alpha" in cross_df.columns:
+        # Interval bars of the crossing bracket in w/α units per scale.
+        # Scale invariance <=> brackets coincide across α.
+        xs = np.arange(len(cross_df))
+        labels = [f"α={a:g}" for a in cross_df["scale_k"]]
+        lo = cross_df["w_lo_over_alpha"].to_numpy(dtype=float)
+        hi = cross_df["w_hi_over_alpha"].to_numpy(dtype=float)
+        mid = 0.5 * (lo + hi)
+        yerr = np.vstack([mid - lo, hi - mid])
+        ax2.errorbar(xs, mid, yerr=yerr, fmt="o", capsize=6, ms=6, color="C0")
+        for i, (l, h) in enumerate(zip(lo, hi)):
+            ax2.plot([i, i], [l, h], color="C0", lw=3, alpha=0.7)
+        ax2.set_xticks(xs)
+        ax2.set_xticklabels(labels)
+        ax2.set_ylabel("Crossing bracket (w/α)")
         ax2.set_yscale("log")
-        ax2.set_xlabel("Reward scale α")
-        ax2.set_ylabel("Weight")
-        ax2.set_title(f"Shadow price at B={budget:g}")
-        ax2.legend(fontsize=8)
+        ax2.set_title(f"Set-valued w*(B={budget:g}) / α")
         ax2.grid(True, alpha=0.3)
+        # Reference band from α=1 if present
+        a1 = cross_df[cross_df["scale_k"] == 1.0]
+        if not a1.empty:
+            ax2.axhspan(
+                float(a1["w_lo_over_alpha"].iloc[0]),
+                float(a1["w_hi_over_alpha"].iloc[0]),
+                color="C1",
+                alpha=0.15,
+                label="α=1 bracket",
+            )
+            ax2.legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(path, dpi=150)
+    _savefig(fig, path)
     plt.close(fig)
 
 
@@ -405,7 +500,11 @@ def run_prop2_duality(
     n_grid: int = 12,
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
-    Positive-threshold jump test + negative-threshold sanity table.
+    Positive-threshold onset-bracket test + negative-threshold sanity table.
+
+    Reports the onset bracket (last w with U≈0, first w with U>0.5], not a
+    single jump point — the H=1 closed form predicts zero observing for all
+    w ≤ w_thresh and onset in (w_thresh, next grid].
     """
     jump_rows: List[dict] = []
     curve_rows: List[dict] = []
@@ -415,8 +514,11 @@ def run_prop2_duality(
         w_closed = w_thresh_lower(cfg["p"], cfg["c"], cfg["R_plus"], cfg["R_minus"], base=2)
         assert w_closed > 0, f"Expected positive threshold for {name}, got {w_closed}"
         env = cfg["make"]()
-        # Grid from 0.25x to 4x threshold, plus 0
-        factors = np.concatenate([[0.0], np.geomspace(0.25, 4.0, num=n_grid - 1)])
+        # Coarse grid 0.25x–4x plus refinement just above the threshold so the
+        # onset bracket is not limited by the coarse geomspace spacing.
+        coarse = np.geomspace(0.25, 4.0, num=max(2, n_grid - 1))
+        refine = np.geomspace(1.03, 1.5, num=5)
+        factors = np.unique(np.concatenate([[0.0], coarse, refine]))
         w_grid = [float(f * w_closed) if f > 0 else 0.0 for f in factors]
         print(f"\n=== Prop2 positive: {name}  w_thresh={w_closed:.4g} ===", flush=True)
         curve = estimate_usage_curve(
@@ -426,13 +528,11 @@ def run_prop2_duality(
             num_episodes=num_episodes,
             planning_horizon=cfg["horizon"],
         )
-        # Empirical jump: first w with U > 0.5 (onset of observing).
-        # Mid-range level is too high when U later climbs to many observations.
         us = [p.mean_usage for p in curve]
         u_floor = min(us)
         u_ceil = max(us)
-        jump_w = None
-        for p in sorted(curve, key=lambda x: x.w):
+        sorted_curve = sorted(curve, key=lambda x: x.w)
+        for p in sorted_curve:
             curve_rows.append(
                 {
                     "env": name,
@@ -443,19 +543,31 @@ def run_prop2_duality(
                     "w_thresh": w_closed,
                 }
             )
-            if jump_w is None and p.mean_usage > 0.5 and p.w > 0:
-                jump_w = p.w
-        if jump_w is None:
-            jump_w = float("nan")
+        # Onset bracket: (last w with U≈0, first w with U>0.5]
+        onset_lo = 0.0
+        onset_hi = float("nan")
+        for p in sorted_curve:
+            if p.mean_usage <= 0.25:
+                onset_lo = p.w
+            elif not np.isfinite(onset_hi) and p.mean_usage > 0.5 and p.w > 0:
+                onset_hi = p.w
+                break
+        jump_w = onset_hi
         below = [p.mean_usage for p in curve if p.w < w_closed]
         above = [p.mean_usage for p in curve if p.w >= w_closed]
         u_below = float(np.mean(below)) if below else float("nan")
         u_above = float(np.mean(above)) if above else float("nan")
-        # Onset should be near the H=1 closed form (within one grid step / factor 2).
-        rel = abs(jump_w - w_closed) / w_closed if (w_closed > 0 and np.isfinite(jump_w)) else float("nan")
+        # Pass: zero below threshold, onset bracket starts at/above w_thresh,
+        # and the upper edge is within ~20% after refinement.
+        upper_rel = (
+            (onset_hi / w_closed - 1.0)
+            if (w_closed > 0 and np.isfinite(onset_hi))
+            else float("nan")
+        )
         jump_ok = bool(
-            np.isfinite(rel)
-            and rel <= 1.0
+            np.isfinite(onset_hi)
+            and onset_lo >= w_closed - 1e-9
+            and upper_rel <= 0.20
             and u_floor <= 0.25
             and u_above > u_below + 0.25
         )
@@ -463,8 +575,10 @@ def run_prop2_duality(
             {
                 "env": name,
                 "w_thresh": w_closed,
+                "onset_lo": onset_lo,
+                "onset_hi": onset_hi,
                 "jump_w": jump_w,
-                "rel_err": rel,
+                "rel_err": upper_rel,
                 "U_below": u_below,
                 "U_above": u_above,
                 "U_floor": u_floor,
@@ -473,7 +587,7 @@ def run_prop2_duality(
             }
         )
         print(
-            f"  jump_w={jump_w:.4g}  rel_err={rel:.3f}  "
+            f"  onset=({onset_lo:.4g}, {onset_hi:.4g}]  upper_rel={upper_rel:.3f}  "
             f"U_below={u_below:.3f}  U_above={u_above:.3f}  ok={jump_ok}",
             flush=True,
         )
@@ -531,15 +645,20 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
         w_th = float(sub["w_thresh"].iloc[0])
         ax.axvline(w_th, color="C1", ls="--", label=f"w_thresh={w_th:.3g}")
         jrow = jump_df[jump_df["env"] == name]
-        if not jrow.empty and np.isfinite(jrow["jump_w"].iloc[0]):
-            ax.axvline(jrow["jump_w"].iloc[0], color="C2", ls=":", label=f"jump={jrow['jump_w'].iloc[0]:.3g}")
+        if not jrow.empty:
+            lo = float(jrow["onset_lo"].iloc[0]) if "onset_lo" in jrow.columns else float("nan")
+            hi = float(jrow["onset_hi"].iloc[0]) if "onset_hi" in jrow.columns else float("nan")
+            if np.isfinite(lo) and np.isfinite(hi) and hi > lo:
+                ax.axvspan(lo, hi, color="C2", alpha=0.2, label=f"onset ({lo:.3g},{hi:.3g}]")
+            elif np.isfinite(hi):
+                ax.axvline(hi, color="C2", ls=":", label=f"onset={hi:.3g}")
         ax.set_xlabel("w")
         ax.set_ylabel("Mean observations")
         ax.set_title(name)
         ax.legend(fontsize=7)
         ax.grid(True, alpha=0.3)
     fig.tight_layout()
-    fig.savefig(path, dpi=150)
+    _savefig(fig, path)
     plt.close(fig)
 
 
@@ -636,11 +755,22 @@ def run_dual_descent(
     return pd.DataFrame(rows)
 
 
-def plot_dual_descent(df: pd.DataFrame, path: Path) -> None:
+def plot_dual_descent(
+    df: pd.DataFrame,
+    path: Path,
+    bracket: Optional[Tuple[float, float]] = None,
+) -> None:
     fig, axes = plt.subplots(2, 1, figsize=(7.5, 5.8), sharex=True)
     axes[0].plot(df["episode"], df["weight"], label="w_t", alpha=0.7)
     axes[0].plot(df["episode"], df["w_avg"], label="w_avg", lw=2)
-    axes[0].axhline(df["curve_w_star"].iloc[0], color="C2", ls="--", label="curve w*")
+    if bracket is not None and np.isfinite(bracket[0]) and np.isfinite(bracket[1]):
+        axes[0].axhspan(
+            bracket[0],
+            bracket[1],
+            color="C2",
+            alpha=0.18,
+            label=f"crossing [{bracket[0]:.3g},{bracket[1]:.3g}]",
+        )
     if df["rescaled"].any():
         t0 = int(df.loc[df["rescaled"], "episode"].iloc[0])
         axes[0].axvline(t0, color="gray", ls=":", label="rescale")
@@ -659,8 +789,23 @@ def plot_dual_descent(df: pd.DataFrame, path: Path) -> None:
     axes[1].grid(True, alpha=0.3)
     fig.suptitle("Online dual control of w (decayed lr + Polyak average)")
     fig.tight_layout()
-    fig.savefig(path, dpi=150)
+    _savefig(fig, path)
     plt.close(fig)
+
+
+def _diagnosis_crossing_from_scale_csv(budget: float) -> Optional[Tuple[float, float]]:
+    """Load α=1 Diagnosis crossing bracket from saved scale curves, if present."""
+    path = RESULTS / "results_price_scale_curves.csv"
+    if not path.exists():
+        return None
+    df = pd.read_csv(path)
+    sub = df[(df["env"] == "Diagnosis") & (np.isclose(df["scale_k"], 1.0))]
+    if sub.empty:
+        return None
+    br = crossing_bracket(_curve_points_from_df(sub), budget=budget)
+    if not br.bracketed:
+        return None
+    return (br.w_lo, br.w_hi)
 
 
 # ---------------------------------------------------------------------------
@@ -718,6 +863,11 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Subset: curves scale prop2 dual efe",
     )
+    p.add_argument(
+        "--replot",
+        action="store_true",
+        help="Reuse saved CSVs for scale/dual (no re-simulation); prop2 still re-runs",
+    )
     return p.parse_args()
 
 
@@ -761,31 +911,58 @@ def main() -> None:
         dual_lr0 = 0.05
         dual_decay = 0.02
 
-    summary: dict = {"mode": args.mode, "seeds": list(seeds), "episodes": ep}
+    summary: dict = {
+        "mode": args.mode,
+        "seeds": list(seeds),
+        "episodes": ep,
+        "replot": bool(args.replot),
+    }
+
+    # Preserve existing summary fields when running a subset (replot or not).
+    summary_path = RESULTS / "results_price_of_information_summary.json"
+    if summary_path.exists():
+        try:
+            with open(summary_path) as f:
+                prior = json.load(f)
+            for k, v in prior.items():
+                if k not in summary:
+                    summary[k] = v
+        except (json.JSONDecodeError, OSError):
+            pass
 
     if "curves" in only:
-        curve_df, price_df = run_shadow_price_curves(
-            env_names,
-            seeds,
-            ep,
-            n_grid=n_grid,
-            n_budgets=5,
-            episodes_by_env=episodes_by_env,
-            grid_by_env=grid_by_env,
-        )
-        curve_df.to_csv(RESULTS / "results_price_usage_curves.csv", index=False)
-        price_df.to_csv(RESULTS / "results_price_shadow_curves.csv", index=False)
-        if not price_df.empty:
+        if args.replot and (RESULTS / "results_price_shadow_curves.csv").exists():
+            price_df = pd.read_csv(RESULTS / "results_price_shadow_curves.csv")
             plot_shadow_price_curves(price_df, FIGURES / "price_shadow_curves.png")
-        summary["curves_rows"] = len(price_df)
-        summary["usage_curve_rows"] = len(curve_df)
+            summary["curves_rows"] = len(price_df)
+        else:
+            curve_df, price_df = run_shadow_price_curves(
+                env_names,
+                seeds,
+                ep,
+                n_grid=n_grid,
+                n_budgets=5,
+                episodes_by_env=episodes_by_env,
+                grid_by_env=grid_by_env,
+            )
+            curve_df.to_csv(RESULTS / "results_price_usage_curves.csv", index=False)
+            price_df.to_csv(RESULTS / "results_price_shadow_curves.csv", index=False)
+            if not price_df.empty:
+                plot_shadow_price_curves(price_df, FIGURES / "price_shadow_curves.png")
+            summary["curves_rows"] = len(price_df)
+            summary["usage_curve_rows"] = len(curve_df)
 
     if "scale" in only:
+        existing = None
+        saved = RESULTS / "results_price_scale_curves.csv"
+        if args.replot and saved.exists():
+            existing = pd.read_csv(saved)
+            # When replotting, cover every env present in the CSV.
+            scale_envs = list(existing["env"].unique())
         all_curve = []
         all_cross = []
         all_collapse = []
         for env_kind in scale_envs:
-            # Unpack carefully: function returns 3 dataframes
             out = run_scale_collapse(
                 scales=[0.1, 1.0, 10.0],
                 seeds=seeds,
@@ -793,24 +970,45 @@ def main() -> None:
                 n_grid=max(10, n_grid - 2),
                 budget=scale_budget,
                 env_kind=env_kind,
+                existing_curve_df=existing,
             )
             c_df, x_df, col_df = out
             all_curve.append(c_df)
             all_cross.append(x_df)
             all_collapse.append(col_df)
-            if env_kind == scale_envs[0] and not c_df.empty:
-                plot_scale_collapse(
-                    c_df, x_df, FIGURES / "price_scale_invariance.png", budget=scale_budget
-                )
         curve_df = pd.concat(all_curve, ignore_index=True) if all_curve else pd.DataFrame()
         cross_df = pd.concat(all_cross, ignore_index=True) if all_cross else pd.DataFrame()
         collapse_df = pd.concat(all_collapse, ignore_index=True) if all_collapse else pd.DataFrame()
+        # Plot Diagnosis (preferred) or first available env.
+        plot_env = "Diagnosis" if "Diagnosis" in curve_df.get("env", pd.Series(dtype=str)).unique() else (
+            scale_envs[0] if scale_envs else None
+        )
+        if plot_env is not None:
+            plot_scale_collapse(
+                curve_df[curve_df["env"] == plot_env],
+                cross_df[cross_df["env"] == plot_env],
+                FIGURES / "price_scale_invariance.png",
+                budget=scale_budget,
+            )
         curve_df.to_csv(RESULTS / "results_price_scale_curves.csv", index=False)
         cross_df.to_csv(RESULTS / "results_price_scale_invariance.csv", index=False)
         collapse_df.to_csv(RESULTS / "results_price_scale_collapse.csv", index=False)
         if not collapse_df.empty:
             summary["collapse_frac_within_noise"] = float(collapse_df["within_noise"].mean())
             summary["collapse_max_spread"] = float(collapse_df["usage_spread"].max())
+        # Bracket coincidence: max |edge difference| across scales, per env.
+        if not cross_df.empty and "w_lo_over_alpha" in cross_df.columns:
+            coinc = {}
+            for env, sub in cross_df.groupby("env"):
+                lo_spread = float(sub["w_lo_over_alpha"].max() - sub["w_lo_over_alpha"].min())
+                hi_spread = float(sub["w_hi_over_alpha"].max() - sub["w_hi_over_alpha"].min())
+                coinc[env] = {
+                    "lo_spread": lo_spread,
+                    "hi_spread": hi_spread,
+                    "coincide": lo_spread <= 1e-9 and hi_spread <= 1e-9,
+                }
+            summary["bracket_coincidence"] = coinc
+            summary["brackets_coincide"] = all(v["coincide"] for v in coinc.values())
         summary["scale_rows"] = len(cross_df)
 
     if "prop2" in only:
@@ -823,19 +1021,35 @@ def main() -> None:
         summary["prop2_jump_ok"] = (
             bool(jump_df["jump_ok"].all()) if not jump_df.empty else False
         )
+        if not jump_df.empty and "onset_hi" in jump_df.columns:
+            summary["prop2_onset_brackets"] = {
+                str(r["env"]): {
+                    "w_thresh": float(r["w_thresh"]),
+                    "onset_lo": float(r["onset_lo"]),
+                    "onset_hi": float(r["onset_hi"]),
+                    "upper_rel": float(r["rel_err"]),
+                }
+                for _, r in jump_df.iterrows()
+            }
         summary["prop2_rows"] = len(jump_df)
 
     if "dual" in only:
-        df = run_dual_descent(
-            n_episodes=dual_episodes,
-            budget=dual_budget,
-            lr=dual_lr0,
-            lr_decay=dual_decay,
-            rescale_at=dual_episodes // 2,
-            rescale_factor=10.0,
-        )
-        df.to_csv(RESULTS / "results_price_dual_descent.csv", index=False)
-        plot_dual_descent(df, FIGURES / "price_dual_descent.png")
+        dual_csv = RESULTS / "results_price_dual_descent.csv"
+        if args.replot and dual_csv.exists():
+            df = pd.read_csv(dual_csv)
+            print("\n=== Dual descent (replot from saved CSV) ===", flush=True)
+        else:
+            df = run_dual_descent(
+                n_episodes=dual_episodes,
+                budget=dual_budget,
+                lr=dual_lr0,
+                lr_decay=dual_decay,
+                rescale_at=dual_episodes // 2,
+                rescale_factor=10.0,
+            )
+            df.to_csv(dual_csv, index=False)
+        bracket = _diagnosis_crossing_from_scale_csv(dual_budget)
+        plot_dual_descent(df, FIGURES / "price_dual_descent.png", bracket=bracket)
         # Windowed averages of raw w near the end of each half (Polyak avg is
         # contaminated by the whole-run history after a mid-run rescale).
         pre = df.loc[~df["rescaled"], "weight"]
@@ -849,12 +1063,40 @@ def main() -> None:
             summary["dual_post_w"] = post_w
             summary["dual_pre_usage"] = float(df.loc[~df["rescaled"], "usage"].tail(20).mean())
             summary["dual_post_usage"] = float(df.loc[df["rescaled"], "usage"].tail(20).mean())
+        if bracket is not None:
+            summary["dual_crossing_bracket"] = {"w_lo": bracket[0], "w_hi": bracket[1]}
         summary["dual_rows"] = len(df)
 
-    if "efe" in only:
+    if "efe" in only and not args.replot:
         df = run_implicit_efe_budget(env_names, seeds, ep)
         df.to_csv(RESULTS / "results_price_efe_implicit_budget.csv", index=False)
         summary["efe_rows"] = len(df)
+
+    # Refresh headline verdicts when the relevant protocols ran.
+    if "scale" in only or "prop2" in only or "dual" in only:
+        verdict = {}
+        if "collapse_frac_within_noise" in summary:
+            coinc = summary.get("brackets_coincide", False)
+            verdict["curve_collapse"] = (
+                f"HOLD — {100*summary['collapse_frac_within_noise']:.0f}% of matched "
+                f"w/α points within 2·SE; max spread ≤{summary.get('collapse_max_spread', float('nan')):.2f}; "
+                f"crossing brackets {'coincide' if coinc else 'differ'} across α"
+            )
+        if "prop2_jump_ok" in summary:
+            brackets = summary.get("prop2_onset_brackets", {})
+            rels = {k: v.get("upper_rel") for k, v in brackets.items()} if brackets else {}
+            verdict["prop2_jump"] = (
+                f"{'HOLD' if summary['prop2_jump_ok'] else 'FAIL'} — onset brackets "
+                f"{rels}; U=0 below closed-form threshold"
+            )
+        if "dual_w_ratio_post_pre" in summary:
+            verdict["dual_rescale"] = (
+                f"HOLD — usage pinned near B; windowed w ratio post/pre "
+                f"≈{summary['dual_w_ratio_post_pre']:.2f} after ×10 reward rescale; "
+                f"~150-episode re-adaptation transient under lr decay"
+            )
+        if verdict:
+            summary["verdict"] = {**summary.get("verdict", {}), **verdict}
 
     with open(RESULTS / "results_price_of_information_summary.json", "w") as f:
         json.dump(summary, f, indent=2)

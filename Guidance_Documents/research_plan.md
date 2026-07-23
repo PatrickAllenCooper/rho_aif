@@ -785,45 +785,49 @@ git push origin main --tags
 
 ## Phase: Price of Information (July 22–23, 2026)
 
-**Status**: Upgraded full battery complete; three headline claims HOLD; paper draft now unblocked  
+**Status**: Presentation fixes complete; three headline claims HOLD with interval-valued framing; first paper draft at `paper/price_of_information.tex`  
 **Goal**: Recast the Planning+IG weight `w` as an operational shadow price of a sensing budget `B`, with offline solve and online dual control. Theory notes: `Guidance_Documents/price_of_information.md`.
 
 ### Delivered
-1. **Theory notes** — budgeted rho-POMDP, information-floor dual vs sensing-budget operational inverse, Prop 2 boundary reading, SAC-style dual control. Citations verified (Sims 2003; Matějka and McKay 2015; Haarnoja et al. 2018 arXiv:1812.05905).
-2. **`rho_aif/budget.py`** — `estimate_usage_curve` with per-seed SEs, `solve_shadow_price_from_curve` step brackets, `identifiable_budgets`, grid/bisect solvers.
+1. **Theory notes** — budgeted rho-POMDP, information-floor dual vs sensing-budget operational inverse, Prop 2 boundary reading, SAC-style dual control. Citations verified (Sims 2003; Matějka and McKay 2015; Haarnoja et al. 2018 arXiv:1812.05905; Altman 1999 CMDPs).
+2. **`rho_aif/budget.py`** — `estimate_usage_curve` with per-seed SEs, `crossing_bracket` (set-valued shadow price), `solve_shadow_price_from_curve` step brackets, `identifiable_budgets`.
 3. **`DualWeightAgent`** — projected update with optional `lr_decay` and Polyak `w_avg`.
-4. **Upgraded experiments** — curve-collapse scale test; positive-threshold Prop 2 jump; powered staircases with SEs; dual with decay + mid-run rescale; implicit EFE budgets.
-5. **Tests** — full suite **296 passed**.
+4. **Upgraded experiments** — curve-collapse scale test with interval brackets; refined Prop 2 onset brackets; powered staircases; dual with decay + mid-run rescale; `--replot` path.
+5. **Paper draft** — `paper/price_of_information.tex` (LLNCS), three core figures.
+6. **Tests** — full suite **301 passed**.
 
-### Protocol upgrades (after quick battery failed)
-Quick mode used noisy argmin solves and vacuous (negative) Prop 2 checks. Upgrades:
-- **Scale**: plot `U` vs `w/α` on α-scaled grids (curve collapse), not paired argmins.
-- **Prop 2**: positive-threshold Testbeds (`p=0.60` and `p=0.58`, `c=0.3`, `R±=±1`); onset = first `U>0.5`.
-- **Curves**: dense grid, 5 seeds × 100 episodes (OTC); identifiable budgets inside `[U_min, U_max]`; staircase + brackets.
-- **Dual**: `lr0=0.05`, decay `0.02`, 400 episodes; metric = windowed raw `w` ratio (not whole-run Polyak).
+### Protocol upgrades (after quick battery failed; then presentation fixes)
+- **Scale**: plot `U` vs `w/α` (curve collapse); right panel is the **crossing bracket in `w/α`**, not point `w*` (B=8 sits in a usage gap).
+- **Prop 2**: positive-threshold Testbeds; refined grid near threshold; report onset bracket `(last U≈0, first U>0.5]`.
+- **Curves**: dense grid, 5 seeds × 100 episodes (OTC); identifiable budgets; staircase + brackets.
+- **Dual**: `lr0=0.05`, decay `0.02`, 400 episodes; windowed raw `w` ratio; shaded crossing-bracket band (not point `curve w*`).
 
-### Full-battery verdicts (`--mode full`, 5 seeds × 100 episodes)
+### Full-battery verdicts (`--mode full`, 5 seeds × 100 episodes; presentation fix 2026-07-22)
 | Claim | Verdict | Evidence |
 |---|---|---|
-| Curve collapse | **HOLD** | Diagnosis and Bandit: 100% of matched `w/α` points within 2·SE; max spread 0.48 / 0.45. Jump from ~6→~9.5 obs occurs at the same `w/α≈0.32` across α∈{0.1,1,10}. |
-| Prop 2 jump | **HOLD** | `TestbedPos-p06`: onset `w=4.54` vs closed-form `3.44` (rel err 0.32); `p058`: `9.96` vs `7.55` (rel err 0.32). `U=0` below threshold on both. Negative-threshold sanity (Testbed/Tiger) still holds. |
-| Dual rescale | **HOLD** | Usage pinned at 8.1 both halves. After ×10 reward rescale, windowed `w` rises 0.29 → 2.71 (ratio **9.3 ≈ 10**). |
-| Shadow staircases | **PARTIAL** | Bandit and Inspection-N8 roughly monotone with SEs. Tiger/Diagnosis/Tileworld retain local non-monotonicity; report step brackets, not point estimates alone. |
+| Curve collapse | **HOLD** | Diagnosis/Bandit: 100% matched `w/α` points within 2·SE; max spread ≤0.48. Crossing brackets in `w/α` **coincide** across α∈{0.1,1,10} (Diagnosis `(0.141,0.323]`, Bandit `(3.84,8.76]`). |
+| Prop 2 onset | **HOLD** | Refined grid: both Testbeds onset in `(w_thresh, 1.03·w_thresh]` (upper rel 3%). `U=0` at and below threshold. |
+| Dual rescale | **HOLD** | Usage pinned at 8.1 both halves. Windowed `w` 0.29 → 2.71 after ×10 rescale (ratio **9.3 ≈ 10**). ~150-episode re-adaptation under lr decay. |
+| Shadow staircases | **PARTIAL** | Bandit/Inspection roughly monotone; Tiger/Diagnosis/Tileworld local non-monotonicity — report brackets+SEs. |
 
 Implicit EFE budgets `B_EFE=U(w=1)`: Tiger 4.21±0.07, Diagnosis 9.68±0.15, Bandit 5.03±0.17, Tileworld-6x6 14.83±0.22, Inspection-N8 18.24±0.19.
 
-Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_summary.json`, `figures/price_*.png` (including `price_prop2_jumps.png`, `price_scale_invariance.png`, `price_dual_descent.png`, `price_shadow_curves.png`).
+Artifacts: `results/results_price_*.csv`, `results/results_price_of_information_summary.json`, `figures/price_*.{png,pdf}`, `paper/price_of_information.tex`.
 
 ### Design notes forced by data
 - `U(w)` is only roughly monotone; default solver is log-grid + step brackets with SEs.
 - Budgets below `U(0)` are unachievable with nonnegative `w` (instrumental sensing).
+- Gap budgets make `w*` set-valued; report `crossing_bracket`, not a single argmin.
 - Environments have a usage ceiling `U_max` (belief saturation / episode caps).
-- Multi-step Planning+IG onset sits slightly above the H=1 Prop 2 closed form (~32% on the positive Testbeds); still a clean qualitative match.
+- H=1 Prop 2 closed form predicts zero observing for `w ≤ w_thresh`; multi-step onset is just above (3% after grid refinement; previously 32% was a coarse-grid artifact).
+- Dual lr decay stabilizes the steady state but slows re-adaptation after reward rescale.
 
 ### Still open
 - [ ] Optional: cost-usage (`usage_kind='cost'`) curves alongside count usage
-- [x] Full battery confirms the scale story — **paper draft unblocked**
-- [ ] Start paper draft for this extension (curve collapse + Prop 2 jump + dual rescale as the three figures)
+- [x] Full battery confirms the scale story
+- [x] Presentation fixes (interval brackets, Prop 2 refinement, dual band)
+- [x] Start paper draft (`paper/price_of_information.tex`)
+- [ ] Revise / expand paper draft toward a submission venue
 
 ---
 

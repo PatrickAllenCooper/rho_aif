@@ -247,6 +247,152 @@ def usage_curve_to_arrays(curve: Sequence[UsageCurvePoint]):
     return ws, us, ses
 
 
+@dataclass
+class CrossingBracket:
+    """
+    Set-valued shadow price at a (possibly gap) budget.
+
+    The interval (w_lo, w_hi] is the last grid weight with U < B and the first
+    subsequent weight with U >= B. When B falls inside a usage gap, any point
+    estimate of w* is arbitrary; the bracket is the scale-invariant object.
+    """
+
+    w_lo: float
+    w_hi: float
+    usage_lo: float
+    usage_hi: float
+    budget: float
+    bracketed: bool
+    achievable: bool
+    note: str = ""
+    usage_se_lo: float = float("nan")
+    usage_se_hi: float = float("nan")
+    u_min: float = float("nan")
+    u_max: float = float("nan")
+
+    @property
+    def width(self) -> float:
+        return float(self.w_hi - self.w_lo)
+
+
+def crossing_bracket(
+    curve: Sequence[UsageCurvePoint],
+    budget: float,
+) -> CrossingBracket:
+    """
+    Return the (w_lo, w_hi] interval where U(w) crosses budget B.
+
+    - w_lo: largest w with mean_usage < B (or min w if none)
+    - w_hi: smallest w > w_lo with mean_usage >= B when possible; else the
+      smallest w with mean_usage >= B; else max w
+
+    Degenerate cases:
+    - B below U_min: not achievable; returns the leftmost edge.
+    - B above U_max: not achievable; returns the rightmost edge.
+    """
+    if not curve:
+        raise ValueError("curve must be nonempty")
+    ws, us, ses = usage_curve_to_arrays(curve)
+    order = np.argsort(ws)
+    ws, us, ses = ws[order], us[order], ses[order]
+    u_min = float(np.min(us))
+    u_max = float(np.max(us))
+
+    below = np.where(us < budget)[0]
+    above = np.where(us >= budget)[0]
+
+    if budget < u_min:
+        return CrossingBracket(
+            w_lo=float(ws[0]),
+            w_hi=float(ws[0]),
+            usage_lo=float(us[0]),
+            usage_hi=float(us[0]),
+            budget=float(budget),
+            bracketed=False,
+            achievable=False,
+            note="budget below observed U range",
+            usage_se_lo=float(ses[0]),
+            usage_se_hi=float(ses[0]),
+            u_min=u_min,
+            u_max=u_max,
+        )
+    if budget > u_max:
+        return CrossingBracket(
+            w_lo=float(ws[-1]),
+            w_hi=float(ws[-1]),
+            usage_lo=float(us[-1]),
+            usage_hi=float(us[-1]),
+            budget=float(budget),
+            bracketed=False,
+            achievable=False,
+            note="budget above observed U range",
+            usage_se_lo=float(ses[-1]),
+            usage_se_hi=float(ses[-1]),
+            u_min=u_min,
+            u_max=u_max,
+        )
+
+    if len(below) and len(above):
+        lo_i = int(below[-1])
+        above_after = above[above > lo_i]
+        if len(above_after):
+            hi_i = int(above_after[0])
+        else:
+            # Local non-monotonicity: take any above index
+            hi_i = int(above[0])
+            if hi_i < lo_i:
+                lo_i, hi_i = hi_i, lo_i
+        return CrossingBracket(
+            w_lo=float(ws[lo_i]),
+            w_hi=float(ws[hi_i]),
+            usage_lo=float(us[lo_i]),
+            usage_hi=float(us[hi_i]),
+            budget=float(budget),
+            bracketed=True,
+            achievable=True,
+            note="",
+            usage_se_lo=float(ses[lo_i]),
+            usage_se_hi=float(ses[hi_i]),
+            u_min=u_min,
+            u_max=u_max,
+        )
+
+    # All points on one side of B but B still in [u_min, u_max] (flat plateau).
+    if len(below) == 0:
+        # Every U >= B; left edge of the plateau at/above B
+        hi_i = int(above[0])
+        return CrossingBracket(
+            w_lo=float(ws[hi_i]),
+            w_hi=float(ws[hi_i]),
+            usage_lo=float(us[hi_i]),
+            usage_hi=float(us[hi_i]),
+            budget=float(budget),
+            bracketed=False,
+            achievable=True,
+            note="all U >= B; returning first at/above",
+            usage_se_lo=float(ses[hi_i]),
+            usage_se_hi=float(ses[hi_i]),
+            u_min=u_min,
+            u_max=u_max,
+        )
+    # Every U < B
+    lo_i = int(below[-1])
+    return CrossingBracket(
+        w_lo=float(ws[lo_i]),
+        w_hi=float(ws[lo_i]),
+        usage_lo=float(us[lo_i]),
+        usage_hi=float(us[lo_i]),
+        budget=float(budget),
+        bracketed=False,
+        achievable=True,
+        note="all U < B; returning last below",
+        usage_se_lo=float(ses[lo_i]),
+        usage_se_hi=float(ses[lo_i]),
+        u_min=u_min,
+        u_max=u_max,
+    )
+
+
 def solve_shadow_price_from_curve(
     curve: Sequence[UsageCurvePoint],
     budget: float,

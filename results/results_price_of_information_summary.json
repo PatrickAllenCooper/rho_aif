@@ -8,28 +8,56 @@
     1024
   ],
   "episodes": 100,
-  "collapse_frac_within_noise": 1.0,
-  "collapse_max_spread": 0.476,
-  "scale_rows": 6,
+  "replot": true,
   "prop2_jump_ok": true,
-  "prop2_jump_rel_errs": {
-    "TestbedPos-p06": 0.3195,
-    "TestbedPos-p058": 0.3195
+  "prop2_onset_brackets": {
+    "TestbedPos-p06": {
+      "w_thresh": 3.4424112343349473,
+      "onset_lo": 3.4424112343349473,
+      "onset_hi": 3.5456835713649957,
+      "upper_rel": 0.030000000000000027
+    },
+    "TestbedPos-p058": {
+      "w_thresh": 7.548754860065942,
+      "onset_lo": 7.548754860065942,
+      "onset_hi": 7.7752175058679205,
+      "upper_rel": 0.030000000000000027
+    }
   },
   "prop2_rows": 2,
-  "dual_w_ratio_post_pre": 9.327,
-  "dual_pre_w": 0.291,
-  "dual_post_w": 2.714,
+  "verdict": {
+    "prop2_jump": "HOLD \u2014 onset brackets within 3% of H=1 closed-form threshold on both positive-threshold Testbeds (refined grid); U=0 at and below w_thresh",
+    "curve_collapse": "HOLD \u2014 100% of matched w/\u03b1 points within 2\u00b7SE; max spread \u22640.48; crossing brackets coincide across \u03b1",
+    "dual_rescale": "HOLD \u2014 usage pinned near B; windowed w ratio post/pre \u22489.33 after \u00d710 reward rescale; ~150-episode re-adaptation transient under lr decay",
+    "shadow_staircases": "PARTIAL \u2014 Bandit/Inspection roughly monotone with SEs; Tiger/Diagnosis/Tileworld still show local non-monotonicity; report brackets+SEs"
+  },
+  "curves_rows": 25,
+  "collapse_frac_within_noise": 1.0,
+  "collapse_max_spread": 0.4759999999999991,
+  "bracket_coincidence": {
+    "Bandit": {
+      "lo_spread": 0.0,
+      "hi_spread": 0.0,
+      "coincide": true
+    },
+    "Diagnosis": {
+      "lo_spread": 4.996003610813204e-16,
+      "hi_spread": 1.1102230246251565e-16,
+      "coincide": true
+    }
+  },
+  "brackets_coincide": true,
+  "scale_rows": 6,
+  "dual_w_ratio_post_pre": 9.326643899090774,
+  "dual_pre_w": 0.291037748361365,
+  "dual_post_w": 2.7144054401596405,
   "dual_pre_usage": 8.1,
   "dual_post_usage": 8.1,
+  "dual_crossing_bracket": {
+    "w_lo": 0.1414213562373095,
+    "w_hi": 0.3228004742743391
+  },
   "dual_rows": 400,
   "efe_rows": 5,
-  "curves_rows": 25,
-  "usage_curve_rows": 66,
-  "verdict": {
-    "curve_collapse": "HOLD \u2014 100% of matched w/\u03b1 points within 2\u00b7SE on Diagnosis and Bandit; max spread \u22640.48",
-    "prop2_jump": "HOLD \u2014 onset of observing within 32% of H=1 closed-form threshold on both positive-threshold Testbeds; U=0 below threshold",
-    "dual_rescale": "HOLD \u2014 usage pinned at B=8.1 both halves; windowed w ratio post/pre \u22489.3 \u224810 after \u00d710 reward rescale",
-    "shadow_staircases": "PARTIAL \u2014 Bandit/Inspection roughly monotone with SEs; Tiger/Diagnosis/Tileworld still show local non-monotonicity; report brackets+SEs"
-  }
+  "usage_curve_rows": 66
 }

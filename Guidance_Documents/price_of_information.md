@@ -1,15 +1,15 @@
 # The Price of Information: w as a Shadow Price on a Sensing Budget
 
-**Status**: Derivation notes + implementation + upgraded full battery complete; three headline claims HOLD; paper draft unblocked  
+**Status**: Derivation notes + implementation + presentation fixes + first paper draft  
 **Date**: July 22–23, 2026  
-**Relation to paper**: Addresses the accepted IWAI 2026 paper's limitation that the canonical weight `w=1` in Planning+IG / EFE is not reward-scale invariant.
+**Relation to paper**: Addresses the accepted IWAI 2026 paper's limitation that the canonical weight `w=1` in Planning+IG / EFE is not reward-scale invariant. Draft: `paper/price_of_information.tex`.
 
 ### Full-battery verdicts (see `research_plan.md` for detail)
-1. **Curve collapse HOLD** — `U` vs `w/α` collapses across α∈{0.1,1,10} on Diagnosis and Bandit (100% of matched points within 2·SE).
-2. **Prop 2 jump HOLD** — on positive-threshold Testbeds, observing onsets within ~32% of the H=1 closed-form `w_thresh`; `U=0` below.
-3. **Dual rescale HOLD** — usage pinned at `B=8.1`; after ×10 reward rescale, windowed `w` ratio ≈9.3.
+1. **Curve collapse HOLD** — `U` vs `w/α` collapses across α∈{0.1,1,10} on Diagnosis and Bandit (100% of matched points within 2·SE). Crossing brackets in `w/α` units **coincide** across scales (set-valued shadow price at gap budgets); do not report point-valued `w*(B)` alone when `B` sits in a usage gap.
+2. **Prop 2 onset HOLD** — refined grid: onset bracket `(w_thresh, 1.03·w_thresh]` on both positive-threshold Testbeds (upper relative error 3%); `U=0` at and below `w_thresh`.
+3. **Dual rescale HOLD** — usage pinned at `B=8.1`; after ×10 reward rescale, windowed `w` ratio ≈9.3. Re-adaptation takes ~150 episodes under lr decay (trade-off for steady-state stability). Dual figure shows the Diagnosis α=1 crossing bracket, not a misleading point `w*`.
 
-Paper draft may proceed with these three figures as the core evidence. Shadow-price staircases remain supporting (report brackets + SEs; local non-monotonicity persists on Tiger/Diagnosis/Tileworld).
+Shadow-price staircases remain supporting (report brackets + SEs; local non-monotonicity persists on Tiger/Diagnosis/Tileworld).
 
 ## Citation check (verified before writing)
 
@@ -18,8 +18,9 @@ Paper draft may proceed with these three figures as the core evidence. Shadow-pr
 | Rational inattention: agents face a finite Shannon capacity / information-processing constraint that can substitute for adjustment costs | Sims, C. A. (2003). Implications of rational inattention. *Journal of Monetary Economics*, 50(3), 665–690. DOI: 10.1016/S0304-3932(03)00029-1 |
 | Discrete-choice rational inattention yields (generalized) multinomial logit; costly information acquisition before choice | Matějka, F., and McKay, A. (2015). Rational inattention to discrete choices: A new foundation for the multinomial logit model. *American Economic Review*, 105(1), 272–298. DOI: 10.1257/aer.20130047 |
 | Soft Actor-Critic with constrained formulation that automatically tunes the entropy temperature by dual gradient descent | Haarnoja, T., Zhou, A., Hartikainen, K., Tucker, G., Ha, S., Tan, J., Kumar, V., Zhu, H., Gupta, A., Abbeel, P., and Levine, S. (2018). Soft Actor-Critic Algorithms and Applications. arXiv:1812.05905. (This is the applications / auto-temperature paper. The earlier ICML 2018 paper introduces SAC with a fixed temperature and does **not** contain the dual auto-tuning rule.) |
+| Constrained MDPs: Lagrangian / dual LP treatment of expected-cost constraints | Altman, E. (1999). *Constrained Markov Decision Processes*. Chapman & Hall/CRC. |
 
-Check step: each row above was verified against the publisher / arXiv record on 2026-07-22. Do not cite the ICML SAC paper alone for automatic temperature tuning.
+Check step: each row above was verified against the publisher / arXiv record on 2026-07-22 (Altman verified via publisher record / author PDF). Do not cite the ICML SAC paper alone for automatic temperature tuning.
 
 ## 1. Budgeted problem
 
@@ -113,8 +114,9 @@ Predictions for budget-derived weights:
 
 1. For a fixed count budget `B`, the induced usage under `w*(B; α)` stays pinned near `B` across `α ∈ {0.1, 1, 10}`.
 2. The shadow price itself rescales: `w*(B; α) ≈ α · w*(B; 1)`, matching a price measured in reward units per bit.
+3. When `B` falls inside a discrete usage gap, `w*` is **set-valued**: the scale-invariant object is the crossing bracket `(w_lo, w_hi]` in `w/α` units (`crossing_bracket` in `rho_aif/budget.py`), not a single argmin grid point.
 
-Dual descent with a fixed usage target inherits the same invariance: when rewards are rescaled mid-run, a fixed `w` breaks the budget while the controller re-converges.
+Dual descent with a fixed usage target inherits the same invariance: when rewards are rescaled mid-run, a fixed `w` breaks the budget while the controller re-converges. Under learning-rate decay, re-adaptation after a mid-run rescale can take on the order of 100+ episodes (observed ~150 on Diagnosis).
 
 ## 6. Online dual control of w
 
@@ -163,10 +165,10 @@ What this project contributes:
 | Piece | Path |
 |---|---|
 | Theory notes (this file) | `Guidance_Documents/price_of_information.md` |
-| Usage accounting, `estimate_usage`, `solve_shadow_price` | `rho_aif/budget.py` |
+| Usage accounting, `crossing_bracket`, `solve_shadow_price` | `rho_aif/budget.py` |
 | Online controller | `rho_aif/agents/dual_descent.py` |
-| Experiments | `experiments/run_price_of_information.py` |
+| Experiments (`--replot` for scale/dual) | `experiments/run_price_of_information.py` |
 | Tests | `tests/test_budget.py`, `tests/test_dual_descent.py` |
+| Figures (PNG+PDF) | `figures/price_*.png`, `figures/price_*.pdf` |
+| Paper draft | `paper/price_of_information.tex` |
 | Phase log | `Guidance_Documents/research_plan.md` |
-
-Paper draft: deferred until scale-invariance and Prop 2 duality results are in hand.
