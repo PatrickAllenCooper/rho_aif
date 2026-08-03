@@ -21,6 +21,13 @@ full or as a head/tail preview with summary statistics for the handful exceeding
 material" brief; the vector PDFs and original CSVs remain the sources of truth
 and are cited by exact path throughout.
 
+Note on venue: this poster is being presented at IWAI 2026 (the 7th International
+Workshop on Active Inference), where an abridged version of this same work was
+separately submitted and accepted. Section 21 covers IWAI's submission history
+for this paper, the workshop's dates/venue/registration, and physical poster
+format and on-site logistics (A0 portrait, 2-minute spotlight, session timing) —
+read it before finalizing the poster's physical dimensions and layout.
+
 ---
 
 ## 1. Publication metadata
@@ -946,6 +953,13 @@ extension standalone).
 ---
 
 ## 17. Suggested poster narrative arcs (pick one; comprehensive options for editorial pass)
+
+All three arcs below target a single A0 portrait page per IWAI 2026's poster
+format (see Section 21.5-21.6); Arc A's five-beat structure and Arc B's two-pillar
+structure both map more naturally onto a portrait top-down layout than Arc C's
+wider applications lead-in. Whichever arc is chosen, budget the top ~15% of the
+canvas for a title/spotlight-matching headline, since the accompanying 2-minute
+spotlight talk (Section 21.5) should say almost exactly what that headline says.
 
 **Arc A — "Two results in one paper" (broadest coverage):**
 1. Problem: information has no intrinsic value in POMDPs; ρ-POMDPs fix this but
@@ -4239,3 +4253,181 @@ cost>=3,43,0.18604651162790697,0.2558139534883721,0.37209302325581395
 
 
 ---
+
+---
+
+## 21. IWAI 2026 conference: requirements and formatting details (where this poster is presented)
+
+This section documents the venue this poster is actually for. The manuscript in
+Sections 1-20 is the accepted *Minds and Machines* journal article; the poster
+itself is being presented at the **7th International Workshop on Active
+Inference (IWAI 2026)**, where an abridged 12-page LNCS version of this same
+work (`paper/paper_iwai2026_abridged.tex`) was separately submitted and accepted.
+All details below were fetched and cross-checked directly from the IWAI 2026 CFP
+site and the most recent prior edition's site on 2026-08-03; anything not yet
+published for 2026 is flagged explicitly rather than assumed.
+
+### 21.1 This paper's status at IWAI 2026
+
+Per `Guidance_Documents/research_plan.md`'s OpenReview camera-ready record: this
+work was **IWAI 2026 submission #4**, decision **Accept: Poster + Spotlight**.
+That means:
+- It was submitted as a **full paper** (up to 12 pages LNCS format, excluding
+  references) rather than a 2-page extended abstract.
+- The acceptance track is poster presentation with a **2-minute spotlight talk**,
+  not a full oral slot. Per IWAI's own call for papers, this is a normal outcome
+  for full papers, not a downgrade: "Full paper submissions may also be accepted
+  as posters with a 2-minute spotlight."
+- Camera-ready review responses to reviewers uscY, ieKV, and NbgT are already
+  drafted and implemented in the working LaTeX sources (see
+  `Guidance_Documents/research_plan.md`, "OpenReview camera-ready author
+  responses" and "Citation audit" subsections under the IWAI 2026 review-response
+  phase).
+- The accepted full paper is published in the workshop proceedings, Springer's
+  **Communications in Computer and Information Science (CCIS)** series.
+
+### 21.2 Workshop identity and theme
+
+- **Name**: 7th International Workshop on Active Inference (IWAI 2026).
+- **Theme**: "Foundations," organized around three streams: (1) Computational
+  Theory and Simulations, (2) Cognitive, Philosophical, and Neural Models, (3)
+  Empirical, Clinical, and Real-World Applications. This paper's theory
+  (Propositions 1-3, PI-1-PI-5) and applications (RockSample, Structural
+  Inspection) span streams 1 and 3.
+- **General Chair**: Pablo Lanillos. **Technical Program Chairs**: Martijn Wisse,
+  Ivilin Peev Stoianov. **Advancement Chair**: Susie Kim.
+- **Invited speakers (2026)**: Tadahiro Taniguchi (Kyoto University), Carme
+  Torras (CSIC), Rajesh Rao (University of Washington), Giovanni Pezzulo
+  (ISTC-CNR), Karl Friston (UCL / VERSES).
+- **Official site**: `https://iwaiworkshop.github.io/`.
+
+### 21.3 Venue and dates (2026)
+
+- **Location**: CSIC (Spanish National Research Council) Central Auditorium,
+  C. de Serrano, 117, Chamartín, 28006 Madrid, Spain. Nearest metro stations:
+  República Argentina, Nuevos Ministerios (Line 8 connects directly from
+  Adolfo Suárez Madrid-Barajas Airport to Nuevos Ministerios, then ~15 min walk).
+- **Workshop dates**: **October 14-16, 2026**.
+- **Key submission-cycle dates** (already passed, included for the record):
+  Abstract Registration Deadline May 24, 2026; Submission Deadline June 7 (later
+  extended to June 12), 2026; Acceptance Notification July 12 (later extended to
+  July 17), 2026.
+- **Registration** (needed to attend/present): open at
+  `https://grxworkshop-en.congressus.es/iwai2026/inscripciones`. Early-bird
+  pricing (until July 24, 2026, since passed) was Student EUR 175 + 21% VAT,
+  Academic EUR 500 + 21% VAT; regular pricing (July 24-Oct 13, 2026) is Student
+  EUR 275 + 21% VAT, Academic EUR 650 + 21% VAT. Cancellation: 100% refund within
+  14 days of purchase, 50% before Sept 13, 2026, none after.
+- **Detailed programme** (specific poster-session day/time slot): not yet
+  published as of this writing ("Programme and keynote speakers will be
+  announced soon" on the official site) — confirm the exact spotlight/poster
+  session assignment closer to the event and update this section.
+
+### 21.4 Full-paper submission format requirements (for reference / consistency)
+
+These governed the already-accepted `paper_iwai2026_abridged.tex` and are
+recorded here so the poster's content, notation, and citations stay consistent
+with the reviewed and accepted version:
+- **Format**: Springer LNCS (`llncs.cls`, `runningheads` option — matches the
+  class file already vendored at `paper/llncs.cls` and used by
+  `paper_iwai2026.tex`, `paper_iwai2026_abridged.tex`, `paper_arxiv.tex`, and
+  `full_paper.tex`). General Springer LNCS author guidelines and the downloadable
+  LaTeX2e/Word templates live at
+  `https://www.springer.com/gp/computer-science/lncs/conference-proceedings-guidelines`.
+- **Length**: full papers up to 12 pages including figures, excluding references;
+  an optional appendix of up to 12 further pages (including additional
+  references) is allowed, intended for supplementary technical material
+  (proofs, implementation details, additional analyses) that reviewers are not
+  expected to read in full — all essential claims must be in the main 12 pages.
+  The submitted abridged file compiles to 14 total pages (12 main text +
+  references), consistent with this rule.
+- **Anonymization**: full papers must be anonymized to the best of authors'
+  efforts for double-blind review (the submitted file used "Anonymous Author(s)"
+  / "Anonymized for blind review"); a non-anonymous online preprint (e.g. arXiv)
+  is explicitly permitted to coexist. Now that the paper is accepted, the
+  camera-ready de-anonymizes (author names Patrick Cooper and Alvaro Velasquez,
+  University of Colorado Boulder affiliation, as in the other paper variants).
+- **Camera-ready requirement**: a filled-in and signed **License to Publish**
+  form must accompany the camera-ready submission for the paper to be published
+  in the CCIS proceedings.
+- **Supplementary material**: optional links in the main text to code/data
+  hosted on a stable public repository (GitHub, Zenodo, OSF, OpenReview) are
+  permitted and encouraged — this paper's repository link
+  (`https://github.com/PatrickAllenCooper/rho_aif`) already appears as a footnote
+  in the manuscript.
+- **Review process**: community-based double-blind peer review; all co-authors
+  register on OpenReview and may be asked to review up to two other submissions.
+
+### 21.5 Poster physical format and on-site logistics
+
+IWAI 2026's own program page does not yet publish poster-specific logistics
+separately from the general CFP. The most recent prior edition (IWAI 2025,
+McGill University) specified the following, which is the best available guide
+until IWAI 2026 publishes its own poster instructions — **treat every number
+below as "carried forward, not yet reconfirmed for 2026"**:
+- **Format**: poster "preferably printed on A0 format" — i.e., **A0 portrait,
+  84.1 cm x 118.9 cm (33.1 in x 46.8 in)**, single page, printed (no mention of
+  a digital-display/monitor option).
+- **Presentation**: each accepted poster (full paper or extended abstract) gets
+  a **2-minute spotlight talk** in addition to the poster session itself — the
+  poster and the spotlight should be designed together, since the spotlight is
+  the "trailer" that gets people to the poster board (Section 3's elevator pitch
+  and Section 4's plain-language framing in this document are sized for exactly
+  this kind of 1-2 minute verbal pitch).
+- **Install/removal**: posters must be installed at the start of the day of the
+  presenter's assigned spotlight session and removed at the end of that same
+  day's poster session (i.e., not left up for the whole 3-day workshop by
+  default).
+- **Session capacity and placement**: 10 poster stations per session (max 20
+  posters per session, two presenters sharing each station's two sides).
+  Placement is **first-come, first-served** — no assigned spots — so arriving
+  early on the assigned day matters logistically.
+- **Physical prep**: bring the poster already printed; no confirmation of
+  on-site printing services, poster tubes/mailing options, or provided mounting
+  hardware (pins/velcro) has been published for 2026 — plan to bring your own
+  poster tube and confirm mounting-hardware availability with organizers ahead
+  of travel.
+
+### 21.6 Implications for this poster's design (translating logistics into constraints)
+
+- **Canvas**: design for a single A0 portrait page (84.1 x 118.9 cm) unless IWAI
+  2026 publishes different instructions. Portrait orientation favors a top-down
+  narrative — this fits Arc A or Arc B from Section 17 better than a wide
+  landscape layout would.
+- **Print resolution**: figures should be exported at print resolution (300 DPI
+  minimum at final poster size) rather than the 150 DPI inline previews embedded
+  in Section 19 of this document, which exist only for on-screen review here.
+  The original vector PDFs in `figures/` remain the correct source for the final
+  poster's print-quality figure placement.
+- **Spotlight pairing**: because presentation includes a 2-minute spotlight talk,
+  the poster's title panel and headline claim should match almost verbatim what
+  gets said in those 2 minutes — use Section 2's one-line summary and Section
+  3's elevator pitch as the spotlight script's spine, trimmed further if needed.
+- **Session-day logistics**: once IWAI 2026 assigns a specific spotlight/poster
+  session day (Oct 14-16), plan to arrive early that day to claim a station
+  (first-come, first-served) and plan poster removal at the end of that day's
+  session, not at the end of the workshop.
+- **Consistency check**: because this is the *same* underlying science as the
+  already-accepted, already-reviewed IWAI full paper, any numbers or claims put
+  on the poster should be checked against `paper/paper_iwai2026_abridged.tex`
+  (the actual accepted-at-IWAI text) in addition to `paper/full_paper.tex` (the
+  Minds and Machines text used to build Sections 1-20 of this document) —
+  the two are consistent on shared claims but the IWAI version is shorter and
+  omits the budgeted-rho-POMDP / price-of-information material entirely (that
+  extension postdates the IWAI submission). Decide explicitly whether the poster
+  should include the budget/shadow-price material (present in the journal
+  paper, absent from the accepted IWAI paper) or restrict itself to what IWAI
+  reviewers actually saw and accepted; either is defensible, but the choice
+  should be deliberate, not accidental.
+
+### 21.7 Sources
+
+- `https://iwaiworkshop.github.io/` (IWAI 2026 official CFP, programme,
+  registration, venue, dates — fetched 2026-08-03).
+- `https://iwaiworkshop.github.io/2025.html` (IWAI 2025 official site, source
+  for the poster/spotlight logistics carried forward in Section 21.5 — fetched
+  2026-08-03).
+- `https://www.springer.com/gp/computer-science/lncs/conference-proceedings-guidelines`
+  (Springer LNCS author guidelines and templates).
+- `Guidance_Documents/research_plan.md` ("Phase: IWAI 2026 review response"
+  section) for this paper's specific submission number and decision.
