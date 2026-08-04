@@ -22,11 +22,12 @@
 
 \titlerunning{EFE as Belief-Dependent Utility for $\rho$-POMDPs}
 
-\author{Anonymous Author(s)}
+\author{Patrick Cooper \and Alvaro Velasquez}
 
-\authorrunning{Anonymous Author(s)}
+\authorrunning{P. Cooper and A. Velasquez}
 
-\institute{Anonymized for blind review}
+\institute{Department of Computer Science, University of Colorado Boulder,\\ Boulder, CO, USA\\
+\email{\{patrick.cooper,alvaro.velasquez\}@colorado.edu}}
 
 \maketitle
 
@@ -43,7 +44,7 @@ The $\rho$-POMDP framework \citep{araya2010} addresses this by extending POMDPs 
 
 Separately, the Active Inference (AIF) framework \citep{friston2010, parr2019} casts perception and action as approximate Bayesian inference, selecting policies that minimize Expected Free Energy (EFE). EFE naturally decomposes into a pragmatic term (goal-seeking) and an epistemic term (information-seeking). Because both terms come from a single variational objective, their relative coefficient is fixed once pragmatic value is identified with task reward. In the discrete-state formulation we use, that coefficient is $w{=}1$ in information units (Proposition~\ref{prop:equivalence}). The claim is exact under log scoring rules \citep{bernardo1979} and, under a shared reward convention, an empirically robust untuned default. It is not scale-invariant.
 
-We propose substituting EFE as $\rho$ in $\rho$-POMDPs, yielding an agent whose epistemic foraging is a consequence of its objective rather than an engineered bonus.\footnote{A full version with proofs, extended experiments, robustness analyses, and POMCP comparisons is available at \url{https://anonymous.4open.science/r/rho-aif}.} Our contributions are:
+We propose substituting EFE as $\rho$ in $\rho$-POMDPs, yielding an agent whose epistemic foraging is a consequence of its objective rather than an engineered bonus.\footnote{A full version with proofs, extended experiments, robustness analyses, and POMCP comparisons is available at \url{https://github.com/PatrickAllenCooper/rho_aif}.} Our contributions are:
 \begin{enumerate}
     \item A formal bridge between $\rho$-POMDPs and active inference (Proposition~\ref{prop:equivalence}) for observe-then-commit POMDPs, extended to factored observation POMDPs (Proposition~\ref{prop:factored}) covering interleaved settings where the hidden state is preserved by information-gathering actions, with a formal characterization of when $w{=}1$ is near-optimal (Proposition~\ref{prop:nearopt}).
     \item Controlled comparison against multiple baselines across six observe-then-commit environments and four RockSample instances, with Pareto analysis showing $w{=}1$ Pareto-dominates same-horizon planning on Diagnosis and Bandit, remaining competitive with tuned Planning+IG.
@@ -370,8 +371,6 @@ The formal equivalence holds for factored observation POMDPs but not for setting
 The $\rho$-POMDP framework and active inference converge on a belief-dependent utility adding information gain at $w{=}1$---a derived relative coefficient in information units, exact under log scoring \citep{bernardo1979}, empirically robust under a shared reward convention, and not scale-invariant. Tuned Planning+IG can exceed EFE on some metrics. EFE remains the competitive untuned default. Proposition~\ref{prop:factored} carries the bridge to factored observation POMDPs, from RockSample through Structural Inspection with over $65{,}000$ states.
 
 \begin{credits}
-\subsubsection{\ackname} Removed for anonymous submission.
-
 \subsubsection{\discintname}
 The authors have no competing interests to declare that are relevant to the content of this article.
 \end{credits}

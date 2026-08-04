@@ -1,56 +1,86 @@
-\documentclass[runningheads]{llncs}
+\documentclass[manuscript,screen,review,nonacm=true]{acmart}
+
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\setcopyright{none}
+\citestyle{acmauthoryear}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[numbers,sort&compress]{natbib}
-\usepackage{hyperref}
-\usepackage{url}
 \usepackage{booktabs}
-\usepackage{amsfonts}
-\usepackage{amsmath}
-\usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{nicefrac}
-\usepackage{microtype}
 \usepackage{xcolor}
 \usepackage{multirow}
 \usepackage{graphicx}
 \graphicspath{{./}{../}}
 \usepackage{enumitem}
 
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
 \begin{document}
 
-\title{Expected Free Energy as Belief-Dependent Utility for $\rho$-POMDPs}
+\title{Expected Free Energy as Belief-Dependent Utility for $\rho$-POMDPs:\\
+From a Canonical Information-Unit Weight to an Operational Shadow Price}
 
-\titlerunning{EFE as Belief-Dependent Utility for $\rho$-POMDPs}
+\author{Patrick Cooper}
+\affiliation{%
+  \institution{Department of Computer Science, University of Colorado Boulder}
+  \city{Boulder}
+  \state{CO}
+  \country{USA}
+}
+\email{patrick.cooper@colorado.edu}
 
-\author{Patrick Cooper \and Alvaro Velasquez}
+\author{Alvaro Velasquez}
+\affiliation{%
+  \institution{Department of Computer Science, University of Colorado Boulder}
+  \city{Boulder}
+  \state{CO}
+  \country{USA}
+}
+\email{alvaro.velasquez@colorado.edu}
 
-\authorrunning{P. Cooper and A. Velasquez}
-
-\institute{Department of Computer Science, University of Colorado Boulder,\\ Boulder, CO, USA\\
-\email{\{patrick.cooper,alvaro.velasquez\}@colorado.edu}}
-
-\maketitle
+\renewcommand{\shortauthors}{Cooper and Velasquez}
 
 \begin{abstract}
-An agent acting under partial observability must decide when to gather information and which observations are worth their cost. Standard POMDPs value information only through its eventual effect on reward. The $\rho$-POMDP framework instead rewards uncertainty reduction directly through a belief-dependent utility $\rho$, but in practice both the choice of $\rho$ and the weight placed on it are tuned by hand for every task. We show that active inference supplies a derived relative coefficient in information units. Minimizing Expected Free Energy (EFE) is exactly equivalent to solving a $\rho$-POMDP whose utility is expected information gain at $w{=}1$. The identification is exact under log scoring rules \citep{bernardo1979}. Under a shared reward convention it is an empirically robust untuned default, not a scale-invariant automatic calibration. We prove this equivalence for observe-then-commit POMDPs and extend it to factored observation POMDPs, a broader class covering interleaved observe-act problems such as non-destructive testing and mobile sensing, where gathering information leaves the hidden state unchanged. Across environments ranging from the classic Tiger problem through RockSample to a Structural Inspection benchmark with over $65{,}000$ states, untuned $w{=}1$ sits near the reward-maximizing knee of the success--reward Pareto frontier and remains competitive with per-task tuned information bonuses. In costly testing domains, EFE thus provides a belief-dependent utility whose information-unit weight is derived relative to the reward convention rather than searched per task.
-\keywords{Active inference \and Expected free energy \and $\rho$-POMDPs \and Epistemic value \and Belief-dependent utility \and Partial observability \and Information gain}
+\textbf{Background:} An agent acting under partial observability must decide how much effort to spend gathering information before committing to a decision, and standard POMDPs give it no direct way to state that spending limit: information has value only through its downstream effect on reward. The $\rho$-POMDP framework rewards uncertainty reduction directly through a belief-dependent utility, but the weight placed on that utility is normally tuned by hand per task.
+\textbf{Objectives:} We aim to (1) determine whether active inference's Expected Free Energy (EFE) objective supplies a principled information-gain weight for $\rho$-POMDPs rather than a searched hyperparameter, and (2) turn that weight's reward-scale sensitivity into an explicit, budget-driven design tool rather than a limitation to caveat.
+\textbf{Methods:} We prove that minimizing EFE is exactly equivalent to solving a $\rho$-POMDP whose utility is expected information gain at weight $w{=}1$, for observe-then-commit POMDPs and, more generally, factored observation POMDPs covering interleaved observe-act problems; the identification is exact under log scoring rules \citep{bernardo1979}. We then reformulate the weight as the shadow price $w^*(B)$ of an explicit sensing budget $B$, prove exact scale equivariance and monotone comparative statics for the implemented receding-horizon agent, define a set-valued price at usage gaps, and give an online dual controller with a stated tracking guarantee under reward-scale shift. We evaluate both results against same-horizon planning, tuned information gain, POMCP, and a near-optimal SARSOP reference across the classic Tiger problem, five further observe-then-commit environments, RockSample, and a Structural Inspection benchmark with over $65{,}000$ states.
+\textbf{Results:} Untuned $w{=}1$ sits near the reward-maximizing knee of the success--reward Pareto frontier, remains competitive with per-task tuned information bonuses, and is statistically indistinguishable from SARSOP on the three core observe-then-commit environments. The budgeted formulation is exactly scale equivariant for the implemented agent, its usage curves collapse across reward scales, its closed-form near-optimality thresholds are recovered as the first knot of the usage staircase, and the online dual controller tracks a stated budget through a tenfold reward rescale.
+\textbf{Conclusions:} Expected Free Energy supplies a belief-dependent utility whose information-unit weight is derived relative to the reward convention rather than searched per task, and its reward-scale sensitivity is best understood, and used, as the shadow price of an explicit sensing budget: the design question changes from ``what should the information weight be'' to ``how much sensing can we afford.''
 \end{abstract}
+
+\keywords{Active inference, Expected free energy, $\rho$-POMDPs, Epistemic value, Belief-dependent utility, Partial observability, Information gain, Sensing budgets, Shadow prices}
+
+\maketitle
 
 \section{Introduction}
 
 Decision-making under partial observability requires agents to balance exploiting current knowledge against gathering information to reduce uncertainty about hidden states. In standard POMDPs, information gathering has no intrinsic value. It is useful only insofar as it leads to higher expected reward. This creates a well-known difficulty: the exploration--exploitation trade-off must be resolved either by the planning horizon or by heuristic exploration bonuses.
 
-The $\rho$-POMDP framework \citep{araya2010} addresses this by extending POMDPs with a belief-dependent utility $\rho(b)$ that allows the agent to derive value directly from properties of its belief state. This enables explicit optimization over uncertainty reduction, information gain, or other belief-state properties alongside task reward. However, the choice of $\rho$ remains largely heuristic and environment-specific.
+The $\rho$-POMDP framework \citep{araya2010} addresses this by extending POMDPs with a belief-dependent utility $\rho(b)$ that allows the agent to derive value directly from properties of its belief state. This enables explicit optimization over uncertainty reduction, information gain, or other belief-state properties alongside task reward. However, the choice of $\rho$ remains largely heuristic and environment-specific, and, when $\rho$ is an information-gain term, so does the weight placed on it.
 
-Separately, the Active Inference (AIF) framework \citep{friston2010, parr2019} casts perception and action as approximate Bayesian inference, selecting policies that minimize Expected Free Energy (EFE). EFE naturally decomposes into a pragmatic term (goal-seeking) and an epistemic term (information-seeking). Because both terms come from a single variational objective, their relative coefficient is fixed once pragmatic value is identified with task reward. In the discrete-state formulation we use, that coefficient is $w{=}1$ in information units (Proposition~\ref{prop:equivalence}). The claim is exact under log scoring rules \citep{bernardo1979} and, under a shared reward convention, an empirically robust untuned default. It is not scale-invariant.
+This paper treats that weight as a design problem with a resource-allocation answer. State a sensing budget $B$, the amount of observation the agent may use before committing, and price the information-gain utility at the budget's \emph{shadow price} $w^*(B)$: the weight at which the agent chooses to spend exactly $B$ on sensing. That price is computable offline from a usage curve relating weight to expected sensing usage (Section~\ref{sec:budget}), trackable online by dual descent when the reward scale itself shifts mid-run (Proposition~\ref{prop:pi5}), exactly scale equivariant for the implemented agent so it need not be re-tuned when rewards are rescaled (Proposition~\ref{prop:pi1}), and set-valued, a bracket rather than a point, whenever the budget falls at a usage gap (Definition~\ref{def:pi3}). The question ``what weight should the information-gain utility carry'' becomes ``how much sensing can we afford,'' with the weight read off the stated budget rather than searched per task.
 
-We propose substituting EFE as $\rho$ in $\rho$-POMDPs, yielding an agent whose epistemic foraging is a consequence of its objective rather than an engineered bonus. Our contributions are:
+The active inference (AIF) framework \citep{friston2010, parr2019} identifies one canonical point on this price curve. AIF casts perception and action as approximate Bayesian inference, selecting policies that minimize Expected Free Energy (EFE). EFE naturally decomposes into a pragmatic term (goal-seeking) and an epistemic term (information-seeking). Because both terms come from a single variational objective, their relative coefficient is fixed once pragmatic value is identified with task reward. In the discrete-state formulation we use, that coefficient is $w{=}1$ in information units (Proposition~\ref{prop:equivalence}). The claim is exact under log scoring rules \citep{bernardo1979} and, under a shared reward convention, an empirically robust untuned default. It is not scale-invariant: multiplying every reward and cost by $\alpha>0$ leaves the bit-valued information term unchanged, so a fixed $w{=}1$ implements a different trade-off at every scale. Rather than treating this as a limitation to caveat, we read it as confirmation that $w$ is a price: $w{=}1$ is recovered as exactly the special case of the budgeted formulation above that buys whatever sensing the ambient reward scale happens to imply, not a universal, scale-invariant calibration.
+
+We propose substituting EFE as $\rho$ in $\rho$-POMDPs, yielding an agent whose epistemic foraging is a consequence of its objective rather than an engineered bonus.\footnote{Code and experiment data are available at \url{https://github.com/PatrickAllenCooper/rho_aif}.} Our contributions are:
 \begin{enumerate}
     \item Theory. A formal bridge between $\rho$-POMDPs and active inference. We prove the equivalence for observe-then-commit POMDPs (Proposition~\ref{prop:equivalence}), characterize when the information-unit weight $w{=}1$ is near-optimal (Proposition~\ref{prop:nearopt}), and extend the equivalence to factored observation POMDPs, interleaved settings where information gathering preserves the hidden state (Proposition~\ref{prop:factored}).
-    \item Evidence. Controlled comparisons against same-horizon planning, tuned information gain, and POMCP \citep{silver2010} across six observe-then-commit environments and four instances of the standard RockSample benchmark \citep{smith2004}. A Pareto analysis shows that on Diagnosis and Bandit, $w{=}1$ Pareto-dominates same-horizon planning, while remaining competitive with tuned Planning+IG across environments.
-    \item Practical guidance. A characterization of when EFE-as-$\rho$ helps. The advantage appears when the agent must choose among multiple observation actions, and it grows with state space size ($66.5\%$ vs.\ $2.5\%$ success on Tileworld $8{\times}8$) and with the number of observation actions ($+7.82$ reward on RockSample[7,8]).
+    \item Budgeted reformulation. We recast the information-unit weight as the operational shadow price $w^*(B)$ of a sensing budget $B$ (Section~\ref{sec:budget}), prove exact scale equivariance of the resulting policy family for the implemented receding-horizon agent (Proposition~\ref{prop:pi1}), define a set-valued price at usage gaps (Definition~\ref{def:pi3}), and give an online dual controller with a stated tracking, not merely stationary-convergence, guarantee under reward-scale shift (Proposition~\ref{prop:pi5}).
+    \item Evidence. Controlled comparisons against same-horizon planning, tuned information gain, and POMCP \citep{silver2010} across six observe-then-commit environments and four instances of the standard RockSample benchmark \citep{smith2004}. A Pareto analysis shows that on Diagnosis and Bandit, $w{=}1$ Pareto-dominates same-horizon planning, while remaining competitive with tuned Planning+IG across environments. A second experiment battery (Section~\ref{sec:budget_experiments}) shows usage-curve collapse across reward scales, closed-form onset thresholds recovered as the first knot of the usage staircase, multi-seed online tracking through a $\times 10$ reward rescale, and a near-optimal SARSOP reference indistinguishable from EFE ($w{=}1$) on the three core OTC environments.
+    \item Practical guidance. A characterization of when EFE-as-$\rho$ helps and when it does not. The advantage appears when the agent must choose among multiple observation actions, and it grows with state space size ($66.5\%$ vs.\ $2.5\%$ success on Tileworld $8{\times}8$) and with the number of observation actions ($+7.34$ reward over reward-only Planning on RockSample[7,8]). We also report where it does not help by construction: ordinary information gain is reward-blind and will spend a sensing budget on task-irrelevant uncertainty (Section~\ref{sec:distractor}), and naive information gain can misvalue an action outright when observing changes the hidden state (Example~\ref{ex:destructive}).
 \end{enumerate}
+
+An abridged version of the equivalence results in Contribution~1 above, the observe-then-commit equivalence of Proposition~\ref{prop:equivalence}, the near-optimality characterization of Proposition~\ref{prop:nearopt}, the factored-observation extension of Proposition~\ref{prop:factored}, and the first experiment battery of Contribution~3, was accepted as a poster and spotlight presentation at the 7th International Workshop on Active Inference (IWAI 2026) \citep{cooper2026iwai}. This article is a substantially extended version. The entire budgeted $\rho$-POMDP formulation of Section~\ref{sec:budget} (Definition~\ref{def:pi3} and Propositions~\ref{prop:pi1}, \ref{prop:pi2}, \ref{prop:pi5}, and Corollary~\ref{cor:pi4}), the second experiment battery of Section~\ref{sec:budget_experiments}, and the practical guidance of Contribution~4 are new material that was not part of the IWAI submission.
 
 \section{Related work}
 
@@ -58,7 +88,7 @@ We propose substituting EFE as $\rho$ in $\rho$-POMDPs, yielding an agent whose 
 POMDPs formalize sequential decision-making under state uncertainty \citep{smallwood1973, kaelbling1998}. Exact solutions are PSPACE-complete. Point-based offline methods (PBVI \citep{pineau2003}, HSVI \citep{smith2004}, SARSOP \citep{kurniawati2008}) approximate the value function on reachable beliefs \citep{shani2013}. Online solvers plan from the current belief: POMCP \citep{silver2010} uses MCTS with UCB1 and rollout evaluation, DESPOT \citep{ye2017} searches a regularized sparse belief tree, and POMCPOW \citep{sunberg2018} extends POMCP with progressive widening for continuous spaces. All explore implicitly through stochastic simulations rather than explicitly valuing information gain. Section~\ref{sec:discussion} and Appendix~\ref{app:pomcp} demonstrate the benefit of closed-form information valuation.
 
 \paragraph{$\rho$-POMDPs.}
-\citet{araya2010} introduced $\rho$-POMDPs, augmenting the reward with a belief-dependent utility $\rho : \Delta(S) \to \mathbb{R}$, so the objective becomes $\max_\pi \mathbb{E}_\pi[\sum_t \gamma^t (R(s_t,a_t) + \rho(b_t))]$. When $\rho$ is convex, the value function remains piecewise linear and convex (PWLC), preserving compatibility with standard solvers. \citet{fehr2018} extended this to Lipschitz-continuous non-convex $\rho$, and \citet{benchetrit2025} developed $\rho$-POMCPOW for continuous-space $\rho$-POMDPs. Closely related, POMDP-IR \citep{spaan2015} augments planning with explicit information rewards for active cooperative perception. \citet{satsangi2018} exploit submodular value functions for scaling active perception and note the equivalence between POMDP-IR and $\rho$-POMDPs. Common choices for $\rho$ (entropy reduction, KL divergence from a target belief, and information gain) each encode a different notion of epistemic value, but the choice and weight remain heuristic and environment-specific. Our contribution is to derive a relative information-unit coefficient from the variational bound of active inference, yielding an untuned default under a shared reward convention.
+\citet{araya2010} introduced $\rho$-POMDPs, augmenting the reward with a belief-dependent utility $\rho : \Delta(S) \to \mathbb{R}$, so the objective becomes $\max_\pi \mathbb{E}_\pi[\sum_t \gamma^t (R(s_t,a_t) + \rho(b_t))]$. When $\rho$ is convex, the value function remains piecewise linear and convex (PWLC), preserving compatibility with standard solvers. \citet{fehr2018} extended this to Lipschitz-continuous non-convex $\rho$, and \citet{benchetrit2025} developed an anytime incremental $\rho$-POMDP planner for continuous spaces built on progressive widening. Closely related, POMDP-IR \citep{spaan2015} augments planning with explicit information rewards for active cooperative perception. \citet{satsangi2018} exploit submodular value functions for scaling active perception and note the equivalence between POMDP-IR and $\rho$-POMDPs. Common choices for $\rho$ (entropy reduction, KL divergence from a target belief, and information gain) each encode a different notion of epistemic value, but the choice and weight remain heuristic and environment-specific. Our contribution is to derive a relative information-unit coefficient from the variational bound of active inference, yielding an untuned default under a shared reward convention.
 
 \paragraph{Value of information and experimental design.}
 The idea that information has quantifiable decision-theoretic value predates both POMDPs and active inference. \citet{howard1966} formalized the value of information in decision analysis, and \citet{lindley1956} introduced expected information gain as a criterion for optimal Bayesian experimental design. \citet{bernardo1979} showed that expected information is expected utility when rewards are proper log scoring rules, grounding the reward-to-information identification we use. In the bandit setting, information-directed sampling (IDS) \citep{russo2014} explicitly trades off instantaneous regret against information gain by minimizing the information ratio $\Gamma_t = \delta_t^2 / g_t$, where $\delta_t$ is the expected regret and $g_t$ is the information gain. The key structural difference from EFE is that IDS minimizes the ratio at each step (a relative weighting that adapts to the current belief), while EFE fixes the weight at $w{=}1$ (an absolute weighting in information units under a fixed reward convention).
@@ -71,26 +101,29 @@ The Active Inference (AIF) framework \citep{friston2010} casts perception and ac
 The mathematical foundations of EFE have been critically examined. \citet{millidge2021} showed that naively extending the variational free energy into the future does not yield exploratory behavior, proposing the Free Energy of the Expected Future (FEEF) as an alternative with clearer mathematical grounding. \citet{champion2024} addressed the ``unification problem'' by formalizing how multiple EFE formulations relate to a single root definition under different assumptions about prior preferences. \citet{devries2025} recast EFE-based planning as entropy-corrected variational inference with message-passing schemes, providing an alternative derivation that connects EFE to variational message passing.
 
 \paragraph{Sophisticated inference.}
-Standard AIF evaluates policies myopically. \citet{friston2021} introduced sophisticated inference, a recursive extension implementing deep tree search over belief trajectories rather than states. Sophistication (maintaining beliefs about future beliefs) enables counterfactual reasoning about the downstream epistemic consequences of actions. \citet{dacosta2020b} proved that this recursive scheme recovers Bellman-optimal policies for any finite horizon, whereas standard AIF achieves optimality only for single-step planning. Our recursive EFE agent (Equation~\ref{eq:efe_recursive}) is derived from this framework, adapted to the $\rho$-POMDP commit-action structure. The recursive counterfactual reasoning over future beliefs is preserved. What changes is that our observe-then-commit setting does not involve state transitions between time steps, simplifying the belief-trajectory computation.
+Standard AIF evaluates policies open-loop: it scores whole action sequences under the current belief without conditioning later actions on intermediate, counterfactual observations. \citet{friston2021} introduced sophisticated inference, a closed-loop recursive extension implementing deep tree search over belief trajectories rather than states. Sophistication (maintaining beliefs about future beliefs) enables counterfactual reasoning about the downstream epistemic consequences of actions. \citet{dacosta2020b} proved that this recursive scheme recovers Bellman-optimal policies for any finite horizon, whereas standard AIF achieves optimality only for single-step planning. Our recursive EFE agent (Equation~\ref{eq:efe_recursive}) is derived from this framework, adapted to the $\rho$-POMDP commit-action structure. The recursive counterfactual reasoning over future beliefs is preserved. What changes is that our observe-then-commit setting does not involve state transitions between time steps, simplifying the belief-trajectory computation.
 
 \paragraph{Scaling active inference.}
 Discrete-state AIF with full policy enumeration is limited to small state--action spaces. Several lines of work address scaling. \citet{fountas2020} combined deep generative models with Monte Carlo tree search for EFE-optimal planning in continuous state spaces. \citet{tschantz2020} developed an RL-compatible objective (the free energy of the expected future) that inherits AIF's exploration--exploitation balance while scaling to standard RL benchmarks. \citet{maisto2025} combined active inference with Monte-Carlo tree search for large POMDPs, achieving state-of-the-art on RockSample \citep{smith2004}. Our MCTS-EFE variant (Section~6) follows this direction, using EFE as a leaf heuristic within MCTS to extend planning horizons beyond exact tree search.
 
 \paragraph{Exploration, control as inference, and intrinsic motivation.}
-The control-as-inference perspective \citep{todorov2007, levine2018} casts reward maximization as variational inference. Maximum-entropy RL \citep{haarnoja2018} and stochastic optimal control \citep{rawlik2012} are algorithmic instances. \citet{millidge2020} provided a formal comparison of AIF and control-as-inference, tracing their differences to how value is encoded in the generative model. \citet{sajid2021} showed that intrinsic motivation behaviors arise under EFE. Intrinsic motivation methods, including curiosity \citep{schmidhuber1991, pathak2017}, typologies of intrinsic signals \citep{oudeyer2007}, Bayesian surprise \citep{itti2009}, count-based exploration \citep{bellemare2016}, VIME \citep{houthooft2016}, and random network distillation \citep{burda2019}, all require tunable bonus weights. Bayes-Adaptive MDPs \citep{duff2002, guez2013} and Bayesian RL more broadly \citep{ghavamzadeh2015} address model uncertainty (unknown dynamics), distinct from our focus on state uncertainty under a known model. Our $\rho$-POMDP formalism makes the connection between EFE and these lines of work precise, inheriting formal properties (convexity, Lipschitz continuity) while fixing a derived information-unit weight under a shared reward convention.
+The control-as-inference perspective \citep{todorov2007, levine2018} casts reward maximization as variational inference. Maximum-entropy RL \citep{haarnoja2018} and stochastic optimal control \citep{rawlik2012} are algorithmic instances. \citet{millidge2020} provided a formal comparison of AIF and control-as-inference, tracing their differences to how value is encoded in the generative model. \citet{sajid2021} showed that intrinsic motivation behaviors arise under EFE. Intrinsic motivation methods, including curiosity \citep{schmidhuber1991, pathak2017}, typologies of intrinsic signals \citep{oudeyer2007}, Bayesian surprise \citep{itti2009}, count-based exploration \citep{bellemare2016}, VIME \citep{houthooft2016}, and random network distillation \citep{burda2019}, all require tunable bonus weights. Bayes-Adaptive MDPs \citep{duff2002, guez2013} and Bayesian RL more broadly \citep{ghavamzadeh2015} address model uncertainty (unknown dynamics), distinct from our focus on state uncertainty under a known model. Our $\rho$-POMDP formalism makes the connection between EFE and these lines of work precise while fixing a derived information-unit weight under a shared reward convention. It does not inherit the piecewise-linear-convex (PWLC) value-function structure that convex $\rho$ preserves \citep{araya2010}: expected information gain is concave, not convex, in the belief, so $\rho_{\mathrm{EFE}}$ falls in the non-convex regime for which \citet{fehr2018} instead give Lipschitz-continuous $\epsilon$-optimal value functions, the property our value functions actually rely on.
+
+\paragraph{Resource-constrained information acquisition.}
+A separate literature treats information acquisition itself as resource-constrained, without reference to $\rho$-POMDPs: rational inattention \citep{sims2003,matejka2015} takes a Shannon-capacity constraint as primitive, constrained MDPs and POMDPs \citep{altman1999,kim2011cpomdp} dualize an expected-cost constraint via a Lagrange multiplier, Soft Actor-Critic's automatic entropy-temperature tuning \citep{haarnoja2018sac} drives a resource (policy entropy) to a target by dual gradient ascent, and sequential Bayesian experimental design \citep{lindley1956,foster2021dad} adaptively selects the next experiment to maximize information about a latent parameter. Section~\ref{sec:budget_positioning} positions our budgeted $\rho$-POMDP formulation against all four in detail; the summary is that none of them supplies an operational sensing budget specifically for $\rho$-POMDP planning, exact scale equivariance of the resulting policy, or a set-valued price at usage gaps.
 
 \section{Methodology}
 \label{sec:methodology}
 
 \subsection{The $\rho$-POMDP framework}
 
-We restrict attention to observe-then-commit $\rho$-POMDPs, in which the action set $\mathcal{A}$ partitions into observation actions $\mathcal{A}_\text{obs}$ (which update the belief at known cost but do not change the hidden state) and terminal commit actions $\mathcal{A}_\text{com}$ (which end the episode with state-dependent reward). An episode consists of a variable-length sequence of observation actions followed by a single commit action. The hidden state is fixed throughout.
+We restrict attention to observe-then-commit $\rho$-POMDPs, in which the action set $\mathcal{A}$ partitions into observation actions $\mathcal{A}_\text{obs}$ (which update the belief at known cost but do not change the hidden state) and terminal commit actions $\mathcal{A}_\text{com}$ (which end the episode with state-dependent reward). An episode consists of a variable-length sequence of observation actions followed by a single commit action. The hidden state is fixed throughout. We start with this class because it isolates the epistemic-value question from state-transition dynamics, admits the exact near-optimality analysis of Proposition~\ref{prop:nearopt} and exact SARSOP baselines, and covers a useful range of applications (medical testing, sensor tasking) on its own; Proposition~\ref{prop:factored}, the RockSample and Structural Inspection results of Section~\ref{sec:rocksample}, and the interleaved usage curves of Section~\ref{sec:interleaved_budget} extend the equivalence and the budgeted formulation beyond this class to interleaved observe-act settings.
 
 A $\rho$-POMDP extends the standard POMDP with a belief-dependent utility $\rho : \Delta(S) \rightarrow \mathbb{R}$. The agent's objective becomes:
 \begin{equation}
     \pi^* = \arg\max_\pi \mathbb{E}_\pi \left[ \sum_{t=0}^{H} \gamma^t \left( R(s_t, a_t) + \rho(b_t) \right) \right]
 \end{equation}
-When $\rho = 0$, we recover the standard POMDP. When $\rho$ encodes information gain, the agent is explicitly rewarded for reducing uncertainty.
+Here $s_t$ is the (unobserved) hidden state and $b_t$ is the agent's belief over states at time $t$; the outer expectation $\mathbb{E}_\pi$ is over the joint trajectory distribution induced by $\pi$, i.e., over hidden-state transitions $s_t \sim T(\cdot \mid s_{t-1}, a_{t-1})$, observations $o_t \sim P(\cdot \mid s_t, a_{t-1})$, and the resulting deterministic Bayesian belief updates $b_t = \mathrm{update}(b_{t-1}, a_{t-1}, o_t)$. The reward term $R(s_t, a_t)$ therefore depends on the sampled hidden state, while $\rho(b_t)$ depends only on the belief that state induces, coupling the two terms through the same trajectory distribution. When $\rho = 0$, we recover the standard POMDP. When $\rho$ encodes information gain, the agent is explicitly rewarded for reducing uncertainty.
 
 \subsection{Expected Free Energy as $\rho$}
 
@@ -98,7 +131,7 @@ In the standard AIF formulation, the EFE for a policy $\pi$ at future time $\tau
 \begin{equation}
     \mathcal{G}(\pi) = \underbrace{- \mathbb{E}_{Q(o_\tau|\pi)}[\ln P(o_\tau|C)]}_{\text{Pragmatic value}} - \underbrace{\mathbb{E}_{Q(o_\tau|\pi)}\left[D_{\mathrm{KL}}\left[Q(s_\tau|o_\tau, \pi) \,\|\, Q(s_\tau|\pi)\right]\right]}_{\text{Epistemic value}}
 \end{equation}
-where $P(o_\tau|C)$ encodes preferred outcomes and $D_{\mathrm{KL}}$ measures expected information gain. In our observe-then-commit setting, the pragmatic and epistemic terms take concrete forms. For commit actions, the pragmatic term reduces to expected reward under the current belief: $\mathcal{G}(\text{commit}_i) = -\mathbb{E}_b[R_i]$. We use the reward matrix directly rather than encoding rewards through preferred outcome distributions $P(o|C)$, avoiding the preference-calibration issue flagged as a source of hidden tuning in prior AIF work. For observation actions, the pragmatic term is the known observation cost $c_k$, and the epistemic term is the expected information gain $I_k(b) = H(b) - \mathbb{E}_o[H(b'_o \mid \text{obs}_k)]$.
+where $C$ denotes the agent's preference distribution over outcomes, so $P(o_\tau|C)$ encodes preferred outcomes, and $D_{\mathrm{KL}}$ measures expected information gain. In our observe-then-commit setting, the pragmatic and epistemic terms take concrete forms. For commit actions, the pragmatic term reduces to expected reward under the current belief: $\mathcal{G}(\text{commit}_i) = -\mathbb{E}_b[R_i]$. We use the reward matrix directly rather than encoding rewards through preferred outcome distributions $P(o|C)$, avoiding the preference-calibration issue flagged as a source of hidden tuning in prior AIF work. For observation actions, the pragmatic term is the observation cost $c_k > 0$ (the magnitude the agent pays to observe), and the epistemic term is the expected information gain $I_k(b) = H(b) - \mathbb{E}_{o \mid \text{obs}_k}[H(b'_o)]$.
 
 Following the sophisticated inference scheme of \citet{friston2021}, the EFE agent evaluates actions via a recursive tree search over belief states:
 \begin{equation}
@@ -205,9 +238,28 @@ In a factored observation POMDP (Definition~\ref{def:factored}), let $b$ denote 
 When action $a$ preserves $s_{\mathrm{hid}}$, the transition on the hidden component is $T_{\mathrm{hid}}(s'_{\mathrm{hid}} | s_{\mathrm{hid}}, a) = \delta(s'_{\mathrm{hid}} = s_{\mathrm{hid}})$. The belief update over $s_{\mathrm{hid}}$ is then $b'(s_{\mathrm{hid}}) \propto P(o | s_{\mathrm{hid}}, s'_{\mathrm{vis}}, a)\, b(s_{\mathrm{hid}})$, depending only on the observation likelihood, identical to the observe-then-commit case. The posterior that would incorporate transitions, $b'_{o,T}$, coincides with the observation-only posterior $b'_o$, so $D_{\mathrm{KL}}[b'_{o,T} \| b'_o] = 0$. For observation actions, EFE reduces to cost minus information gain plus expected continuation, matching the $\rho$-POMDP Bellman equation with $\rho = I_a(b)$. For navigation actions, the observation is uninformative ($I_a(b) = 0$), giving $\rho = 0$.
 \end{proof}
 
-Proposition~\ref{prop:factored} extends the formal bridge from observe-then-commit to any POMDP where the hidden state is preserved by information-gathering and navigation actions. The agent interleaves observation, navigation, and exploitation. At each decision point, the EFE-as-$\rho$ equivalence holds for the observation and navigation subtree. This covers RockSample, mobile sensor placement, and sequential testing with spatial access costs, where the agent must navigate to observation locations before gathering information. Section~\ref{sec:rocksample} validates this extension empirically across four RockSample instances.
+Proposition~\ref{prop:factored} extends the formal bridge from observe-then-commit to any POMDP where the hidden state is preserved by information-gathering and navigation actions. The agent interleaves observation, navigation, and exploitation. At each decision point, the EFE-as-$\rho$ equivalence holds for the observation and navigation subtree: $\rho_{\mathrm{EFE}}$ is well defined along any sequence of actions drawn from $\mathcal{A}_{\mathrm{obs}} \cup \mathcal{A}_{\mathrm{nav}}$, regardless of how many such actions precede a given decision. Exploitation actions are not covered by Proposition~\ref{prop:factored}: they are terminal or reward-bearing with respect to $s_{\mathrm{hid}}$ by construction, so they carry no belief-dependent utility term ($\rho_{\mathrm{EFE}} = 0$ for exploitation actions, exactly as for commit actions in the observe-then-commit case), and any subsequent replanning after an exploitation action recomputes $\rho_{\mathrm{EFE}}$ fresh from the resulting belief. The coupling term $\Delta_T$ only reenters if an action nominally classified as observation or navigation in fact changes $s_{\mathrm{hid}}$, which Definition~\ref{def:factored} rules out by construction rather than by approximation. This covers RockSample, mobile sensor placement, and sequential testing with spatial access costs, where the agent must navigate to observation locations before gathering information. Section~\ref{sec:rocksample} validates this extension empirically across four RockSample instances.
 
-The factored observation structure is common in practice whenever the quantity being measured is static or slow-changing relative to the decision horizon (Table~\ref{tab:taxonomy}). The key requirement, that $T_{\mathrm{hid}}(s'_{\mathrm{hid}} | s_{\mathrm{hid}}, a) = \delta(s'_{\mathrm{hid}} = s_{\mathrm{hid}})$ for observation and navigation actions, breaks when information-gathering itself alters the hidden state. In such settings, the coupling term $\Delta_T \neq 0$ and the information-unit-weight equivalence does not hold. We discuss this further in the limitations paragraph of Section~\ref{sec:discussion}.
+The factored observation structure is common in practice whenever the quantity being measured is static or slow-changing relative to the decision horizon (Table~\ref{tab:taxonomy}). The key requirement, that $T_{\mathrm{hid}}(s'_{\mathrm{hid}} | s_{\mathrm{hid}}, a) = \delta(s'_{\mathrm{hid}} = s_{\mathrm{hid}})$ for observation and navigation actions, breaks when information-gathering itself alters the hidden state. In such settings, the coupling term $\Delta_T \neq 0$ and the information-unit-weight equivalence does not hold. We discuss this further in the limitations paragraph of Section~\ref{sec:discussion}. The following example makes precise what fails and how badly.
+
+\begin{example}[Destructive sensing can make naive information gain actively harmful]
+\label{ex:destructive}
+Let $s \in \{0,1\}$ with uniform prior $b=(0.5,0.5)$ and the two-state commit reward $r(\mathrm{Commit}_i,s) = +1$ if $i=s$, $-1$ otherwise (the Proposition~\ref{prop:nearopt} testbed). Add one destructive test action $a_D$ with cost $c>0$ that perfectly reveals the \emph{pre-transition} state, $O(o{=}s \mid s,a_D)=1$, but always leaves the hidden state depleted afterward, $T(s'{=}0 \mid s,a_D)=1$ for every $s$: drilling a core sample destroys whatever ore was there, rich or poor.
+
+The state-preserving assumption behind Propositions~\ref{prop:equivalence}--\ref{prop:factored} treats $a_D$ as if it left $s$ untouched, giving the naive posterior $b'_o \propto O(o\mid s)\,b(s)$ (a point mass at the revealed value $o$) and the naive value
+\[
+V_{\mathrm{naive}}(a_D) = -c + w\,I(b) + \mathbb{E}_o\big[\max_i r(\mathrm{Commit}_i,o)\big] = -c + w\cdot 1\text{ bit} + 1,
+\]
+which at $w{=}1$ is $2-c$, exceeding $V_{\mathrm{naive}}(\mathrm{Commit}_i)=\mathbb{E}_b[r(\mathrm{Commit}_i,s)]=0$ for any $c<2$.
+
+The correct joint transition--observation posterior, $b'_{o,T}(s') \propto \sum_s T(s'\mid s,a_D)\,O(o\mid s,a_D)\,b(s)$, evaluates to $b'_{o,T}=(1,0)$ for \emph{either} observed outcome: the observation describes ore that drilling has already destroyed, so the correct post-action belief is certain the state is now $0$ no matter what was observed. The coupling term is not merely nonzero but maximal here -- $b'_{o,T}$ and $b'_o$ are disjoint point masses whenever $o{=}1$, so $D_{\mathrm{KL}}[b'_{o,T}\,\|\,b'_o]=\infty$. The correct Bellman value is
+\[
+V_{\mathrm{true}}(a_D) = -c + \max_i r(\mathrm{Commit}_i,0) = 1-c,
+\]
+exactly one bit of illusory credit below the naive estimate, for both outcomes.
+
+For $c\in(1,2)$ the two evaluations disagree in sign: $V_{\mathrm{naive}}(a_D)=2-c>0=V_{\mathrm{naive}}(\mathrm{Commit}_i)$ recommends drilling, while $V_{\mathrm{true}}(a_D)=1-c<0=V_{\mathrm{true}}(\mathrm{Commit}_i)$ recommends committing immediately -- a full ranking flip from a two-state, one-step example. The failure is worse than a mispriced tradeoff: an agent that drills and then acts on its now-obsolete observation realizes expected reward $-c + 0.5\,r(\mathrm{Commit}_0,0) + 0.5\,r(\mathrm{Commit}_1,0) = -c$ in the true environment, strictly below the immediate-commit value of $0$ for \emph{every} $c>0$, not only within the sign-flip range. Verified numerically in \texttt{tests/test\_destructive\_boundary.py}. We do not propose a corrected destructive-sensing operator here; Section~\ref{sec:discussion} scopes that as future work.
+\end{example}
 
 \begin{table}[ht]
 \centering
@@ -260,9 +312,109 @@ Myopic ($\rho{=}0$, $H{=}1$) still observes on many environments because one-ste
 
 For Info Gain and Planning+IG in the main tables, $w^*$ is the success-maximizing weight on 200 tuning episodes via grid search over $\{0.1, 0.5, 1, 2, 5, 10, 20, 50, 100\}$. The Pareto analysis (Section~\ref{sec:pareto}) sweeps the full weight space and reports the reward-maximizing weight $w^*_{\mathrm{ret}}$.
 
-\section{Experiments}
+\section{Budgeted $\rho$-POMDPs and the price of information}
+\label{sec:budget}
 
-All environments are implemented as OpenAI Gymnasium environments following the observe-then-commit structure of Section~\ref{sec:methodology}. Main results use 1{,}000 episodes per seed across 5 random seeds ($\{42, 123, 456, 789, 1024\}$) for a total of 5{,}000 episodes. Results report the mean across all episodes. Statistical comparisons use $t$-tests with Holm--Bonferroni correction, with bootstrap CIs in Appendix~\ref{app:stats}. Comparison against POMCP (including compute-matched analysis with wall-clock timing at budgets 500--5{,}000 simulations) is in Appendix~\ref{app:pomcp}. Full specifications are in Appendix~\ref{app:envs}.
+Section~\ref{sec:methodology} fixes the information-unit weight at $w{=}1$ and Section~\ref{sec:results} shows this default is empirically competitive under a shared reward convention. That convention is doing real work: if every reward and cost is rescaled by $\alpha>0$, the bit-valued information term is untouched, so the same fixed $w{=}1$ implements a different pragmatic--epistemic trade-off at every scale. Rather than tuning $w$ per task, we treat the missing degree of freedom as a \emph{sensing budget}. The designer states how much observation the agent may use; the weight that implements that budget is an operational shadow price, computable offline and, when the reward scale shifts mid-run, trackable online.
+
+\subsection{The budgeted problem and the usage curve}
+\label{sec:budget_theory}
+
+Let $\pi$ range over a fixed policy class (the receding-horizon Planning+IG family of Section~\ref{sec:methodology}), and write $R(\pi)$ for expected episodic return and $U(\pi)$ for expected sensing usage (observation/test count, or cumulative sensing cost). The \textbf{budgeted $\rho$-POMDP problem} is
+\begin{equation}
+\label{eq:budgeted}
+\max_\pi \; R(\pi) \quad \text{subject to} \quad U(\pi) \le B.
+\end{equation}
+The literal Lagrangian for~\eqref{eq:budgeted} penalizes usage, $R(\pi) - \lambda U(\pi)$. Planning+IG instead maximizes $R(\pi) + w\,\mathbb{E}_\pi[I]$, an \emph{information-floor} dual with $I$ the cumulative expected information gain along $\pi$. For a fixed environment and agent family, write $U(w) := U(\pi^*_w)$ for the usage induced by the Planning+IG-optimal policy at weight $w$. Solving $U(w) = B$ for $w$ gives the \textbf{operational shadow price} $w^*(B)$: the weight that spends about $B$ units of sensing.
+
+\begin{definition}[Operational shadow price, set-valued]
+\label{def:pi3}
+Given the usage curve $U(w)$, define $w^*(B)$ as the crossing bracket $(w_{\mathrm{lo}}, w_{\mathrm{hi}}]$ at which $U$ passes $B$. A budget is achievable with $w \ge 0$ iff $U(0) \le B \le U_{\max}$, where $U(0)>0$ reflects instrumental sensing (observing pays for itself on reward alone at some instances) and $U_{\max}$ reflects belief saturation and the episode step cap. When $B$ falls inside a usage gap, $w^*$ is genuinely interval-valued: no single weight attains usage exactly $B$, but randomizing per episode between the bracket endpoints' policies with probability $q = (B - U(w_{\mathrm{lo}}))/(U(w_{\mathrm{hi}}) - U(w_{\mathrm{lo}}))$ attains expected usage exactly $B$ by linearity. This mirrors the classical constrained-MDP fact that optimal budget-constrained policies may need to be randomized \citep{altman1999,kim2011cpomdp}.
+\end{definition}
+
+\subsection{Exact scale equivariance}
+\label{sec:pi1}
+
+Let the $\alpha$-rescaled environment multiply every pragmatic quantity (commit rewards, penalties, observation costs) by $\alpha>0$, leaving observation models and belief updates untouched, so information gain is unchanged. Assume argmax ties are broken by a fixed, scale-independent rule (the implementation uses first-index argmax).
+
+\begin{proposition}[Exact scale equivariance]
+\label{prop:pi1}
+For every $\alpha>0$ and $w \ge 0$, the receding-horizon Planning+IG agent facing the $\alpha$-scaled environment with weight $\alpha w$ selects the same action as the agent facing the unscaled environment with weight $w$, at every belief. Consequently the closed-loop policies, and hence the induced usage distributions, coincide exactly:
+\begin{equation}
+\label{eq:pi1}
+U_\alpha(\alpha w) = U(w).
+\end{equation}
+\end{proposition}
+\begin{proof}
+For any candidate plan, the $\alpha$-scaled value is $\alpha \cdot(\text{pragmatic sum}) + \alpha w \cdot (\text{IG sum}) = \alpha \cdot [\text{pragmatic sum} + w \cdot \text{IG sum}]$, i.e.\ exactly $\alpha$ times the unscaled value. Multiplying every candidate's value by the same positive constant preserves the argmax set, and the fixed tie-breaking rule selects the same element of that set. By induction over decision points, the closed-loop policies agree at every belief; since the environment's stochastic dynamics are otherwise identical, the induced trajectory and usage distributions agree as well.
+\end{proof}
+
+This is stronger than an empirical scale-invariance check: it holds exactly for the implemented receding-horizon agent, not only for idealized maximizers over a static policy class. Three corollaries follow immediately. First, curve collapse is a theorem: $U$ plotted against $w/\alpha$ is the same curve at every scale, so any measured deviation across scales is Monte Carlo noise rather than a violation (Section~\ref{sec:collapse}). Second, crossing brackets rescale as sets, $w^*(B;\alpha) = \alpha \cdot w^*(B;1)$, including at gap budgets where $w^*$ is interval-valued. Third, a fixed $w{=}1$ at scale $\alpha$ is behaviorally identical to $w = 1/\alpha$ at scale $1$, so the \textbf{implicit EFE budget} drifts with scale as $B_{\mathrm{EFE}}(\alpha) := U(1/\alpha)$ --- the precise sense in which the canonical weight of Proposition~\ref{prop:equivalence} is not scale invariant.
+
+\subsection{Monotone comparative statics and the usage staircase}
+\label{sec:pi2}
+
+Exact scale equivariance says nothing about whether $U(w)$ is monotone, which is what makes $w^*(B)$ well-defined as a bracket rather than a possibly empty or multi-valued level set.
+
+\begin{proposition}[Monotone comparative statics for exact maximizers]
+\label{prop:pi2}
+Let $\Pi$ be any fixed set of plans and, for $w \ge 0$, let $\pi_w \in \arg\max_{\pi \in \Pi} R(\pi) + w\, I(\pi)$. Then for $w_2 > w_1 \ge 0$,
+\begin{equation}
+I(\pi_{w_2}) \ge I(\pi_{w_1}) \quad \text{and} \quad R(\pi_{w_2}) \le R(\pi_{w_1}).
+\end{equation}
+\end{proposition}
+\begin{proof}
+Optimality of $\pi_{w_1}$ at $w_1$ gives $R(\pi_{w_1}) + w_1 I(\pi_{w_1}) \ge R(\pi_{w_2}) + w_1 I(\pi_{w_2})$, and optimality of $\pi_{w_2}$ at $w_2$ gives $R(\pi_{w_2}) + w_2 I(\pi_{w_2}) \ge R(\pi_{w_1}) + w_2 I(\pi_{w_1})$. Adding the two inequalities and simplifying yields $(w_2 - w_1)\big(I(\pi_{w_2}) - I(\pi_{w_1})\big) \ge 0$, and since $w_2 > w_1$, $I(\pi_{w_2}) \ge I(\pi_{w_1})$. Substituting this back into the first inequality gives $R(\pi_{w_1}) - R(\pi_{w_2}) \ge w_1\big(I(\pi_{w_2}) - I(\pi_{w_1})\big) \ge 0$.
+\end{proof}
+
+Two gaps separate this exact statement from clean monotonicity of the \emph{count}-usage staircase actually plotted. First, the monotone quantity is cumulative expected information gain, not the observation count, and the two can locally disagree (fewer high-information observations versus more low-information ones). Second, receding-horizon re-planning composes single-step plan choices across an episode, and monotonicity of the per-step argmax does not automatically compose into monotonicity of the resulting trajectory-level usage. Both gaps are visible empirically: the count staircases on Tiger, Diagnosis, and Tileworld are only roughly monotone (Section~\ref{sec:stairs}), which is why the shadow-price solver defaults to grid search with bracket reporting rather than bisection on an assumed-monotone function.
+
+\begin{corollary}[Proposition~\ref{prop:nearopt}'s thresholds are usage-staircase knots]
+\label{cor:pi4}
+In the two-state $H{=}1$ setting of Proposition~\ref{prop:nearopt}, the only two plans are commit now and observe once then commit, and the observe plan is preferred iff $w > w_{\mathrm{thresh}}$. Consequently $U(w) = \mathbb{1}[w > w_{\mathrm{thresh}}]$ exactly at $H{=}1$, and for any budget $B \in (0,1)$ the crossing bracket leaves zero exactly at $w_{\mathrm{thresh}}$: the onset boundary of the budgeted problem recovers Proposition~\ref{prop:nearopt}'s closed form as the first knot of the usage staircase.
+\end{corollary}
+
+The corollary is verified numerically (\texttt{TestProp2OnsetExact} in \url{tests/test_budget.py}): usage is exactly $0$ at $0.9\,w_{\mathrm{thresh}}$ and at least $1$ at $1.2\,w_{\mathrm{thresh}}$ on a positive-threshold Testbed ($p{=}0.6$, $c{=}0.3$, $R{=}\pm 1$, $w_{\mathrm{thresh}} \approx 3.44$ bits). Section~\ref{sec:prop2exp} extends the check to a refined weight grid on two such environments.
+
+\subsection{Solving for the shadow price}
+\label{sec:budget_solve}
+
+For each environment we estimate $U(w)$ on a log-spaced grid by multi-seed Monte Carlo (five seeds, $100$ episodes per $(w,\mathrm{seed})$ cell on observe-then-commit domains; lighter settings on tree-search domains, Section~\ref{sec:budget_experiments}). Per-seed means give a standard error at each grid point. Because discrete policy switches make the count-usage curve a noisy step function, we solve $w^*(B)$ by grid search minimizing $|U - B|$ and report the crossing bracket rather than a bisection root. Usage can be denominated either in observation \emph{count} or in cumulative sensing \emph{cost}; the two agree only when all observation actions share a cost, and Section~\ref{sec:cost_budget} demonstrates a case where they disagree in an interpretable way.
+
+\subsection{Online dual control of the shadow price}
+\label{sec:pi5}
+
+An offline curve solve is unavailable when the reward scale can change mid-deployment. We adapt SAC's automatic entropy-temperature update \citep{haarnoja2018sac} to sensing usage in place of policy entropy: after each episode with observed usage $U_t$,
+\begin{equation}
+\label{eq:dual_update}
+w_{t+1} = \mathrm{Proj}_{[0,\,w_{\max}]}\big(w_t + a_t\,(B - U_t)\big), \qquad a_t = \frac{\eta_0}{1 + \delta t},
+\end{equation}
+with $\mathbb{E}[U_t \mid w_t] = U(w_t)$. This is exactly the Robbins--Monro \citep{robbins1951} recursion for a root of $U(w) = B$, projected onto a bounded interval, with the sign convention that overspending usage decreases $w$ and underspending increases it.
+
+\begin{proposition}[Dual controller: stationary convergence and nonstationary tracking]
+\label{prop:pi5}
+Suppose the environment, agent family, and budget $B$ are stationary, per-episode usage noise is bounded (true here, since usage is bounded by the episode step cap), and there exists $w^*$ with $U(w) < B$ for $w < w^*$ and $U(w) > B$ for $w > w^*$ (the Robbins--Monro sign condition; $U(w^*) = B$ is \emph{not} required, so the condition holds even when $U$ jumps over $B$ without touching it, i.e.\ at a gap budget in the sense of Definition~\ref{def:pi3}). Then:
+\begin{enumerate}
+\item Under step sizes with $\sum_t a_t = \infty$ and $\sum_t a_t^2 < \infty$ (satisfied by~\eqref{eq:dual_update} with $\delta>0$, not by the constant-step $\delta{=}0$ default), $w_t \to w^*$ in probability \citep{robbins1951}, and with probability one under Blum's refinement \citep{blum1954}.
+\item Under a constant step ($\delta{=}0$), the recursion is stochastic-gradient tracking rather than root-finding: $w_t$ does not converge to a point but is driven into and held within an $O(a)$ neighborhood of $w^*$. This is the mechanism, not a defect, that lets a constant-step controller re-adapt after the budget or environment shifts, at the cost of never fully settling in a stationary run.
+\end{enumerate}
+\end{proposition}
+
+The proposition is conditional on a single, sign-consistent crossing of $B$; it is silent when $U$ is non-monotone enough to cross $B$ more than once, a real possibility per Proposition~\ref{prop:pi2}'s scope note. It also does not cover the \emph{reset-on-shift} mechanism used in Section~\ref{sec:dual_multiseed} on its own terms: resetting the decay clock mid-run after a detected shift breaks the trajectory into a sequence of Robbins--Monro-style segments stitched together by a change-detection heuristic, rather than a single non-increasing step schedule. We therefore report reset-on-shift as an empirical nonstationary re-adaptation mechanism, distinct from the stationary convergence guarantee of claim~1.
+
+\subsection{Positioning against prior art}
+\label{sec:budget_positioning}
+
+We do not claim novelty for dualizing a resource constraint in the abstract: that idea is classical in constrained MDPs \citep{altman1999}, rational inattention \citep{sims2003,matejka2015}, and SAC temperature auto-tuning \citep{haarnoja2018sac}. Sims \citep{sims2003} models agents with finite Shannon capacity and Mat\v{e}jka and McKay \citep{matejka2015} derive discrete-choice logits from costly information acquisition; both take an information-processing constraint as the primitive, whereas we take an \emph{operational sensing budget} as the primitive and recover the Planning+IG weight that implements it. \citet{kim2011cpomdp} extend constrained dual methods to partial observability directly, showing that optimal constrained POMDP policies can require randomization and giving point-based dynamic programming over belief-cost pairs; their constraints are exogenous costs solved offline, rather than an epistemic quantity computed from the belief and tracked online. Soft Actor-Critic's applications paper \citep{haarnoja2018sac} automatically tunes the entropy temperature by dual gradient ascent on a target-entropy constraint, and our update~\eqref{eq:dual_update} mirrors that construction with sensing usage in place of policy entropy (the earlier fixed-temperature SAC paper does not contain this rule, hence the specific citation to the applications paper).
+
+Adaptive test selection is also the subject of sequential Bayesian experimental design (SBED): choose the next experiment to maximize expected information gain about a latent parameter, then update and repeat \citep{lindley1956}. Recent work amortizes this loop with a learned design policy so that near-optimal adaptive experiments run in real time \citep{foster2021dad}. SBED's design objective is expected information gain about the latent alone; ours is expected task reward under an explicit sensing-usage constraint, with information gain appearing only as the dual's numerator. The two coincide when the budget is set so tightly that no reward-yielding action is left to trade off against sensing; otherwise the budgeted objective declines an informative test that an SBED policy would take, because the decision variable here is how much to test, not only which test to run next.
+
+Generic Lagrangian duality is thus prior art in all of these literatures. The contribution is its concrete operationalization for budgeted $\rho$-POMDP sensing: exact scale equivariance of the resulting policy family (Proposition~\ref{prop:pi1}), a set-valued shadow price at usage gaps rather than a single multiplier (Definition~\ref{def:pi3}), and an online controller with a stated tracking, not only stationary-convergence, guarantee under distribution shift (Proposition~\ref{prop:pi5}).
+
+\section{Experiments}
+\label{sec:experiments}
+
+All environments are implemented as Gymnasium \citep{towers2024} environments following the observe-then-commit structure of Section~\ref{sec:methodology}. Main results use 1{,}000 episodes per seed across 5 random seeds ($\{42, 123, 456, 789, 1024\}$) for a total of 5{,}000 episodes. Results report the mean across all episodes. Statistical comparisons use $t$-tests with Holm--Bonferroni correction, with bootstrap CIs in Appendix~\ref{app:stats}. Comparison against POMCP (including compute-matched analysis with wall-clock timing at budgets 500--5{,}000 simulations) is in Appendix~\ref{app:pomcp}. Full specifications are in Appendix~\ref{app:envs}.
 
 \paragraph{Tiger} \citep{kaelbling1998}. Two states, one observation action (listen, accuracy 0.85), two commit actions. Rewards: correct $+10$, incorrect $-100$, listen cost $-1$.
 
@@ -379,42 +531,45 @@ EFE achieves the highest reward ($-21.13$), scanning 14.81 times, less than half
 
 To validate Proposition~\ref{prop:factored} beyond observe-then-commit settings, we evaluate on RockSample \citep{smith2004}, a standard POMDP benchmark with interleaved observe-act dynamics. An agent navigates an $N{\times}N$ grid containing $K$ rocks at known positions, each with hidden binary quality. Actions include move (N/S/E/W, cost $-0.5$), check rock $k$ (noisy observation, accuracy decays with distance), sample (collect rock at current position: good $+10$, bad $-10$), and exit ($+10$). All agents use depth-limited belief-space tree search over factored beliefs (independent per-rock), differing only in the information gain weight $w$.
 
+% Table auto-generated by experiments/build_rocksample_tables.py from
+% results/results_rocksample_{5x3,7x4,7x8,11x11}.csv -- do not hand-edit
+% the numbers below without regenerating from that script.
 \begin{table}[ht]
 \centering
-\caption{RockSample results with tree-search agents (500 episodes $\times$ 5 seeds for RS[5,3]--[7,8] and 50 $\times$ 2 seeds for RS[11,11]). Greedy samples without checking. Bold: best reward per instance. EFE ($w{=}1$) is competitive with tuned Planning+IG. On RS[7,8], Planning+IG ($w{=}5$) leads ($+20.82$ vs.\ $+19.57$). Steps and Checks omitted (tree-search evaluates all actions). Per-step attribution in Appendix~\ref{app:rocksample}.}
+\caption{RockSample results with tree-search agents. RS[5,3] and RS[7,4]: 500 episodes $\times$ 10 seeds (5{,}000 episodes, includes a POMCP baseline in Appendix~\ref{app:rocksample}). RS[7,8] and RS[11,11] ($|S|{=}2{,}048$): 100 episodes $\times$ 5 seeds (500 episodes; POMCP not run at this scale due to compute cost). Greedy samples without checking. Bold: best mean reward per instance (ties within 1 SE of the best also bolded). Reward reported as mean $\pm$ SE. Steps and Checks omitted (tree-search evaluates all actions); see Appendix~\ref{app:rocksample} for per-instance step and check counts.}
 \label{tab:rocksample}
 \begin{small}
-\begin{tabular}{llccccc}
+\begin{tabular}{llcccc}
 \toprule
-Instance & Agent & Steps & Checks & Good & Bad & Reward \\
+Instance & Agent & Good & Bad & Reward \\
 \midrule
-\multirow{4}{*}{RS[5,3]} & Greedy & -- & -- & $1.49$ & $1.51$ & $+3.71$ \\
-& Planning ($w{=}0$) & -- & -- & $1.06$ & $0.08$ & $+14.00$ \\
-& Planning+IG ($w{=}5$) & -- & -- & $1.34$ & $0.02$ & $\mathbf{+15.67}$ \\
-& EFE ($w{=}1$) & -- & -- & $1.34$ & $0.02$ & $\mathbf{+15.67}$ \\
+\multirow{4}{*}{RS[5,3]} & Greedy & $1.49$ & $1.51$ & $+3.71 \pm 0.25$ \\
+& Planning ($w{=}0$) & $0.99$ & $0.04$ & $+14.28 \pm 0.11$ \\
+& Plan+IG ($w{=}5$) & $1.44$ & $0.03$ & $\mathbf{+16.47 \pm 0.12}$ \\
+& EFE ($w{=}1$) & $1.44$ & $0.03$ & $\mathbf{+16.47 \pm 0.12}$ \\
 \midrule
-\multirow{4}{*}{RS[7,4]} & Greedy & -- & -- & $1.98$ & $2.02$ & $-0.88$ \\
-& Planning ($w{=}0$) & -- & -- & $0.98$ & $0.04$ & $+14.39$ \\
-& Planning+IG ($w{=}5$) & -- & -- & $1.50$ & $0.02$ & $+13.47$ \\
-& EFE ($w{=}1$) & -- & -- & $1.38$ & $0.00$ & $\mathbf{+15.47}$ \\
+\multirow{4}{*}{RS[7,4]} & Greedy & $1.98$ & $2.02$ & $-1.38 \pm 0.29$ \\
+& Planning ($w{=}0$) & $0.95$ & $0.05$ & $+13.97 \pm 0.11$ \\
+& Plan+IG ($w{=}5$) & $1.60$ & $0.01$ & $+14.69 \pm 0.12$ \\
+& EFE ($w{=}1$) & $1.44$ & $0.01$ & $\mathbf{+15.96 \pm 0.12}$ \\
 \midrule
-\multirow{4}{*}{RS[7,8]} & Greedy & -- & -- & $3.50$ & $4.50$ & $-7.09$ \\
-& Planning ($w{=}0$) & -- & -- & $0.45$ & $0.05$ & $+11.75$ \\
-& Planning+IG ($w{=}5$) & -- & -- & $2.55$ & $0.05$ & $\mathbf{+20.82}$ \\
-& EFE ($w{=}1$) & -- & -- & $2.15$ & $0.05$ & $+19.57$ \\
+\multirow{4}{*}{RS[7,8]} & Greedy & $4.02$ & $3.98$ & $-5.60 \pm 1.23$ \\
+& Planning ($w{=}0$) & $0.48$ & $0.03$ & $+12.31 \pm 0.24$ \\
+& Plan+IG ($w{=}5$) & $2.67$ & $0.03$ & $\mathbf{+22.14 \pm 0.51}$ \\
+& EFE ($w{=}1$) & $2.20$ & $0.09$ & $+19.65 \pm 0.48$ \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{RS[11,11]\\[-1pt]{\scriptsize $|S|{=}2048$}}} & Greedy & -- & -- & $5.33$ & $5.67$ & $-21.90$ \\
-& Planning ($w{=}0$) & -- & -- & $0.50$ & $0.01$ & $+13.64$ \\
-& Planning+IG ($w{=}5$) & -- & -- & $0.53$ & $0.01$ & $\mathbf{+13.66}$ \\
-& EFE ($w{=}1$) & -- & -- & $0.50$ & $0.01$ & $+13.64$ \\
+\multirow{4}{*}{RS[11,11]} & Greedy & $5.48$ & $5.52$ & $-18.90 \pm 1.45$ \\
+& Planning ($w{=}0$) & $0.48$ & $0.03$ & $\mathbf{+13.23 \pm 0.24}$ \\
+& Plan+IG ($w{=}5$) & $0.50$ & $0.03$ & $\mathbf{+13.18 \pm 0.25}$ \\
+& EFE ($w{=}1$) & $0.48$ & $0.03$ & $\mathbf{+13.23 \pm 0.24}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-On RS[5,3], EFE ties Planning+IG ($w{=}5$) for best reward ($+15.67$). On RS[7,4], EFE leads ($+15.47$). On RS[7,8], Planning+IG ($w{=}5$) beats EFE on reward ($+20.82$ vs.\ $+19.57$), while both substantially outperform Planning ($+11.75$). The gap vs.\ $w{=}0$ Planning still grows with the number of observation actions. On all instances up to RS[7,8], EFE samples dramatically fewer bad rocks than Greedy (0.00--0.05 vs.\ 1.51--5.67), confirming that the information gain term drives checking behavior.
+On RS[5,3], EFE ties Plan+IG ($w{=}5$) for best reward ($+16.47$). On RS[7,4], EFE leads outright ($+15.96$). On RS[7,8], Plan+IG ($w{=}5$) beats EFE on reward ($+22.14$ vs.\ $+19.65$), while both substantially outperform Planning ($+12.31$); Plan+IG ($w{=}10$, Appendix~\ref{app:rocksample}) does better still ($+23.35$), so on this instance a higher tuned weight continues to pay off where $w{=}1$ leaves reward on the table. The gap vs.\ $w{=}0$ Planning grows with the number of observation actions. On RS[5,3], RS[7,4], and RS[7,8], EFE samples dramatically fewer bad rocks than Greedy (0.01--0.09 vs.\ 1.51--3.98), confirming that the information gain term drives checking behavior.
 
-On RS[11,11] ($|S|{=}2{,}048$), EFE and Planning achieve nearly identical reward ($+13.64$ vs.\ Planning+IG $+13.66$), with all information-aware agents vastly outperforming Greedy ($+13.6$ vs.\ $-21.9$). This result demonstrates tractability, since the factored belief tree search handles 2{,}048 states in seconds, but it does not differentiate EFE from reward-only planning. At depth 2, the tree search horizon is too shallow relative to the 11-rock environment: all informed agents converge to a conservative ``check nearest rock, sample if good, exit'' strategy. Depth 3 is computationally intractable at this scale, requiring orders of magnitude more search time per step. This mirrors the Tileworld scaling finding (Figure~\ref{fig:tw_scaling}), where EFE's advantage requires sufficient depth relative to the state space. Detailed results including POMCP baselines are in Appendix~\ref{app:rocksample}.
+On RS[11,11] ($|S|{=}2{,}048$), EFE and Planning achieve identical reward ($+13.23$ each), with all information-aware agents vastly outperforming Greedy ($+13.2$ vs.\ $-18.9$), but this does not differentiate EFE from reward-only planning. At the reported depth 2, all informed agents converge to the same conservative ``check nearest rock, sample if good, exit'' strategy, so the weight on information gain never gets to matter. We verified that this is a genuine convergence rather than a depth ceiling: rerunning at depth 3 (\texttt{results\_rocksample\_11x11\_depth3\_check.csv}) costs only seconds and reproduces the same $+13.23$/$+13.17$ pattern within 1 SE, so the earlier claim that depth 3 is computationally intractable at this scale does not hold for the current implementation. The more precise statement is that at $11$ widely spaced rocks under either depth, the greedy nearest-rock heuristic is already close to what shallow tree search recovers, so additional depth or a larger information-gain weight has nothing left to bite on. This mirrors the Tileworld scaling finding (Figure~\ref{fig:tw_scaling}) only in the broad sense that EFE's advantage depends on the state space and rock layout being disambiguating; the specific mechanism here is policy saturation, not a compute ceiling. Detailed results including POMCP baselines on the smaller instances are in Appendix~\ref{app:rocksample}.
 
 \subsection{Structural inspection}
 \label{sec:inspection}
@@ -449,6 +604,148 @@ EFE ($w{=}1$) is a competitive untuned trade-off rather than uniquely best. On $
 \subsection{Summary}
 
 Taken together, the experiments tell a consistent story. Propositions~\ref{prop:equivalence} and~\ref{prop:factored} hold in practice: EFE matches Planning+IG at $w{=}1$, and that information-unit weight lands at the Pareto knee without per-environment search. Where multiple observation actions matter most, as on Diagnosis and Bandit, untuned EFE Pareto-dominates same-horizon planning. Where tuned bonuses chase success harder, they can beat EFE on accuracy at a reward cost. Across Tileworld, RockSample, and Inspection, EFE remains a competitive untuned trade-off rather than uniquely best on every metric, with the advantage over $w{=}0$ Planning growing as state spaces and observation menus expand, up to $|S|{=}65{,}536$ on Inspection.
+
+\section{Experiments: shadow prices and sensing budgets}
+\label{sec:budget_experiments}
+
+Section~\ref{sec:results} evaluated the equivalence and near-optimality claims of Sections~\ref{sec:methodology}--\ref{sec:experiments}. This section evaluates the budgeted reformulation of Section~\ref{sec:budget}: usage-curve collapse across reward scales, closed-form onset recovery, online tracking through a reward rescale, cost-denominated budgets, interleaved (non-observe-then-commit) settings, a near-optimal offline reference, an atlas of implicit budgets, and an explicit test of what the budget does and does not fix. All headline runs use five seeds $\{42,123,456,789,1024\}$ and $100$ episodes per evaluation cell unless noted; code and CSVs accompany the repository.
+
+\subsection{Curve collapse across reward scales}
+\label{sec:collapse}
+
+On Diagnosis and Bandit we estimate $U(w;\alpha)$ at reward scales $\alpha \in \{0.1, 1, 10\}$ on $\alpha$-scaled weight grids so that $w/\alpha$ abscissae align. Figure~\ref{fig:collapse} shows the curves collapsing on Diagnosis: every matched $w/\alpha$ point lies within $2\cdot\mathrm{SE}$ across scales, and the crossing bracket of budget $B{=}8$ in $w/\alpha$ units coincides across $\alpha$ ($(0.141, 0.323]$ at every scale). We extend the check to Tiger and Tileworld-$6{\times}6$ to avoid resting the headline claim on two environments (Table~\ref{tab:collapse-breadth}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/price_scale_invariance.pdf}
+\caption{Curve collapse on Diagnosis. Left: $U$ vs.\ $w/\alpha$ at three reward scales. Right: crossing brackets of $B{=}8$ in $w/\alpha$ units coincide across scales (set-valued shadow price).}
+\label{fig:collapse}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Curve-collapse breadth: fraction of matched $w/\alpha$ points across $\alpha \in \{0.1,1,10\}$ within $2\cdot\mathrm{SE}$, and whether the $B$-crossing bracket coincides across scales (in $w/\alpha$ units).}
+\label{tab:collapse-breadth}
+\small
+\begin{tabular}{lccp{4.3cm}}
+\toprule
+Environment & Within $2\cdot\mathrm{SE}$ & Max spread & Bracket at $B$ \\
+\midrule
+Diagnosis ($B{=}8$) & $100\%$ & $0.49$ obs. & $(0.141, 0.323]$ at every $\alpha$ \\
+Bandit ($B{=}8$) & $100\%$ & $0.50$ obs. & $(3.84, 8.76]$ at every $\alpha$ \\
+Tiger ($B{=}4$) & $100\%$ (trivial) & $0.31$ obs. & unbracketed: $B$ below observed $U$ at every $\alpha$ \\
+Tileworld-$6{\times}6$ ($B{=}15$) & $90\%$ & $0.91$ obs. & coincide except a shared knot at $w/\alpha{=}5.80$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Diagnosis and Bandit reconfirm exact collapse. Tiger passes trivially: instrumental listening already saturates usage ($4.0$--$4.4$ observations) across the entire $w/\alpha \in [0,20]$ range tested, so the budget formulation has no usable dial in this window --- worth stating plainly, since Proposition~\ref{prop:pi1} guarantees collapse of whatever curve there is, not that every environment has an informative curve to collapse. Tileworld-$6{\times}6$ shows $90\%$ agreement; the one disagreement is the $\alpha{=}10$ bracket $(1.68, 5.80]$ sharing its upper knot with the $\alpha \in \{0.1,1\}$ bracket $(5.80, 20]$, where measured usage straddles $B{=}15$ by less than one SE ($14.66$ / $14.95$ / $15.07$ across the three scales). This is a budget-at-knot Monte Carlo artifact, not a violation of Proposition~\ref{prop:pi1}, which is exact for the implemented agent regardless of measurement noise; this experiment therefore now functions as a sanity check on the Monte Carlo estimator rather than as the primary evidence for the scale claim.
+
+\subsection{Proposition~\ref{prop:nearopt} onset on positive-threshold testbeds}
+\label{sec:prop2exp}
+
+Standard Tiger and Testbed parameters yield \emph{negative} $w_{\mathrm{thresh}}$, so any $w \ge 0$ observes and the duality check of Corollary~\ref{cor:pi4} is vacuous there. We therefore construct positive-threshold InfoSeeking environments ($p \in \{0.60, 0.58\}$, $c{=}0.3$, $R_\pm = \pm 1$) with closed forms $w_{\mathrm{thresh}} \approx 3.44$ and $7.55$. A refined weight grid around the threshold shows $U{=}0$ at and below $w_{\mathrm{thresh}}$, with onset in $(w_{\mathrm{thresh}}, 1.03\cdot w_{\mathrm{thresh}}]$ on both environments (upper relative error $3\%$, Figure~\ref{fig:prop2}), matching Corollary~\ref{cor:pi4}. Negative-threshold sanity checks on standard Testbed and Tiger remain consistent ($U(0) > 0$ when $w_{\mathrm{thresh}} < 0$).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/price_prop2_jumps.pdf}
+\caption{Onset of observing on positive-threshold testbeds. Orange: $H{=}1$ closed form (Proposition~\ref{prop:nearopt}). Green band: empirical onset bracket after grid refinement.}
+\label{fig:prop2}
+\end{figure}
+
+\subsection{Multi-seed online dual control under reward rescale}
+\label{sec:dual_multiseed}
+
+On Diagnosis with target $B{=}8$, learning rate $\eta_0{=}0.05$, decay $\delta{=}0.02$, and a $\times 10$ reward-and-cost rescale at episode~$200$ of a $400$-episode run, we sweep $10$ independent controller seeds for decay-only and reset-on-shift variants (window~$20$, $k{=}3$, absolute floor $0.5$), extending the single-trajectory workshop result to a multi-seed comparison with confidence intervals. Re-adaptation, measured as episodes from rescale until rolling-20 usage stays within $\pm 1$ of $B$ for $20$ consecutive episodes: decay-only mean $126.8$ episodes, $95\%$ CI $[90.5, 163.0]$, with only $8/10$ seeds recovering inside the $200$ post-rescale episodes; reset-on-shift mean $53.3$, CI $[48.7, 57.9]$, $10/10$ recovered, each triggering exactly one learning-rate reset. The CIs are disjoint. Post-rescale steady-state $|U-B|$ is $0.11$ ($[0.07,0.15]$) under reset versus $0.50$ ($[0.14,0.86]$) under decay-only; both controllers hold within $0.1$ of $B$ before the rescale. One decay-only seed registers zero re-adaptation time because its rolling-20 window straddles the rescale point, which biases the decay-only mean downward, so the reported gap is conservative. Figure~\ref{fig:dualmultiseed} shows the median trajectory with interquartile band for both variants.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/price_dual_multiseed.pdf}
+\caption{Multi-seed ($n{=}10$) dual control of $w$ on Diagnosis through a mid-run $\times 10$ reward rescale (vertical line). Median trajectory with interquartile band; decay-only (left) vs.\ reset-on-shift (right). Reset-on-shift re-adapts in a median of $53$ episodes vs.\ $127$ for decay alone, with disjoint 95\% CIs.}
+\label{fig:dualmultiseed}
+\end{figure}
+
+The multi-seed result strengthens rather than merely replicates the single-trajectory workshop finding: decay-only can fail to re-adapt at all within a $200$-episode post-rescale window on some seeds, whereas reset-on-shift never failed to recover across all $10$ seeds tested. This is the empirical nonstationary tracking behavior anticipated by Proposition~\ref{prop:pi5}'s second claim; the stationary convergence guarantee of its first claim is not being tested here, since the environment is deliberately shifted mid-run.
+
+\subsection{Cost-denominated budgets}
+\label{sec:cost_budget}
+
+The count-usage curves above treat every observation as one unit regardless of price. To demonstrate the units story end to end, we introduce a Diagnosis variant with heterogeneous per-test costs ($[0.5, 2.5]$ across the two test types, same accuracy) and estimate both the count-usage curve $U_{\mathrm{count}}(w)$ and the cost-usage curve $U_{\mathrm{cost}}(w)$ on the same agent family. The mean cost paid per test, $U_{\mathrm{cost}}(w)/U_{\mathrm{count}}(w)$, is not constant: it varies from $1.21$ to $1.39$ across the weight grid (a $13.5\%$ relative spread), staying flat near $1.25$ through $w \approx 3$ and rising toward $1.39$ as high $w$ pushes the agent onto relatively more of the expensive test. Consequently the two budget denominations give different, and individually interpretable, shadow prices: solving for a count budget $B{=}8.64$ brackets $w^*$ in $(10, 31.6]$, while solving for a cost budget $B_{\mathrm{cost}}{=}11.15$ (a comparable operating point in dollars-of-sensing rather than test-count) brackets $w^*$ in $(3.16, 10]$ (Figure~\ref{fig:costbudget}). The disagreement is exactly what should happen when costs are heterogeneous: a count budget cannot see that the agent has shifted its test mix toward the cheaper, less informative test as $w$ rises, while a cost budget prices that shift directly.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/price_cost_budget.pdf}
+\caption{Cost- vs.\ count-denominated usage curves on heterogeneous-cost Diagnosis. The two curves and their crossing brackets disagree because sensing cost per test is not constant across $w$.}
+\label{fig:costbudget}
+\end{figure}
+
+\subsection{Interleaved settings: RockSample and Structural Inspection}
+\label{sec:interleaved_budget}
+
+The observe-then-commit environments above cannot exercise every structural feature of Proposition~\ref{prop:factored}'s factored-observation class, since observation and commitment are temporally separated by construction. We extend usage-curve estimation to the interleaved tree-search agents of Section~\ref{sec:rocksample} and Section~\ref{sec:inspection}, counting check/test actions as sensing usage: RockSample[5,3] (usage range $[3.81, 9.10]$ over a $10$-point weight grid, $5$ seeds $\times$ $50$ episodes), RockSample[7,4] ($[2.00, 14.73]$, $8$-point grid, $30$ episodes), and Inspection-$N{=}16$ ($[22.42, 46.04]$, $10$-point grid, $50$ episodes). Figure~\ref{fig:interleaved} shows all three staircases. Unlike the observe-then-commit domains, $U(w)$ is nondecreasing at \emph{every} sampled grid point on all three interleaved settings, a cleaner monotonicity than Tiger, Diagnosis, and Tileworld exhibit (Section~\ref{sec:stairs}). At least four budgets are bracketed with SEs per environment. The large instrumental floors ($U(0) = 3.81$ / $2.00$ / $22.42$) confirm that unachievable-low-budget regimes (Definition~\ref{def:pi3}) matter in interleaved settings too: an agent cannot buy less sensing than reward alone already motivates.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/price_staircase_interleaved.pdf}
+\caption{Usage staircases on interleaved (non-observe-then-commit) settings: RockSample[5,3], RockSample[7,4], and Inspection-$N{=}16$. All three are monotone at every sampled grid point.}
+\label{fig:interleaved}
+\end{figure}
+
+\subsection{Supporting: shadow-price staircases}
+\label{sec:stairs}
+
+Figure~\ref{fig:stairs} reports $w^*(B)$ over identifiable budgets inside $[U_{\min}, U_{\max}]$ for Tiger, Diagnosis, Bandit, Tileworld-$6{\times}6$, and Inspection-$N{=}8$. Bandit and Inspection are roughly monotone with sensible brackets; Tiger, Diagnosis, and Tileworld show local non-monotonicity from discrete policy switches (the count-usage gap identified in Proposition~\ref{prop:pi2}'s scope note), so we report brackets and standard errors rather than singleton prices. Tiger's price is weakly identified, consistent with Table~\ref{tab:collapse-breadth}: instrumental listening already saturates most of the usage range at $w{=}0$.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/price_shadow_curves.pdf}
+\caption{Operational shadow-price staircases with vertical crossing brackets, observe-then-commit and inspection domains.}
+\label{fig:stairs}
+\end{figure}
+
+\subsection{A near-optimal offline reference: SARSOP}
+\label{sec:sarsop}
+
+The camera-ready replies to the workshop version promised a near-optimal offline baseline; we retire that debt here. We build the original APPL C++ SARSOP toolkit \citep{kurniawati2008} from source (Appendix~\ref{app:sarsop_build}) and export each discrete observe-then-commit benchmark to the Cassandra \texttt{.pomdp} format generically from the same generative model the agents already use, solve to precision $10^{-3}$ (under one second per environment at $\gamma{=}0.999$), and evaluate the resulting alpha-vector policy in-simulator through the identical episode runner used for every other agent, so all agents share mechanics and metrics exactly. Table~\ref{tab:sarsop} reports the full protocol ($5$ seeds $\times$ $500$ episodes).
+
+\begin{table}[t]
+\centering
+\caption{SARSOP near-optimal reference vs.\ EFE ($w{=}1$) on the three core OTC environments (mean $\pm$ SE reward; mean usage in observation count; $\gamma{=}0.999$).}
+\label{tab:sarsop}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Environment & SARSOP reward & EFE reward & SARSOP usage & EFE usage \\
+\midrule
+Tiger & $5.061 \pm 0.158$ & $5.061 \pm 0.158$ & $4.323$ & $4.323$ \\
+Diagnosis & $-1.452 \pm 0.336$ & $-1.217 \pm 0.184$ & $9.68$ & $9.73$ \\
+Bandit & $6.280 \pm 0.134$ & $6.261 \pm 0.112$ & $5.16$ & $5.09$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On Tiger, SARSOP and EFE select identical actions on every episode: with a single observation action, the near-optimal policy and the EFE policy coincide exactly. On Diagnosis and Bandit, SARSOP and EFE ($w{=}1$) are statistically indistinguishable (within $0.6$ SE on Diagnosis), and their usage differs by less than $0.1$ observations. EFE at the canonical weight is therefore not merely competitive but statistically at parity with a near-optimal point-based solver on this suite, at the scales tested. We additionally checked whether the offline usage curve can be inverted to match SARSOP's usage exactly (rather than comparing at $w{=}1$); on Tiger this usage-matching problem is ill-posed because the curve is flat (Table~\ref{tab:collapse-breadth}), forcing a bracket as wide as $w \in (19.3, 43.9]$ to nominally match a target that the curve cannot discriminate. We considered POMCPOW \citep{sunberg2018} as a further baseline and declined it: POMCPOW exists to handle continuous state, action, and observation spaces via progressive widening, and every benchmark here is a small discrete POMDP for which SARSOP already gives a near-optimal reference and discrete POMCP (Appendix~\ref{app:pomcp}) is already in hand; adding POMCPOW would require building continuous-observation benchmark variants that no claim in this paper needs.
+
+\subsection{Distractor robustness: reward-irrelevant sensing}
+\label{sec:distractor}
+
+A recurring question about information-gain objectives is how they behave when uncertainty exists over state components that do not affect reward. We construct \texttt{DistractorDiagnosisEnv}, an $8$-joint-state Diagnosis variant ($4$ conditions $\times$ a binary nuisance bit; commit rewards depend only on the $4$-way condition) with one additional test that is informative only about the nuisance bit. Every observation model in the environment factors through exactly one of the two independent components, so the distractor test is provably --- and unit-tested --- exactly zero-information about the condition marginal.
+
+Sweeping Planning+IG over a log weight grid ($5$ seeds $\times$ $100$ episodes), the distractor fraction of total sensing usage is exactly $0$ for $w \le 3.16$, rises to $0.242 \pm 0.005$ at $w{=}10$, and saturates at $0.331 \pm 0.005$ for $w \ge 31.6$ (Figure~\ref{fig:distractor}). Ordinary information gain does not distinguish reward-relevant from reward-irrelevant uncertainty, so once the weight is large enough to make the distractor's nonzero (but task-useless) information gain worth its cost, Planning+IG spends budget on it; the sensing budget of Section~\ref{sec:budget} caps how much total sensing is bought but does not by itself redirect that spending toward reward-relevant tests. EFE at the canonical $w{=}1$ happens to stay at zero distractor fraction on this instance, but only because the onset weight ($\approx 10$) exceeds $1$ here, not because EFE is structurally immune to the effect; an instance with a lower onset would show EFE chasing the distractor too.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/distractor_composition.pdf}
+\caption{Usage composition on \texttt{DistractorDiagnosisEnv} as a function of $w$: task-relevant test usage, distractor test usage, and their sum. Distractor spend is zero below the onset weight and saturates at roughly a third of total usage.}
+\label{fig:distractor}
+\end{figure}
+
+We also checked whether information-directed sampling (IDS) \citep{russo2014}, which is explicitly reward-aware through its information-ratio numerator, is immune. It is not, for an implementation reason worth reporting exactly: IDS's \texttt{info\_astar} term (information about the optimal commit) is correctly zero for the distractor action, but the implementation falls back to a raw state-entropy term (\texttt{info\_state}) whenever \texttt{info\_astar} is at or near zero, and that fallback lets the distractor's genuine nuisance-bit informativeness through. Instrumented directly, IDS's distractor fraction is $0.311 \pm 0.005$, comparable to Planning+IG at large $w$. This is not evidence that reward-aware information measures are useless against distractors in general; it is evidence that a specific, common implementation pattern (falling back to unconditional entropy reduction when the reward-conditional information measure vanishes) reintroduces exactly the reward-blindness the reward-aware measure was meant to avoid. We report this as an honest limitation rather than eliding it: neither ordinary information gain nor the in-repo IDS adaptation is a clean immune baseline against reward-irrelevant sensing on this benchmark, and a genuinely reward-conditional information measure without a raw-entropy fallback is left to future work.
+
+\subsection{The $w^*$ atlas}
+\label{sec:w_atlas}
+
+Table~\ref{tab:w-atlas} (Appendix~\ref{app:w_atlas}) collects the implicit EFE budget $B_{\mathrm{EFE}} = U(w{=}1)$ and two canonical-budget crossing brackets for every benchmark instance in this paper, aggregating the usage curves estimated across Sections~\ref{sec:results} and~\ref{sec:budget_experiments}. This is an atlas of measured operating points, not a predictive meta-model relating $B_{\mathrm{EFE}}$ to environment parameters (reward scale, state count, horizon); no such closed form is claimed, and the atlas should not be read as one.
 
 \section{Discussion}
 \label{sec:discussion}
@@ -494,7 +791,7 @@ Many real-world decision problems have $\alpha \gg 1$: in medical diagnosis, fau
 Our main results assume exact knowledge of the generative model. Appendix~\ref{app:misspec} investigates robustness when the agent's believed observation accuracy differs from the true value by up to $\pm 0.15$. On Tiger, success rates remain above 96.7\% across all mismatch levels. On Diagnosis, degradation is larger but graceful. Overestimating sensor accuracy (positive mismatch) is more harmful than underestimating it, because the agent commits prematurely on insufficient evidence. EFE's intrinsic epistemic drive provides a partial buffer: even with a miscalibrated model, the information gain term still encourages observation, compensating for overconfident planning.
 
 \paragraph{Approximate planning with MCTS-EFE.}
-The exact tree search cost $\mathcal{O}(K \cdot |\mathcal{O}|^H)$ limits practical horizons to $H{=}2$--$3$ with $K \geq 3$. To push beyond this, we implement MCTS with EFE as a leaf heuristic: the tree policy uses UCB1 with observation-outcome enumeration, and leaf nodes are evaluated via greedy EFE rollouts. On Tiger at $H{=}10$, MCTS-EFE with 500 simulations achieves 97.2\% success (7.2s per 200 episodes), compared to 89.7\% for POMCP at matched budget (1.7s). This demonstrates that EFE's closed-form information valuation provides a substantially stronger leaf heuristic than semi-informed rollouts. The comparison is designed to be fair to POMCP: our implementation already uses belief-optimal commits (not purely random rollouts): observations are sampled uniformly, but the rollout terminates with the commit action maximizing expected reward under the Bayesian-updated belief (Appendix~\ref{app:pomcp}). The remaining performance gap therefore reflects the value of directed observation selection: EFE chooses which test to run based on information gain, while POMCP samples tests uniformly. The claim is not that EFE-based planning exceeds state-of-the-art POMDP solvers, but that the EFE leaf heuristic provides a principled, zero-tuning alternative to heuristic rollout design. POMCP with fully informed rollouts (e.g., using domain knowledge or a learned value function for observation selection) would narrow the gap further.
+At each depth the tree branches over $K$ observation actions and then, per action, over its $|\mathcal{O}|$ observation outcomes, so the exact tree search cost is $\mathcal{O}((K \cdot |\mathcal{O}|)^H)$, limiting practical horizons to $H{=}2$--$3$ with $K \geq 3$. To push beyond this, we implement MCTS with EFE as a leaf heuristic: the tree policy uses UCB1 with observation-outcome enumeration, and leaf nodes are evaluated via greedy EFE rollouts. On Tiger at $H{=}10$, MCTS-EFE with 500 simulations achieves 97.2\% success (7.2s per 200 episodes), compared to 89.7\% for POMCP at matched budget (1.7s). This demonstrates that EFE's closed-form information valuation provides a substantially stronger leaf heuristic than semi-informed rollouts. The comparison is designed to be fair to POMCP: our implementation already uses belief-optimal commits (not purely random rollouts): observations are sampled uniformly, but the rollout terminates with the commit action maximizing expected reward under the Bayesian-updated belief (Appendix~\ref{app:pomcp}). The remaining performance gap therefore reflects the value of directed observation selection: EFE chooses which test to run based on information gain, while POMCP samples tests uniformly. The claim is not that EFE-based planning exceeds state-of-the-art POMDP solvers, but that the EFE leaf heuristic provides a principled, zero-tuning alternative to heuristic rollout design. POMCP with fully informed rollouts (e.g., using domain knowledge or a learned value function for observation selection) would narrow the gap further.
 
 The approach also scales to multiple observation actions. For single-observation environments, the observation-outcome enumeration (2 outcomes per action) keeps expansion costs low. On Diagnosis ($N{=}4$, $K{=}2$ tests), MCTS-EFE at $H{=}5$ achieves $98.0\%$ success compared to POMCP's $71.3\%$ at matched budget (200 simulations), demonstrating that EFE scales to multi-observation environments. To validate on a larger multi-observation environment, we evaluate on Tileworld $6{\times}6$ ($|S|{=}36$, $K{=}6$ scans). MCTS-EFE(50) achieves $96.0\%$ success and $-19.04$ reward, outperforming both Exact-EFE (75.0\%, $-20.11$) and POMCP at matched (50) or higher (200) simulation budgets ($2.0\%$/$15.0\%$ success). The improvement over exact tree search reflects MCTS's ability to concentrate samples on promising observation sequences. The $81$--$94$pp gap over POMCP confirms that EFE's directed observation selection is essential at this scale: POMCP's semi-informed rollouts cannot identify which of the 6 scans to perform. For larger observation spaces, more efficient tree policies, such as progressive widening or double progressive widening \citep{benchetrit2025}, would further improve scalability. We leave this to future work.
 
@@ -507,6 +804,7 @@ Our analysis identifies the following conditions favoring EFE over tuned alterna
 \item Interleaved observe-act with preserved hidden state: when the hidden state does not change under observation and navigation actions (factored observation POMDPs, Table~\ref{tab:taxonomy}), the information-unit-weight equivalence holds and EFE directs both where to go and what to check (Tables~\ref{tab:rocksample},~\ref{tab:inspection}).
 \item Cross-environment deployment: when the weight cannot be tuned per-task, $w{=}1$ transfers robustly while tuned weights fail catastrophically (Table~\ref{tab:transfer}).
 \item Planning horizon $H \geq 2$: recursive EFE propagates epistemic value across steps. At $H{=}1$, it reduces to myopic IG with $w{=}1$.
+\item Discounting $\gamma \geq 0.99$: heavier discounting truncates the effective horizon below the number of observations needed for confident disambiguation, erasing EFE's advantage on multi-observation environments (Appendix~\ref{app:discount}).
 \end{itemize}
 EFE is not recommended when $\alpha \approx 1$ (symmetric penalties), in navigation-style POMDPs where observations are tied to translation and a greedy mover already receives informative feedback (Table~\ref{tab:nav_scaling}), or when model misspecification exceeds $\pm 0.15$ in observation accuracy.
 
@@ -515,19 +813,25 @@ The formal equivalence extends from observe-then-commit (Proposition~\ref{prop:e
 
 On the practical side, scaling MCTS-EFE to multi-observation environments requires more efficient tree policies, as discussed above. The EFE agent assumes a known generative model. The misspecification analysis (Appendix~\ref{app:misspec}) shows graceful degradation with moderate model errors, but extending to full model learning (where AIF and BAMDPs converge) remains important future work. Navigation (Appendix~\ref{app:navigation}) shows that scale alone does not rescue epistemic planning when the observation model is proximity-based: NavMyopic leads at $3{\times}3$, $5{\times}5$, and $7{\times}7$. The practical contrast is with domains that offer explicit, choice-set observation actions (Diagnosis, Tileworld, RockSample), where $|S| \geq 16$ marks the regime in which EFE separates from reward-only planning. This work is primarily theoretical, though the principled derivation of exploration weights could benefit safety-critical decision-making by reducing reliance on ad-hoc tuning.
 
+\paragraph{From scale limitation to operational shadow price.}
+Every claim above about $w{=}1$ being an untuned default is conditional on one reward convention shared across every comparison in this paper. That conditioning is not a footnote we would prefer to remove. Section~\ref{sec:budget} shows it is the correct framing: because information gain is measured in bits while task reward is measured in whatever units the designer chose, the pragmatic--epistemic exchange rate $w$ is necessarily convention-dependent, and Proposition~\ref{prop:pi1} proves this dependence is exact and predictable (not merely bounded) for the implemented agent. This lets us replace ``what should $w$ be'' with ``how much sensing can we afford,'' a question with a physically meaningful answer (a budget $B$ in observation count or cost) that a designer can state without knowing anything about information theory. Section~\ref{sec:budget_experiments} shows the resulting operational shadow price $w^*(B)$ is computable offline from a usage curve, trackable online through a reward-scale shift via dual descent (Proposition~\ref{prop:pi5}), and, at the specific budget $B_{\mathrm{EFE}} = U(w{=}1)$, recovers EFE's canonical weight as the special case that buys whatever sensing the ambient reward scale happens to imply (Section~\ref{sec:pi1}). The distractor-robustness result (Section~\ref{sec:distractor}) is the honest boundary of this resolution: a sensing budget caps how much total information an agent buys, but neither ordinary information gain nor the reward-aware IDS baseline we tested redirects that budget away from reward-irrelevant uncertainty on its own.
+
 \section{Conclusion}
 
 The $\rho$-POMDP framework and active inference converge on the same mathematical object: a belief-dependent utility that adds information gain at weight $w{=}1$ to the reward signal under a fixed reward convention. EFE does not eliminate the exploration--exploitation trade-off. It replaces ad hoc bonus weights with a derived relative coefficient in information units---exact under log scoring rules \citep{bernardo1979}, empirically a robust untuned default, and not scale-invariant---which doubles as the Planning+IG weight in Proposition~\ref{prop:equivalence}. Under that convention, the Pareto analysis places $w{=}1$ near the reward-maximizing knee, where further increases buy only marginal accuracy at substantial reward cost. Safety-critical settings that demand near-certain accuracy may still prefer higher tuned weights, and a Monte Carlo study (Appendix~\ref{app:nearopt_horizon}) shows that the near-optimality basin widens with planning horizon.
 
+We then dissolved the scale-invariance limitation rather than patching it. Recasting $w$ as the operational shadow price of a sensing budget $B$ (Section~\ref{sec:budget}) turns a caveat into a theorem: the resulting policy family is exactly scale equivariant (Proposition~\ref{prop:pi1}), the shadow price is set-valued at usage gaps rather than falsely point-valued (Definition~\ref{def:pi3}), Proposition~\ref{prop:nearopt}'s closed-form thresholds are recovered as the first knot of the usage staircase (Corollary~\ref{cor:pi4}), and an online dual controller tracks the budget through a $\times 10$ reward rescale with disjoint-CI evidence that a reset-on-shift mechanism re-adapts roughly $2.4\times$ faster than decay alone (Section~\ref{sec:dual_multiseed}). A near-optimal offline reference confirms that EFE's canonical weight is statistically indistinguishable from SARSOP on the three core observe-then-commit environments (Section~\ref{sec:sarsop}), and an atlas of implicit budgets (Appendix~\ref{app:w_atlas}) reports where every benchmark in this paper actually sits on its usage curve. We also reported where the budgeted formulation does not help: ordinary information gain, and a common reward-aware baseline's raw-entropy fallback, both spend a sensing budget on reward-irrelevant uncertainty (Section~\ref{sec:distractor}), and naive information gain can misvalue an action outright once observation changes the hidden state (Example~\ref{ex:destructive}). The price of information, in this sense, is whatever weight the stated sensing budget requires, not a universally correct number.
+
 Proposition~\ref{prop:factored} carries the bridge beyond observe-then-commit into factored observation POMDPs, from RockSample through a Structural Inspection benchmark with over $65{,}000$ states. The memorable contrast is scale under choice: on the $8{\times}8$ Tileworld, EFE holds $66.5\%$ success where reward-only planning collapses to $2.5\%$. Tuned bonuses can still win on particular metrics, and directed observation selection---not a stronger solver---is what separates EFE from POMCP with semi-informed rollouts. The practical message is that under a shared reward convention, active inference supplies an untuned information-unit weight that often sits near the reward-maximizing knee, without claiming scale-free automatic calibration.
 
-\begin{credits}
-\subsubsection{\discintname}
-The authors have no competing interests to declare that are relevant to the content of this article.
-\end{credits}
+\paragraph{Competing interests.} The authors have no competing interests to declare that are relevant to the content of this article.
 
-% Bibliography (LNCS/CCIS numbered style)
 \begin{thebibliography}{49}
+
+\bibitem[Altman(1999)]{altman1999}
+E.~Altman.
+\newblock \emph{Constrained Markov Decision Processes}.
+\newblock Chapman \& Hall/CRC, 1999.
 
 \bibitem[Araya-L\'{o}pez et~al.(2010)]{araya2010}
 M.~Araya-L\'{o}pez, O.~Buffet, V.~Thomas, and F.~Charpillet.
@@ -549,6 +853,11 @@ R.~Benchetrit, I.~Lev-Yehudi, A.~Zhitnikov, and V.~Indelman.
 \newblock Anytime incremental $\rho${POMDP} planning in continuous spaces.
 \newblock \emph{arXiv preprint arXiv:2502.02549}, 2025.
 
+\bibitem[Blum(1954)]{blum1954}
+J.~R. Blum.
+\newblock Approximation methods which converge with probability one.
+\newblock \emph{The Annals of Mathematical Statistics}, 25(2):382--386, 1954.
+
 \bibitem[Burda et~al.(2019)]{burda2019}
 Y.~Burda, H.~Edwards, A.~Storkey, and O.~Klimov.
 \newblock Exploration by random network distillation.
@@ -558,6 +867,12 @@ Y.~Burda, H.~Edwards, A.~Storkey, and O.~Klimov.
 T.~Champion, H.~Bowman, D.~Markovi\'{c}, and M.~Grze\'{s}.
 \newblock Reframing the expected free energy: Four formulations and a unification.
 \newblock \emph{Neural Computation}, 38(3):439--469, 2026.
+
+\bibitem[Cooper and Velasquez(2026)]{cooper2026iwai}
+P.~Cooper and A.~Velasquez.
+\newblock Expected free energy as belief-dependent utility for $\rho$-{POMDP}s.
+\newblock In \emph{Proceedings of the 7th International Workshop on Active Inference (IWAI 2026)}, Communications in Computer and Information Science. Springer, 2026.
+\newblock Accepted as poster and spotlight presentation; abridged version of the observe-then-commit equivalence results in this article.
 
 \bibitem[Da~Costa et~al.(2020)]{dacosta2020}
 L.~Da~Costa, T.~Parr, N.~Sajid, S.~Veselic, V.~Neacsu, and K.~Friston.
@@ -584,6 +899,11 @@ M.~Fehr, O.~Buffet, V.~Thomas, and J.~Dibangoye.
 \newblock $\rho$-{POMDP}s have {L}ipschitz-continuous $\epsilon$-optimal value functions.
 \newblock In \emph{Advances in Neural Information Processing Systems}, 2018.
 
+\bibitem[Foster et~al.(2021)]{foster2021dad}
+A.~Foster, D.~R. Ivanova, I.~Malik, and T.~Rainforth.
+\newblock Deep adaptive design: Amortizing sequential {B}ayesian experimental design.
+\newblock In \emph{International Conference on Machine Learning}, pages 3384--3395. PMLR, 2021.
+
 \bibitem[Fountas et~al.(2020)]{fountas2020}
 Z.~Fountas, N.~Sajid, P.~A.~M. Mediano, and K.~Friston.
 \newblock Deep active inference agents using {M}onte-{C}arlo methods.
@@ -609,15 +929,31 @@ M.~Ghavamzadeh, S.~Mannor, J.~Pineau, and A.~Tamar.
 \newblock {B}ayesian reinforcement learning: A survey.
 \newblock \emph{Foundations and Trends in Machine Learning}, 8(5--6):359--483, 2015.
 
+\bibitem[Gneiting and Raftery(2007)]{gneiting2007}
+T.~Gneiting and A.~E. Raftery.
+\newblock Strictly proper scoring rules, prediction, and estimation.
+\newblock \emph{Journal of the American Statistical Association}, 102(477):359--378, 2007.
+
 \bibitem[Guez et~al.(2013)]{guez2013}
 A.~Guez, D.~Silver, and P.~Dayan.
 \newblock Scalable and efficient {B}ayes-adaptive reinforcement learning based on {M}onte-{C}arlo tree search.
 \newblock \emph{Journal of Artificial Intelligence Research}, 48:841--883, 2013.
 
+\bibitem[Gundersen et~al.(2024)]{gundersen2024jair}
+O.~E. Gundersen, M.~Helmert, and H.~Hoos.
+\newblock Improving reproducibility in {AI} research: Four mechanisms adopted by {JAIR}.
+\newblock \emph{Journal of Artificial Intelligence Research}, 81:1019--1041, 2024.
+
 \bibitem[Haarnoja et~al.(2018)]{haarnoja2018}
 T.~Haarnoja, A.~Zhou, P.~Abbeel, and S.~Levine.
 \newblock Soft actor-critic: Off-policy maximum entropy deep reinforcement learning with a stochastic actor.
 \newblock In \emph{International Conference on Machine Learning}, 2018.
+
+\bibitem[Haarnoja et~al.(2018b)]{haarnoja2018sac}
+T.~Haarnoja, A.~Zhou, K.~Hartikainen, G.~Tucker, S.~Ha, J.~Tan, V.~Kumar, H.~Zhu, A.~Gupta, P.~Abbeel, and S.~Levine.
+\newblock Soft actor-critic algorithms and applications.
+\newblock arXiv preprint arXiv:1812.05905, 2018.
+\newblock The applications paper introducing automatic entropy-temperature tuning by dual gradient ascent; the original ICML paper above uses a fixed temperature.
 
 \bibitem[Heins et~al.(2022)]{heins2022}
 C.~Heins, B.~Millidge, D.~Demekas, B.~Klein, K.~Friston, I.~Couzin, and A.~Tschantz.
@@ -644,6 +980,11 @@ L.~P. Kaelbling, M.~L. Littman, and A.~R. Cassandra.
 \newblock Planning and acting in partially observable stochastic domains.
 \newblock \emph{Artificial Intelligence}, 101(1--2):99--134, 1998.
 
+\bibitem[Kim et~al.(2011)]{kim2011cpomdp}
+D.~Kim, J.~Lee, K.-E. Kim, and P.~Poupart.
+\newblock Point-based value iteration for constrained {POMDP}s.
+\newblock In \emph{International Joint Conference on Artificial Intelligence}, pages 1968--1974, 2011.
+
 \bibitem[Kurniawati et~al.(2008)]{kurniawati2008}
 H.~Kurniawati, D.~Hsu, and W.~S. Lee.
 \newblock {SARSOP}: Efficient point-based {POMDP} planning by approximating optimally reachable belief spaces.
@@ -663,6 +1004,11 @@ D.~V. Lindley.
 D.~Maisto, F.~Gregoretti, K.~J. Friston, and G.~Pezzulo.
 \newblock Active inference tree search in large {POMDP}s.
 \newblock \emph{Neurocomputing}, 623:129319, 2025.
+
+\bibitem[Mat\v{e}jka and McKay(2015)]{matejka2015}
+F.~Mat\v{e}jka and A.~McKay.
+\newblock Rational inattention to discrete choices: A new foundation for the multinomial logit model.
+\newblock \emph{American Economic Review}, 105(1):272--298, 2015.
 
 \bibitem[Millidge et~al.(2020)]{millidge2020}
 B.~Millidge, A.~Tschantz, A.~K. Seth, and C.~L. Buckley.
@@ -704,6 +1050,11 @@ K.~Rawlik, M.~Toussaint, and S.~Vijayakumar.
 \newblock On stochastic optimal control and reinforcement learning by approximate inference.
 \newblock In \emph{Robotics: Science and Systems}, 2012.
 
+\bibitem[Robbins and Monro(1951)]{robbins1951}
+H.~Robbins and S.~Monro.
+\newblock A stochastic approximation method.
+\newblock \emph{The Annals of Mathematical Statistics}, 22(3):400--407, 1951.
+
 \bibitem[Russo and Van~Roy(2014)]{russo2014}
 D.~Russo and B.~Van~Roy.
 \newblock Learning to optimize via information-directed sampling.
@@ -734,6 +1085,11 @@ D.~Silver and J.~Veness.
 \newblock {Monte-Carlo} planning in large {POMDP}s.
 \newblock In \emph{Advances in Neural Information Processing Systems}, 2010.
 
+\bibitem[Sims(2003)]{sims2003}
+C.~A. Sims.
+\newblock Implications of rational inattention.
+\newblock \emph{Journal of Monetary Economics}, 50(3):665--690, 2003.
+
 \bibitem[Smallwood and Sondik(1973)]{smallwood1973}
 R.~D. Smallwood and E.~J. Sondik.
 \newblock The optimal control of partially observable {M}arkov processes over a finite horizon.
@@ -758,6 +1114,11 @@ Z.~N. Sunberg and M.~J. Kochenderfer.
 E.~Todorov.
 \newblock Linearly-solvable {M}arkov decision problems.
 \newblock In \emph{Advances in Neural Information Processing Systems}, 2006.
+
+\bibitem[Towers et~al.(2024)]{towers2024}
+M.~Towers, A.~Kwiatkowski, J.~Terry, J.~U. Balis, G.~De~Cola, T.~Deleu, M.~Goul{\~a}o, A.~Kallinteris, M.~Krimmel, A.~KG, R.~Perez-Vicente, A.~Pierr{\'e}, S.~Schulhoff, J.~J. Tai, H.~Tan, and O.~G. Younis.
+\newblock Gymnasium: A standard interface for reinforcement learning environments.
+\newblock \emph{arXiv preprint arXiv:2407.17032}, 2024.
 
 \bibitem[Tschantz et~al.(2020)]{tschantz2020}
 A.~Tschantz, B.~Millidge, A.~K. Seth, and C.~L. Buckley.
@@ -1006,7 +1367,7 @@ Tileworld ($6{\times}6$) & 36 & 6 (scan) & 36 (collect) & 0.80 & $-1.0$ & $+10$ 
 \end{small}
 \end{table}
 
-All environments are implemented as OpenAI Gymnasium environments with standard \texttt{reset}/\texttt{step} API. The Diagnosis environment uses $K = \lceil \log_2 N \rceil$ binary tests, each providing noisy information about a different partition of the state space. The Navigation environment uses proximity-based warm/cold signals with accuracy depending on Manhattan distance to the hidden goal. The Tileworld projects the Diagnosis partition structure onto a 2D grid: $K = 2 \lceil \log_2 N \rceil$ scans partition the grid by bit-level splits of the row and column indices, enabling complete spatial disambiguation.
+All environments are implemented as Gymnasium \citep{towers2024} environments with the standard \texttt{reset}/\texttt{step} API. The Diagnosis environment uses $K = \lceil \log_2 N \rceil$ binary tests, each providing noisy information about a different partition of the state space. The Navigation environment uses proximity-based warm/cold signals with accuracy depending on Manhattan distance to the hidden goal. The Tileworld projects the Diagnosis partition structure onto a 2D grid: $K = 2 \lceil \log_2 N \rceil$ scans partition the grid by bit-level splits of the row and column indices, enabling complete spatial disambiguation.
 
 \section{Navigation results}
 \label{app:navigation}
@@ -1181,12 +1542,20 @@ The reward table shows that EFE vs.\ Planning is negligible on Tiger, Diagnosis,
 \section{Near-optimality across planning horizons}
 \label{app:nearopt_horizon}
 
+Proposition~\ref{prop:nearopt} bounds $w^*_{\mathrm{lo}}$ and $w^*_{\mathrm{hi}}$ for a single decision at $H{=}1$. To check whether the resulting near-optimality claim survives recursive multi-step planning, we generated 100 random two-state environments (reward asymmetry $\alpha \in [1,50]$, observation accuracy $p \in [0.55, 0.95]$, cost $\in [0.1, 5]$) and, for each environment and each $H \in \{1,2,3\}$, computed the reward-optimal weight $w^*$ by grid search and recorded whether $w{=}1$ falls within $\max(5\%, 0.5)$ of the best achievable reward. Figure~\ref{fig:nearopt_horizon} reports the fraction of environments where $w{=}1$ passes this test at each horizon, stratified by $\alpha$. The near-optimality rate rises from 11\% at $H{=}1$ to 21\% at $H{=}2$ and 38\% at $H{=}3$ (14\%~$\to$~19\%~$\to$~37\% restricted to $\alpha \geq 10$), so deeper planning widens the basin in which the untuned information-unit weight is reward-competitive rather than narrowing it. This is the same trend reported for Bandit in Section~\ref{sec:pareto}, where the $H{=}1$ analysis predicts only marginal sufficiency ($\alpha{=}1.1$) yet multi-step EFE performs well in practice.
+
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.7\linewidth]{figures/fig_nearopt_horizon.pdf}
 \caption{Fraction of randomly generated two-state environments where $w{=}1$ is near-optimal, as a function of planning horizon $H$, stratified by reward asymmetry $\alpha$. The near-optimality basin widens with horizon, confirming that multi-step planning amplifies the value of observation. 100 environments, $\alpha \in [1,50]$, $p \in [0.55, 0.95]$, cost $\in [0.1, 5]$.}
 \label{fig:nearopt_horizon}
 \end{figure}
+
+\paragraph{Horizon map: where myopic and deeper planning agree, and where they do not.} Figure~\ref{fig:nearopt_horizon} stratifies only by reward asymmetry $\alpha$. Table~\ref{tab:horizon-map} breaks the same 100 environments down by all three sampled regime axes and adds a direct per-environment comparison of the $H{=}1$ classification against $H{\geq}2$. Every regime axis shows the same qualitative pattern -- near-optimality is rarer at $H{=}1$ than at $H{=}3$ -- but the effect is sharpest for high-informativeness observations ($p \geq 0.85$: $3\% \to 60\%$) and comparatively flat for reward asymmetry alone at the low end ($\alpha < 3$: never near-optimal at $H{=}1$, non-monotone across $H$ on only 7 environments). The per-environment comparison shows the two horizons agree on only half the environments (50 of 100): 47 agree $w{=}1$ is never near-optimal, 3 agree it always is, but 42 environments where $H{=}1$ predicts $w{=}1$ is \emph{not} near-optimal turn out to be near-optimal at some deeper horizon (myopic underclaiming -- the safe direction, a missed opportunity rather than a risk), while 8 environments where $H{=}1$ predicts near-optimality are \emph{not} near-optimal at either $H{=}2$ or $H{=}3$ (myopic overclaiming -- the risky direction: a practitioner who validates $w{=}1$ with a cheap $H{=}1$ check could deploy it at a deeper horizon where it underperforms by more than the 5\% tolerance). This is reported as an empirical boundary map over one random family of two-state environments, not an adaptive-submodularity guarantee; we make no claim that the $H{=}1$ check is monotone or that its errors are bounded in general (the raw per-environment agreement data is in \texttt{results/results\_horizon\_map\_agreement.csv}, generated by \texttt{experiments/build\_horizon\_map.py}).
+
+% Table auto-generated by experiments/build_horizon_map.py from
+% results/results_nearopt_horizon.csv -- see that script to regenerate.
+\input{tables/horizon_map.tex}
 
 \section{Discount factor sensitivity}
 \label{app:discount}
@@ -1289,39 +1658,61 @@ Planning & 0.90 & $+0.10$ & 5.80 & 87.9\% & $-3.04$ \\
 \end{small}
 \end{table}
 
-\paragraph{Key findings.} On Tiger, both EFE and Planning agents are remarkably robust: success rates remain above 96.7\% even with $\pm 0.15$ mismatch. The degradation pattern is asymmetric: underestimating accuracy (negative mismatch) causes over-observation but preserves safety, while overestimating accuracy (positive mismatch) reduces observation count and lowers success rates. EFE's inherent epistemic drive provides a buffer against over-confident models: when the agent overestimates its sensor accuracy, the information gain term still encourages observation, partially compensating for the miscalibrated planning model.
+\paragraph{Key findings.} On Tiger, both EFE and Planning agents are remarkably robust: success rates remain above 96.7\% even with $\pm 0.15$ mismatch. The degradation pattern is asymmetric but not in observation count: negative mismatch (underestimating accuracy) leaves observation count essentially unchanged (4.27--4.28 vs.\ the well-calibrated 4.28) while preserving success, whereas positive mismatch (overestimating accuracy) sharply reduces observation count (to 2.66--2.68) and lowers success to 96.7--97.2\%. EFE's inherent epistemic drive provides a partial buffer against over-confident models: when the agent overestimates its sensor accuracy, the information gain term still encourages some observation rather than committing at the first opportunity.
 
-On Diagnosis, degradation is graceful but measurable. Overestimating accuracy (the agent believes tests are more informative than they truly are) leads to premature commitment with insufficient evidence. Underestimating accuracy causes excessive testing, reducing reward through observation costs but not drastically harming success rates. The EFE agent degrades gracefully across the mismatch range, suggesting that the intrinsic epistemic value provides a degree of robustness to model misspecification that pure reward-maximizing agents lack.
+On Diagnosis, degradation is graceful but measurable, and observation count moves in the same direction for both signs of mismatch: the well-calibrated agent tests most (9.78 observations at $\pm 0.00$), while both overestimating and underestimating accuracy reduce testing to roughly 5.8--5.9 observations. The mechanisms differ. Overestimating accuracy (the agent believes tests are more informative than they truly are) makes each test look more decisive than it is, so the agent commits prematurely on insufficient evidence, and success drops from 97.4\% to 88.8--89.0\%. Underestimating accuracy makes each test look less informative than it is, so the agent gives up on testing earlier than the well-calibrated policy would, trading some of the well-calibrated policy's test count for a similar-looking success rate (89.1\% at $-0.15$ mismatch) that is now driven by fewer, not more, observations. The EFE agent degrades gracefully across the mismatch range in both directions, but the direction of the count effect is the opposite of what "excessive testing" would predict; the intrinsic epistemic value biases the agent toward testing rather than away from it, but a misspecified accuracy estimate can still cause it to underestimate how much testing that bias should recommend.
 
 \paragraph{Implications for learned models.} These results suggest that EFE-based agents can tolerate moderate model errors without catastrophic failure. In practice, observation models learned from data will have estimation error. The graceful degradation observed here indicates that approximate models suffice for effective EFE-driven information gathering, provided the model does not systematically overestimate sensor informativeness.
 
 \section{Interleaved observe-act: RockSample (extended)}
 \label{app:rocksample}
 
-This appendix provides extended RockSample results beyond the main text (Section~\ref{sec:rocksample}), including POMCP baselines and per-instance detail. The environment and agents are described in Section~\ref{sec:rocksample}.
+This appendix provides extended RockSample results beyond the main text (Section~\ref{sec:rocksample}), including POMCP baselines, the full Planning+IG sweep ($w{=}5, 10$), and per-instance step and check counts. All four numbers below are read directly from the same CSVs as Table~\ref{tab:rocksample} (\texttt{results\_rocksample\_\{5x3,7x4,7x8,11x11\}.csv}), regenerated by \texttt{experiments/build\_rocksample\_tables.py}; no numbers in this appendix are computed separately from the main table.
 
+% Table auto-generated by experiments/build_rocksample_tables.py -- do not
+% hand-edit the numbers below without regenerating from that script.
 \begin{table}[h]
 \centering
-\caption{RockSample extended results (500 episodes each), including POMCP baseline and heuristic agents.}
+\caption{RockSample extended results: full agent roster including POMCP where run (RS[5,3], RS[7,4] only; not run on RS[7,8]/RS[11,11] at full budget due to compute cost) and Planning+IG at both $w{=}5$ and $w{=}10$. RS[5,3]/RS[7,4]: 500 episodes $\times$ 10 seeds. RS[7,8]/RS[11,11]: 100 episodes $\times$ 5 seeds.}
 \label{tab:rocksample_extended}
 \begin{small}
 \begin{tabular}{llccccc}
 \toprule
-Instance & Agent & Steps & Good & Bad & Reward \\
+Instance & Agent & Steps & Checks & Good & Bad & Reward \\
 \midrule
-\multirow{2}{*}{RS[5,3]} & Greedy & $12.0$ & $1.50$ & $1.50$ & $+4.03 \pm 17.24$ \\
-& \textbf{EFE} ($w{=}1$) & $19.4$ & $1.16$ & $\mathbf{0.33}$ & $\mathbf{+8.63 \pm 10.63}$ \\
+\multirow{6}{*}{RS[5,3]} & Greedy & $12.00$ & $0.00$ & $1.49$ & $1.51$ & $+3.71 \pm 0.25$ \\
+& POMCP (1000) & $51.00$ & $20.69$ & $1.22$ & $0.03$ & $-9.92 \pm 0.19$ \\
+& Planning (d=3) & $10.38$ & $3.71$ & $0.99$ & $0.04$ & $+14.28 \pm 0.11$ \\
+& Plan+IG $w{=}5$ (d=3) & $15.26$ & $4.79$ & $1.44$ & $0.03$ & $\mathbf{+16.47 \pm 0.12}$ \\
+& Plan+IG $w{=}10$ (d=3) & $17.12$ & $6.63$ & $1.48$ & $0.00$ & $+16.22 \pm 0.12$ \\
+& EFE $w{=}1$ (d=3) & $15.26$ & $4.79$ & $1.44$ & $0.03$ & $\mathbf{+16.47 \pm 0.12}$ \\
 \midrule
-\multirow{2}{*}{RS[7,4]} & Greedy & $21.0$ & $2.00$ & $2.00$ & $-0.58 \pm 20.12$ \\
-& \textbf{EFE} ($w{=}1$) & $29.3$ & $1.71$ & $\mathbf{0.43}$ & $\mathbf{+8.20 \pm 12.35}$ \\
+\multirow{6}{*}{RS[7,4]} & Greedy & $22.00$ & $0.00$ & $1.98$ & $2.02$ & $-1.38 \pm 0.29$ \\
+& POMCP (1000) & $85.97$ & $41.05$ & $1.58$ & $0.04$ & $-25.51 \pm 0.21$ \\
+& Planning (d=4) & $10.00$ & $2.00$ & $0.95$ & $0.05$ & $+13.97 \pm 0.11$ \\
+& Plan+IG $w{=}5$ (d=4) & $22.61$ & $7.70$ & $1.60$ & $0.01$ & $+14.69 \pm 0.12$ \\
+& Plan+IG $w{=}10$ (d=4) & $26.80$ & $8.93$ & $1.79$ & $0.01$ & $+14.41 \pm 0.12$ \\
+& EFE $w{=}1$ (d=4) & $16.81$ & $5.36$ & $1.44$ & $0.01$ & $\mathbf{+15.96 \pm 0.12}$ \\
+\midrule
+\multirow{5}{*}{RS[7,8]} & Greedy & $32.00$ & $0.00$ & $4.02$ & $3.98$ & $-5.60 \pm 1.23$ \\
+& Planning (d=3) & $4.51$ & $1.00$ & $0.48$ & $0.03$ & $+12.31 \pm 0.24$ \\
+& Plan+IG $w{=}5$ (d=3) & $28.48$ & $10.23$ & $2.67$ & $0.03$ & $+22.14 \pm 0.51$ \\
+& Plan+IG $w{=}10$ (d=3) & $45.30$ & $16.44$ & $3.61$ & $0.01$ & $\mathbf{+23.35 \pm 0.53}$ \\
+& EFE $w{=}1$ (d=3) & $22.89$ & $7.45$ & $2.20$ & $0.09$ & $+19.65 \pm 0.48$ \\
+\midrule
+\multirow{5}{*}{RS[11,11]} & Greedy & $57.00$ & $0.00$ & $5.48$ & $5.52$ & $-18.90 \pm 1.45$ \\
+& Planning (d=2) & $2.50$ & $1.00$ & $0.48$ & $0.03$ & $\mathbf{+13.23 \pm 0.24}$ \\
+& Plan+IG $w{=}5$ (d=2) & $3.09$ & $1.56$ & $0.50$ & $0.03$ & $+13.18 \pm 0.25$ \\
+& Plan+IG $w{=}10$ (d=2) & $3.09$ & $1.56$ & $0.50$ & $0.03$ & $+13.18 \pm 0.25$ \\
+& EFE $w{=}1$ (d=2) & $2.50$ & $1.00$ & $0.48$ & $0.03$ & $\mathbf{+13.23 \pm 0.24}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-The Greedy agent moves to rocks and samples them without checking quality first, incurring frequent bad-rock penalties (1.50 bad samples on RS[5,3], 2.00 on RS[7,4]). The EFE agent moves toward uncertain rocks, checks them to resolve quality, then samples only those confirmed good. The result is dramatically fewer bad samples ($0.33$ and $0.43$) and substantially higher reward ($+8.63$ vs.\ $+4.03$ on RS[5,3] and $+8.20$ vs.\ $-0.58$ on RS[7,4]).
+The Greedy agent moves to rocks and samples them without checking quality first, incurring frequent bad-rock penalties (1.51--3.98 across instances). EFE moves toward uncertain rocks, checks them to resolve quality, then samples selectively, so bad samples stay low (0.01--0.09) on RS[5,3], RS[7,4], and RS[7,8]; RS[11,11] is the exception where all informed agents (including Planning at $w{=}0$) converge to the same low-activity policy, discussed in Section~\ref{sec:rocksample}.
 
-We additionally include Planning+IG ($w{=}5$, $w{=}10$) baselines to address concerns about weak baselines. Planning+IG uses the same factored belief and decision structure as EFE but with an explicit, tunable weight. On RS[5,3], Planning+IG at $w{=}5$ and $w{=}10$ matches EFE ($w{=}1$) closely ($+8.64$ vs.\ $+8.63$ reward). On RS[7,4], EFE ($w{=}1$) substantially outperforms Planning+IG ($+8.20$ vs.\ $+5.57$), suggesting that the information-unit weight is better calibrated on the larger instance where information gathering requires more nuanced valuation.
+Planning+IG at $w{=}5$ and $w{=}10$ lets us check whether $w{=}1$ leaves performance on the table when a higher weight is allowed. On RS[5,3], $w{=}5$ already matches EFE ($w{=}1$) exactly, and $w{=}10$ is slightly worse ($+16.22$ vs.\ $+16.47$), so nothing is gained by tuning beyond $w{=}1$ here. On RS[7,4], EFE ($w{=}1$) outright beats both tuned weights ($+15.96$ vs.\ $+14.69$ and $+14.41$): more checking here (Plan+IG's higher check counts) does not translate into more good rocks sampled, so the untuned weight is better calibrated on this instance. On RS[7,8], the pattern reverses: $w{=}10$ (+23.35) $>$ $w{=}5$ (+22.14) $>$ EFE (+19.65), so with eight rocks and a wider observation-cost budget, more directed checking than $w{=}1$ provides genuinely helps. The honest summary is that $w{=}1$ is not uniformly best on RockSample; it wins on RS[7,4], ties on RS[5,3], and is dominated by a tuned weight on RS[7,8]. We report this rather than only the instances where $w{=}1$ wins.
 
 These results demonstrate that the EFE principle of valuing information gain alongside reward extends to interleaved settings despite the transition--observation coupling analyzed in Section~\ref{sec:methodology} (factored observation extension). The agent's behavior mirrors the observe-then-commit pattern: check (gather information), then sample/exit (commit), even though checking and acting are interleaved with movement.
 
@@ -1366,6 +1757,24 @@ Environment & Agent & Obs. & Success & Reward \\
 
 On multi-observation environments, IDS reaches near-ceiling success but at a reward cost similar to success-tuned Planning+IG, whereas EFE ($w{=}1$) retains higher mean reward. The adaptive information ratio does not eliminate the need for a stopping trade-off calibrated to the reward scale; under our shared reward convention, the fixed information-unit weight remains the stronger untuned default for expected reward.
 
+\section{Proper-scoring calibration}
+\label{app:calibration}
+
+The reward and success-rate metrics used throughout this paper score decisions, not beliefs. To check that the epistemic term is doing more than inflating a task-performance proxy, we separately score the terminal belief itself against the true hidden state using two proper scoring rules \citep{gneiting2007}: the log score ($\log b(s^\star)$, the same functional the epistemic value term is derived from) and the Brier score ($\sum_s (b(s) - \mathbb{1}[s=s^\star])^2$). A well-calibrated agent should not merely act correctly more often; its posterior should also assign more mass, in expectation, to the state that turns out to be true. Table~\ref{tab:calibration} reports mean $\pm$ SE over 5 seeds $\times$ 200 episodes for Planning (reward-only), EFE ($w{=}1$), and a reference near-optimal or IG-heavy policy on the three core OTC environments plus both Structural Inspection instances: the point-based near-optimal solver SARSOP \citep{kurniawati2008}, run on a self-built alpha-vector policy evaluated in-simulator, for the three OTC environments where its belief is small enough to solve exactly, and Planning+IG at the Stage G atlas's higher canonical budget for Structural Inspection, whose state space exceeds what our SARSOP build solves in reasonable time.
+
+\input{tables/calibration_table.tex}
+
+Planning (reward-only) is calibration-dominated by every epistemic-aware agent on every instance except Tiger, where its single observation action already suffices and all three agents converge to the same policy and hence the same terminal belief. On Diagnosis, Bandit, and both Inspection instances, EFE's terminal belief scores substantially better under both rules than reward-only Planning's, and on the three OTC environments EFE ($w{=}1$) is statistically indistinguishable from SARSOP's near-optimal calibration (overlapping SE bands). This is evidence that the epistemic term produces genuinely better-informed terminal beliefs, not only better terminal actions; the two need not coincide, since an agent can commit correctly from a confidently wrong belief on environments with few reachable outcomes.
+
+\section{Per-test value-of-information audit trail}
+\label{app:audit}
+
+Section~\ref{sec:discussion} argues that the epistemic value term supports interpretable decisions, but nothing in the main results exposes that decomposition directly. We add an optional, backward-compatible audit record at the shared Planning+IG evaluation boundary used by \texttt{PlanningInfoGainAgent}, \texttt{EFEAgent} (at $w{=}1$), and \texttt{InspectionTreeSearchAgent}: for every candidate action considered at the root of the decision, the record stores the sensing cost, the expected information gain in bits, the weighted information gain $w \cdot \mathrm{IG}$, the expected task value, and the resulting total score, plus which action was selected. Enabling this record does not change any action selection; it is a read-only projection of quantities the agent already computes, and unit tests confirm that the recorded total score always ranks the chosen action first and that its components sum correctly.
+
+Table~\ref{tab:audit-case-study} shows one representative decision point from a Structural Inspection-N8 episode ($w{=}5$) where the ranking by total score disagrees with the ranking by raw information gain: \texttt{test1} carries almost 5$\times$ the information gain of \texttt{test0}, yet the agent selects \texttt{test0} because its higher sensing cost is not offset by a compensating gain in expected task value. This is the audit trail's purpose: it lets a practitioner check, for any single decision, whether an unexpected action was chosen for an information-theoretic reason or a task-value reason, rather than only reporting an aggregate reward or success rate. We keep this as an interpretability appendix artifact; it does not change any reported headline result.
+
+\input{tables/audit_case_study.tex}
+
 \section{Reward-rescaling invariance}
 \label{app:reward_scaling}
 
@@ -1401,7 +1810,7 @@ Bandit & $10.0$ & $20.0$ & $2.0$ \\
 \section{POMCP baseline comparison}
 \label{app:pomcp}
 
-We compare against POMCP \citep{silver2010}, a standard online POMDP solver that handles exploration through Monte Carlo tree search with UCB1 action selection. This addresses whether EFE's explicit information gain valuation provides benefit over the implicit exploration in POMCP's tree search. Our implementation uses particle-based belief representation at each tree node, adapted to the observe-then-commit action structure. Crucially, our POMCP rollout policy is semi-informed: observation actions are selected uniformly at random, but the rollout terminates (stochastically, with 30\% probability per step) with a belief-optimal commit, i.e., the commit action maximizing expected reward under the Bayesian-updated rollout belief. This is strictly stronger than a fully random rollout, which would also randomize over commit actions. The remaining gap between POMCP and EFE therefore reflects the value of observation selection: EFE chooses which test to run based on information gain, while POMCP samples tests uniformly. We sweep POMCP simulation budgets across $\{500, 1000, 2000, 5000\}$ and report wall-clock timings for compute-matched analysis.
+We compare against POMCP \citep{silver2010}, a standard online POMDP solver that handles exploration through Monte Carlo tree search with UCB1 action selection. This addresses whether EFE's explicit information gain valuation provides benefit over the implicit exploration in POMCP's tree search. Our implementation uses particle-based belief representation at each tree node, adapted to the observe-then-commit action structure. Crucially, our POMCP rollout policy is semi-informed: observation actions are selected uniformly at random, but the rollout terminates (stochastically, with 30\% probability per step) with a belief-optimal commit, i.e., the commit action maximizing expected reward under the Bayesian-updated rollout belief. This is strictly stronger than a fully random rollout, which would also randomize over commit actions. The remaining gap between POMCP and EFE therefore reflects the value of observation selection: EFE chooses which test to run based on information gain, while POMCP samples tests uniformly. We sweep POMCP simulation budgets across $\{500, 1000, 2000, 5000\}$ and report wall-clock timings for compute-matched analysis. Tree-node action selection uses UCB1 with exploration constant $10.0$ (\texttt{rho\_aif/agents/pomcp.py}), fixed across all environments; this was not tuned per environment, and because reward scales differ across our benchmarks (Section~\ref{sec:experiments}), the same exploration constant implies a different effective exploration--exploitation balance on each one, a caveat symmetric to the reward-scale sensitivity we report for $w$ (Section~\ref{sec:pareto}).
 
 \begin{table}[h]
 \centering
@@ -1438,5 +1847,77 @@ Environment & Agent & Obs. & Success & Reward \\
 
 \paragraph{MCTS-EFE.} To disentangle EFE's information valuation from the planning mechanism, we implement MCTS-EFE: MCTS with EFE as the leaf heuristic rather than random rollouts. On Tiger at $H{=}10$, MCTS-EFE with 500 simulations achieves 97.2\% success (7.2s per 200 episodes), compared to POMCP's 89.7\% at matched budget (1.7s) and exact EFE's 99.5\% at $H{=}6$ (11.8s). This confirms that EFE provides a superior leaf evaluation function: the same MCTS framework with EFE rollouts substantially outperforms random rollouts.
 
+\section{Budgeted $\rho$-POMDP supplementary details}
+\label{app:budget_supp}
+
+\subsection{SARSOP build and export details}
+\label{app:sarsop_build}
+
+Section~\ref{sec:sarsop}'s reference solver is the original APPL C++ toolkit (\texttt{pomdpsol}), built from source by \url{tools/build_sarsop.sh} with four documented patches required for a modern clang toolchain on Apple Silicon: dropping unsupported \texttt{-msse2} and \texttt{-mfpmath=sse} flags, replacing raw-pointer \texttt{SparseCol} iterators (modern libc++ cannot construct \texttt{std::vector::const\_iterator} from a raw pointer), converting chained comparison assertions to conjunctions, and suppressing implicit-function-declaration errors in the legacy Cassandra parser. The resulting binary is not committed; the patch script is. \url{experiments/run_sarsop_baseline.py} exports any discrete observe-then-commit benchmark generically from the same hidden-state, action-layout, and observation-model definitions the agents already use (an absorbing done state, discount $\gamma{=}0.999$), solves to precision $10^{-3}$, parses the resulting alpha-vector policy from its XML output, and evaluates it through the same episode runner used for every other agent so that mechanics and metrics are shared exactly. Four unit tests (\url{tests/test_sarsop_export.py}) cover the exporter, the policy parser, and the alpha-vector argmax agent without requiring the compiled binary, so the export pipeline is checked even in environments where the solver is unavailable.
+
+\subsection{Distractor-diagnosis environment: factorization guarantee}
+\label{app:distractor}
+
+Section~\ref{sec:distractor}'s \texttt{DistractorDiagnosisEnv} joint state space is the product of a $4$-way condition and a binary nuisance factor. Every observation model in the environment (condition tests, the distractor test, and the terminal commit reward) is constructed to depend on exactly one of the two factors, so for a belief that itself factors as a product of independent condition and nuisance marginals, observing the distractor test updates the nuisance marginal and leaves the condition marginal exactly unchanged, and symmetrically for condition tests and the nuisance marginal. This is verified by $13$ unit tests (\url{tests/test_distractor_diagnosis.py}), including a direct check that the condition-marginal KL divergence before and after a distractor observation is exactly zero (up to floating-point tolerance) when the prior belief is factored, and a symmetric check for condition tests against the nuisance marginal. The guarantee is stated for factored beliefs specifically; a belief with residual condition--nuisance correlation (which does not arise under this environment's independent generative process, but could under model misspecification) is outside the scope of the proof.
+
+\subsection{The $w^*$ atlas}
+\label{app:w_atlas}
+
+Table~\ref{tab:w-atlas} aggregates the usage-curve range, implicit EFE budget $B_{\mathrm{EFE}} = U(w{=}1)$, and two canonical-budget crossing brackets (Definition~\ref{def:pi3}) for every benchmark instance appearing in this paper, generated by \url{experiments/run_w_atlas.py} from the saved usage-curve CSVs of Sections~\ref{sec:results} and~\ref{sec:budget_experiments}. Brackets are set-valued by construction; the table implies no closed-form relationship between $B_{\mathrm{EFE}}$ and environment parameters such as reward scale, state count, or horizon, and none should be inferred from it.
+
+% Table auto-generated by experiments/run_w_atlas.py from
+% results/results_w_atlas.csv -- see that script to regenerate.
+\input{tables/w_atlas.tex}
+
+\section{JAIR reproducibility checklist}
+\label{app:repro}
+
+This appendix answers the JAIR reproducibility checklist \citep{gundersen2024jair} for the submission version of this article, as required for review. It is not part of the accepted version.
+
+\subsection*{All articles}
+\begin{enumerate}
+\item All claims investigated in this work are clearly stated. \textbf{Yes.}
+\item Clear explanations are given how the work reported substantiates the claims. \textbf{Yes.} Every proposition is accompanied by a proof or proof sketch (Section~\ref{sec:methodology}, Section~\ref{sec:budget}, Appendix~\ref{app:proof}), and every empirical claim is backed by a table or figure generated directly from committed result files.
+\item Limitations or technical assumptions are stated clearly and explicitly. \textbf{Yes.} Section~\ref{sec:discussion} states scope limitations (observe-then-commit vs.\ factored observation coverage, the destructive-sensing boundary of Example~\ref{ex:destructive}, the single-reward-convention conditioning of every $w{=}1$ claim) and the conclusion restates them.
+\item Conceptual outlines and/or pseudo-code descriptions of the AI methods introduced in this work are provided, and important implementation details are discussed. \textbf{Yes.} The recursive EFE agent (Equation~\ref{eq:efe_recursive}), the usage-curve procedure (Section~\ref{sec:budget}), and the online dual controller update are given in closed form in the main text, with build and export details for the SARSOP baseline in Appendix~\ref{app:sarsop_build}.
+\item Motivation is provided for all design choices, including algorithms, implementation choices, parameters, data sets and experimental protocols beyond metrics. \textbf{Yes.} Section~\ref{sec:methodology} motivates the observe-then-commit restriction, and Section~\ref{sec:budget_positioning} positions every budgeted-formulation design choice against prior art.
+\end{enumerate}
+
+\subsection*{Articles containing theoretical contributions}
+Does this paper make theoretical contributions? \textbf{Yes.}
+\begin{enumerate}
+\item All assumptions and restrictions are stated clearly and formally. \textbf{Yes.} See Definition~\ref{def:factored} and the stated preconditions of Propositions~\ref{prop:equivalence}--\ref{prop:pi5}.
+\item All novel claims are stated formally (e.g., in theorem statements). \textbf{Yes.} Propositions~\ref{prop:equivalence}, \ref{prop:nearopt}, \ref{prop:factored}, \ref{prop:pi1}, \ref{prop:pi2}, \ref{prop:pi5}, Definition~\ref{def:pi3}, and Corollary~\ref{cor:pi4}.
+\item Proofs of all non-trivial claims are provided in sufficient detail to permit verification by readers with a reasonable degree of expertise. \textbf{Yes.} Full proof in Appendix~\ref{app:proof} for Proposition~\ref{prop:equivalence}; proof sketches with the complete case analysis inline for the remaining propositions, sufficient for a reader to reconstruct the full derivation.
+\item Complex formalism, such as definitions or proofs, is motivated and explained clearly. \textbf{Yes.}
+\item The use of mathematical notation and formalism serves the purpose of enhancing clarity and precision; gratuitous use of mathematical formalism is avoided. \textbf{Yes.}
+\item Appropriate citations are given for all non-trivial theoretical tools and techniques. \textbf{Yes.} Log scoring \citep{bernardo1979}, the Robbins--Monro recursion \citep{robbins1951} and its almost-sure convergence refinement \citep{blum1954}, and the sophisticated-inference Bellman-optimality result \citep{dacosta2020b} that the recursive agent is built on.
+\end{enumerate}
+
+\subsection*{Articles reporting on computational experiments}
+Does this paper include computational experiments? \textbf{Yes.}
+\begin{enumerate}
+\item All source code required for conducting experiments is included in an online appendix or will be made publicly available upon publication of the paper. \textbf{Yes.} \url{https://github.com/PatrickAllenCooper/rho_aif}, also distributed on PyPI as \texttt{rho-aif}.
+\item The source code comes with a license that allows free usage for reproducibility purposes. \textbf{Yes.} MIT License.
+\item The source code comes with a license that allows free usage for research purposes in general. \textbf{Yes.} MIT License.
+\item Raw, unaggregated data from all experiments is included in an online appendix or will be made publicly available upon publication of the paper. \textbf{Yes.} Per-seed CSVs for every reported table and figure are committed under \texttt{results/} in the repository above.
+\item The unaggregated data comes with a license that allows free usage for reproducibility purposes. \textbf{Yes.} Covered by the repository's MIT License.
+\item The unaggregated data comes with a license that allows free usage for research purposes in general. \textbf{Yes.}
+\item If an algorithm depends on randomness, then the method used for generating random numbers and for setting seeds is described in a way sufficient to allow replication of results. \textbf{Yes.} Every reported result uses the canonical seed set $\{42, 123, 456, 789, 1024\}$ (documented in the repository README and the \texttt{rho\_aif.benchmark} module), with per-seed results reported alongside aggregates wherever variation matters (e.g., the multi-seed dual-control study of Section~\ref{sec:dual_multiseed}).
+\item The execution environment for experiments is described, including GPU/CPU makes and models; amount of memory; make and version of operating system; names and versions of relevant software libraries and frameworks. \textbf{Partially.} All experiments are CPU-only, closed-form or Monte Carlo tree search computations with no GPU dependency and modest memory footprint (the largest benchmark, Structural Inspection, has $65{,}536$ states and runs in minutes on a laptop-class CPU); exact make/model of the development machine is not pinned in the manuscript, but the pinned dependency versions in \texttt{pyproject.toml} (Python $\geq 3.9$; NumPy, SciPy, Gymnasium, PyMDP, pandas, matplotlib, seaborn at stated minimum versions) fully determine the numerical execution environment.
+\item The evaluation metrics used in experiments are clearly explained and their choice is explicitly motivated. \textbf{Yes.} Success rate, mean reward, mean observation count, and usage (sensing spend) are defined at first use and motivated by the observe-then-commit setting's cost structure (Section~\ref{sec:methodology}).
+\item The number of algorithm runs used to compute each result is reported. \textbf{Yes.} Five seeds per condition unless stated otherwise (e.g., ten seeds for the multi-seed dual-control study of Section~\ref{sec:dual_multiseed}); episode counts are reported per benchmark in the environment specifications (Appendix~\ref{app:envs}).
+\item Reported results have not been ``cherry-picked'' by silently ignoring unsuccessful or unsatisfactory experiments. \textbf{Yes.} Section~\ref{sec:discussion} and the conclusion explicitly report where the proposed method does not help (Section~\ref{sec:distractor}'s distractor robustness result, Example~\ref{ex:destructive}'s destructive-sensing failure mode, and cases where tuned Planning+IG exceeds EFE on particular metrics).
+\item Analysis of results goes beyond single-dimensional summaries of performance to include measures of variation, confidence, or other distributional information. \textbf{Yes.} Standard errors and confidence intervals are reported throughout Sections~\ref{sec:results} and~\ref{sec:budget_experiments} (e.g., the disjoint-CI comparison in Section~\ref{sec:dual_multiseed}, the mean $\pm$ SE usage-curve ranges of Appendix~\ref{app:w_atlas}).
+\item All (hyper-)parameter settings for the algorithms/methods used in experiments have been reported, along with the rationale or method for determining them. \textbf{Yes.} Planning horizons, discount factors, and the tuned Planning+IG weight search protocol are reported per environment (Appendix~\ref{app:envs}), with discount-factor sensitivity swept explicitly in Appendix~\ref{app:discount}.
+\item The number and range of (hyper-)parameter settings explored prior to conducting final experiments have been indicated, along with the effort spent on (hyper-)parameter optimisation. \textbf{Yes.} The Pareto sweep over $w$ (Section~\ref{sec:pareto}) and the horizon sweep (Appendix~\ref{app:nearopt_horizon}) report the full grid searched, not only the selected operating point.
+\item Appropriately chosen statistical hypothesis tests are used to establish statistical significance in the presence of noise effects. \textbf{Yes.} Confidence intervals and, where applicable, seed-level $t$-tests (\texttt{tests/test\_stats\_seed.py}) are used rather than point-estimate comparisons alone; the SARSOP comparison of Section~\ref{sec:sarsop} is stated as statistical indistinguishability under overlapping confidence intervals, not a claim of exact equality.
+\end{enumerate}
+
+\subsection*{Articles using data sets}
+Does this work rely on one or more data sets? \textbf{No.} All environments (Tiger, Diagnosis, Bandit, Tileworld, RockSample, Structural Inspection, and the testbed variants) are simulators defined generatively in code (Appendix~\ref{app:envs}), not fixed empirical data sets; RockSample follows the standard generator of \citet{smith2004}.
+
+\subsection*{Explanations}
+The one partial answer above (execution-environment hardware) reflects that this work's computational claims do not depend on hardware specifics: every reported number is either an exact closed-form value or a Monte Carlo estimate with reported variation, reproducible on any machine satisfying the pinned software versions.
 
 \end{document}

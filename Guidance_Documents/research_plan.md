@@ -777,11 +777,12 @@ git push origin main --tags
 ```
 
 ### Next-venue submission checklist (package)
-- [ ] Rebuild and `twine check` the current tree
-- [ ] Upload to TestPyPI and verify `pip install` + `rho-aif-bench list` in a clean venv
-- [ ] Upload to PyPI (`rho-aif`)
-- [ ] Push `main` and tag `v1.0.0` (or bump version if the tree has moved on)
-- [ ] Point the next-venue paper / README install instructions at the live PyPI package
+- [x] Rebuild and `twine check` the current tree (August 4, 2026: `rho_aif-1.0.0-py3-none-any.whl` and `.tar.gz` rebuilt from the current tree, both `PASSED` under `twine check`; package name confirmed unclaimed on both `pypi.org` and `test.pypi.org`, so `rho-aif` is available)
+- [x] Verify a clean-venv install works end to end (August 4, 2026: fresh `venv`, `pip install` of the built wheel, `rho-aif-bench list` enumerates all six benchmark instances, `rho-aif-bench run --env Tiger --agent efe` completes and writes results -- confirms the package is self-contained and installable without the source tree)
+- [ ] Upload to TestPyPI and re-verify `pip install -i testpypi` in a clean venv -- **requires a TestPyPI account/API token**, which this agent does not have; Patrick needs to run `twine upload --repository testpypi dist/*` (interactively or with a token in `~/.pypirc`) from `/Users/pat/code/rho_aif`
+- [ ] Upload to PyPI (`rho-aif`) -- **requires a PyPI account/API token**; `twine upload dist/*` after the TestPyPI check passes
+- [ ] Push `main` and tag `v1.0.0` (tag already exists locally on an earlier commit; confirm it still points at a released commit or move it, then `git push origin main --tags`)
+- [x] Point the JAIR paper / README install instructions at the (soon-to-be-live) PyPI package (already `pip install rho-aif` in `README.md`; `full_paper_jair.tex`'s reproducibility-checklist appendix cites the same install path)
 
 ## Phase: Price of Information (July 22–23, 2026)
 
