@@ -1,17 +1,24 @@
-# Poster Content Reference: Minds and Machines Manuscript
+# Poster Content Reference: Integrated Full-Length Manuscript
 
 Status: comprehensive raw material for poster design. This document is intentionally
 over-inclusive; editorial selection, layout, and trimming happen later. Everything
-below is sourced from `paper/full_paper.tex` (the accepted, integrated manuscript)
+below is sourced from `paper/full_paper.tex` (the integrated full-length manuscript)
 unless otherwise noted, cross-checked line-by-line against that source on 2026-08-03.
 Numbers are copied verbatim from the manuscript tables/prose, not recomputed here;
 if the manuscript is revised, re-diff this document against it before using it for
 the poster.
 
+Publication status correction (2026-08-04): an earlier version of this document
+stated the full manuscript was accepted at Minds and Machines. That was incorrect.
+The only acceptance is the abridged 12-page LNCS version at IWAI 2026 (Poster +
+Spotlight, Springer CCIS proceedings). The full manuscript — including everything
+in the budgeted ρ-POMDP / price-of-information half — is unpublished and is the
+candidate for the next venue submission (Stage I of `full_paper_plan.md`).
+
 Note on scope: `paper/full_paper.tex` is the long-form integrated document (theory +
-budgeted reformulation + both experiment batteries). If the Minds and Machines
-production version differs from this source file in any figure numbers, table
-numbers, or wording, treat the journal proofs as authoritative and reconcile this
+budgeted reformulation + both experiment batteries). If a future accepted/production
+version differs from this source file in any figure numbers, table numbers, or
+wording, treat the final published version as authoritative and reconcile this
 document before the poster is finalized.
 
 Note on data: Sections 19 and 20 embed every figure in `figures/` (rasterized to
@@ -37,7 +44,8 @@ read it before finalizing the poster's physical dimensions and layout.
 - **Authors:** Patrick Cooper and Alvaro Velasquez
 - **Affiliation:** Department of Computer Science, University of Colorado Boulder,
   Boulder, CO, USA
-- **Venue:** Minds and Machines (accepted)
+- **Venue:** full manuscript unpublished (venue gate open, Stage I); abridged
+  version accepted at IWAI 2026 (Poster + Spotlight, Springer CCIS proceedings)
 - **Code and data:** `https://github.com/PatrickAllenCooper/rho_aif`
 - **Keywords (from manuscript):** Active inference, Expected free energy, ρ-POMDPs,
   Epistemic value, Belief-dependent utility, Partial observability, Information gain
@@ -905,10 +913,9 @@ figures used in printed poster copy):
   compute-matched analysis, horizon map) should be re-cross-referenced against
   `paper/full_paper.tex` directly if used verbatim, since this document
   paraphrases some appendix prose.
-- If the Minds and Machines production/proof version renumbers propositions,
-  figures, or tables relative to `paper/full_paper.tex`, update all
-  proposition/figure/table labels in this document to match before designing the
-  poster.
+- If a future accepted/production version renumbers propositions, figures, or
+  tables relative to `paper/full_paper.tex`, update all proposition/figure/table
+  labels in this document to match before designing the poster.
 
 ---
 
@@ -4259,10 +4266,10 @@ cost>=3,43,0.18604651162790697,0.2558139534883721,0.37209302325581395
 ## 21. IWAI 2026 conference: requirements and formatting details (where this poster is presented)
 
 This section documents the venue this poster is actually for. The manuscript in
-Sections 1-20 is the accepted *Minds and Machines* journal article; the poster
+Sections 1-20 is the unpublished integrated full-length draft; the poster
 itself is being presented at the **7th International Workshop on Active
-Inference (IWAI 2026)**, where an abridged 12-page LNCS version of this same
-work (`paper/paper_iwai2026_abridged.tex`) was separately submitted and accepted.
+Inference (IWAI 2026)**, where an abridged 12-page LNCS version of this work
+(`paper/paper_iwai2026_abridged.tex`) was submitted and accepted.
 All details below were fetched and cross-checked directly from the IWAI 2026 CFP
 site and the most recent prior edition's site on 2026-08-03; anything not yet
 published for 2026 is flagged explicitly rather than assumed.
@@ -4407,18 +4414,21 @@ below as "carried forward, not yet reconfirmed for 2026"**:
   session day (Oct 14-16), plan to arrive early that day to claim a station
   (first-come, first-served) and plan poster removal at the end of that day's
   session, not at the end of the workshop.
-- **Consistency check**: because this is the *same* underlying science as the
-  already-accepted, already-reviewed IWAI full paper, any numbers or claims put
+- **Consistency check**: because the poster's core science overlaps the
+  already-accepted, already-reviewed IWAI paper, any numbers or claims put
   on the poster should be checked against `paper/paper_iwai2026_abridged.tex`
   (the actual accepted-at-IWAI text) in addition to `paper/full_paper.tex` (the
-  Minds and Machines text used to build Sections 1-20 of this document) —
+  full-length manuscript used to build Sections 1-20 of this document) —
   the two are consistent on shared claims but the IWAI version is shorter and
   omits the budgeted-rho-POMDP / price-of-information material entirely (that
-  extension postdates the IWAI submission). Decide explicitly whether the poster
-  should include the budget/shadow-price material (present in the journal
-  paper, absent from the accepted IWAI paper) or restrict itself to what IWAI
-  reviewers actually saw and accepted; either is defensible, but the choice
-  should be deliberate, not accidental.
+  extension postdates the IWAI submission and is unpublished). Decide explicitly
+  whether the poster should include the budget/shadow-price material (present
+  in the full manuscript, absent from the accepted IWAI paper) or restrict
+  itself to what IWAI reviewers actually saw and accepted; either is defensible,
+  but the choice should be deliberate, not accidental. Note that presenting the
+  unpublished extension on a public poster is a disclosure decision too: it is
+  compatible with venues that permit preprints/prior workshop exposure, but
+  make the venue choice (Stage I) before finalizing what the poster reveals.
 
 ### 21.7 Sources
 
