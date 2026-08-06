@@ -441,37 +441,37 @@ Two additional environments, a two-state testbed (Appendix~\ref{app:testbed}) an
 
 \begin{table}[ht]
 \centering
-\caption{Results across three core environments (5{,}000 total episodes: 1{,}000 per seed $\times$ 5 seeds). $w^*$: per-environment tuned weight. Reward shown as mean $\pm$ SE. Full agent set in Appendix~\ref{app:full_tables}. Effect sizes on reward (Cohen's $d$) are in Appendix~\ref{app:stats}.}
+\caption{Results across three core environments (5{,}000 total episodes: 1{,}000 per seed $\times$ 5 seeds, $\{42,123,456,789,1024\}$). $w^*$: per-environment tuned weight. Reward shown as mean $\pm$ seed-level SE (SE of the 5 per-seed means, the honest error bar for the number of independent replications actually run; the pooled episode-level SE, which treats all 5{,}000 episodes as independent, is smaller and reported alongside it in Appendix~\ref{app:full_tables}). Full agent set in Appendix~\ref{app:full_tables}. Effect sizes on reward (Cohen's $d$), including seed-level $t$-tests, are in Appendix~\ref{app:stats}.}
 \label{tab:main}
 \begin{small}
 \begin{tabular}{llccc}
 \toprule
 Environment & Agent & Obs. & Success & Reward \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{Tiger\\[-1pt]{\scriptsize $H{=}6,\;w^*{=}20$}}} & Myopic & $1.00$ & 84.6\% & $-7.98 \pm 0.56$ \\
-& Planning & $4.28$ & 99.5\% & $+5.15 \pm 0.12$ \\
-& Planning+IG & $4.20$ & 99.4\% & $+5.19 \pm 0.12$ \\
-& \textbf{EFE} & $\mathbf{4.22}$ & $\mathbf{99.5\%}$ & $\mathbf{+5.23 \pm 0.11}$ \\
+\multirow{4}{*}{\shortstack[l]{Tiger\\[-1pt]{\scriptsize $H{=}6,\;w^*{=}50$}}} & Myopic & $1.00$ & 85.0\% & $-7.52 \pm 0.25$ \\
+& Planning & $4.27$ & 99.4\% & $+5.11 \pm 0.18$ \\
+& Planning+IG & $5.64$ & 99.9\% & $+4.27 \pm 0.06$ \\
+& \textbf{EFE} & $\mathbf{4.27}$ & $\mathbf{99.4\%}$ & $\mathbf{+5.07 \pm 0.15}$ \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{Diagnosis\\[-1pt]{\scriptsize $H{=}3,\;w^*{=}100$}}} & Myopic & $2.00$ & 64.2\% & $-13.48 \pm 0.41$ \\
-& Planning & $5.91$ & 89.2\% & $-2.37 \pm 0.26$ \\
-& Planning+IG & $13.21$ & 99.3\% & $-3.63 \pm 0.10$ \\
-& \textbf{EFE} & $\mathbf{9.70}$ & $\mathbf{97.0\%}$ & $\mathbf{-1.52 \pm 0.16}$ \\
+\multirow{4}{*}{\shortstack[l]{Diagnosis\\[-1pt]{\scriptsize $H{=}3,\;w^*{=}100$}}} & Myopic & $2.00$ & 64.0\% & $-13.60 \pm 0.17$ \\
+& Planning & $5.91$ & 87.6\% & $-3.35 \pm 0.22$ \\
+& Planning+IG & $13.22$ & 99.2\% & $-3.70 \pm 0.08$ \\
+& \textbf{EFE} & $\mathbf{9.60}$ & $\mathbf{96.8\%}$ & $\mathbf{-1.51 \pm 0.15}$ \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{Bandit\\[-1pt]{\scriptsize $H{=}2,\;w^*{=}100$}}} & Myopic & $2.04$ & 61.7\% & $+5.53 \pm 0.06$ \\
-& Planning & $3.24$ & 69.6\% & $+5.65 \pm 0.06$ \\
-& Planning+IG & $12.41$ & 99.8\% & $+3.78 \pm 0.04$ \\
-& \textbf{EFE} & $\mathbf{5.16}$ & $\mathbf{87.3\%}$ & $\mathbf{+6.27 \pm 0.05}$ \\
+\multirow{4}{*}{\shortstack[l]{Bandit\\[-1pt]{\scriptsize $H{=}2,\;w^*{=}50$}}} & Myopic & $2.08$ & 62.1\% & $+5.55 \pm 0.10$ \\
+& Planning & $3.28$ & 69.0\% & $+5.57 \pm 0.05$ \\
+& Planning+IG & $11.60$ & 99.7\% & $+4.17 \pm 0.03$ \\
+& \textbf{EFE} & $\mathbf{5.10}$ & $\mathbf{87.2\%}$ & $\mathbf{+6.29 \pm 0.07}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-On Tiger (single observation action), all multi-step agents achieve roughly $99.5\%$ success, and EFE matches tuned alternatives without weight selection. The Epistemic-only ablation commits at chance ($50.1\%$ on Tiger, $25.1\%$ on Bandit, $0.0\%$ on Tileworld $6{\times}6$, Appendix~\ref{app:full_tables}). Pure information gain without reward alignment produces catastrophic exploration, so the pragmatic term is essential.
+On Tiger (single observation action), all multi-step agents achieve roughly $99.4\%$ success, and EFE matches tuned alternatives without weight selection. The Epistemic-only ablation never learns to commit: it succeeds at chance on Tiger ($49.5\%$) and Bandit ($25.7\%$), never within the 200-step cap on Diagnosis, and never on Tileworld $6{\times}6$ ($0.0\%$, Appendix~\ref{app:full_tables}). Pure information gain without reward alignment produces catastrophic exploration, so the pragmatic term is essential.
 
-On Diagnosis and Bandit, EFE Pareto-dominates same-horizon Planning: substantially higher success with comparable or better reward, without weight search. On Diagnosis, EFE outperforms Planning in success rate ($97.0\%$ vs.\ $89.2\%$, $+7.8$ pp) while achieving better reward ($-1.52$ vs.\ $-2.37$). On Bandit, EFE achieves both higher success ($87.3\%$ vs.\ $69.6\%$, $+17.7$ pp) and higher reward ($+6.27$ vs.\ $+5.65$). Tuned Planning+IG ($w^*{=}100$, success-maximizing on the tuning grid) reaches near-ceiling success ($99.3\%$ on Diagnosis, $99.8\%$ on Bandit) but at substantial reward cost from over-exploration: 13.21 tests on Diagnosis ($-3.63$ reward) and 12.41 inspections on Bandit ($+3.78$ reward). Relative to tuned Planning+IG as well as $w{=}0$ Planning, EFE is the competitive untuned trade-off rather than uniquely best on every metric. Bootstrap 95\% CIs (10{,}000 resamples over 5{,}000 episodes; Appendix~\ref{app:stats}) confirm non-overlapping reward intervals between EFE and Planning on Bandit. Viewed in the success--reward plane (Figure~\ref{fig:pareto}), the EFE agent sits at the Pareto knee on every environment, while Planning under-explores and success-tuned Planning+IG over-explores.
+On Diagnosis and Bandit, EFE Pareto-dominates same-horizon Planning: substantially higher success with comparable or better reward, without weight search. On Diagnosis, EFE outperforms Planning in success rate ($96.8\%$ vs.\ $87.6\%$, $+9.2$ pp) while achieving better reward ($-1.51$ vs.\ $-3.35$). On Bandit, EFE achieves both higher success ($87.2\%$ vs.\ $69.0\%$, $+18.2$ pp) and higher reward ($+6.29$ vs.\ $+5.57$). Tuned Planning+IG (success-maximizing on the tuning grid, $w^*{=}100$ on Diagnosis and $w^*{=}50$ on Bandit here) reaches near-ceiling success ($99.2\%$ on Diagnosis, $99.7\%$ on Bandit) but at substantial reward cost from over-exploration: 13.22 tests on Diagnosis ($-3.70$ reward) and 11.60 inspections on Bandit ($+4.17$ reward). Relative to tuned Planning+IG as well as $w{=}0$ Planning, EFE is the competitive untuned trade-off rather than uniquely best on every metric. Bootstrap 95\% CIs (10{,}000 resamples over 5{,}000 episodes; Appendix~\ref{app:stats}) confirm non-overlapping reward intervals between EFE and Planning on Bandit. Viewed in the success--reward plane (Figure~\ref{fig:pareto}), the EFE agent sits at the Pareto knee on every environment, while Planning under-explores and success-tuned Planning+IG over-explores.
 
-Effect sizes clarify where the differences lie. Cohen's $d$ on reward between EFE and same-horizon Planning is negligible on Tiger, Diagnosis, and Bandit ($|d| < 0.2$, Table~\ref{tab:effect_sizes}), because both agents already achieve reasonable returns once they explore enough. The key gap is whether they explore the right observations. On success rate, where that gap appears, $d$ is substantially larger: $d \approx 0.33$ on Diagnosis and $d \approx 0.47$ on Bandit (Appendix~\ref{app:stats}), in the small-to-medium range. This two-axis pattern is exactly the Pareto story: EFE moves the under-served objective (success) without sacrificing reward. Medium-to-large reward $d$ values ($d > 0.7$) emerge against over-exploring baselines and on environments where Planning fails to explore sufficiently (Tileworld $d > 2.0$).
+Effect sizes clarify where the differences lie. Cohen's $d$ on reward between EFE and same-horizon Planning is negligible on Tiger, Diagnosis, and Bandit ($|d| < 0.2$ at the pooled episode level, Table~\ref{tab:effect_sizes}), because both agents already achieve reasonable returns once they explore enough. The key gap is whether they explore the right observations. On success rate, where that gap appears, $d$ is substantially larger: $d \approx 0.35$ on Diagnosis and $d \approx 0.45$ on Bandit (Appendix~\ref{app:stats}), in the small range. The seed-level $t$-test on the same 5 per-seed means agrees in sign with every pooled comparison reported here and remains significant after Holm--Bonferroni correction, so the direction of each effect is not an artifact of treating dependent episodes as independent; its Cohen's $d$ magnitude is not directly comparable to the pooled value, however, since the pooled standard deviation of only 5 seed means is a much smaller (and noisier) denominator, which mechanically inflates $|d|$ by one to three orders of magnitude (Appendix~\ref{app:full_tables}). This two-axis pattern is exactly the Pareto story: EFE moves the under-served objective (success) without sacrificing reward. Medium-to-large reward $d$ values ($d > 0.7$) emerge against over-exploring baselines and on environments where Planning fails to explore sufficiently (Tileworld $d > 2.0$).
 
 \subsection{Pareto analysis: the information-unit weight $w{=}1$}
 \label{sec:pareto}
@@ -1205,12 +1205,12 @@ With $\gamma = 1$ (undiscounted finite horizon), the two recursions are structur
 \toprule
 Agent & Listens & Success & Reward \\
 \midrule
-Myopic & $1.00$ & 84.6\% & $-7.98 \pm 0.56$ \\
-Planning ($H{=}6$) & $4.28$ & 99.5\% & $+5.15 \pm 0.12$ \\
-Info Gain ($w{=}20$) & $4.25$ & 99.6\% & $+5.31 \pm 0.10$ \\
-Planning+IG ($w{=}20$) & $4.20$ & 99.4\% & $+5.19 \pm 0.12$ \\
-Epistemic-only & $0.00$ & 50.1\% & $-44.93 \pm 0.78$ \\
-\textbf{EFE} ($H{=}6$) & $\mathbf{4.22}$ & $\mathbf{99.5\%}$ & $\mathbf{+5.23 \pm 0.11}$ \\
+Myopic & $1.00$ & 85.0\% & $-7.52 \pm 0.56$ \\
+Planning ($H{=}6$) & $4.27$ & 99.4\% & $+5.11 \pm 0.12$ \\
+Info Gain ($w{=}20$) & $4.26$ & 99.5\% & $+5.24 \pm 0.11$ \\
+Planning+IG ($w{=}50$) & $5.64$ & 99.9\% & $+4.27 \pm 0.06$ \\
+Epistemic-only & $0.00$ & 49.5\% & $-45.53 \pm 0.78$ \\
+\textbf{EFE} ($H{=}6$) & $\mathbf{4.27}$ & $\mathbf{99.4\%}$ & $\mathbf{+5.07 \pm 0.12}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
@@ -1224,11 +1224,11 @@ Epistemic-only & $0.00$ & 50.1\% & $-44.93 \pm 0.78$ \\
 \toprule
 Agent & Tests & Success & Reward \\
 \midrule
-Myopic & $2.00$ & 64.2\% & $-13.48 \pm 0.41$ \\
-Planning ($H{=}3$) & $5.91$ & 89.2\% & $-2.37 \pm 0.26$ \\
-Info Gain ($w{=}100$) & $13.27$ & 99.2\% & $-3.75 \pm 0.10$ \\
-Planning+IG ($w{=}100$) & $13.21$ & 99.3\% & $-3.63 \pm 0.10$ \\
-\textbf{EFE} ($H{=}3$) & $\mathbf{9.70}$ & $\mathbf{97.0\%}$ & $\mathbf{-1.52 \pm 0.16}$ \\
+Myopic & $2.00$ & 64.0\% & $-13.60 \pm 0.41$ \\
+Planning ($H{=}3$) & $5.91$ & 87.6\% & $-3.35 \pm 0.28$ \\
+Info Gain ($w{=}100$) & $13.33$ & 99.3\% & $-3.74 \pm 0.10$ \\
+Planning+IG ($w{=}100$) & $13.22$ & 99.2\% & $-3.70 \pm 0.10$ \\
+\textbf{EFE} ($H{=}3$) & $\mathbf{9.60}$ & $\mathbf{96.8\%}$ & $\mathbf{-1.51 \pm 0.16}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
@@ -1242,12 +1242,12 @@ Planning+IG ($w{=}100$) & $13.21$ & 99.3\% & $-3.63 \pm 0.10$ \\
 \toprule
 Agent & Inspections & Success & Reward \\
 \midrule
-Myopic & $2.04$ & 61.7\% & $+5.53 \pm 0.06$ \\
-Planning ($H{=}2$) & $3.24$ & 69.6\% & $+5.65 \pm 0.06$ \\
-Info Gain ($w{=}50$) & $10.99$ & 99.7\% & $+4.48 \pm 0.04$ \\
-Planning+IG ($w{=}100$) & $12.41$ & 99.8\% & $+3.78 \pm 0.04$ \\
-Epistemic-only & $0.00$ & 25.1\% & $+3.26 \pm 0.06$ \\
-\textbf{EFE} ($H{=}2$) & $\mathbf{5.16}$ & $\mathbf{87.3\%}$ & $\mathbf{+6.27 \pm 0.05}$ \\
+Myopic & $2.08$ & 62.1\% & $+5.55 \pm 0.06$ \\
+Planning ($H{=}2$) & $3.28$ & 69.0\% & $+5.57 \pm 0.06$ \\
+Info Gain ($w{=}50$) & $11.08$ & 99.6\% & $+4.43 \pm 0.04$ \\
+Planning+IG ($w{=}50$) & $11.60$ & 99.7\% & $+4.17 \pm 0.04$ \\
+Epistemic-only & $0.00$ & 25.7\% & $+3.31 \pm 0.06$ \\
+\textbf{EFE} ($H{=}2$) & $\mathbf{5.10}$ & $\mathbf{87.2\%}$ & $\mathbf{+6.29 \pm 0.05}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
@@ -1541,37 +1541,37 @@ All pairwise comparisons use independent two-sample $t$-tests with Holm--Bonferr
 Environment & Comparison & $d$ (reward) & Interpretation \\
 \midrule
 Tiger & EFE vs.\ Myopic & $+0.44$ & small \\
-Tiger & EFE vs.\ Planning & $-0.01$ & negligible \\
-Tiger & EFE vs.\ Info Gain & $+0.01$ & negligible \\
-Tiger & EFE vs.\ Planning+IG & $-0.01$ & negligible \\
+Tiger & EFE vs.\ Planning & $-0.00$ & negligible \\
+Tiger & EFE vs.\ Info Gain & $-0.02$ & negligible \\
+Tiger & EFE vs.\ Planning+IG & $+0.12$ & negligible \\
 \midrule
 Testbed & EFE vs.\ Myopic & $-0.03$ & negligible \\
 Testbed & EFE vs.\ Planning & $-0.19$ & negligible \\
 Testbed & EFE vs.\ Info Gain & $+1.34$ & large \\
 Testbed & EFE vs.\ Planning+IG & $+1.33$ & large \\
 \midrule
-Diagnosis & EFE vs.\ Myopic & $+0.53$ & medium \\
-Diagnosis & EFE vs.\ Planning & $+0.07$ & negligible \\
+Diagnosis & EFE vs.\ Myopic & $+0.55$ & medium \\
+Diagnosis & EFE vs.\ Planning & $+0.11$ & negligible \\
 Diagnosis & EFE vs.\ Info Gain & $+0.24$ & small \\
 Diagnosis & EFE vs.\ Planning+IG & $+0.23$ & small \\
 \midrule
-Bandit & EFE vs.\ Myopic & $+0.21$ & small \\
-Bandit & EFE vs.\ Planning & $+0.20$ & negligible \\
-Bandit & EFE vs.\ Info Gain & $+0.67$ & medium \\
-Bandit & EFE vs.\ Planning+IG & $+0.79$ & medium \\
+Bandit & EFE vs.\ Myopic & $+0.19$ & negligible \\
+Bandit & EFE vs.\ Planning & $+0.19$ & negligible \\
+Bandit & EFE vs.\ Info Gain & $+0.58$ & medium \\
+Bandit & EFE vs.\ Planning+IG & $+0.65$ & medium \\
 \midrule
 \multicolumn{4}{l}{\textit{Success rate} ($d$ favors EFE)} \\
 \midrule
-Tiger & EFE vs.\ Planning & $-0.02$ & negligible \\
+Tiger & EFE vs.\ Planning & $-0.01$ & negligible \\
 Testbed & EFE vs.\ Planning & $+0.27$ & small \\
-Diagnosis & EFE vs.\ Planning & $+0.33$ & small \\
-Bandit & EFE vs.\ Planning & $+0.47$ & small \\
+Diagnosis & EFE vs.\ Planning & $+0.35$ & small \\
+Bandit & EFE vs.\ Planning & $+0.45$ & small \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-The reward table shows that EFE vs.\ Planning is negligible on Tiger, Diagnosis, and Bandit: once both agents take enough informative actions, mean returns are similar, even though success rates differ. The success-rate rows isolate the axis where EFE improves most relative to Planning on Diagnosis and Bandit. Against over-exploring tuned alternatives (InfoGain-Tuned, Planning+IG), EFE shows large reward effects on the Testbed ($d > 1.3$) and medium effects on Bandit ($d \approx 0.7$--$0.8$), reflecting the cost of over-exploration.
+The reward table shows that EFE vs.\ Planning is negligible on Tiger, Diagnosis, and Bandit: once both agents take enough informative actions, mean returns are similar, even though success rates differ. The success-rate rows isolate the axis where EFE improves most relative to Planning on Diagnosis and Bandit. Against over-exploring tuned alternatives (InfoGain-Tuned, Planning+IG), EFE shows large reward effects on the Testbed ($d > 1.3$) and medium effects on Bandit ($d \approx 0.6$), reflecting the cost of over-exploration.
 
 \section{Near-optimality across planning horizons}
 \label{app:nearopt_horizon}
