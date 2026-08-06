@@ -147,6 +147,80 @@ def seed_level_ttest(
     }
 
 
+def tost_equivalence(
+    means_a: np.ndarray,
+    means_b: np.ndarray,
+    margin: float,
+    alpha: float = 0.05,
+) -> Dict:
+    """
+    Two one-sided tests (TOST) for equivalence within a predeclared margin.
+
+    Tests the pair of one-sided hypotheses
+        H0_lower: mean(a) - mean(b) <= -margin
+        H0_upper: mean(a) - mean(b) >= +margin
+    against the equivalence alternative -margin < mean(a) - mean(b) < margin,
+    using Welch's t (unequal variance) on ``means_a``/``means_b`` -- pass
+    per-seed means, not pooled episode-level values, so degrees of freedom
+    reflect the number of independent seeds. Rejecting both one-sided
+    nulls at level ``alpha`` (``p_tost < alpha``) supports equivalence;
+    this is equivalent to the (1 - 2*alpha) two-sided CI of the mean
+    difference lying entirely inside (-margin, +margin) (Schuirmann, 1987).
+
+    The margin must be declared before inspecting these two samples for
+    the test to carry its usual interpretation; this function does not
+    choose or validate the margin.
+    """
+    from scipy.stats import t as tdist
+
+    a = np.asarray(means_a, dtype=float)
+    b = np.asarray(means_b, dtype=float)
+    n_a, n_b = len(a), len(b)
+    if n_a < 2 or n_b < 2:
+        raise ValueError("tost_equivalence requires at least 2 samples per group")
+    diff = float(np.mean(a) - np.mean(b))
+    var_a, var_b = np.var(a, ddof=1), np.var(b, ddof=1)
+    se = float(np.sqrt(var_a / n_a + var_b / n_b))
+    if se < 1e-12:
+        df = float(n_a + n_b - 2)
+    else:
+        df = float(
+            (var_a / n_a + var_b / n_b) ** 2
+            / ((var_a / n_a) ** 2 / (n_a - 1) + (var_b / n_b) ** 2 / (n_b - 1))
+        )
+
+    if se < 1e-12:
+        p_lower = 0.0 if diff > -margin else 1.0
+        p_upper = 0.0 if diff < margin else 1.0
+    else:
+        t_lower = (diff + margin) / se
+        t_upper = (diff - margin) / se
+        p_lower = float(tdist.sf(t_lower, df))
+        p_upper = float(tdist.cdf(t_upper, df))
+    p_tost = max(p_lower, p_upper)
+
+    ci_conf = 1.0 - 2.0 * alpha
+    tcrit = float(tdist.ppf(1.0 - alpha, df))
+    ci_lo = diff - tcrit * se
+    ci_hi = diff + tcrit * se
+
+    return {
+        "diff": diff,
+        "se": se,
+        "df": df,
+        "margin": float(margin),
+        "alpha": float(alpha),
+        "n_a": int(n_a),
+        "n_b": int(n_b),
+        "p_lower": p_lower,
+        "p_upper": p_upper,
+        "p_tost": float(p_tost),
+        "equivalent": bool(p_tost < alpha),
+        "ci_conf": float(ci_conf),
+        "ci": (float(ci_lo), float(ci_hi)),
+    }
+
+
 def hierarchical_bootstrap_ci(
     results: List,
     metric_fn,

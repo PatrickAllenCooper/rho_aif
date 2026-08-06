@@ -8,6 +8,7 @@ policy quality.
 """
 
 import numpy as np
+import os
 import pandas as pd
 from scipy import stats
 from dataclasses import dataclass, field
@@ -133,7 +134,8 @@ def run_experiment(
 def summarize_results(results: List[EpisodeResult]) -> Dict:
     log_scores = [r.log_score for r in results if r.log_score is not None]
     briers = [r.brier_score for r in results if r.brier_score is not None]
-    return {
+    n = len(results)
+    summary = {
         "agent": results[0].agent_name,
         "mean_observations": np.mean([r.num_observations for r in results]),
         "std_observations": np.std([r.num_observations for r in results]),
@@ -142,9 +144,38 @@ def summarize_results(results: List[EpisodeResult]) -> Dict:
         "success_rate": np.mean([r.success for r in results]),
         "mean_reward": np.mean([r.total_reward for r in results]),
         "std_reward": np.std([r.total_reward for r in results]),
+        "se_reward_pooled": np.std([r.total_reward for r in results]) / np.sqrt(n),
         "mean_log_score": float(np.mean(log_scores)) if log_scores else float("nan"),
         "mean_brier": float(np.mean(briers)) if briers else float("nan"),
     }
+
+    # Pooled episode-level SE treats all n episodes as independent, which
+    # understates uncertainty when episodes within a seed share an agent
+    # instance / RNG stream. When every result carries a seed label, also
+    # report the seed-level SE (mean of n_seeds seed-means, SE = seed sd /
+    # sqrt(n_seeds)), the statistically honest error bar for the number of
+    # independent replications actually run.
+    if all(getattr(r, "seed", None) is not None for r in results):
+        from rho_aif.stats import seed_means
+
+        seed_reward_means = seed_means(results, lambda r: r.total_reward)
+        seed_success_means = seed_means(results, lambda r: float(r.success))
+        n_seeds = len(seed_reward_means)
+        summary["n_seeds"] = n_seeds
+        summary["se_reward_seed_level"] = (
+            float(np.std(seed_reward_means, ddof=1) / np.sqrt(n_seeds))
+            if n_seeds > 1 else float("nan")
+        )
+        summary["se_success_seed_level"] = (
+            float(np.std(seed_success_means, ddof=1) / np.sqrt(n_seeds))
+            if n_seeds > 1 else float("nan")
+        )
+    else:
+        summary["n_seeds"] = np.nan
+        summary["se_reward_seed_level"] = float("nan")
+        summary["se_success_seed_level"] = float("nan")
+
+    return summary
 
 
 def run_experiment_multi_seed(
@@ -152,15 +183,27 @@ def run_experiment_multi_seed(
     env,
     num_episodes: int = 1000,
     seeds: List[int] = None,
+    vary_agent_seed: bool = False,
     **agent_kwargs,
 ) -> List[EpisodeResult]:
-    """Run experiment across multiple seeds, concatenating all results."""
+    """
+    Run experiment across multiple seeds, concatenating all results.
+
+    When ``vary_agent_seed`` is set, each seed's agent is additionally
+    constructed with ``seed=seed``, so agent classes with their own
+    internal random stream (e.g. POMCPAgent's particle sampling and
+    rollouts) vary that stream per outer seed instead of reusing a single
+    fixed internal seed across all seeds.
+    """
     if seeds is None:
         seeds = SEEDS
     all_results = []
     for seed in seeds:
         np.random.seed(seed)
-        results = run_experiment(agent_class, env, num_episodes, **agent_kwargs)
+        kwargs = dict(agent_kwargs)
+        if vary_agent_seed:
+            kwargs["seed"] = int(seed)
+        results = run_experiment(agent_class, env, num_episodes, **kwargs)
         for r in results:
             r.seed = seed
         all_results.extend(results)
@@ -218,11 +261,20 @@ def compute_full_statistics(
     Returns a DataFrame with pairwise comparisons including corrected p-values,
     bootstrap CIs, and Cohen's d effect sizes.
     """
-    from rho_aif.stats import bootstrap_ci, cohens_d, holm_bonferroni
+    from rho_aif.stats import bootstrap_ci, cohens_d, holm_bonferroni, seed_level_ttest
 
     labels = list(all_raw.keys())
     rows = []
     raw_p_values = []
+
+    # Seed-level inference is only meaningful if every result carries a
+    # seed label; older call sites that never set `.seed` fall back to
+    # NaN for the seed-level columns rather than pretending n = n_seeds.
+    has_seeds = all(
+        getattr(r, "seed", None) is not None
+        for raw in all_raw.values()
+        for r in raw
+    )
 
     for metric_name, extractor in [
         ("Reward", lambda r: r.total_reward),
@@ -243,7 +295,7 @@ def compute_full_statistics(
                 if np.isnan(p_val):
                     p_val = 1.0
 
-                pairs.append({
+                row = {
                     "env": env_name,
                     "metric": metric_name,
                     "agent_a": labels[i],
@@ -256,7 +308,21 @@ def compute_full_statistics(
                     "cohens_d": d,
                     "t_stat": t_stat,
                     "p_raw": p_val,
-                })
+                }
+
+                if has_seeds:
+                    seed_out = seed_level_ttest(
+                        all_raw[labels[i]], all_raw[labels[j]], extractor
+                    )
+                    row["n_seeds"] = seed_out["n_seeds_a"]
+                    row["p_seed_level"] = seed_out["p_value"]
+                    row["cohens_d_seed_level"] = seed_out["cohens_d"]
+                else:
+                    row["n_seeds"] = np.nan
+                    row["p_seed_level"] = np.nan
+                    row["cohens_d_seed_level"] = np.nan
+
+                pairs.append(row)
                 raw_p_values.append(p_val)
 
         rows.extend(pairs)
@@ -265,6 +331,18 @@ def compute_full_statistics(
     significant = holm_bonferroni(p_list)
     for r, sig in zip(rows, significant):
         r["significant_hb"] = sig
+
+    seed_p_list = [r["p_seed_level"] for r in rows if not np.isnan(r["p_seed_level"])]
+    if seed_p_list:
+        seed_significant = holm_bonferroni(seed_p_list)
+        it = iter(seed_significant)
+        for r in rows:
+            r["significant_hb_seed_level"] = (
+                next(it) if not np.isnan(r["p_seed_level"]) else np.nan
+            )
+    else:
+        for r in rows:
+            r["significant_hb_seed_level"] = np.nan
 
     df = pd.DataFrame(rows)
     return df
@@ -484,6 +562,7 @@ def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1
                 agent = make_agent(agent_class, env, **kwargs)
             for i in range(num_episodes):
                 result = run_episode(agent, env)
+                result.seed = seed
                 results.append(result)
         dt = time.time() - t0
         all_raw[agent_label] = results
@@ -509,6 +588,8 @@ def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1
     print()
 
     if csv_name:
+        parent_dir = os.path.dirname(os.path.abspath(csv_name))
+        os.makedirs(parent_dir, exist_ok=True)
         summary_df = pd.DataFrame(all_results).T
         summary_df.to_csv(csv_name)
         print(f"Results saved to {csv_name}")

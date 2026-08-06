@@ -1,0 +1,77 @@
+discount: 0.999
+values: reward
+states: s0 s1 s2 s3 done
+actions: obs0 obs1 commit0 commit1 commit2 commit3
+observations: o0 o1 onull
+start: 0.2500000000 0.2500000000 0.2500000000 0.2500000000 0.0000000000
+
+T: obs0 identity
+T: obs1 identity
+T: commit0 : s0 : done 1.0
+T: commit0 : s1 : done 1.0
+T: commit0 : s2 : done 1.0
+T: commit0 : s3 : done 1.0
+T: commit0 : done : done 1.0
+T: commit1 : s0 : done 1.0
+T: commit1 : s1 : done 1.0
+T: commit1 : s2 : done 1.0
+T: commit1 : s3 : done 1.0
+T: commit1 : done : done 1.0
+T: commit2 : s0 : done 1.0
+T: commit2 : s1 : done 1.0
+T: commit2 : s2 : done 1.0
+T: commit2 : s3 : done 1.0
+T: commit2 : done : done 1.0
+T: commit3 : s0 : done 1.0
+T: commit3 : s1 : done 1.0
+T: commit3 : s2 : done 1.0
+T: commit3 : s3 : done 1.0
+T: commit3 : done : done 1.0
+
+O: obs0 : s0 : o0 0.8000000000
+O: obs0 : s0 : o1 0.2000000000
+O: obs0 : s1 : o0 0.2000000000
+O: obs0 : s1 : o1 0.8000000000
+O: obs0 : s2 : o0 0.8000000000
+O: obs0 : s2 : o1 0.2000000000
+O: obs0 : s3 : o0 0.2000000000
+O: obs0 : s3 : o1 0.8000000000
+O: obs0 : done : onull 1.0
+O: obs1 : s0 : o0 0.8000000000
+O: obs1 : s0 : o1 0.2000000000
+O: obs1 : s1 : o0 0.8000000000
+O: obs1 : s1 : o1 0.2000000000
+O: obs1 : s2 : o0 0.2000000000
+O: obs1 : s2 : o1 0.8000000000
+O: obs1 : s3 : o0 0.2000000000
+O: obs1 : s3 : o1 0.8000000000
+O: obs1 : done : onull 1.0
+O: commit0 : * : onull 1.0
+O: commit1 : * : onull 1.0
+O: commit2 : * : onull 1.0
+O: commit3 : * : onull 1.0
+
+R: obs0 : s0 : * : * -3.2360679775
+R: obs0 : s1 : * : * -3.2360679775
+R: obs0 : s2 : * : * -3.2360679775
+R: obs0 : s3 : * : * -3.2360679775
+R: obs1 : s0 : * : * -3.2360679775
+R: obs1 : s1 : * : * -3.2360679775
+R: obs1 : s2 : * : * -3.2360679775
+R: obs1 : s3 : * : * -3.2360679775
+R: commit0 : s0 : * : * 10.0000000000
+R: commit0 : s1 : * : * -50.0000000000
+R: commit0 : s2 : * : * -50.0000000000
+R: commit0 : s3 : * : * -50.0000000000
+R: commit1 : s0 : * : * -50.0000000000
+R: commit1 : s1 : * : * 10.0000000000
+R: commit1 : s2 : * : * -50.0000000000
+R: commit1 : s3 : * : * -50.0000000000
+R: commit2 : s0 : * : * -50.0000000000
+R: commit2 : s1 : * : * -50.0000000000
+R: commit2 : s2 : * : * 10.0000000000
+R: commit2 : s3 : * : * -50.0000000000
+R: commit3 : s0 : * : * -50.0000000000
+R: commit3 : s1 : * : * -50.0000000000
+R: commit3 : s2 : * : * -50.0000000000
+R: commit3 : s3 : * : * 10.0000000000

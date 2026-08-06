@@ -1085,22 +1085,30 @@ def readaptation_episodes(
     """
     Episodes from rescale until rolling usage returns within tol of B and
     stays there for ``hold`` consecutive episodes. None if never recovered.
+
+    The rolling mean is computed strictly from post-rescale episodes
+    (``min_periods=roll``), not from the full pre+post series. A window
+    that straddles the rescale point would otherwise mix in the converged
+    pre-rescale usage and can report a spurious near-zero adaptation time
+    even though the post-rescale process has not yet re-converged.
     """
     if df.empty or "usage" not in df.columns:
         return None
     budget = float(df["budget"].iloc[0])
     usages = df["usage"].to_numpy(dtype=float)
+    post = usages[rescale_at:]
+    if len(post) < roll:
+        return None
     smooth = (
-        pd.Series(usages)
-        .rolling(roll, min_periods=1)
+        pd.Series(post)
+        .rolling(roll, min_periods=roll)
         .mean()
         .to_numpy(dtype=float)
     )
     within = np.abs(smooth - budget) <= tol
-    # Search only after rescale
-    for t in range(rescale_at, len(within) - hold + 1):
+    for t in range(0, len(within) - hold + 1):
         if bool(np.all(within[t : t + hold])):
-            return int(t - rescale_at)
+            return int(t)
     return None
 
 

@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import time
 import os
+from pathlib import Path
 
 from rho_aif.environments.tiger import TigerEnv
 from rho_aif.environments.diagnosis import DiagnosisEnv
@@ -36,9 +37,19 @@ def _record_row(rows, env_name, agent_label, sim_budget, summary, wall_clock_s, 
     })
 
 
-def run_pomcp_comparison(seeds=None, num_episodes=500, csv_path="results/results_pomcp.csv"):
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+_DEFAULT_CSV_PATH = str(_REPO_ROOT / "results" / "results_pomcp.csv")
+
+
+def run_pomcp_comparison(seeds=None, num_episodes=1000, csv_path=_DEFAULT_CSV_PATH):
+    # csv_path may be relative (resolved against cwd) or absolute; either way,
+    # make sure the parent directory exists before any checkpoint write so a
+    # missing `results/` dir cannot silently drop hours of completed runs.
     if seeds is None:
         seeds = SEEDS
+
+    parent_dir = os.path.dirname(os.path.abspath(csv_path))
+    os.makedirs(parent_dir, exist_ok=True)
 
     total_ep = num_episodes * len(seeds)
 
@@ -97,9 +108,9 @@ def run_pomcp_comparison(seeds=None, num_episodes=500, csv_path="results/results
             t0 = time.time()
             pomcp_raw = run_experiment_multi_seed(
                 POMCPAgent, env, num_episodes, seeds=seeds,
+                vary_agent_seed=True,
                 num_simulations=n_sims,
                 rollout_depth=horizon + 3,
-                exploration_constant=5.0,
             )
             pomcp_s = summarize_results(pomcp_raw)
             pomcp_time = time.time() - t0
@@ -111,8 +122,11 @@ def run_pomcp_comparison(seeds=None, num_episodes=500, csv_path="results/results
                 f"({pomcp_time:.1f}s, {pomcp_time/total_ep*1000:.1f}ms/ep)"
             )
 
-        pd.DataFrame(rows).to_csv(csv_path, index=False)
-        print(f"  [checkpoint] saved {len(rows)} rows to {csv_path}")
+        try:
+            pd.DataFrame(rows).to_csv(csv_path, index=False)
+            print(f"  [checkpoint] saved {len(rows)} rows to {csv_path}")
+        except OSError as exc:
+            print(f"  [checkpoint] WARNING: could not save to {csv_path}: {exc}")
 
     tw_episodes = 200
     tw_total = tw_episodes * len(seeds)
@@ -150,9 +164,9 @@ def run_pomcp_comparison(seeds=None, num_episodes=500, csv_path="results/results
         t0 = time.time()
         pomcp_raw = run_experiment_multi_seed(
             POMCPAgent, env, tw_episodes, seeds=seeds,
+            vary_agent_seed=True,
             num_simulations=n_sims,
             rollout_depth=horizon + 3,
-            exploration_constant=5.0,
         )
         pomcp_s = summarize_results(pomcp_raw)
         pomcp_time = time.time() - t0

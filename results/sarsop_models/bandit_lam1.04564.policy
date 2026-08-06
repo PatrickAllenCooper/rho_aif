@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Policy version="0.1" type="value" model="/Users/pat/code/rho_aif/results/sarsop_models/bandit_lam1.04564.pomdp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="policyx.xsd">
+<AlphaVector vectorLength="5" numObsValue="1" numVectors="17">
+<Vector action="1" obsValue="0">-1.78271 6.33714 3.96577 3.96577 0 </Vector>
+<Vector action="0" obsValue="0">6.33714 3.96577 -1.78271 3.96577 0 </Vector>
+<Vector action="5" obsValue="0">1 10 1 1 0 </Vector>
+<Vector action="7" obsValue="0">1 1 1 10 0 </Vector>
+<Vector action="6" obsValue="0">1 1 10 1 0 </Vector>
+<Vector action="4" obsValue="0">10 1 1 1 0 </Vector>
+<Vector action="2" obsValue="0">6.64616 -0.54664 6.64616 -0.54664 0 </Vector>
+<Vector action="0" obsValue="0">6.64616 6.64616 -0.54664 -0.54664 0 </Vector>
+<Vector action="3" obsValue="0">6.64616 -0.54664 -0.54664 6.64616 0 </Vector>
+<Vector action="2" obsValue="0">-0.54664 6.64616 6.64616 -0.54664 0 </Vector>
+<Vector action="0" obsValue="0">6.33714 3.96577 3.96577 -1.78271 0 </Vector>
+<Vector action="3" obsValue="0">-0.54664 -0.54664 6.64616 6.64616 0 </Vector>
+<Vector action="0" obsValue="0">6.33714 -1.78271 3.96577 3.96577 0 </Vector>
+<Vector action="3" obsValue="0">-0.54664 6.64616 -0.54664 6.64616 0 </Vector>
+<Vector action="3" obsValue="0">-1.78271 3.96577 3.96577 6.33714 0 </Vector>
+<Vector action="3" obsValue="0">3.96577 3.96577 -1.78271 6.33714 0 </Vector>
+<Vector action="0" obsValue="0">6.09017 1.82361 1.82361 3.7188 0 </Vector>
+</AlphaVector> </Policy>

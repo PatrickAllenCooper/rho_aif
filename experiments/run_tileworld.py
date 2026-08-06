@@ -295,9 +295,11 @@ def run_partition_sensitivity(grid_size=6, num_episodes=200, seeds=None):
             print(f"    {label:20s}: success={s['success_rate']:.1%}  "
                   f"reward={s['mean_reward']:+.3f}  ({dt:.1f}s)")
 
+    csv_path = f"results/results_partition_sensitivity_{grid_size}x{grid_size}.csv"
+    os.makedirs(os.path.dirname(os.path.abspath(csv_path)), exist_ok=True)
     df = pd.DataFrame(all_rows)
-    df.to_csv(f"results/results_partition_sensitivity_{grid_size}x{grid_size}.csv", index=False)
-    print(f"\n  Saved results/results_partition_sensitivity_{grid_size}x{grid_size}.csv")
+    df.to_csv(csv_path, index=False)
+    print(f"\n  Saved {csv_path}")
     return df
 
 

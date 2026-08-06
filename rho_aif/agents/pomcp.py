@@ -55,6 +55,7 @@ class POMCPAgent(BaseAgent):
         exploration_constant: float = 10.0,
         rollout_depth: int = 10,
         discount: float = 1.0,
+        seed: int = 42,
         **kwargs,
     ):
         super().__init__(observation_models, env_config, **kwargs)
@@ -63,7 +64,11 @@ class POMCPAgent(BaseAgent):
         self.rollout_depth = rollout_depth
         self.discount = discount
         self.all_actions = list(range(self.num_observe_actions + self.num_commit_actions))
-        self._rng = np.random.RandomState(42)
+        # Default preserves prior behavior (fixed internal stream across
+        # runs); pass a per-run seed to vary the planner's own randomness
+        # alongside the outer environment seed.
+        self.seed = int(seed)
+        self._rng = np.random.RandomState(self.seed)
 
     def select_action(self) -> int:
         root = POMCPNode()

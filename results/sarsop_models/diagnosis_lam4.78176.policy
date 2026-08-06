@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Policy version="0.1" type="value" model="/Users/pat/code/rho_aif/results/sarsop_models/diagnosis_lam4.78176.pomdp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="policyx.xsd">
+<AlphaVector vectorLength="5" numObsValue="1" numVectors="10">
+<Vector action="0" obsValue="0">-21.9893 -8.92497 -21.9893 -56.877 0 </Vector>
+<Vector action="3" obsValue="0">-50 10 -50 -50 0 </Vector>
+<Vector action="4" obsValue="0">-50 -50 10 -50 0 </Vector>
+<Vector action="5" obsValue="0">-50 -50 -50 10 0 </Vector>
+<Vector action="1" obsValue="0">-55.7318 -7.77976 -55.7318 -7.77976 0 </Vector>
+<Vector action="0" obsValue="0">-55.7318 -55.7318 -7.77976 -7.77976 0 </Vector>
+<Vector action="2" obsValue="0">10 -50 -50 -50 0 </Vector>
+<Vector action="1" obsValue="0">-7.77976 -55.7318 -7.77976 -55.7318 0 </Vector>
+<Vector action="0" obsValue="0">-7.77976 -7.77976 -55.7318 -55.7318 0 </Vector>
+<Vector action="0" obsValue="0">-23.1346 -23.1346 -23.1346 -23.1346 0 </Vector>
+</AlphaVector> </Policy>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Policy version="0.1" type="value" model="/Users/pat/code/rho_aif/results/sarsop_models/tiger_lam10.2257.pomdp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="policyx.xsd">
+<AlphaVector vectorLength="3" numObsValue="1" numVectors="3">
+<Vector action="1" obsValue="0">-100 10 0 </Vector>
+<Vector action="2" obsValue="0">10 -100 0 </Vector>
+<Vector action="0" obsValue="0">-17.7192 -17.7192 0 </Vector>
+</AlphaVector> </Policy>

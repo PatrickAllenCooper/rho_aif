@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Policy version="0.1" type="value" model="/Users/pat/code/rho_aif/results/sarsop_models/diagnosis_lam21.8672.pomdp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="policyx.xsd">
+<AlphaVector vectorLength="5" numObsValue="1" numVectors="4">
+<Vector action="4" obsValue="0">-50 -50 10 -50 0 </Vector>
+<Vector action="5" obsValue="0">-50 -50 -50 10 0 </Vector>
+<Vector action="3" obsValue="0">-50 10 -50 -50 0 </Vector>
+<Vector action="2" obsValue="0">10 -50 -50 -50 0 </Vector>
+</AlphaVector> </Policy>

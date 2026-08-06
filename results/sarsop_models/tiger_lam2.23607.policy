@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Policy version="0.1" type="value" model="/Users/pat/code/rho_aif/results/sarsop_models/tiger_lam2.23607.pomdp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="policyx.xsd">
+<AlphaVector vectorLength="3" numObsValue="1" numVectors="26">
+<Vector action="0" obsValue="0">-14.9965 1.28696 0 </Vector>
+<Vector action="0" obsValue="0">-30.9553 5.44828 0 </Vector>
+<Vector action="0" obsValue="0">-4.00378 -1.66814 0 </Vector>
+<Vector action="0" obsValue="0">-21.6209 5.00546 0 </Vector>
+<Vector action="0" obsValue="0">-2.34478 -1.97622 0 </Vector>
+<Vector action="1" obsValue="0">-100 10 0 </Vector>
+<Vector action="0" obsValue="0">-20.2121 4.9593 0 </Vector>
+<Vector action="2" obsValue="0">10 -100 0 </Vector>
+<Vector action="0" obsValue="0">4.9357 -19.9325 0 </Vector>
+<Vector action="0" obsValue="0">-2.07371 -2.01176 0 </Vector>
+<Vector action="0" obsValue="0">-19.982 4.95397 0 </Vector>
+<Vector action="0" obsValue="0">-2.03921 -2.01628 0 </Vector>
+<Vector action="0" obsValue="0">4.94986 -19.9332 0 </Vector>
+<Vector action="0" obsValue="0">-2.02719 -2.01639 0 </Vector>
+<Vector action="0" obsValue="0">-19.9425 4.95328 0 </Vector>
+<Vector action="0" obsValue="0">-2.02128 -2.01698 0 </Vector>
+<Vector action="0" obsValue="0">4.95254 -19.9338 0 </Vector>
+<Vector action="0" obsValue="0">-2.01899 -2.01707 0 </Vector>
+<Vector action="0" obsValue="0">4.95289 -19.9339 0 </Vector>
+<Vector action="0" obsValue="0">-2.0187 -2.01708 0 </Vector>
+<Vector action="0" obsValue="0">-19.9352 4.95317 0 </Vector>
+<Vector action="0" obsValue="0">-2.01762 -2.01717 0 </Vector>
+<Vector action="0" obsValue="0">-19.9343 4.95316 0 </Vector>
+<Vector action="0" obsValue="0">-2.01748 -2.01718 0 </Vector>
+<Vector action="0" obsValue="0">4.95311 -19.934 0 </Vector>
+<Vector action="0" obsValue="0">-2.01729 -2.0172 0 </Vector>
+</AlphaVector> </Policy>
