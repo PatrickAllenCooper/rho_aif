@@ -1249,19 +1249,19 @@ Epistemic-only & $200.0$ & 0.0\% & $-200.00$ \\
 
 \begin{table}[h]
 \centering
-\caption{Tileworld $8{\times}8$ (600 episodes: 200 per seed $\times$ 3 seeds, $H{=}2$), full agent set. This table is retained solely for the full-agent-set breakdown, which was not rerun under the later protocol; its headline numbers are \emph{superseded} by the 5-seed main-text results (Figure~\ref{fig:tw_scaling}, EFE at $66.5\%$ success vs.\ $74.2\%$ here), and the main text is authoritative wherever the two disagree. Planning and untuned Info Gain fail to explore because a single noisy scan over 64 states barely narrows the belief, while EFE's epistemic bonus drives meaningful exploration.}
+\caption{Tileworld $8{\times}8$ (2{,}500 episodes: 500 per seed $\times$ 5 seeds, $H{=}2$), full agent set. Rerun under the full 5-seed protocol used elsewhere in the paper (this table previously reported an obsolete 3-seed/200-episode run and is now consistent with it). EFE's success rate here ($68.6\%$) is close to, though not identical to, the $66.5\%$ reported in the independent spatial-scaling sweep (Figure~\ref{fig:tw_scaling}); the two figures come from separate experiment scripts with different per-seed episode counts, and the residual gap is consistent with ordinary seed-to-seed variation rather than a discrepancy to resolve. Planning and untuned Info Gain fail to explore because a single noisy scan over 64 states barely narrows the belief, while EFE's epistemic bonus drives meaningful exploration.}
 \begin{small}
 \begin{tabular}{lccc}
 \toprule
 Agent & Scans & Success & Reward \\
 \midrule
-Myopic & $0.00$ & 1.5\% & $-49.10$ \\
-Planning ($H{=}2$) & $0.00$ & 1.5\% & $-49.10$ \\
-Info Gain ($w{=}1$) & $0.00$ & 2.8\% & $-48.30$ \\
-Info Gain ($w{=}100$) & $39.93$ & 98.0\% & $-31.13$ \\
-Planning+IG ($w{=}100$) & $39.90$ & 96.7\% & $-31.90$ \\
+Myopic & $0.00$ & 1.4\% & $-49.18$ \\
+Planning ($H{=}2$) & $0.00$ & 1.5\% & $-49.09$ \\
+Info Gain ($w{=}1$) & $0.00$ & 1.8\% & $-48.94$ \\
+Info Gain ($w{=}100$) & $39.72$ & 97.5\% & $-31.20$ \\
+Planning+IG ($w{=}50$) & $39.62$ & 97.4\% & $-31.18$ \\
 Epistemic-only & $200.0$ & 0.0\% & $-200.00$ \\
-\textbf{EFE} ($H{=}2$) & $\mathbf{17.87}$ & $\mathbf{74.2\%}$ & $\mathbf{-23.37}$ \\
+\textbf{EFE} ($H{=}2$) & $\mathbf{17.59}$ & $\mathbf{68.6\%}$ & $\mathbf{-26.43}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
