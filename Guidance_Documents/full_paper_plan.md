@@ -371,3 +371,17 @@ Second-round re-review verdicts on the revised manuscript: Gemini Pro upgraded t
 - Checklist honesty: theory items 1 and 3 downgraded to "Partially" (conventions in surrounding text; Prop PI-5 appeals to cited theorems and covers the projected variant); seed-set answer now enumerates the 3-seed, 10-seed, and fixed-POMCP-seed deviations; "statistical indistinguishability" -> "consistency within overlapping confidence intervals, no formal equivalence test".
 
 Sol's remaining unresolved items are the experiment-level asks already on the deliberate-omission list above (CPOMDP baseline, constrained-return-by-budget evaluation, POMCP re-runs, seed-level primary statistics, adaptation-metric rerun, rescaling-table redo), plus small clarifications requiring data checks (SE construction in two sentences, expensive-vs-cheap test direction). All text-level errors it identified are now fixed. Both manuscripts recompile clean.
+
+**Final verdicts (August 6, 2026, commit after fd6aaac):**
+
+GPT Sol re-verified the round-3 fixes directly against the file (all 15 claimed changes confirmed) and issued a final verdict of MINOR REVISION, explicitly stating that the disclosed experimental omissions (exact-CPOMDP baseline, constrained-return curves, POMCP reruns, seed-level primary statistics) "do not block JAIR archival publication" now that the manuscript consistently presents itself as an operational calibration study. Its seven remaining localized fixes were then applied to both manuscripts:
+
+- Proposition PI-5 now explicitly conditions its conclusion on the Robbins-Monro/Blum regularity conditions (martingale-difference noise with bounded conditional second moments, projected iterates) rather than leaving them implicit.
+- The mislabeled "Compute-matched analysis" POMCP paragraph (which actually gives POMCP more compute) retitled "Simulation-budget scaling"; the experiments-intro pointer relabeled to match.
+- The conclusion's "trackable online through a reward-scale shift via dual descent (Prop PI-5)" replaced with stationary convergence plus empirically demonstrated re-adaptation, the last stale tracking attribution.
+- The heterogeneous-cost paragraph's internal contradiction fixed: the test mix shifts toward the more expensive test as w rises (matching the reported rising cost-per-test ratio), not toward the cheaper one.
+- The discounting sentence in Section 3 no longer claims robustness across gamma in [0.9, 1.0]; it now states the equivalence holds at every gamma but the advantage requires gamma >= 0.99, consistent with the appendix.
+- The threshold table intro says "provides a descriptive comparison" (exact for two-state rows, heuristic for two-state-reduced rows), not "validates."
+- The reward-scaling table caption now calls the result qualitative evidence of covariance, noting the fivefold ratio variation on Diagnosis, not "approximately stable."
+
+Final review-cycle state: Gemini Pro ACCEPT (round 2); GPT Sol MINOR REVISION (round 3) with all seven of its listed minor corrections subsequently applied and both manuscripts recompiling clean. The only items neither applied nor blocking are the experiment-level additions on the deliberate-omission list, which Sol judged acceptable as disclosed limitations.
