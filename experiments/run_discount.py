@@ -50,6 +50,7 @@ def run_discount_sweep(seed=42, num_episodes=500):
             for agent_name, agent_cls in [("EFE", EFEAgent), ("Planning", PlanningAgent)]:
                 raw = run_experiment(
                     agent_cls, env, num_episodes,
+                    base_seed=seed,
                     planning_horizon=horizon, discount=gamma,
                 )
                 s = summarize_results(raw)

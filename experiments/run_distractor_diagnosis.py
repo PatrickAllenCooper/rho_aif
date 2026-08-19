@@ -60,9 +60,9 @@ def make_distractor_diagnosis() -> DistractorDiagnosisEnv:
     )
 
 
-def run_distractor_episode(agent, env, max_steps: int = 200) -> Dict[str, float]:
+def run_distractor_episode(agent, env, max_steps: int = 200, seed=None) -> Dict[str, float]:
     """Like rho_aif.benchmark.run_otc_episode, plus a distractor-count split."""
-    obs, info = env.reset()
+    obs, info = env.reset(seed=seed)
     agent.reset()
     total_reward = 0.0
     task_tests = 0
@@ -128,8 +128,8 @@ def run_sweep(
             agent = PlanningInfoGainAgent(
                 obs_models, config, planning_horizon=planning_horizon, info_gain_weight=w
             )
-            for ep in range(num_episodes):
-                results.append(run_distractor_episode(agent, env))
+            for _ep in range(num_episodes):
+                results.append(run_distractor_episode(agent, env, seed=int(seed) * 10000 + _ep))
         rewards = [r["total_reward"] for r in results]
         n_obs = [r["num_observations"] for r in results]
         task = [r["task_tests"] for r in results]
@@ -170,8 +170,8 @@ def run_sweep(
         for seed in seeds:
             np.random.seed(int(seed))
             agent = make_agent()
-            for ep in range(num_episodes):
-                results.append(run_distractor_episode(agent, env))
+            for _ep in range(num_episodes):
+                results.append(run_distractor_episode(agent, env, seed=int(seed) * 10000 + _ep))
         rewards = [r["total_reward"] for r in results]
         n_obs = [r["num_observations"] for r in results]
         task = [r["task_tests"] for r in results]

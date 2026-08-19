@@ -984,6 +984,10 @@ def run_dual_descent(
 ) -> Tuple[pd.DataFrame, DualWeightAgent]:
     np.random.seed(seed)
     env = make_scaled_diagnosis(1.0)
+    # Seed the environment stream once; run_otc_episode with no seed then
+    # continues this generator deterministically (Gymnasium reset() without
+    # a seed does not re-seed np_random).
+    env.reset(seed=int(seed))
     agent = DualWeightAgent(
         get_obs_models(env),
         make_env_config(env),

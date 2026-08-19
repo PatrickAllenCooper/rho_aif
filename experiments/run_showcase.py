@@ -91,9 +91,9 @@ class StepTrace:
     action_type: str
 
 
-def trace_efe_episode(env, agent, max_steps: int = 30) -> Tuple[List[StepTrace], bool, float]:
+def trace_efe_episode(env, agent, max_steps: int = 30, seed=None) -> Tuple[List[StepTrace], bool, float]:
     """Run one episode recording EFE components at each decision point."""
-    obs, info = env.reset()
+    obs, info = env.reset(seed=seed)
     agent.reset()
     traces = []
     total_reward = 0.0

@@ -84,8 +84,8 @@ def run_misspec_sweep(seeds=None, num_episodes=500):
                 agent = make_misspec_agent(
                     agent_cls, env, true_accuracy, p_agent, **kwargs
                 )
-                for _ in range(num_episodes):
-                    all_results.append(run_episode(agent, env))
+                for i in range(num_episodes):
+                    all_results.append(run_episode(agent, env, seed=seed * 10000 + i))
             s = summarize_results(all_results)
             rows.append({
                 "env": "Tiger",
@@ -135,8 +135,8 @@ def run_misspec_sweep(seeds=None, num_episodes=500):
                 agent = make_misspec_agent(
                     agent_cls, env_diag, true_acc_diag, p_agent, **kwargs
                 )
-                for _ in range(num_episodes):
-                    all_results.append(run_episode(agent, env_diag))
+                for i in range(num_episodes):
+                    all_results.append(run_episode(agent, env_diag, seed=seed * 10000 + i))
             s = summarize_results(all_results)
             rows.append({
                 "env": "Diagnosis",

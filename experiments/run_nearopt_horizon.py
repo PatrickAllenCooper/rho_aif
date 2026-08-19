@@ -25,8 +25,8 @@ def evaluate_weight_fast(env, w, horizon, num_episodes=100, seed=42):
     agent = make_agent(PlanningInfoGainAgent, env,
                        planning_horizon=horizon, info_gain_weight=w)
     rewards = []
-    for _ in range(num_episodes):
-        result = run_episode(agent, env)
+    for i in range(num_episodes):
+        result = run_episode(agent, env, seed=seed * 10000 + i)
         rewards.append(result.total_reward)
     return np.mean(rewards)
 
