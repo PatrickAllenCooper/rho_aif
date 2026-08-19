@@ -12,8 +12,9 @@ Research project: **"Expected Free Energy as Belief-Dependent Utility for rho-PO
 - **Journal manuscript**: `paper/full_paper_jair.tex` (~63 pp, acmart-based JAIR approximation) passed the internal two-referee simulation loop (Gemini Pro + GPT Sol) with **uniform ACCEPT** on 2026-08-07 (ledger 8.14).
 - **Blocking manual steps (Patrick only, credential-gated)**:
   1. Submit de-anonymized IWAI camera-ready via OpenReview (prerequisite for JAIR's extended-version policy).
-  2. Copy JAIR's real Overleaf template (`overleaf.com/read/hycbzkdksrzz`) and reconcile `full_paper_jair.tex` against it — off-format submissions are desk-rejected, hard gate.
-  3. `twine upload` to TestPyPI then PyPI (`rho-aif` name verified unclaimed); confirm/move local `v1.0.0` tag, push tags. The paper's `pip install rho-aif` claim is false until this lands.
+  2. `twine upload` to TestPyPI then PyPI (`rho-aif` name verified unclaimed); confirm/move local `v1.0.0` tag, push tags. The paper's `pip install rho-aif` claim is false until this lands.
+- **Resolved 2026-08-19**: the JAIR template reconciliation is done — the author kit is a public download (not Overleaf-gated); `full_paper_jair.tex` now builds on the official `jair.cls` with BibLaTeX/biber (TinyTeX toolchain at `~/Library/TinyTeX/bin/universal-darwin`; build: `pdflatex → biber → pdflatex ×2`). The old tectonic path no longer applies to the JAIR file (still fine for the LNCS `full_paper.tex`).
+- **Stage J (in progress, ledger §9)**: the empirical-rigor audit found the OTC environment streams were never seed-controlled (fixed: per-episode `env.reset` seeds), MCTS-EFE was not MCTS (rewritten: UCB1 + max-backup + exact IG rewards), bits/nats inconsistency across agent families (unified on bits), EpistemicOnly leaf bug (fixed), Welch/Student mismatch in stats (fixed). ALL OTC-derived results CSVs and paper tables are being regenerated under the fixed pipeline before submission; do not trust committed OTC numbers against fresh runs mid-regeneration.
 - **SECURITY**: JAIR's only legitimate site is `jair.org` (AI Access Foundation). `sub.ifspress.hk` is a documented hijacked-journal clone — never submit, pay, or download templates there.
 - **Open decisions**: author list confirmation (Cooper + Velasquez listed; David Baines's role unrecorded as a decision — plan says "confirm author list before submission").
 
