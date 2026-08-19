@@ -83,7 +83,9 @@ def compute_comparison_stats(
     mean_b, ci_b_lo, ci_b_hi = bootstrap_ci(vals_b)
 
     d = cohens_d(vals_a, vals_b)
-    t_stat, p_val = ttest_ind(vals_a, vals_b)
+    # Welch (unequal-variance) t-test, matching tost_equivalence and the
+    # manuscript's declared methodology.
+    t_stat, p_val = ttest_ind(vals_a, vals_b, equal_var=False)
 
     return {
         "mean_a": mean_a, "ci_a": (ci_a_lo, ci_a_hi),
@@ -114,7 +116,17 @@ def seed_means(
             seed = getattr(r, seed_attr)
             val = metric_fn(r)
         by_seed.setdefault(seed, []).append(float(val))
-    return np.array([np.mean(v) for _, v in sorted(by_seed.items(), key=lambda x: str(x[0]))])
+
+    # Sort numerically when every seed label is numeric (string sorting puts
+    # 1024 before 123 before 42, silently misaligning any array zipped
+    # against the nominal seed list); fall back to string order otherwise.
+    def _sort_key(item):
+        key = item[0]
+        if isinstance(key, (int, float)) and not isinstance(key, bool):
+            return (0, float(key))
+        return (1, str(key))
+
+    return np.array([np.mean(v) for _, v in sorted(by_seed.items(), key=_sort_key)])
 
 
 def seed_level_ttest(
@@ -133,7 +145,9 @@ def seed_level_ttest(
 
     means_a = seed_means(results_a, metric_fn, seed_attr=seed_attr)
     means_b = seed_means(results_b, metric_fn, seed_attr=seed_attr)
-    t_stat, p_val = ttest_ind(means_a, means_b)
+    # Welch (unequal-variance) t-test on per-seed means, consistent with
+    # tost_equivalence and the manuscript's declared methodology.
+    t_stat, p_val = ttest_ind(means_a, means_b, equal_var=False)
     return {
         "n_seeds_a": int(len(means_a)),
         "n_seeds_b": int(len(means_b)),

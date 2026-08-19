@@ -95,9 +95,11 @@ class InspectionTreeSearchAgent:
         return None
 
     def _binary_entropy(self, p):
+        # Bits (log base 2), matching the observe-then-commit agents so the
+        # information weight w is denominated identically across families.
         if p <= 0 or p >= 1:
             return 0.0
-        return -p * math.log(p) - (1 - p) * math.log(1 - p)
+        return -p * math.log2(p) - (1 - p) * math.log2(1 - p)
 
     def _leaf_value(self, pos, fault_beliefs, diagnosed, comp_positions):
         """Heuristic: expected reward from diagnosing all remaining components

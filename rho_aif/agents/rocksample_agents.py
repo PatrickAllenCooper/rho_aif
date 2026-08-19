@@ -99,7 +99,9 @@ def _info_gain_for_rock(rock_belief: float, accuracy: float) -> float:
     p = rock_belief
     if p < 1e-10 or p > 1 - 1e-10:
         return 0.0
-    prior_h = -p * math.log(p) - (1 - p) * math.log(1 - p)
+    # Bits (log base 2), matching RockSampleBeliefState.entropy and the
+    # observe-then-commit agents.
+    prior_h = -p * math.log2(p) - (1 - p) * math.log2(1 - p)
     post_h = 0.0
     for obs in [0, 1]:
         if obs == 1:
@@ -109,7 +111,7 @@ def _info_gain_for_rock(rock_belief: float, accuracy: float) -> float:
             p_obs = p * (1 - accuracy) + (1 - p) * accuracy
             p_post = (p * (1 - accuracy)) / p_obs if p_obs > 1e-10 else p
         if 0 < p_post < 1:
-            post_h += p_obs * (-p_post * math.log(p_post) - (1 - p_post) * math.log(1 - p_post))
+            post_h += p_obs * (-p_post * math.log2(p_post) - (1 - p_post) * math.log2(1 - p_post))
     return prior_h - post_h
 
 
@@ -542,8 +544,8 @@ class RockSampleTreeSearchAgent:
             p_good = rock_beliefs[k]
             prior_h = 0.0
             if 0 < p_good < 1:
-                prior_h = -p_good * math.log(p_good) - \
-                          (1 - p_good) * math.log(1 - p_good)
+                prior_h = -p_good * math.log2(p_good) - \
+                          (1 - p_good) * math.log2(1 - p_good)
 
             expected_cont = 0.0
             expected_post_h = 0.0
@@ -558,8 +560,8 @@ class RockSampleTreeSearchAgent:
 
                 post_h = 0.0
                 if 0 < p_post < 1:
-                    post_h = -p_post * math.log(p_post) - \
-                             (1 - p_post) * math.log(1 - p_post)
+                    post_h = -p_post * math.log2(p_post) - \
+                             (1 - p_post) * math.log2(1 - p_post)
                 expected_post_h += p_obs * post_h
 
                 new_beliefs = rock_beliefs.copy()

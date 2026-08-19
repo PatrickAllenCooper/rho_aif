@@ -44,7 +44,14 @@ class EpistemicOnlyAgent(BaseAgent):
 
     def _evaluate(self, belief: np.ndarray, depth: int):
         if depth >= self.planning_horizon:
-            return self._best_commit_from_belief(belief)
+            # Leaf commit must carry G = 0, matching the interior commit
+            # convention. _best_commit_from_belief returns +E_b[r], a value
+            # in reward units; returning it here would leak the pragmatic
+            # term into a purely epistemic G-minimization (and with the
+            # wrong sign: higher terminal reward would make observation
+            # paths look worse).
+            best_commit_action, _ = self._best_commit_from_belief(belief)
+            return best_commit_action, 0.0
 
         best_commit_action, _ = self._best_commit_from_belief(belief)
         best_commit_g = 0.0

@@ -69,78 +69,102 @@ class MCTSEFEAgent(BaseAgent):
         num_simulations: int = 200,
         planning_horizon: int = 5,
         rollout_depth: int = 3,
-        exploration_constant: float = 1.414,
+        exploration_constant: Optional[float] = None,
     ):
         super().__init__(observation_models, env_config)
         self.num_simulations = num_simulations
         self.planning_horizon = planning_horizon
         self.rollout_depth = rollout_depth
+        # UCB1's exploration term must be commensurate with the value scale
+        # or high-magnitude penalties (Tiger's -100) freeze exploration.
+        # Default follows POMCP (Silver and Veness 2010): c = reward range.
+        if exploration_constant is None:
+            rewards = np.asarray(self.commit_rewards, dtype=float)
+            exploration_constant = float(max(1.0, rewards.max() - rewards.min()))
         self.exploration_constant = exploration_constant
 
     def select_action(self) -> int:
+        """Run num_simulations MCTS iterations from the root belief and
+        return the root action with the highest visit count."""
         belief = self.belief.belief
 
-        best_commit_action, best_commit_value = self._best_commit_from_belief(belief)
+        root = MCTSNode(belief=belief.copy())
+        self._expand(root)
 
-        n_samples = min(self.num_simulations, 50)
-        observe_values = np.zeros(self.num_observe_actions)
-        for k in range(self.num_observe_actions):
-            total = 0.0
-            model = self.obs_models[k]
-            predictive = belief @ model
-            predictive = predictive / predictive.sum()
-            for _ in range(n_samples):
-                obs_idx = int(np.random.choice(len(predictive), p=predictive))
-                posterior = model[:, obs_idx] * belief
-                posterior = posterior / posterior.sum()
-                v = -self.obs_costs[k] + self._multi_step_rollout(posterior, self.rollout_depth)
-                total += v
-            observe_values[k] = total / n_samples
+        for _ in range(self.num_simulations):
+            self._simulate(root, depth=0)
 
-        best_obs_k = int(np.argmax(observe_values))
-        best_obs_value = observe_values[best_obs_k]
+        # Root action by estimated value. Commit children carry exact values
+        # and observe children carry max-backup estimates, so the value
+        # criterion is the consistent one (visit counts are distorted by the
+        # range-scaled exploration term).
+        best_child = max(
+            root.children.values(),
+            key=lambda c: (c.mean_value, c.visit_count),
+        )
+        return best_child.action
 
-        if best_commit_value >= best_obs_value:
-            return best_commit_action
-        return best_obs_k
+    def _simulate(self, node: MCTSNode, depth: int) -> float:
+        """One MCTS iteration from a belief node: UCB1 selection over action
+        children, exact per-node information gain as immediate reward for
+        observation actions (so the tree optimizes the EFE objective), an
+        EFE-greedy rollout at the frontier, and max-backup (Bellman-style)
+        value propagation. Sampled-return averaging would contaminate branch
+        values with the forced exploration of dominated commits, which the
+        asymmetric penalties of observe-then-commit problems punish severely;
+        backing up the max over action-children means estimates the value of
+        acting optimally below this node instead."""
+        if depth >= self.planning_horizon:
+            value = self._efe_rollout(node.belief, self.rollout_depth)
+            node.visit_count += 1
+            node.total_value += value
+            return value
 
-    def _tree_policy(self, node: MCTSNode) -> MCTSNode:
-        """Select a leaf node using UCB1.
+        if not node.children:
+            self._expand(node)
+            value = self._efe_rollout(node.belief, self.rollout_depth)
+            node.visit_count += 1
+            node.total_value += value
+            return value
 
-        For observation actions, after selecting an action via UCB1,
-        samples an observation outcome proportional to the predictive
-        distribution and descends into that child.
-        """
-        depth = 0
-        while depth < self.planning_horizon:
-            if node.is_terminal:
-                return node
-
-            if not node.children:
-                self._expand(node)
-                first_child = next(iter(node.children.values()))
-                if first_child._obs_children is not None:
-                    return self._sample_obs_child(first_child)
-                return first_child
-
-            if any(c.visit_count == 0 for c in node.children.values()):
-                unvisited = [c for c in node.children.values() if c.visit_count == 0]
-                chosen = unvisited[np.random.randint(len(unvisited))]
-                if chosen._obs_children is not None:
-                    return self._sample_obs_child(chosen)
-                return chosen
-
-            best = max(
+        unvisited = [c for c in node.children.values() if c.visit_count == 0]
+        if unvisited:
+            chosen = unvisited[np.random.randint(len(unvisited))]
+        else:
+            chosen = max(
                 node.children.values(),
                 key=lambda c: c.ucb1(self.exploration_constant),
             )
-            if best._obs_children is not None:
-                node = self._sample_obs_child(best)
-            else:
-                node = best
-            depth += 1
 
-        return node
+        if not chosen.is_terminal:
+            # Commit children hold their exact value from expansion and need
+            # no further sampling; only observe children are refined.
+            k = chosen.action
+            info_gain = self._one_step_info_gain(k, node.belief)
+            child = self._sample_obs_child(chosen)
+            sampled = -self.obs_costs[k] + info_gain + self._simulate(child, depth + 1)
+            chosen.visit_count += 1
+            chosen.total_value += sampled
+
+        node.visit_count += 1
+        value = max(c.mean_value for c in node.children.values())
+        node.total_value = value * node.visit_count
+        return value
+
+    def _one_step_info_gain(self, obs_action: int, belief: np.ndarray) -> float:
+        """Exact expected information gain (bits) of one observation action."""
+        model = self.obs_models[obs_action]
+        num_outcomes = model.shape[1]
+        prior_entropy = scipy_entropy(belief, base=2)
+        expected_posterior_entropy = 0.0
+        for obs_idx in range(num_outcomes):
+            prob_obs = float(np.dot(belief, model[:, obs_idx]))
+            if prob_obs < 1e-10:
+                continue
+            posterior = model[:, obs_idx] * belief
+            posterior = posterior / posterior.sum()
+            expected_posterior_entropy += prob_obs * scipy_entropy(posterior, base=2)
+        return prior_entropy - expected_posterior_entropy
 
     def _sample_obs_child(self, action_node: MCTSNode) -> MCTSNode:
         """Sample an observation outcome for an observation action node."""
@@ -149,7 +173,6 @@ class MCTSEFEAgent(BaseAgent):
         probs = probs / probs.sum()
         idx = np.random.choice(len(probs), p=probs)
         key = list(obs_children.keys())[idx]
-        action_node.visit_count += 1
         return obs_children[key]["node"]
 
     def _expand(self, node: MCTSNode):
@@ -185,15 +208,13 @@ class MCTSEFEAgent(BaseAgent):
             action_id = self.num_observe_actions + i
             child = MCTSNode(belief=belief.copy(), parent=node, action=action_id)
             child.is_terminal = True
+            # Commit values are deterministic given the belief, so seed the
+            # node with its exact value instead of leaving it to forced
+            # first-visit exploration (whose single sample would carry the
+            # same value anyway).
+            child.visit_count = 1
+            child.total_value = float(np.dot(belief, self.commit_rewards[i]))
             node.children[action_id] = child
-
-    def _evaluate_leaf(self, node: MCTSNode) -> float:
-        """Evaluate a leaf node using EFE heuristic + rollout."""
-        if node.is_terminal:
-            action_idx = node.action - self.num_observe_actions
-            return float(np.dot(node.belief, self.commit_rewards[action_idx]))
-
-        return self._efe_rollout(node.belief, self.rollout_depth)
 
     def _multi_step_rollout(self, belief: np.ndarray, depth: int) -> float:
         """Multi-step rollout that continues observing for the full depth.
@@ -226,7 +247,16 @@ class MCTSEFEAgent(BaseAgent):
         else:
             posterior = posterior / p_sum
 
-        continue_value = -self.obs_costs[best_k] + self._multi_step_rollout(posterior, depth - 1)
+        # The rollout must value observation steps under the same EFE
+        # objective as the tree (cost plus information gain plus
+        # continuation); omitting the epistemic term here systematically
+        # biases frontier values toward early commitment.
+        info_gain = self._one_step_info_gain(best_k, belief)
+        continue_value = (
+            -self.obs_costs[best_k]
+            + info_gain
+            + self._multi_step_rollout(posterior, depth - 1)
+        )
         return max(best_commit, continue_value)
 
     def _efe_rollout(self, belief: np.ndarray, depth: int) -> float:
@@ -262,10 +292,3 @@ class MCTSEFEAgent(BaseAgent):
             if v > best:
                 best = v
         return best
-
-    def _backpropagate(self, node: MCTSNode, value: float):
-        """Propagate value up the tree."""
-        while node is not None:
-            node.visit_count += 1
-            node.total_value += value
-            node = node.parent
