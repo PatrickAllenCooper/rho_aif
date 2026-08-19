@@ -93,3 +93,9 @@ linkedin_post/
 # Experiment checkpoints
 checkpoint_overnight.json
 tools/sarsop/
+paper/*.bcf
+paper/*.blg
+paper/*.run.xml
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.out

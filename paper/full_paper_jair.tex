@@ -1,29 +1,43 @@
-\documentclass[manuscript,screen,review,nonacm=true]{acmart}
+%% JAIR submission format: the official jair.cls (JAIR Author Kit,
+%% 2025/08/15) extending acmart, with BibLaTeX/biber and the acmauthoryear
+%% style as the kit's template mandates. Build: pdflatex -> biber ->
+%% pdflatex x2 (latexmk handles the cycle).
+\documentclass[manuscript, screen, review]{jair}
 
-\settopmatter{printacmref=false}
-\renewcommand\footnotetextcopyrightpermission[1]{}
-\setcopyright{none}
-\citestyle{acmauthoryear}
+\setcopyright{cc}
+\acmDOI{10.1613/jair.1.xxxxx}
 
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{booktabs}
-\usepackage{amsthm}
+\JAIRAE{}
+\JAIRTrack{}
+\acmVolume{1}
+\acmArticle{1}
+\acmMonth{8}
+\acmYear{2026}
+
+%% acmart with natbib=false leaves stub definitions of \citep/\citet;
+%% undefine them so biblatex's natbib compatibility module can take over.
+\makeatletter
+\undef\citep
+\undef\citet
+\makeatother
+
+\RequirePackage[
+  datamodel=acmdatamodel,
+  style=acmauthoryear,
+  backend=biber,
+  giveninits=true,
+  uniquename=init,
+  natbib=true
+  ]{biblatex}
+
+\renewcommand*{\bibopenbracket}{(}
+\renewcommand*{\bibclosebracket}{)}
+
+\addbibresource{full_paper_jair.bib}
+
 \usepackage{nicefrac}
-\usepackage{xcolor}
 \usepackage{multirow}
-\usepackage{graphicx}
 \graphicspath{{./}{../}}
-\usepackage{enumitem}
-
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{lemma}[theorem]{Lemma}
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[theorem]{Example}
 
 \begin{document}
 
@@ -58,7 +72,7 @@ From a Canonical Information-Unit Weight to an Operational Shadow Price}
 \textbf{Conclusions:} Expected Free Energy supplies a belief-dependent utility whose information-unit weight is derived relative to the reward convention rather than searched per task, and its reward-scale sensitivity is best understood, and used, as the shadow price of an explicit sensing budget: the design question changes from ``what should the information weight be'' to ``how much sensing can we afford.''
 \end{abstract}
 
-\keywords{Active inference, Expected free energy, $\rho$-POMDPs, Epistemic value, Belief-dependent utility, Partial observability, Information gain, Sensing budgets, Shadow prices}
+%% JAIR note: do not include ACM CCS Concepts or keywords.
 
 \maketitle
 
@@ -855,321 +869,7 @@ Proposition~\ref{prop:factored} carries the bridge beyond observe-then-commit in
 
 \paragraph{Competing interests.} The authors have no competing interests to declare that are relevant to the content of this article.
 
-\begin{thebibliography}{49}
-
-\bibitem[Altman(1999)]{altman1999}
-E.~Altman.
-\newblock \emph{Constrained Markov Decision Processes}.
-\newblock Chapman \& Hall/CRC, 1999.
-
-\bibitem[Araya-L\'{o}pez et~al.(2010)]{araya2010}
-M.~Araya-L\'{o}pez, O.~Buffet, V.~Thomas, and F.~Charpillet.
-\newblock A {POMDP} extension with belief-dependent rewards.
-\newblock In \emph{Advances in Neural Information Processing Systems}, 2010.
-
-\bibitem[Bellemare et~al.(2016)]{bellemare2016}
-M.~Bellemare, S.~Srinivasan, G.~Ostrovski, T.~Schaul, D.~Saxton, and R.~Munos.
-\newblock Unifying count-based exploration and intrinsic motivation.
-\newblock In \emph{Advances in Neural Information Processing Systems}, 2016.
-
-\bibitem[Bernardo(1979)]{bernardo1979}
-J.~M. Bernardo.
-\newblock Expected information as expected utility.
-\newblock \emph{The Annals of Statistics}, 7(3):686--690, 1979.
-
-\bibitem[Benchetrit et~al.(2025)]{benchetrit2025}
-R.~Benchetrit, I.~Lev-Yehudi, A.~Zhitnikov, and V.~Indelman.
-\newblock Anytime incremental $\rho${POMDP} planning in continuous spaces.
-\newblock \emph{arXiv preprint arXiv:2502.02549}, 2025.
-
-\bibitem[Blum(1954)]{blum1954}
-J.~R. Blum.
-\newblock Approximation methods which converge with probability one.
-\newblock \emph{The Annals of Mathematical Statistics}, 25(2):382--386, 1954.
-
-\bibitem[Burda et~al.(2019)]{burda2019}
-Y.~Burda, H.~Edwards, A.~Storkey, and O.~Klimov.
-\newblock Exploration by random network distillation.
-\newblock In \emph{International Conference on Learning Representations}, 2019.
-
-\bibitem[Champion et~al.(2026)]{champion2024}
-T.~Champion, H.~Bowman, D.~Markovi\'{c}, and M.~Grze\'{s}.
-\newblock Reframing the expected free energy: Four formulations and a unification.
-\newblock \emph{Neural Computation}, 38(3):439--469, 2026.
-
-\bibitem[Cooper and Velasquez(2026)]{cooper2026iwai}
-P.~Cooper and A.~Velasquez.
-\newblock Expected free energy as belief-dependent utility for $\rho$-{POMDP}s.
-\newblock In \emph{Proceedings of the 7th International Workshop on Active Inference (IWAI 2026)}, Communications in Computer and Information Science. Springer, 2026.
-\newblock Accepted as poster and spotlight presentation; abridged version of the observe-then-commit equivalence results in this article.
-
-\bibitem[Da~Costa et~al.(2020)]{dacosta2020}
-L.~Da~Costa, T.~Parr, N.~Sajid, S.~Veselic, V.~Neacsu, and K.~Friston.
-\newblock Active inference on discrete state-spaces: A synthesis.
-\newblock \emph{Journal of Mathematical Psychology}, 99:102447, 2020.
-
-\bibitem[Da~Costa et~al.(2023)]{dacosta2020b}
-L.~Da~Costa, N.~Sajid, T.~Parr, K.~Friston, and R.~Smith.
-\newblock Reward maximization through discrete active inference.
-\newblock \emph{Neural Computation}, 35(5):807--852, 2023.
-
-\bibitem[de~Vries et~al.(2025)]{devries2025}
-B.~de~Vries, W.~Nuijten, T.~van~de~Laar, et~al.
-\newblock Expected free energy-based planning as variational inference.
-\newblock \emph{arXiv preprint arXiv:2504.14898}, 2025.
-
-\bibitem[Duff(2002)]{duff2002}
-M.~O. Duff.
-\newblock Optimal learning: Computational procedures for {B}ayes-adaptive {M}arkov decision processes.
-\newblock PhD thesis, University of Massachusetts Amherst, 2002.
-
-\bibitem[Fehr et~al.(2018)]{fehr2018}
-M.~Fehr, O.~Buffet, V.~Thomas, and J.~Dibangoye.
-\newblock $\rho$-{POMDP}s have {L}ipschitz-continuous $\epsilon$-optimal value functions.
-\newblock In \emph{Advances in Neural Information Processing Systems}, 2018.
-
-\bibitem[Foster et~al.(2021)]{foster2021dad}
-A.~Foster, D.~R. Ivanova, I.~Malik, and T.~Rainforth.
-\newblock Deep adaptive design: Amortizing sequential {B}ayesian experimental design.
-\newblock In \emph{International Conference on Machine Learning}, pages 3384--3395. PMLR, 2021.
-
-\bibitem[Fountas et~al.(2020)]{fountas2020}
-Z.~Fountas, N.~Sajid, P.~A.~M. Mediano, and K.~Friston.
-\newblock Deep active inference agents using {M}onte-{C}arlo methods.
-\newblock In \emph{Advances in Neural Information Processing Systems}, 2020.
-
-\bibitem[Friston(2010)]{friston2010}
-K.~Friston.
-\newblock The free-energy principle: a unified brain theory?
-\newblock \emph{Nature Reviews Neuroscience}, 11(2):127--138, 2010.
-
-\bibitem[Friston et~al.(2015)]{friston2015}
-K.~Friston, F.~Rigoli, D.~Ognibene, C.~Mathys, T.~FitzGerald, and G.~Pezzulo.
-\newblock Active inference and epistemic value.
-\newblock \emph{Cognitive Neuroscience}, 6(4):187--214, 2015.
-
-\bibitem[Friston et~al.(2021)]{friston2021}
-K.~Friston, L.~Da~Costa, D.~Hafner, C.~Hesp, and T.~Parr.
-\newblock Sophisticated inference.
-\newblock \emph{Neural Computation}, 33(3):713--763, 2021.
-
-\bibitem[Ghavamzadeh et~al.(2015)]{ghavamzadeh2015}
-M.~Ghavamzadeh, S.~Mannor, J.~Pineau, and A.~Tamar.
-\newblock {B}ayesian reinforcement learning: A survey.
-\newblock \emph{Foundations and Trends in Machine Learning}, 8(5--6):359--483, 2015.
-
-\bibitem[Gneiting and Raftery(2007)]{gneiting2007}
-T.~Gneiting and A.~E. Raftery.
-\newblock Strictly proper scoring rules, prediction, and estimation.
-\newblock \emph{Journal of the American Statistical Association}, 102(477):359--378, 2007.
-
-\bibitem[Guez et~al.(2013)]{guez2013}
-A.~Guez, D.~Silver, and P.~Dayan.
-\newblock Scalable and efficient {B}ayes-adaptive reinforcement learning based on {M}onte-{C}arlo tree search.
-\newblock \emph{Journal of Artificial Intelligence Research}, 48:841--883, 2013.
-
-\bibitem[Gundersen et~al.(2024)]{gundersen2024jair}
-O.~E. Gundersen, M.~Helmert, and H.~Hoos.
-\newblock Improving reproducibility in {AI} research: Four mechanisms adopted by {JAIR}.
-\newblock \emph{Journal of Artificial Intelligence Research}, 81:1019--1041, 2024.
-
-\bibitem[Haarnoja et~al.(2018)]{haarnoja2018}
-T.~Haarnoja, A.~Zhou, P.~Abbeel, and S.~Levine.
-\newblock Soft actor-critic: Off-policy maximum entropy deep reinforcement learning with a stochastic actor.
-\newblock In \emph{International Conference on Machine Learning}, 2018.
-
-\bibitem[Haarnoja et~al.(2018b)]{haarnoja2018sac}
-T.~Haarnoja, A.~Zhou, K.~Hartikainen, G.~Tucker, S.~Ha, J.~Tan, V.~Kumar, H.~Zhu, A.~Gupta, P.~Abbeel, and S.~Levine.
-\newblock Soft actor-critic algorithms and applications.
-\newblock arXiv preprint arXiv:1812.05905, 2018.
-\newblock The applications paper introducing automatic entropy-temperature tuning by dual gradient ascent; the original ICML paper above uses a fixed temperature.
-
-\bibitem[Heins et~al.(2022)]{heins2022}
-C.~Heins, B.~Millidge, D.~Demekas, B.~Klein, K.~Friston, I.~Couzin, and A.~Tschantz.
-\newblock pymdp: A {P}ython library for active inference in discrete state spaces.
-\newblock \emph{Journal of Open Source Software}, 7(73):4098, 2022.
-
-\bibitem[Houthooft et~al.(2016)]{houthooft2016}
-R.~Houthooft, X.~Chen, Y.~Duan, J.~Schulman, F.~De~Turck, and P.~Abbeel.
-\newblock {VIME}: Variational information maximizing exploration.
-\newblock In \emph{Advances in Neural Information Processing Systems}, 2016.
-
-\bibitem[Howard(1966)]{howard1966}
-R.~A. Howard.
-\newblock Information value theory.
-\newblock \emph{IEEE Transactions on Systems Science and Cybernetics}, 2(1):22--26, 1966.
-
-\bibitem[Itti and Baldi(2009)]{itti2009}
-L.~Itti and P.~Baldi.
-\newblock {B}ayesian surprise attracts human attention.
-\newblock \emph{Vision Research}, 49(10):1295--1306, 2009.
-
-\bibitem[Kaelbling et~al.(1998)]{kaelbling1998}
-L.~P. Kaelbling, M.~L. Littman, and A.~R. Cassandra.
-\newblock Planning and acting in partially observable stochastic domains.
-\newblock \emph{Artificial Intelligence}, 101(1--2):99--134, 1998.
-
-\bibitem[Kim et~al.(2011)]{kim2011cpomdp}
-D.~Kim, J.~Lee, K.-E. Kim, and P.~Poupart.
-\newblock Point-based value iteration for constrained {POMDP}s.
-\newblock In \emph{International Joint Conference on Artificial Intelligence}, pages 1968--1974, 2011.
-
-\bibitem[Kurniawati et~al.(2008)]{kurniawati2008}
-H.~Kurniawati, D.~Hsu, and W.~S. Lee.
-\newblock {SARSOP}: Efficient point-based {POMDP} planning by approximating optimally reachable belief spaces.
-\newblock In \emph{Robotics: Science and Systems}, 2008.
-
-\bibitem[Levine(2018)]{levine2018}
-S.~Levine.
-\newblock Reinforcement learning and control as probabilistic inference: Tutorial and review.
-\newblock \emph{arXiv preprint arXiv:1805.00909}, 2018.
-
-\bibitem[Lindley(1956)]{lindley1956}
-D.~V. Lindley.
-\newblock On a measure of the information provided by an experiment.
-\newblock \emph{The Annals of Mathematical Statistics}, 27(4):986--1005, 1956.
-
-\bibitem[Maisto et~al.(2025)]{maisto2025}
-D.~Maisto, F.~Gregoretti, K.~J. Friston, and G.~Pezzulo.
-\newblock Active inference tree search in large {POMDP}s.
-\newblock \emph{Neurocomputing}, 623:129319, 2025.
-
-\bibitem[Mat\v{e}jka and McKay(2015)]{matejka2015}
-F.~Mat\v{e}jka and A.~McKay.
-\newblock Rational inattention to discrete choices: A new foundation for the multinomial logit model.
-\newblock \emph{American Economic Review}, 105(1):272--298, 2015.
-
-\bibitem[Millidge et~al.(2020)]{millidge2020}
-B.~Millidge, A.~Tschantz, A.~K. Seth, and C.~L. Buckley.
-\newblock On the relationship between active inference and control as inference.
-\newblock In \emph{International Workshop on Active Inference}, pp.\ 3--11. Springer, 2020.
-
-\bibitem[Millidge et~al.(2021)]{millidge2021}
-B.~Millidge, A.~Tschantz, and C.~L. Buckley.
-\newblock Whence the expected free energy?
-\newblock \emph{Neural Computation}, 33(2):447--482, 2021.
-
-\bibitem[Oudeyer and Kaplan(2007)]{oudeyer2007}
-P.-Y. Oudeyer and F.~Kaplan.
-\newblock What is intrinsic motivation? {A} typology of computational approaches.
-\newblock \emph{Frontiers in Neurorobotics}, 1:6, 2007.
-
-\bibitem[Parr and Friston(2019)]{parr2019}
-T.~Parr and K.~J. Friston.
-\newblock Generalised free energy and active inference.
-\newblock \emph{Biological Cybernetics}, 113(5):495--513, 2019.
-
-\bibitem[Parr et~al.(2022)]{parr2022}
-T.~Parr, G.~Pezzulo, and K.~J. Friston.
-\newblock \emph{Active Inference: The Free Energy Principle in Mind, Brain, and Behavior}.
-\newblock MIT Press, 2022.
-
-\bibitem[Pathak et~al.(2017)]{pathak2017}
-D.~Pathak, P.~Agrawal, A.~A. Efros, and T.~Darrell.
-\newblock Curiosity-driven exploration by self-supervised prediction.
-\newblock In \emph{International Conference on Machine Learning}, 2017.
-
-\bibitem[Pineau et~al.(2003)]{pineau2003}
-J.~Pineau, G.~Gordon, and S.~Thrun.
-\newblock Point-based value iteration: An anytime algorithm for {POMDP}s.
-\newblock In \emph{International Joint Conference on Artificial Intelligence}, 2003.
-
-\bibitem[Rawlik et~al.(2012)]{rawlik2012}
-K.~Rawlik, M.~Toussaint, and S.~Vijayakumar.
-\newblock On stochastic optimal control and reinforcement learning by approximate inference.
-\newblock In \emph{Robotics: Science and Systems}, 2012.
-
-\bibitem[Robbins and Monro(1951)]{robbins1951}
-H.~Robbins and S.~Monro.
-\newblock A stochastic approximation method.
-\newblock \emph{The Annals of Mathematical Statistics}, 22(3):400--407, 1951.
-
-\bibitem[Russo and Van~Roy(2014)]{russo2014}
-D.~Russo and B.~Van~Roy.
-\newblock Learning to optimize via information-directed sampling.
-\newblock In \emph{Advances in Neural Information Processing Systems}, 2014.
-
-\bibitem[Sajid et~al.(2021)]{sajid2021}
-N.~Sajid, P.~J. Ball, T.~Parr, and K.~J. Friston.
-\newblock Active inference: Demystified and compared.
-\newblock \emph{Neural Computation}, 33(3):674--712, 2021.
-
-\bibitem[Satsangi et~al.(2018)]{satsangi2018}
-Y.~Satsangi, S.~Whiteson, F.~A. Oliehoek, and M.~T.~J. Spaan.
-\newblock Exploiting submodular value functions for scaling up active perception.
-\newblock \emph{Autonomous Robots}, 42(2):209--233, 2018.
-
-\bibitem[Schmidhuber(1991)]{schmidhuber1991}
-J.~Schmidhuber.
-\newblock A possibility for implementing curiosity and boredom in model-building neural controllers.
-\newblock In \emph{Proc.\ International Conference on Simulation of Adaptive Behavior}, pp.\ 222--227, 1991.
-
-\bibitem[Schuirmann(1987)]{schuirmann1987}
-D.~J. Schuirmann.
-\newblock A comparison of the two one-sided tests procedure and the power approach for assessing the equivalence of average bioavailability.
-\newblock \emph{Journal of Pharmacokinetics and Biopharmaceutics}, 15(6):657--680, 1987.
-
-\bibitem[Shani et~al.(2013)]{shani2013}
-G.~Shani, J.~Pineau, and R.~Kaplow.
-\newblock A survey of point-based {POMDP} solvers.
-\newblock \emph{Autonomous Agents and Multi-Agent Systems}, 27(1):1--51, 2013.
-
-\bibitem[Silver and Veness(2010)]{silver2010}
-D.~Silver and J.~Veness.
-\newblock {Monte-Carlo} planning in large {POMDP}s.
-\newblock In \emph{Advances in Neural Information Processing Systems}, 2010.
-
-\bibitem[Sims(2003)]{sims2003}
-C.~A. Sims.
-\newblock Implications of rational inattention.
-\newblock \emph{Journal of Monetary Economics}, 50(3):665--690, 2003.
-
-\bibitem[Smallwood and Sondik(1973)]{smallwood1973}
-R.~D. Smallwood and E.~J. Sondik.
-\newblock The optimal control of partially observable {M}arkov processes over a finite horizon.
-\newblock \emph{Operations Research}, 21(5):1071--1088, 1973.
-
-\bibitem[Smith and Simmons(2004)]{smith2004}
-T.~Smith and R.~Simmons.
-\newblock Heuristic search value iteration for {POMDP}s.
-\newblock In \emph{Uncertainty in Artificial Intelligence}, 2004.
-
-\bibitem[Spaan et~al.(2015)]{spaan2015}
-M.~T.~J. Spaan, T.~S. Veiga, and P.~U. Lima.
-\newblock Decision-theoretic planning under uncertainty with information rewards for active cooperative perception.
-\newblock \emph{Autonomous Agents and Multi-Agent Systems}, 29(6):1157--1185, 2015.
-
-\bibitem[Sunberg and Kochenderfer(2018)]{sunberg2018}
-Z.~N. Sunberg and M.~J. Kochenderfer.
-\newblock Online algorithms for {POMDP}s with continuous state, action, and observation spaces.
-\newblock In \emph{International Conference on Automated Planning and Scheduling}, 2018.
-
-\bibitem[Todorov(2006)]{todorov2007}
-E.~Todorov.
-\newblock Linearly-solvable {M}arkov decision problems.
-\newblock In \emph{Advances in Neural Information Processing Systems}, 2006.
-
-\bibitem[Towers et~al.(2024)]{towers2024}
-M.~Towers, A.~Kwiatkowski, J.~Terry, J.~U. Balis, G.~De~Cola, T.~Deleu, M.~Goul{\~a}o, A.~Kallinteris, M.~Krimmel, A.~KG, R.~Perez-Vicente, A.~Pierr{\'e}, S.~Schulhoff, J.~J. Tai, H.~Tan, and O.~G. Younis.
-\newblock Gymnasium: A standard interface for reinforcement learning environments.
-\newblock \emph{arXiv preprint arXiv:2407.17032}, 2024.
-
-\bibitem[Tschantz et~al.(2020)]{tschantz2020}
-A.~Tschantz, B.~Millidge, A.~K. Seth, and C.~L. Buckley.
-\newblock Reinforcement learning through active inference.
-\newblock In \emph{ICLR Workshop on Bridging AI and Cognitive Science}, 2020.
-
-\bibitem[Walraven et~al.(2025)]{walraven2024}
-E.~Walraven, J.~Sijs, and G.~Burghouts.
-\newblock Information gathering in {POMDP}s using active inference.
-\newblock \emph{Autonomous Agents and Multi-Agent Systems}, 39(1):3, 2025.
-
-\bibitem[Ye et~al.(2017)]{ye2017}
-N.~Ye, A.~Somani, D.~Hsu, and W.~S. Lee.
-\newblock {DESPOT}: Online {POMDP} planning with regularization.
-\newblock \emph{Journal of Artificial Intelligence Research}, 58:231--266, 2017.
-
-\end{thebibliography}
+\printbibliography
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
