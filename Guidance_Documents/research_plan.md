@@ -418,8 +418,8 @@ At H=2, Planning and EFE are equivalent. EFE's advantage over Planning requires 
 
 ## Current Status
 
-**Project Phase**: Phase 11 -- Paper updated with fresh overnight data; ready for review
-**Date**: March 25, 2026
+**Project Phase**: Stage I -- JAIR manuscript at uniform internal referee accept (August 7, 2026); submission blocked only on three credential-gated manual steps (IWAI camera-ready via OpenReview, JAIR Overleaf template reconciliation, PyPI upload). See `full_paper_plan.md` Sections 8.8-8.14 and the root `CLAUDE.md`.
+**Date**: August 19, 2026 (header corrected from the stale "Phase 11 -- March 25, 2026" pointer; the phase log below remains the authoritative history)
 
 ### Initial Submission (Phases 1-7)
 
@@ -885,6 +885,10 @@ Clarified that the poster is being presented at IWAI 2026 (7th International Wor
 
 ### Publication-status correction and resubmission-readiness audit (August 4, 2026)
 The Minds and Machines acceptance recorded on August 3 was a misstatement and has been corrected here and in `poster_content.md` (title, metadata, scope notes, Section 21). Actual status: only the abridged LNCS version is accepted (IWAI 2026, Poster + Spotlight, CCIS proceedings); `paper/full_paper.tex` (66 pages, LNCS master, compiles cleanly, 347 tests passing) is unpublished, and the entire budgeted ρ-POMDP / price-of-information half is new, unreviewed material. Consequence: no sequel paper is needed for the next venue submission — the integrated manuscript itself is the candidate, and Stage I (venue gate) is live. Readiness audit against the Stage I / Section 8.7 checklist: DONE — science complete (Stages A-H, all verdicts recorded), review ledger walked, README reproduction map, citation verification, limitations foregrounded in intro and conclusion. OPEN — (1) venue decision and the derived venue version (conference cut of 8-10 pages + appendix in the venue's template, or journal formatting; the master is venue-agnostic LNCS); (2) prior-publication positioning: the CCIS paper is archival, so the derived version must lead with the unpublished budgeted half, compress Props 1-3 to cited background, and disclose the overlap per the target venue's policy (JAIR explicitly welcomes extended versions; conference CFPs must be checked individually); (3) anonymization of the derived version plus the anonymized artifact link verified from a logged-out browser (deferred since the review response); (4) PyPI release of `rho-aif` per the M6 checklist (build, TestPyPI verify, upload, clean-venv install test); (5) abstract editorial pass for the derived version — it already opens POMDP-native but Section 8.7 asks it to lead with the budgeted-sensing/shadow-price headline, which currently arrives in the second half. Venue research (August 4, verified deadlines): AAMAS 2027 abstract Oct 1 / paper Oct 8, 2026 (official CFP); ICAPS 2027 abstract Dec 7 / paper Dec 13, 2026; ICML 2027 abstract Jan 16 / paper Jan 22, 2027 (aggregator); UAI 2027 ~Feb 12, 2027 (pattern-predicted, reconfirm); AISTATS 2027 ~Oct 8, 2026 (aggregator, official CFP not posted); JAIR/JMLR/TMLR rolling. Best-fit assessment recorded from discussion: UAI 2027 first (decision-theoretic POMDP reviewer pool, realistic runway), ICAPS 2027 second (ρ-POMDP community home, earlier deadline), JAIR as the deadline-free extended-version route; NeurIPS/ICML main tracks judged worst risk-adjusted fit given the prior NeurIPS reviews.
+
+### Project-brain conversion to Claude Code format (August 19, 2026)
+
+Per Patrick's direction, the operational content of the Guidance_Documents (writing conventions, citation-verification policy, statistics protocol, stage-verdict and review-ledger process, current blocking steps, people) was distilled into a root `CLAUDE.md` that Claude Code loads automatically each session. The Guidance_Documents remain the ledger of record; `CLAUDE.md` is the index and rule summary, and its "Publication state" block must be kept current as state changes. Patrick also set the project's standing north star on this date: deep empirical rigor -- rigor over speed, fresh reruns over trusted artifacts, predeclared protocols, calibrated claims. The stale "Current Status" header above was corrected in the same pass. Session-persistent agent memory now mirrors these facts outside the repo.
 
 ---
 
