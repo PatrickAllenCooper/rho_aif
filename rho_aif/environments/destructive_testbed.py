@@ -9,9 +9,10 @@ docs/ideation/2026-08-19-destructive-sensing-design.md (Section 4, E1).
 A unit is HEALTHY or FAULTY. One destructive test reads the unit with
 accuracy p, but the act of testing can destroy it: with probability delta
 if the unit is faulty and delta/2 if it is healthy, the unit moves to an
-absorbing DESTROYED state in which both commit actions are worth zero --
-the option value of a correct commit is gone, the design doc's "two
-currencies" framing (Section 1). Two commit actions ACCEPT / REJECT end
+absorbing DESTROYED state in which both commit actions pay -R+ (the
+unit's value is lost; see the design doc's E1 amendment) -- the option
+value of a correct commit is gone, the design doc's "two currencies"
+framing (Section 1). Two commit actions ACCEPT / REJECT end
 the episode with reward R+ for a correct call and R- = -alpha * R+ for an
 incorrect call.
 
@@ -28,7 +29,7 @@ drilling destroys with probability 1 for every state and the destroyed
 condition coincides with state 0, whose commit reward is still live. This
 testbed instead follows the design doc's absorbing-'destroyed' framing
 (mirrored by E2's "absorbing worse state" and E3's damage flips): the
-destroyed condition is a third state with zero commit value, so partial
+destroyed condition is a third state with lost-unit commit value, so partial
 destruction (delta < 1) is expressible and a destroyed unit carries no
 residual option value. The paper example's exact arithmetic is reproduced
 from the example's own matrices in tests/test_transition_aware.py.
@@ -150,14 +151,19 @@ class DestructiveTestbedEnv(gym.Env):
 
         commit_action_index 0 = ACCEPT (correct on HEALTHY),
         commit_action_index 1 = REJECT (correct on FAULTY).
-        Both commits pay 0 on a DESTROYED unit: destruction forfeits the
-        option value of a correct call (design doc Sections 1 and 4).
+        Both commits pay -R+ on a DESTROYED unit: the unit's value is lost
+        (design doc E1 amendment of Aug 19, 2026 -- zero here would let a
+        transition-aware agent launder catastrophic-wrong risk by
+        destroying ambiguous units, contaminating the over-testing
+        hypotheses; -R+ keeps the domain-faithful ordering
+        R+ > -R+ > -alpha R+ for alpha > 1).
         """
         r_plus = self.correct_reward
         r_minus = self.incorrect_penalty
+        r_destroyed = -self.correct_reward
         return np.array([
-            [r_plus, r_minus, 0.0],   # ACCEPT
-            [r_minus, r_plus, 0.0],   # REJECT
+            [r_plus, r_minus, r_destroyed],   # ACCEPT
+            [r_minus, r_plus, r_destroyed],   # REJECT
         ])
 
     def get_transition_models(self) -> List[np.ndarray]:

@@ -64,11 +64,12 @@ class TestModelMatrices:
 
     def test_commit_reward_matrix_alpha_asymmetry(self):
         # alpha = 5, R+ = 1: incorrect commits pay R- = -alpha * R+ = -5;
-        # both commits pay 0 on a destroyed unit (option value forfeited).
+        # both commits pay -R+ on a destroyed unit (unit value lost; E1
+        # amendment of Aug 19, 2026 in the design doc).
         env = DestructiveTestbedEnv(alpha=5.0, correct_reward=1.0)
         expected = np.array([
-            [1.0, -5.0, 0.0],   # ACCEPT: correct on HEALTHY
-            [-5.0, 1.0, 0.0],   # REJECT: correct on FAULTY
+            [1.0, -5.0, -1.0],   # ACCEPT: correct on HEALTHY, lost unit -R+
+            [-5.0, 1.0, -1.0],   # REJECT: correct on FAULTY, lost unit -R+
         ])
         assert np.allclose(env.get_commit_reward_matrix(), expected)
 
