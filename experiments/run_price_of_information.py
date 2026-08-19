@@ -1526,7 +1526,10 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     _ensure_dirs()
-    only = set(args.only) if args.only else {"curves", "interleaved", "cost", "scale", "prop2", "dual", "efe"}
+    only = set(args.only) if args.only else {
+        "curves", "interleaved", "cost", "scale", "prop2",
+        "dual", "dual-reset", "dual-multiseed", "efe",
+    }
 
     if args.mode == "full":
         seeds = [42, 123, 456, 789, 1024]

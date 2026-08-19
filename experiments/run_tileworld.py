@@ -132,6 +132,7 @@ def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
 
     results = {name: {"grid_size": [], "success": [], "reward": [], "scans": [], "time_s": []}
                for name, _, _ in agent_defs}
+    csv_rows = []
 
     for gs in grid_sizes:
         env = TileworldEnv(grid_size=gs)
@@ -143,8 +144,10 @@ def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
             for seed in seeds:
                 np.random.seed(seed)
                 agent = make_agent(cls, env, **kwargs)
-                for _ in range(n_episodes):
-                    episode_results.append(run_episode(agent, env))
+                for i in range(n_episodes):
+                    r = run_episode(agent, env, seed=seed * 10000 + i)
+                    r.seed = seed
+                    episode_results.append(r)
             dt = time.time() - t0
 
             s = summarize_results(episode_results)
@@ -153,11 +156,33 @@ def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
             results[name]["reward"].append(s["mean_reward"])
             results[name]["scans"].append(s["mean_observations"])
             results[name]["time_s"].append(dt / (n_episodes * len(seeds)))
+            csv_rows.append({
+                "grid_size": gs,
+                "num_states": env.num_cells,
+                "agent": name,
+                "success_rate": s["success_rate"],
+                "mean_reward": s["mean_reward"],
+                "mean_scans": s["mean_observations"],
+                "se_reward_seed_level": s.get("se_reward_seed_level"),
+                "se_success_seed_level": s.get("se_success_seed_level"),
+                "n_seeds": len(seeds),
+                "sec_per_episode": dt / (n_episodes * len(seeds)),
+                "planning_horizon": horizon if name not in ("Myopic", "InfoGain-Tuned") else float("nan"),
+                "info_gain_weight": tuned_weight if "IG" in name or "InfoGain" in name else float("nan"),
+            })
             print(
                 f"      {name:10s}: success={s['success_rate']:.1%}  "
                 f"reward={s['mean_reward']:+.2f}  scans={s['mean_observations']:.1f}  "
                 f"({dt:.1f}s total)"
             )
+
+    from run_experiment import provenance_fields
+    prov = provenance_fields(seeds, n_episodes)
+    for row in csv_rows:
+        row.update(prov)
+    os.makedirs("results", exist_ok=True)
+    pd.DataFrame(csv_rows).to_csv("results/results_tileworld_scaling.csv", index=False)
+    print("    Saved results/results_tileworld_scaling.csv")
 
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 4))
 
@@ -230,10 +255,13 @@ def run_tileworld_experiment(grid_size=6, num_episodes=500, seeds=None):
     best_w = tune_info_gain_weight(env, tune_episodes=100)
     print(f"  Best InfoGain weight: {best_w}\n")
 
-    best_w_plan = tune_info_gain_weight(env, tune_episodes=100)
-    print(f"  Best Planning+IG weight: {best_w_plan}\n")
-
     horizon = 2
+    best_w_plan = tune_info_gain_weight(
+        env, tune_episodes=100,
+        agent_class=PlanningInfoGainAgent,
+        agent_kwargs={"planning_horizon": horizon},
+    )
+    print(f"  Best Planning+IG weight: {best_w_plan}\n")
     configs = [
         ("Myopic", MyopicAgent, {}, None),
         ("Planning", PlanningAgent, {"planning_horizon": horizon}, None),
@@ -327,5 +355,14 @@ if __name__ == "__main__":
     if cmd in ("experiment", "all"):
         print("\n")
         run_tileworld_experiment(grid_size=6, num_episodes=500)
+
+    if cmd == "8x8":
+        run_tileworld_experiment(grid_size=8, num_episodes=500)
+
+    if cmd == "partition":
+        run_partition_sensitivity(grid_size=6, num_episodes=200)
+
+    if cmd == "scaling":
+        fig_scaling()
 
     print("\nDone.")

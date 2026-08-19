@@ -23,7 +23,7 @@ from rho_aif.benchmark import (
 from run_experiment import SEEDS
 
 
-def run_inspection_experiment(config_name="Inspection-N8", num_episodes=200, seeds=None):
+def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, seeds=None):
     if seeds is None:
         seeds = SEEDS
     cfg = INSPECTION_CONFIGS[config_name]

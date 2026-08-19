@@ -366,6 +366,37 @@ def compute_full_statistics(
 TUNING_SEED = 7
 
 
+def provenance_fields(seeds, episodes_per_seed):
+    """Provenance columns stamped into every results CSV so each committed
+    artifact records the protocol and code state that produced it."""
+    import subprocess
+    import datetime
+
+    try:
+        sha = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=os.path.dirname(os.path.abspath(__file__)),
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except Exception:
+        sha = "unknown"
+    return {
+        "seed_list": "|".join(str(s) for s in seeds),
+        "episodes_per_seed": int(episodes_per_seed),
+        "git_sha": sha,
+        "generated_utc": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+
+
+def attach_agent_provenance(row, kwargs, seeds, episodes_per_seed):
+    """Merge per-agent configuration and run provenance into a summary row."""
+    row["planning_horizon"] = kwargs.get("planning_horizon", float("nan"))
+    row["info_gain_weight"] = kwargs.get("info_gain_weight", float("nan"))
+    row.update(provenance_fields(seeds, episodes_per_seed))
+    return row
+
+
 def tune_info_gain_weight(
     env,
     candidate_weights: List[float] = None,
@@ -462,6 +493,7 @@ def run_info_seeking_experiment(num_episodes: int = 1000, seeds: List[int] = Non
         raw = run_experiment_multi_seed(agent_class, env, num_episodes, seeds=seeds, **kwargs)
         all_raw[label] = raw
         all_results[label] = summarize_results(raw)
+        attach_agent_provenance(all_results[label], kwargs, seeds, num_episodes)
         s = all_results[label]
         print(
             f"  -> obs={s['mean_observations']:.2f}  "
@@ -545,6 +577,7 @@ def run_tiger_experiment(num_episodes: int = 1000, seeds: List[int] = None):
         raw = run_experiment_multi_seed(agent_class, env, num_episodes, seeds=seeds, **kwargs)
         all_raw[label] = raw
         all_results[label] = summarize_results(raw)
+        attach_agent_provenance(all_results[label], kwargs, seeds, num_episodes)
         s = all_results[label]
         print(
             f"  -> obs={s['mean_observations']:.2f}  "
@@ -606,6 +639,7 @@ def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1
         all_raw[agent_label] = results
         all_results[agent_label] = summarize_results(results)
         all_results[agent_label]["time_s"] = dt
+        attach_agent_provenance(all_results[agent_label], kwargs, seeds, num_episodes)
         s = all_results[agent_label]
         print(
             f"  -> obs={s['mean_observations']:.2f}  "

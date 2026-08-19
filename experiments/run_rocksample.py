@@ -86,7 +86,8 @@ def run_rocksample_episode(agent, env, seed=None, max_steps=100):
 
 
 def run_rocksample_experiment(
-    config_name="RS[5,3]", num_episodes=500, seeds=None
+    config_name="RS[5,3]", num_episodes=500, seeds=None,
+    override_depth=None, csv_name=None,
 ):
     if seeds is None:
         seeds = SEEDS
@@ -94,7 +95,7 @@ def run_rocksample_experiment(
     gs = cfg["grid_size"]
     nr = cfg["num_rocks"]
     rp = cfg["rock_positions"]
-    td = cfg["tree_depth"]
+    td = override_depth if override_depth is not None else cfg["tree_depth"]
     max_steps = gs * gs + nr * 10
 
     print(f"\n{config_name} (grid={gs}, rocks={nr}, depth={td}) -- "
@@ -152,6 +153,10 @@ def run_rocksample_experiment(
             "mean_checks": np.mean(checks),
             "mean_steps": np.mean([r["steps"] for r in episode_results]),
             "time_s": dt,
+            "n_seeds": len(seeds),
+            "episodes_per_seed": num_episodes,
+            "seed_list": "|".join(str(s) for s in seeds),
+            "tree_depth": td,
         }
         results.append(row)
         print(
@@ -161,13 +166,52 @@ def run_rocksample_experiment(
         )
 
     df = pd.DataFrame(results)
-    csv_name = f"results/results_rocksample_{gs}x{nr}.csv"
+    if csv_name is None:
+        csv_name = f"results/results_rocksample_{gs}x{nr}.csv"
+    os.makedirs(os.path.dirname(os.path.abspath(csv_name)), exist_ok=True)
     df.to_csv(csv_name, index=False)
     print(f"\nResults saved to {csv_name}")
     return df
 
 
+# The paper's declared per-instance protocol: episodes per seed and seed set.
+# RS[5,3] and RS[7,4] run the extended 10-seed sweep; the larger instances
+# run 100 episodes over the canonical 5 seeds.
+from run_experiment import EXTENDED_SEEDS
+
+ROCKSAMPLE_PROTOCOL = {
+    "RS[5,3]": {"num_episodes": 500, "seeds": EXTENDED_SEEDS},
+    "RS[7,4]": {"num_episodes": 500, "seeds": EXTENDED_SEEDS},
+    "RS[7,8]": {"num_episodes": 100, "seeds": SEEDS},
+    "RS[11,11]": {"num_episodes": 100, "seeds": SEEDS},
+}
+
+
+def run_depth_check():
+    """Reproduce results_rocksample_11x11_depth3_check.csv: RS[11,11] at
+    depth 3 (vs the reported depth 2), verifying policy saturation rather
+    than a depth ceiling explains the EFE/Planning tie at this scale."""
+    return run_rocksample_experiment(
+        config_name="RS[11,11]",
+        num_episodes=100,
+        seeds=SEEDS,
+        override_depth=3,
+        csv_name="results/results_rocksample_11x11_depth3_check.csv",
+    )
+
+
 if __name__ == "__main__":
-    for config_name in ROCKSAMPLE_CONFIGS:
-        run_rocksample_experiment(config_name=config_name)
-        print()
+    import sys
+
+    cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
+    if cmd == "depth-check":
+        run_depth_check()
+    elif cmd in ROCKSAMPLE_CONFIGS:
+        proto = ROCKSAMPLE_PROTOCOL[cmd]
+        run_rocksample_experiment(config_name=cmd, **proto)
+    else:
+        for config_name in ROCKSAMPLE_CONFIGS:
+            proto = ROCKSAMPLE_PROTOCOL[config_name]
+            run_rocksample_experiment(config_name=config_name, **proto)
+            print()
+        run_depth_check()
