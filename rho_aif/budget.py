@@ -199,7 +199,7 @@ def estimate_usage(
             depth = tree_depth if tree_depth is not None else planning_horizon
             agent = make_inspection_agent("planning+ig", env, depth, info_weight=w)
             for ep in range(num_episodes):
-                result = run_inspection_episode(agent, env, seed=int(seed) + ep)
+                result = run_inspection_episode(agent, env, seed=int(seed) * 10000 + ep)
                 u = episode_sensing_usage(result, obs_costs=costs, usage_kind=usage_kind)
                 usages.append(usage_value(u, usage_kind))
         elif family == "rocksample":
@@ -211,7 +211,7 @@ def estimate_usage(
             rs_costs = [abs(float(getattr(env, "move_cost", 1.0)))]
             for ep in range(num_episodes):
                 n_checks = _run_rocksample_episode_checks(
-                    agent, env, seed=int(seed) + ep, max_steps=max_steps
+                    agent, env, seed=int(seed) * 10000 + ep, max_steps=max_steps
                 )
                 u = episode_sensing_usage(
                     {"num_observations": n_checks},
@@ -228,8 +228,10 @@ def estimate_usage(
                 planning_horizon=planning_horizon,
                 info_gain_weight=w,
             )
-            for _ in range(num_episodes):
-                result = run_otc_episode(agent, env, max_steps=max_steps)
+            for ep in range(num_episodes):
+                result = run_otc_episode(
+                    agent, env, max_steps=max_steps, seed=int(seed) * 10000 + ep
+                )
                 u = episode_sensing_usage(result, obs_costs=costs, usage_kind=usage_kind)
                 usages.append(usage_value(u, usage_kind))
 

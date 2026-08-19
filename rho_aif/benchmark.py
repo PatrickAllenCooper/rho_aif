@@ -247,8 +247,10 @@ def make_inspection_agent(agent_name: str, env, tree_depth: int, info_weight: fl
     )
 
 
-def run_otc_episode(agent, env, max_steps: int = 200) -> Dict[str, Any]:
-    obs, info = env.reset()
+def run_otc_episode(
+    agent, env, max_steps: int = 200, seed: Optional[int] = None
+) -> Dict[str, Any]:
+    obs, info = env.reset(seed=seed)
     agent.reset()
     total_reward = 0.0
     observation_count = 0
@@ -386,7 +388,9 @@ def run_benchmark(
             np.random.seed(seed)
             agent = make_otc_agent(agent_name, env, cfg.planning_horizon, info_weight=info_weight)
             for ep_i in range(n_ep):
-                episode_results.append(run_otc_episode(agent, env))
+                episode_results.append(
+                    run_otc_episode(agent, env, seed=seed * 10000 + ep_i)
+                )
                 if progress and (ep_i + 1) % max(1, n_ep // 10) == 0:
                     print(f"    seed={seed} {ep_i + 1}/{n_ep}", flush=True)
         summary = summarize_otc(episode_results, agent_name)

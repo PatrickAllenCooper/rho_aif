@@ -16,7 +16,13 @@ from typing import List, Dict, Optional, Type
 
 import time
 
-SEEDS = [42, 123, 456, 789, 1024, 2048, 3141, 4096, 5555, 6789]
+from rho_aif.benchmark import BENCHMARK_SEEDS
+
+# Canonical 5-seed protocol shared with the installable package. Scripts that
+# deliberately run a wider sweep must opt into EXTENDED_SEEDS explicitly and
+# say so in the paper's reproducibility checklist.
+SEEDS = list(BENCHMARK_SEEDS)
+EXTENDED_SEEDS = SEEDS + [2048, 3141, 4096, 5555, 6789]
 
 from rho_aif.environments.info_seeking import InfoSeekingEnv
 from rho_aif.environments.tiger import TigerEnv
@@ -64,8 +70,13 @@ def make_agent(
     return agent_class(obs_models, config, **kwargs)
 
 
-def run_episode(agent: BaseAgent, env, max_steps: int = 200) -> EpisodeResult:
-    obs, info = env.reset()
+def run_episode(
+    agent: BaseAgent, env, max_steps: int = 200, seed: Optional[int] = None
+) -> EpisodeResult:
+    # Gymnasium environments draw from env.np_random, which np.random.seed
+    # does not touch; the episode seed must reach env.reset directly or the
+    # environment stream is entropy-seeded and irreproducible.
+    obs, info = env.reset(seed=seed)
     agent.reset()
     total_reward = 0.0
     observation_count = 0
@@ -115,6 +126,7 @@ def run_experiment(
     agent_class: Type[BaseAgent],
     env,
     num_episodes: int = 1000,
+    base_seed: Optional[int] = None,
     **agent_kwargs,
 ) -> List[EpisodeResult]:
     agent = make_agent(agent_class, env, **agent_kwargs)
@@ -122,7 +134,8 @@ def run_experiment(
     log_interval = max(1, num_episodes // 10)
 
     for i in range(num_episodes):
-        result = run_episode(agent, env)
+        ep_seed = base_seed * 10000 + i if base_seed is not None else None
+        result = run_episode(agent, env, seed=ep_seed)
         results.append(result)
         if (i + 1) % log_interval == 0:
             pct = ((i + 1) / num_episodes) * 100
@@ -203,7 +216,7 @@ def run_experiment_multi_seed(
         kwargs = dict(agent_kwargs)
         if vary_agent_seed:
             kwargs["seed"] = int(seed)
-        results = run_experiment(agent_class, env, num_episodes, **kwargs)
+        results = run_experiment(agent_class, env, num_episodes, base_seed=seed, **kwargs)
         for r in results:
             r.seed = seed
         all_results.extend(results)
@@ -223,7 +236,7 @@ def summarize_multi_seed(
     per_seed = []
     for seed in seeds:
         np.random.seed(seed)
-        results = run_experiment(agent_class, env, num_episodes, **agent_kwargs)
+        results = run_experiment(agent_class, env, num_episodes, base_seed=seed, **agent_kwargs)
         per_seed.append(summarize_results(results))
 
     keys = ["mean_observations", "success_rate", "mean_reward"]
@@ -348,26 +361,43 @@ def compute_full_statistics(
     return df
 
 
+# Dedicated tuning seed, disjoint from the canonical evaluation seeds, so the
+# tuned baselines are never tuned on their own evaluation episode streams.
+TUNING_SEED = 7
+
+
 def tune_info_gain_weight(
     env,
     candidate_weights: List[float] = None,
     tune_episodes: int = 200,
     metric: str = "success_rate",
+    agent_class: Type[BaseAgent] = None,
+    agent_kwargs: Dict = None,
 ) -> float:
-    """Find the best info_gain_weight for InformationGainAgent on a given env.
+    """Grid-search the best info_gain_weight for a weight-bearing agent class.
 
-    Runs a grid search over candidate weights using a smaller number of
-    tuning episodes, returning the weight that maximizes the chosen metric.
+    The class being deployed must be the class being tuned: pass
+    ``agent_class=PlanningInfoGainAgent`` (with its ``planning_horizon`` in
+    ``agent_kwargs``) when tuning the Planning+IG baseline, rather than
+    transferring a weight tuned on the myopic InformationGainAgent. Tuning
+    runs on a dedicated seed stream (``TUNING_SEED``) disjoint from the
+    evaluation seeds, and ties are broken toward the first weight reaching
+    the observed maximum.
     """
     if candidate_weights is None:
         candidate_weights = [0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0]
+    if agent_class is None:
+        agent_class = InformationGainAgent
+    kwargs = dict(agent_kwargs or {})
 
     best_weight = 1.0
     best_score = -float("inf")
 
     for w in candidate_weights:
+        np.random.seed(TUNING_SEED)
         results = run_experiment(
-            InformationGainAgent, env, tune_episodes, info_gain_weight=w
+            agent_class, env, tune_episodes,
+            base_seed=TUNING_SEED, info_gain_weight=w, **kwargs,
         )
         summary = summarize_results(results)
         score = summary[metric]
@@ -405,7 +435,11 @@ def run_info_seeking_experiment(num_episodes: int = 1000, seeds: List[int] = Non
     print(f"  Best InfoGain weight: {best_w}\n")
 
     horizon = 4
-    best_w_plan = tune_info_gain_weight(env, tune_episodes=200)
+    best_w_plan = tune_info_gain_weight(
+        env, tune_episodes=200,
+        agent_class=PlanningInfoGainAgent,
+        agent_kwargs={"planning_horizon": horizon},
+    )
     print(f"  Best Planning+IG weight: {best_w_plan}\n")
 
     agent_configs = [
@@ -484,7 +518,11 @@ def run_tiger_experiment(num_episodes: int = 1000, seeds: List[int] = None):
     print(f"  Best InfoGain weight: {best_w}\n")
 
     horizon = 6
-    best_w_plan = tune_info_gain_weight(env, tune_episodes=200)
+    best_w_plan = tune_info_gain_weight(
+        env, tune_episodes=200,
+        agent_class=PlanningInfoGainAgent,
+        agent_kwargs={"planning_horizon": horizon},
+    )
     print(f"  Best Planning+IG weight: {best_w_plan}\n")
 
     agent_configs = [
@@ -561,7 +599,7 @@ def run_generic_experiment(env, label: str, agent_configs, num_episodes: int = 1
             else:
                 agent = make_agent(agent_class, env, **kwargs)
             for i in range(num_episodes):
-                result = run_episode(agent, env)
+                result = run_episode(agent, env, seed=seed * 10000 + i)
                 result.seed = seed
                 results.append(result)
         dt = time.time() - t0
@@ -626,9 +664,13 @@ def run_diagnosis_experiment(num_conditions: int = 4, num_episodes: int = 1000, 
     print(f"Tuning InfoGain weight for Diagnosis N={num_conditions}...")
     best_w = tune_info_gain_weight(env, tune_episodes=200)
     print(f"  Best InfoGain weight: {best_w}\n")
-    best_w_plan = tune_info_gain_weight(env, tune_episodes=200)
-    print(f"  Best Planning+IG weight: {best_w_plan}\n")
     horizon = 3
+    best_w_plan = tune_info_gain_weight(
+        env, tune_episodes=200,
+        agent_class=PlanningInfoGainAgent,
+        agent_kwargs={"planning_horizon": horizon},
+    )
+    print(f"  Best Planning+IG weight: {best_w_plan}\n")
     configs = [
         ("Myopic", MyopicAgent, {}, None),
         ("Planning", PlanningAgent, {"planning_horizon": horizon}, None),
@@ -654,9 +696,13 @@ def run_bandit_experiment(num_arms: int = 4, num_episodes: int = 1000, seeds: Li
     print(f"Tuning InfoGain weight for Bandit K={num_arms}...")
     best_w = tune_info_gain_weight(env, tune_episodes=200)
     print(f"  Best InfoGain weight: {best_w}\n")
-    best_w_plan = tune_info_gain_weight(env, tune_episodes=200)
-    print(f"  Best Planning+IG weight: {best_w_plan}\n")
     horizon = 2
+    best_w_plan = tune_info_gain_weight(
+        env, tune_episodes=200,
+        agent_class=PlanningInfoGainAgent,
+        agent_kwargs={"planning_horizon": horizon},
+    )
+    print(f"  Best Planning+IG weight: {best_w_plan}\n")
     configs = [
         ("Myopic", MyopicAgent, {}, None),
         ("Planning", PlanningAgent, {"planning_horizon": horizon}, None),
@@ -756,8 +802,8 @@ def run_navigation_scaling(
             for seed in seeds:
                 np.random.seed(seed)
                 agent = make_fn()
-                for _ in range(num_episodes):
-                    results.append(run_episode(agent, env))
+                for i in range(num_episodes):
+                    results.append(run_episode(agent, env, seed=seed * 10000 + i))
             dt = time.time() - t0
             s = summarize_results(results)
             row = {
@@ -813,8 +859,8 @@ def run_scaling_analysis(seeds: List[int] = None):
             for seed in seeds:
                 np.random.seed(seed)
                 agent = make_agent(agent_class, env, **kwargs)
-                for _ in range(episodes):
-                    results.append(run_episode(agent, env))
+                for i in range(episodes):
+                    results.append(run_episode(agent, env, seed=seed * 10000 + i))
             dt = time.time() - t0
             s = summarize_results(results)
             s["N"] = n
