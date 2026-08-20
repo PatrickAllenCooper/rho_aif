@@ -1,7 +1,7 @@
-environment,scale_k,w_ret,w_ret_over_k
-Diagnosis,0.1,1.0,10.0
-Diagnosis,1.0,10.0,10.0
-Diagnosis,10.0,20.0,2.0
-Bandit,0.1,0.1,1.0
+environment,scale_k,w_ret,w_ret_times_k
+Diagnosis,0.1,0.1,0.010000000000000002
+Diagnosis,1.0,0.5,0.5
+Diagnosis,10.0,5.0,50.0
+Bandit,0.1,0.1,0.010000000000000002
 Bandit,1.0,1.0,1.0
-Bandit,10.0,20.0,2.0
+Bandit,10.0,10.0,100.0

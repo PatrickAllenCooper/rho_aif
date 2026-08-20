@@ -1461,31 +1461,31 @@ Table~\ref{tab:audit-case-study} shows one representative decision point from a 
 \section{Reward-rescaling invariance}
 \label{app:reward_scaling}
 
-To test the scale objection directly, we multiply all rewards and costs by $k \in \{0.1, 1, 10\}$ on Diagnosis and Bandit and re-sweep Planning+IG weights. Maximizing $\mathbb{E}[kR] + w\,I$ matches the unscaled policy at weight $w'{=}kw$, so $w^*_{\mathrm{ret}}(k) \approx k\, w^*_{\mathrm{ret}}(1)$; equivalently, keeping $w$ fixed while scaling rewards by $k$ is indistinguishable from rescaling the weight by $1/k$. Figure~\ref{fig:reward_scaling} and Table~\ref{tab:reward_scaling} report the sweep (150 episodes $\times$ 3 seeds per $(k,w)$ pair). Results confirm covariance of $w^*_{\mathrm{ret}}$ with $k$: $w{=}1$ is not scale-invariant, and the paper's near-optimality claims are conditional on the shared reward convention used throughout the suite.
+To test the scale objection directly, we multiply all rewards and costs by $k \in \{0.1, 1, 10\}$ on Diagnosis and Bandit and re-sweep Planning+IG weights. Maximizing $\mathbb{E}[kR] + w\,I$ matches the unscaled policy at weight $w'{=}kw$, so $w^*_{\mathrm{ret}}(k) \approx k\, w^*_{\mathrm{ret}}(1)$; equivalently, keeping $w$ fixed while scaling rewards by $k$ is indistinguishable from rescaling the weight by $1/k$. Figure~\ref{fig:reward_scaling} and Table~\ref{tab:reward_scaling} report the sweep (200 episodes $\times$ 3 seeds per $(k,w)$ pair). Results confirm covariance of $w^*_{\mathrm{ret}}$ with $k$: $w{=}1$ is not scale-invariant, and the paper's near-optimality claims are conditional on the shared reward convention used throughout the suite.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.95\linewidth]{figures/fig_reward_scaling.pdf}
 \caption{Reward rescaling: mean reward vs.\ Planning+IG weight $w$ under global scale factors $k$. Stars mark $w^*_{\mathrm{ret}}$. The optimum shifts toward larger $w$ as $k$ grows, consistent with $w^*_{\mathrm{ret}}(k) \propto k$.}
 \label{fig:reward_scaling}
-\Description{Two panels of mean reward versus weight on a log axis, each with three curves for scale factors 0.1, 1, and 10 and a dashed vertical line at weight 1. In the left Bandit panel the top green curve rises from about 55 to a starred peak near a weight of 20 before falling, while the flatter orange and blue curves below it carry stars at weights of about 1 and 0.1. In the right Diagnosis panel the blue and orange curves are nearly flat near zero, while the green curve is jagged, climbing from about minus 34 to a starred peak near minus 5 at a weight of about 20.}
+\Description{Two panels of mean reward versus weight on a log axis, each with three curves for scale factors 0.1, 1, and 10 and a dashed vertical line at weight 1. In the left Bandit panel the blue k=0.1 curve stays flat near 0 with a star at weight 0.1, the orange k=1 curve stays flat near 5 to 6 with a star at weight 1, and the green k=10 curve is flat near 55 before rising to a starred peak near 62 at weight 10, then falling back to about 53 at weight 100. In the right Diagnosis panel the blue k=0.1 curve stays flat near 0 with a star at weight 0.1, the orange k=1 curve stays flat near minus 2 to minus 4 with a star at weight 0.5, and the green k=10 curve is flat near minus 40 until weight 2, then jumps sharply to a starred plateau near minus 18 at weight 5 and stays there through weight 100.}
 \end{figure}
 
 \begin{table}[h]
 \centering
-\caption{Reward-optimal Planning+IG weight under reward scale $k$. The direction of covariance is as predicted (larger scales favor larger weights); the ratio $w^*_{\mathrm{ret}}/k$ varies up to fivefold on Diagnosis on this finite grid (flat high-$w$ plateau at $k{=}10$), so the table is qualitative evidence of covariance, not a precise stability estimate.}
+\caption{Reward-optimal Planning+IG weight under reward scale $k$. The direction of covariance is as predicted (larger scales favor larger weights). On Bandit the ratio $w^*_{\mathrm{ret}}/k$ is exactly constant across the three tested scales under the fixed pipeline; on Diagnosis it varies twofold (flat high-$w$ plateaus mean several grid weights tie for $w^*_{\mathrm{ret}}$, and ties are broken toward the smallest weight reaching the maximum), so the table is qualitative evidence of covariance on Diagnosis and a tight quantitative match on Bandit, not a precise stability estimate on this finite grid.}
 \label{tab:reward_scaling}
 \begin{small}
 \begin{tabular}{lccc}
 \toprule
 Environment & $k$ & $w^*_{\mathrm{ret}}$ & $w^*_{\mathrm{ret}}/k$ \\
 \midrule
-Diagnosis & $0.1$ & $1.0$ & $10.0$ \\
-Diagnosis & $1.0$ & $10.0$ & $10.0$ \\
-Diagnosis & $10.0$ & $20.0$ & $2.0$ \\
+Diagnosis & $0.1$ & $0.1$ & $1.0$ \\
+Diagnosis & $1.0$ & $0.5$ & $0.5$ \\
+Diagnosis & $10.0$ & $5.0$ & $0.5$ \\
 Bandit & $0.1$ & $0.1$ & $1.0$ \\
 Bandit & $1.0$ & $1.0$ & $1.0$ \\
-Bandit & $10.0$ & $20.0$ & $2.0$ \\
+Bandit & $10.0$ & $10.0$ & $1.0$ \\
 \bottomrule
 \end{tabular}
 \end{small}
