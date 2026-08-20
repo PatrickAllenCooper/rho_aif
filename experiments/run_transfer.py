@@ -29,6 +29,7 @@ from rho_aif.environments.info_seeking import InfoSeekingEnv
 from rho_aif.environments.tiger import TigerEnv
 from run_experiment import (
     SEEDS,
+    provenance_fields,
     run_experiment_multi_seed,
     summarize_results,
 )
@@ -146,6 +147,7 @@ def run_transfer_experiment(
                 "se_reward": summary["std_reward"] / np.sqrt(len(all_episode_results)),
                 "mean_observations": summary["mean_observations"],
             }
+            row.update(provenance_fields(seeds, num_episodes))
             results.append(row)
             print(
                 f"  w={w:6.1f} [{source_label[:50]:50s}]: "

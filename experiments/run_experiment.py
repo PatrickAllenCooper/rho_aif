@@ -853,6 +853,7 @@ def run_navigation_scaling(
                 "std_reward": s["std_reward"],
                 "time_s": dt,
             }
+            row.update(provenance_fields(seeds, num_episodes))
             rows.append(row)
             print(
                 f"  {agent_label:12s} success={s['success_rate']:.1%} "
@@ -899,6 +900,7 @@ def run_scaling_analysis(seeds: List[int] = None):
             s = summarize_results(results)
             s["N"] = n
             s["time_s"] = dt
+            s.update(provenance_fields(seeds, episodes))
             scaling_data.append(s)
             print(
                 f"  {agent_label:10s}: obs={s['mean_observations']:.2f}  "

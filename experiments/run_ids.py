@@ -26,7 +26,7 @@ from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
 from rho_aif.environments.bandit import BanditEnv
 from rho_aif.environments.diagnosis import DiagnosisEnv
 from rho_aif.environments.tiger import TigerEnv
-from run_experiment import SEEDS, run_experiment_multi_seed, summarize_results
+from run_experiment import SEEDS, provenance_fields, run_experiment_multi_seed, summarize_results
 
 
 ENVS = {
@@ -89,6 +89,7 @@ def main():
                 "std_reward": s["std_reward"],
                 "n_episodes": len(raw),
             }
+            row.update(provenance_fields(seeds, args.episodes))
             rows.append(row)
             print(
                 f"  {name:28s} obs={row['mean_observations']:.2f}  "

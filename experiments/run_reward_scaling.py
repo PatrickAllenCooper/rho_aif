@@ -32,7 +32,7 @@ import pandas as pd
 from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
 from rho_aif.environments.bandit import BanditEnv
 from rho_aif.environments.diagnosis import DiagnosisEnv
-from run_experiment import SEEDS, run_experiment_multi_seed, summarize_results
+from run_experiment import SEEDS, provenance_fields, run_experiment_multi_seed, summarize_results
 
 
 def make_diagnosis(k: float) -> DiagnosisEnv:
@@ -81,15 +81,15 @@ def sweep_weights(
             info_gain_weight=w,
         )
         s = summarize_results(raw)
-        rows.append(
-            {
-                "scale_k": k,
-                "w": w,
-                "success": s["success_rate"],
-                "reward": s["mean_reward"],
-                "obs": s["mean_observations"],
-            }
-        )
+        row = {
+            "scale_k": k,
+            "w": w,
+            "success": s["success_rate"],
+            "reward": s["mean_reward"],
+            "obs": s["mean_observations"],
+        }
+        row.update(provenance_fields(seeds, num_episodes))
+        rows.append(row)
         print(
             f"    k={k:g} w={w:>7g}  success={s['success_rate']:.1%}  "
             f"reward={s['mean_reward']:+.3f}",

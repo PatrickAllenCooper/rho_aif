@@ -71,9 +71,9 @@ class DetailedEpisodeResult:
 # Episode runner with detailed tracing
 # ---------------------------------------------------------------------------
 
-def run_detailed_episode(agent, env, max_steps=200):
+def run_detailed_episode(agent, env, max_steps=200, seed=None):
     """Run an episode capturing per-step belief, EFE decomposition, and actions."""
-    obs, info = env.reset()
+    obs, info = env.reset(seed=seed)
     agent.reset()
     true_state = info.get("true_condition", info.get("best_arm", 0))
     traces = []
@@ -156,9 +156,9 @@ def run_detailed_episode(agent, env, max_steps=200):
     )
 
 
-def run_simple_episode(agent, env, max_steps=200):
+def run_simple_episode(agent, env, max_steps=200, seed=None):
     """Run an episode capturing belief history and basic metrics per step."""
-    obs, info = env.reset()
+    obs, info = env.reset(seed=seed)
     agent.reset()
     true_state = info.get("true_condition", info.get("best_arm", 0))
 
@@ -230,7 +230,7 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
     for trial_seed in range(seed, seed + 200):
         np.random.seed(trial_seed)
         efe_agent = make_agent(EFEAgent, env, planning_horizon=3)
-        result = run_simple_episode(efe_agent, env, max_steps=50)
+        result = run_simple_episode(efe_agent, env, max_steps=50, seed=trial_seed)
         if result["success"] and result["num_observations"] >= 6:
             target_seed = trial_seed
             break
@@ -244,7 +244,7 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
     for ax_idx, (label, agent_cls, kwargs) in enumerate(agents_config):
         np.random.seed(target_seed)
         agent = make_agent(agent_cls, env, **kwargs)
-        result = run_simple_episode(agent, env, max_steps=50)
+        result = run_simple_episode(agent, env, max_steps=50, seed=target_seed)
 
         beliefs = result["belief_history"]
         true_state = result["true_state"]
@@ -330,8 +330,8 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
         cum_rewards_by_step = [[] for _ in range(max_step)]
         commit_steps = []
 
-        for _ in range(num_episodes):
-            result = run_simple_episode(agent, env, max_steps=max_step)
+        for ep_i in range(num_episodes):
+            result = run_simple_episode(agent, env, max_steps=max_step, seed=seed * 10000 + ep_i)
             n_obs = result["num_observations"]
             commit_steps.append(n_obs)
 
@@ -449,7 +449,7 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
     for trial_seed in range(seed, seed + 300):
         np.random.seed(trial_seed)
         agent = make_agent(EFEAgent, env, planning_horizon=3)
-        result = run_detailed_episode(agent, env, max_steps=50)
+        result = run_detailed_episode(agent, env, max_steps=50, seed=trial_seed)
         if result.success and result.num_observations >= 8:
             target_seed = trial_seed
             break
@@ -459,7 +459,7 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
 
     np.random.seed(target_seed)
     agent = make_agent(EFEAgent, env, planning_horizon=3)
-    result = run_detailed_episode(agent, env, max_steps=50)
+    result = run_detailed_episode(agent, env, max_steps=50, seed=target_seed)
 
     obs_traces = [t for t in result.traces if t.action_type == "observe"]
     commit_trace = next((t for t in result.traces if t.action_type == "commit"), None)
@@ -580,8 +580,8 @@ def fig_stopping_times(seed=42, num_episodes=300, save_path="figures/fig_stoppin
             np.random.seed(seed)
             agent = make_agent(agent_cls, env, **kwargs)
             obs_counts = []
-            for _ in range(num_episodes):
-                result = run_simple_episode(agent, env, max_steps=60)
+            for ep_i in range(num_episodes):
+                result = run_simple_episode(agent, env, max_steps=60, seed=seed * 10000 + ep_i)
                 obs_counts.append(result["num_observations"])
             all_obs_counts[label] = obs_counts
             print(f"    {env_label.replace(chr(10), ' ')}: {label} done "

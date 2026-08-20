@@ -148,12 +148,12 @@ def trace_efe_episode(env, agent, max_steps: int = 30, seed=None) -> Tuple[List[
 
 
 def collect_trajectories(
-    env, agent, n_episodes: int = 20, max_steps: int = 30
+    env, agent, n_episodes: int = 20, max_steps: int = 30, seed: int = 42
 ) -> List[Tuple[List[StepTrace], bool, float]]:
     """Collect multiple traced episodes."""
     all_traces = []
-    for _ in range(n_episodes):
-        traces, success, reward = trace_efe_episode(env, agent, max_steps)
+    for ep_i in range(n_episodes):
+        traces, success, reward = trace_efe_episode(env, agent, max_steps, seed=seed * 10000 + ep_i)
         all_traces.append((traces, success, reward))
     return all_traces
 

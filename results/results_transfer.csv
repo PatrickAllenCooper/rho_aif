@@ -1,21 +1,21 @@
-target_env,weight,source,is_w1,is_native_succ,is_native_ret,success_rate,mean_reward,std_reward,se_reward,mean_observations
-Tiger,0.5,ret-tuned on Diagnosis (transfer); ret-tuned on Testbed (transfer),False,False,False,1.0,5.616666666666666,2.1038984977628767,0.0858912965021184,4.383333333333334
-Tiger,1.0,EFE (canonical w=1); ret-tuned on Tiger (native); ret-tuned on Bandit (transfer),True,False,True,0.995,5.29,8.064897188846654,0.32924804901134613,4.16
-Tiger,20.0,succ-tuned on Tiger (native),False,True,False,1.0,5.676666666666667,2.020426247657217,0.08248355616143764,4.323333333333333
-Tiger,50.0,succ-tuned on Testbed (transfer),False,False,False,1.0,4.316666666666666,2.372001030541279,0.09683653656969984,5.683333333333334
-Tiger,100.0,succ-tuned on Diagnosis (transfer); succ-tuned on Bandit (transfer),False,False,False,1.0,4.243333333333333,2.338259086490536,0.09545902747213553,5.756666666666667
-Diagnosis,0.5,ret-tuned on Diagnosis (native); ret-tuned on Testbed (transfer),False,False,True,0.96,-2.19,12.330337924539348,0.5033839378534926,9.79
-Diagnosis,1.0,EFE (canonical w=1); ret-tuned on Tiger (transfer); ret-tuned on Bandit (transfer),True,False,False,0.975,-1.4133333333333333,10.449361490328275,0.42659339648654426,9.913333333333334
-Diagnosis,20.0,succ-tuned on Tiger (transfer),False,False,False,0.96,-2.2066666666666666,12.296230678093549,0.5019915153480998,9.806666666666667
-Diagnosis,50.0,succ-tuned on Testbed (transfer),False,False,False,0.99,-3.743333333333333,7.5855645069361115,0.30967937421600233,13.143333333333333
-Diagnosis,100.0,succ-tuned on Diagnosis (native); succ-tuned on Bandit (transfer),False,True,False,0.9916666666666667,-3.4433333333333334,7.246386839123497,0.29583250391120036,12.943333333333333
-Bandit,0.5,ret-tuned on Diagnosis (transfer); ret-tuned on Testbed (transfer),False,False,False,0.8933333333333333,6.0525,3.2017173126308327,0.13070956194300912,5.975
-Bandit,1.0,EFE (canonical w=1); ret-tuned on Tiger (transfer); ret-tuned on Bandit (native),True,False,True,0.8583333333333333,6.1775,3.584770157671665,0.146347628857533,5.095
-Bandit,20.0,succ-tuned on Tiger (transfer),False,False,False,0.9916666666666667,5.1375,2.911301613253655,0.11885339066354911,9.575
-Bandit,50.0,succ-tuned on Testbed (transfer),False,False,False,0.9983333333333333,4.278333333333333,2.828137883641618,0.11545824561927781,11.413333333333334
-Bandit,100.0,succ-tuned on Diagnosis (transfer); succ-tuned on Bandit (native),False,True,False,0.9983333333333333,3.9125,2.9381559551301333,0.11994971457980956,12.145
-Testbed,0.5,ret-tuned on Diagnosis (transfer); ret-tuned on Testbed (native),False,False,True,0.9033333333333333,0.4666666666666667,0.6440151827057772,0.026291809737240594,3.4
-Testbed,1.0,EFE (canonical w=1); ret-tuned on Tiger (transfer); ret-tuned on Bandit (transfer),True,False,False,0.965,0.378,0.49563023851792315,0.02023401975771388,5.52
-Testbed,20.0,succ-tuned on Tiger (transfer),False,False,False,0.9983333333333333,-0.22166666666666682,0.5956485727526111,0.02431725115434934,12.183333333333334
-Testbed,50.0,succ-tuned on Testbed (native),False,True,False,1.0,-0.44233333333333347,0.7113891730660202,0.029042341375870393,14.423333333333334
-Testbed,100.0,succ-tuned on Diagnosis (transfer); succ-tuned on Bandit (transfer),False,False,False,1.0,-0.36633333333333346,0.6314532621043482,0.025778971476192975,13.663333333333334
+target_env,weight,source,is_w1,is_native_succ,is_native_ret,success_rate,mean_reward,std_reward,se_reward,mean_observations,seed_list,episodes_per_seed,git_sha,generated_utc
+Tiger,0.5,ret-tuned on Diagnosis (transfer); ret-tuned on Testbed (transfer),False,False,False,0.996,5.3264,7.167416761986148,0.14334833523972296,4.2336,42|123|456|789|1024,500,696cbcd,2026-08-20T16:29:07Z
+Tiger,1.0,EFE (canonical w=1); ret-tuned on Tiger (native); ret-tuned on Bandit (transfer),True,False,True,0.996,5.3264,7.167416761986148,0.14334833523972296,4.2336,42|123|456|789|1024,500,696cbcd,2026-08-20T16:31:51Z
+Tiger,20.0,succ-tuned on Tiger (native),False,True,False,0.996,5.3264,7.167416761986148,0.14334833523972296,4.2336,42|123|456|789|1024,500,696cbcd,2026-08-20T16:34:45Z
+Tiger,50.0,succ-tuned on Testbed (transfer),False,False,False,0.9992,4.2536,3.894776892198062,0.07789553784396124,5.6584,42|123|456|789|1024,500,696cbcd,2026-08-20T16:38:20Z
+Tiger,100.0,succ-tuned on Diagnosis (transfer); succ-tuned on Bandit (transfer),False,False,False,0.9992,4.2536,3.894776892198062,0.07789553784396124,5.6584,42|123|456|789|1024,500,696cbcd,2026-08-20T16:41:56Z
+Diagnosis,0.5,ret-tuned on Diagnosis (native); ret-tuned on Testbed (transfer),False,False,True,0.9736,-1.2624,10.338585311347003,0.20677170622694008,9.6784,42|123|456|789|1024,500,696cbcd,2026-08-20T16:45:43Z
+Diagnosis,1.0,EFE (canonical w=1); ret-tuned on Tiger (transfer); ret-tuned on Bandit (transfer),True,False,False,0.9736,-1.2624,10.338585311347003,0.20677170622694008,9.6784,42|123|456|789|1024,500,696cbcd,2026-08-20T16:49:22Z
+Diagnosis,20.0,succ-tuned on Tiger (transfer),False,False,False,0.9736,-1.2624,10.338585311347003,0.20677170622694008,9.6784,42|123|456|789|1024,500,696cbcd,2026-08-20T16:53:03Z
+Diagnosis,50.0,succ-tuned on Testbed (transfer),False,False,False,0.9916,-3.676,7.118583005064982,0.14237166010129965,13.172,42|123|456|789|1024,500,696cbcd,2026-08-20T16:57:49Z
+Diagnosis,100.0,succ-tuned on Diagnosis (native); succ-tuned on Bandit (transfer),False,True,False,0.9916,-3.676,7.118583005064982,0.14237166010129965,13.172,42|123|456|789|1024,500,696cbcd,2026-08-20T17:02:35Z
+Bandit,0.5,ret-tuned on Diagnosis (transfer); ret-tuned on Testbed (transfer),False,False,False,0.8944,6.0466,3.274679898860345,0.0654935979772069,6.006,42|123|456|789|1024,500,696cbcd,2026-08-20T17:04:37Z
+Bandit,1.0,EFE (canonical w=1); ret-tuned on Tiger (transfer); ret-tuned on Bandit (native),True,False,True,0.8692,6.242,3.412804711670447,0.06825609423340893,5.1616,42|123|456|789|1024,500,696cbcd,2026-08-20T17:06:28Z
+Bandit,20.0,succ-tuned on Tiger (transfer),False,False,False,0.99,5.0516,2.939547148796903,0.05879094297593806,9.7168,42|123|456|789|1024,500,696cbcd,2026-08-20T17:09:35Z
+Bandit,50.0,succ-tuned on Testbed (transfer),False,False,False,0.998,4.2342,3.035004177921342,0.06070008355842684,11.4956,42|123|456|789|1024,500,696cbcd,2026-08-20T17:13:10Z
+Bandit,100.0,succ-tuned on Diagnosis (transfer); succ-tuned on Bandit (native),False,True,False,0.9984,3.806,3.092792265898245,0.0618558453179649,12.3592,42|123|456|789|1024,500,696cbcd,2026-08-20T17:16:59Z
+Testbed,0.5,ret-tuned on Diagnosis (transfer); ret-tuned on Testbed (native),False,False,True,0.8992,0.48256000000000004,0.6337443067988856,0.012674886135977712,3.1584,42|123|456|789|1024,500,696cbcd,2026-08-20T17:17:29Z
+Testbed,1.0,EFE (canonical w=1); ret-tuned on Tiger (transfer); ret-tuned on Bandit (transfer),True,False,False,0.9636,0.37128,0.5111469080411227,0.010222938160822455,5.5592,42|123|456|789|1024,500,696cbcd,2026-08-20T17:18:16Z
+Testbed,20.0,succ-tuned on Tiger (transfer),False,False,False,0.998,-0.1833600000000001,0.5888659528279762,0.011777319056559522,11.7936,42|123|456|789|1024,500,696cbcd,2026-08-20T17:19:47Z
+Testbed,50.0,succ-tuned on Testbed (native),False,True,False,0.9992,-0.3792800000000001,0.6424972230290186,0.012849944460580371,13.7768,42|123|456|789|1024,500,696cbcd,2026-08-20T17:21:31Z
+Testbed,100.0,succ-tuned on Diagnosis (transfer); succ-tuned on Bandit (transfer),False,False,False,0.9992,-0.3792800000000001,0.6424972230290186,0.012849944460580371,13.7768,42|123|456|789|1024,500,696cbcd,2026-08-20T17:23:16Z
