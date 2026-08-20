@@ -576,19 +576,19 @@ Instance & Agent & Accuracy & Missed & Tests & Reward \\
 \midrule
 \multirow{4}{*}{\shortstack[l]{$N{=}8$\\[-1pt]{\scriptsize $|S|{=}256$}}} & Greedy & 70.7\% & $2.34$ & $0.0$ & $-114.33 \pm 1.33$ \\
 & Planning ($w{=}0$) & 73.0\% & $0.07$ & $12.7$ & $\mathbf{-17.85 \pm 0.34}$ \\
-& Planning+IG ($w{=}5$) & $\mathbf{94.9\%}$ & $0.10$ & $18.7$ & $-22.82 \pm 0.35$ \\
-& EFE ($w{=}1$) & $87.9\%$ & $0.08$ & $18.0$ & $-20.60 \pm 0.34$ \\
+& Planning+IG ($w{=}5$) & $\mathbf{96.3\%}$ & $0.10$ & $19.7$ & $-27.98 \pm 0.35$ \\
+& EFE ($w{=}1$) & $91.1\%$ & $0.09$ & $15.5$ & $-20.95 \pm 0.36$ \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{$N{=}16$\\[-1pt]{\scriptsize $|S|{=}65{,}536$}}} & Greedy & 70.0\% & $4.81$ & $0.0$ & $-237.46 \pm 2.93$ \\
-& Planning ($w{=}0$) & 78.2\% & $0.26$ & $22.3$ & $-46.09 \pm 0.94$ \\
-& Planning+IG ($w{=}5$) & $\mathbf{91.4\%}$ & $0.24$ & $28.1$ & $\mathbf{-43.51 \pm 0.85}$ \\
-& EFE ($w{=}1$) & $86.1\%$ & $0.27$ & $32.8$ & $-45.71 \pm 0.94$ \\
+\multirow{4}{*}{\shortstack[l]{$N{=}16$\\[-1pt]{\scriptsize $|S|{=}65{,}536$}}} & Greedy & 70.5\% & $4.72$ & $0.0$ & $-233.09 \pm 1.88$ \\
+& Planning ($w{=}0$) & 78.2\% & $0.24$ & $22.4$ & $\mathbf{-45.42 \pm 0.56}$ \\
+& Planning+IG ($w{=}5$) & $\mathbf{97.3\%}$ & $0.14$ & $38.3$ & $-54.74 \pm 0.44$ \\
+& EFE ($w{=}1$) & $90.8\%$ & $0.24$ & $28.1$ & $-45.80 \pm 0.58$ \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-EFE ($w{=}1$) is a competitive untuned trade-off rather than uniquely best. On $N{=}8$ ($|S|{=}256$), Planning wins reward ($-17.85$), while EFE achieves $87.9\%$ accuracy ($-20.60 \pm 0.34$), gaining $+14.9$pp accuracy over Planning ($73.0\%$) at a moderate reward cost. Planning+IG ($w{=}5$) reaches $94.9\%$ accuracy but at $-22.82$ reward, over-testing relative to reward. On $N{=}16$ ($|S|{=}65{,}536$), Planning+IG ($w{=}5$) wins both accuracy ($91.4\%$) and reward ($-43.51$). EFE still outperforms Planning by $+7.9$pp accuracy ($86.1\%$ vs.\ $78.2\%$) with comparable reward ($-45.71$ vs.\ $-46.09$, $p > 0.05$). This is the largest state space in our evaluation and confirms that the factored belief tree search scales to realistic domains. The asymmetric penalty structure ($\alpha = 25$) places this in the regime where Proposition~\ref{prop:nearopt} predicts $w{=}1$ is a reasonable untuned default.
+EFE ($w{=}1$) is a competitive untuned trade-off rather than uniquely best. On $N{=}8$ ($|S|{=}256$), Planning wins reward ($-17.85$), while EFE achieves $91.1\%$ accuracy ($-20.95 \pm 0.36$), gaining $+18.1$pp accuracy over Planning ($73.0\%$) at a moderate reward cost. Planning+IG ($w{=}5$) reaches $96.3\%$ accuracy but at $-27.98$ reward, over-testing relative to reward. On $N{=}16$ ($|S|{=}65{,}536$), Planning wins reward outright ($-45.42$, with EFE a close second at $-45.80$), while Planning+IG ($w{=}5$) wins accuracy ($97.3\%$) at substantial reward cost ($-54.74$, the worst of the three informed agents) from extensive over-testing (38.3 tests, roughly $70\%$ more than EFE's 28.1). EFE outperforms Planning by $+12.6$pp accuracy ($90.8\%$ vs.\ $78.2\%$) at a reward cost of only $0.38$, a far better accuracy-per-reward trade than Planning+IG's. This is the largest state space in our evaluation and confirms that the factored belief tree search scales to realistic domains. The asymmetric penalty structure ($\alpha = 25$) places this in the regime where Proposition~\ref{prop:nearopt} predicts $w{=}1$ is a reasonable untuned default.
 
 \subsection{Summary}
 
@@ -1263,7 +1263,7 @@ The reward table shows that EFE vs.\ Planning is negligible to none on Tiger, Di
 \section{Near-optimality across planning horizons}
 \label{app:nearopt_horizon}
 
-Proposition~\ref{prop:nearopt} bounds $w^*_{\mathrm{lo}}$ and $w^*_{\mathrm{hi}}$ for a single decision at $H{=}1$. To check whether the resulting near-optimality claim survives recursive multi-step planning, we generated 100 random two-state environments (reward asymmetry $\alpha \in [1,50]$, observation accuracy $p \in [0.55, 0.95]$, cost $\in [0.1, 5]$) and, for each environment and each $H \in \{1,2,3\}$, computed the reward-optimal weight $w^*$ by grid search and recorded whether $w{=}1$ falls within $\max(5\%, 0.5)$ of the best achievable reward. Figure~\ref{fig:nearopt_horizon} reports the fraction of environments where $w{=}1$ passes this test at each horizon, stratified by $\alpha$. The near-optimality rate rises from 11\% at $H{=}1$ to 21\% at $H{=}2$ and 38\% at $H{=}3$ (14\%~$\to$~19\%~$\to$~37\% restricted to $\alpha \geq 10$), so deeper planning widens the basin in which the untuned information-unit weight is reward-competitive rather than narrowing it. This is the same trend reported for Bandit in Section~\ref{sec:pareto}, where the $H{=}1$ analysis predicts only marginal sufficiency ($\alpha{=}1.1$) yet multi-step EFE performs well in practice.
+Proposition~\ref{prop:nearopt} bounds $w^*_{\mathrm{lo}}$ and $w^*_{\mathrm{hi}}$ for a single decision at $H{=}1$. To check whether the resulting near-optimality claim survives recursive multi-step planning, we generated 100 random two-state environments (reward asymmetry $\alpha \in [1,50]$, observation accuracy $p \in [0.55, 0.95]$, cost $\in [0.1, 5]$) and, for each environment and each $H \in \{1,2,3\}$, computed the reward-optimal weight $w^*$ by grid search and recorded whether $w{=}1$ falls within $\max(5\%, 0.5)$ of the best achievable reward. Figure~\ref{fig:nearopt_horizon} reports the fraction of environments where $w{=}1$ passes this test at each horizon, stratified by $\alpha$. The near-optimality rate rises from 30\% at $H{=}1$ to 58\% at $H{=}2$ and 79\% at $H{=}3$ (26\%~$\to$~53\%~$\to$~79\% restricted to $\alpha \geq 10$), so deeper planning widens the basin in which the untuned information-unit weight is reward-competitive rather than narrowing it. This is the same trend reported for Bandit in Section~\ref{sec:pareto}, where the $H{=}1$ analysis predicts only marginal sufficiency ($\alpha{=}1.1$) yet multi-step EFE performs well in practice.
 
 \begin{figure}[ht]
 \centering
