@@ -6,7 +6,9 @@
  and RS[11,11]: 100 episodes $\times$ 5 seeds (500 episodes, reduced
  protocol). Greedy samples without
  checking. Bold: best mean reward per instance (ties within
- 1 SE of the best also bolded). Reward reported as mean $\pm$ SE.
+ 1 SE of the best also bolded). Reward reported as mean $\pm$ pooled
+ episode-level SE (no seed-level replicate statistics computed for
+ this environment; bolded ties are descriptive, not a hypothesis test).
  Steps and Checks omitted (tree-search evaluates all actions); a
  POMCP(1000) baseline for every instance is in
  Appendix~\ref{app:rocksample}, which also reports per-instance
