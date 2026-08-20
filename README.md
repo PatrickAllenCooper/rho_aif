@@ -99,18 +99,18 @@ print(result["log_score"], result["brier_score"], result["total_reward"])
 
 ## Baseline Results (committed paper runs)
 
-Headline numbers from committed CSVs in `results/` (5 seeds; full protocol). Log/Brier columns are produced by the current package; regenerate with `rho-aif-bench` to obtain them.
+Headline numbers from committed CSVs in `results/` (5 seeds; full protocol). Log/Brier columns are produced by the current package; regenerate with `rho-aif-bench` to obtain them. This table is generated from the CSVs by `experiments/build_readme_table.py`; run `python experiments/build_readme_table.py --check` to verify it against the current results before trusting it.
 
 | Env | Agent | Reward | Success / Acc |
 |-----|-------|--------|---------------|
-| Tiger | EFE | +5.24 | 99.5% |
-| Tiger | Planning | +5.35 | 99.6% |
-| Bandit | EFE | +6.19 | 86.3% |
-| Bandit | Planning | +5.59 | 69.0% |
-| Tileworld 6x6 | EFE | (see `results_tileworld_6x6.csv`) | -- |
-| Inspection-N8 | EFE w=1 | -17.13 | 90.0% |
-| Inspection-N8 | Planning | -15.50 | 78.3% |
-| Inspection-N8 | Plan+IG w=5 | -22.92 | 94.8% |
+| Tiger | EFE | +5.19 | 99.4% |
+| Tiger | Planning | +5.19 | 99.4% |
+| Bandit | EFE | +6.27 | 86.9% |
+| Bandit | Planning | +5.75 | 71.0% |
+| Tileworld 6x6 | EFE | -21.53 | 72.0% |
+| Inspection-N8 | EFE w=1 | -20.95 | 91.1% |
+| Inspection-N8 | Planning | -17.85 | 73.0% |
+| Inspection-N8 | Plan+IG w=5 | -27.98 | 96.3% |
 
 ## Repository Layout
 
