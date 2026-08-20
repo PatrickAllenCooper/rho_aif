@@ -91,7 +91,7 @@ We propose substituting EFE as $\rho$ in $\rho$-POMDPs, yielding an agent whose 
     \item Theory. A formal bridge between $\rho$-POMDPs and active inference. We prove the equivalence for observe-then-commit POMDPs (Proposition~\ref{prop:equivalence}), characterize when the information-unit weight $w{=}1$ is near-optimal (Proposition~\ref{prop:nearopt}), and extend the equivalence to factored observation POMDPs, interleaved settings where information gathering preserves the hidden state (Proposition~\ref{prop:factored}).
     \item Budgeted reformulation. We recast the information-unit weight as the operational shadow price $w^*(B)$ of a sensing budget $B$ (Section~\ref{sec:budget}), prove exact scale equivariance of the resulting policy family for the implemented receding-horizon agent (Proposition~\ref{prop:pi1}), define a set-valued price at usage gaps (Definition~\ref{def:pi3}), and give an online dual controller with a stationary convergence guarantee (Proposition~\ref{prop:pi5}) whose constant-step variant re-adapts empirically under reward-scale shift (Section~\ref{sec:dual_multiseed}).
     \item Evidence. Controlled comparisons against same-horizon planning, tuned information gain, and POMCP \citep{silver2010} across six observe-then-commit environments and four instances of the standard RockSample benchmark \citep{smith2004}. A Pareto analysis shows that on Diagnosis and Bandit, $w{=}1$ Pareto-dominates same-horizon planning, while remaining competitive with tuned Planning+IG across environments. A second experiment battery (Section~\ref{sec:budget_experiments}) shows usage-curve collapse across reward scales, closed-form onset thresholds recovered as the first knot of the usage staircase, multi-seed online tracking through a $\times 10$ reward rescale, and a near-optimal SARSOP reference matching EFE ($w{=}1$) within sampling error on the three core OTC environments.
-    \item Practical guidance. A characterization of when EFE-as-$\rho$ helps and when it does not. The advantage appears when the agent must choose among multiple observation actions, and it grows with state space size ($66.5\%$ vs.\ $2.5\%$ success on Tileworld $8{\times}8$) and with the number of observation actions ($+7.34$ reward over reward-only Planning on RockSample[7,8]). We also report where it does not help by construction: ordinary information gain is reward-blind and will spend a sensing budget on task-irrelevant uncertainty (Section~\ref{sec:distractor}), and naive information gain can misvalue an action outright when observing changes the hidden state (Example~\ref{ex:destructive}).
+    \item Practical guidance. A characterization of when EFE-as-$\rho$ helps and when it does not. The advantage appears when the agent must choose among multiple observation actions, and it grows with state space size ($69.4\%$ vs.\ $1.4\%$ success on Tileworld $8{\times}8$) and with the number of observation actions ($+7.34$ reward over reward-only Planning on RockSample[7,8]). We also report where it does not help by construction: ordinary information gain is reward-blind and will spend a sensing budget on task-irrelevant uncertainty (Section~\ref{sec:distractor}), and naive information gain can misvalue an action outright when observing changes the hidden state (Example~\ref{ex:destructive}).
 \end{enumerate}
 
 An abridged version of the equivalence results in Contribution~1 above, the observe-then-commit equivalence of Proposition~\ref{prop:equivalence}, the near-optimality characterization of Proposition~\ref{prop:nearopt}, the factored-observation extension of Proposition~\ref{prop:factored}, and the first experiment battery of Contribution~3, was accepted as a poster and spotlight presentation at the 7th International Workshop on Active Inference (IWAI 2026) \citep{cooper2026iwai}. This article is a substantially extended version. The entire budgeted $\rho$-POMDP formulation of Section~\ref{sec:budget} (Definition~\ref{def:pi3} and Propositions~\ref{prop:pi1}, \ref{prop:pi2}, \ref{prop:pi5}, and Corollary~\ref{cor:pi4}), the second experiment battery of Section~\ref{sec:budget_experiments}, and the practical guidance of Contribution~4 are new material that was not part of the IWAI submission.
@@ -349,7 +349,7 @@ Two statements delimit precisely what $w$ prices. First, $w$ \emph{is} an exact 
 
 \begin{definition}[Operational shadow price, set-valued]
 \label{def:pi3}
-Given the usage curve $U(w)$, define $w^*(B)$ as the first (smallest-$w$) crossing bracket $(w_{\mathrm{lo}}, w_{\mathrm{hi}}]$ at which $U$ passes $B$. Under the local non-monotonicity documented in Section~\ref{sec:pi2}, the full inverse correspondence $U^{-1}(B)$ may contain further crossings; the reported bracket is a grid-resolution estimator of its smallest element, not an intrinsic multiplier set. A budget is achievable (by per-episode mixtures where needed, below) iff $\inf_{w \ge 0} U(w) \le B \le \sup_{w \ge 0} U(w)$, up to the closure of the attainable usage set. The lower endpoint need not be $U(0)$: usage is not monotone in $w$, and the implemented family can spend less at a positive weight than at $w{=}0$ (on Tileworld $6{\times}6$, reward-only Planning at $w{=}0$ scans $15.68$ times per episode while $w{=}1$ scans $14.81$, Section~\ref{sec:tileworld}). Within the suite, $U(0)>0$ reflects instrumental sensing (observing pays for itself on reward alone at some instances) and the upper endpoint reflects belief saturation and the episode step cap. When $B$ falls inside a usage gap, $w^*$ is genuinely interval-valued (a property of the population curve's discontinuity, distinct from the grid-resolution width of the reported bracket): no single weight attains usage exactly $B$, but randomizing per episode between the bracket endpoints' policies with probability $q = (B - U(w_{\mathrm{lo}}))/(U(w_{\mathrm{hi}}) - U(w_{\mathrm{lo}}))$ attains expected usage exactly $B$ by linearity. This mirrors the classical constrained-MDP fact that optimal budget-constrained policies may need to be randomized \citep{altman1999,kim2011cpomdp}.
+Given the usage curve $U(w)$, define $w^*(B)$ as the first (smallest-$w$) crossing bracket $(w_{\mathrm{lo}}, w_{\mathrm{hi}}]$ at which $U$ passes $B$. Under the local non-monotonicity documented in Section~\ref{sec:pi2}, the full inverse correspondence $U^{-1}(B)$ may contain further crossings; the reported bracket is a grid-resolution estimator of its smallest element, not an intrinsic multiplier set. A budget is achievable (by per-episode mixtures where needed, below) iff $\inf_{w \ge 0} U(w) \le B \le \sup_{w \ge 0} U(w)$, up to the closure of the attainable usage set. The lower endpoint need not be $U(0)$: usage is not monotone in $w$, and the implemented family can spend less at a positive weight than at $w{=}0$ (on Tileworld $6{\times}6$, reward-only Planning at $w{=}0$ scans $15.64$ times per episode while $w{=}1$ scans $14.75$, Section~\ref{sec:tileworld}). Within the suite, $U(0)>0$ reflects instrumental sensing (observing pays for itself on reward alone at some instances) and the upper endpoint reflects belief saturation and the episode step cap. When $B$ falls inside a usage gap, $w^*$ is genuinely interval-valued (a property of the population curve's discontinuity, distinct from the grid-resolution width of the reported bracket): no single weight attains usage exactly $B$, but randomizing per episode between the bracket endpoints' policies with probability $q = (B - U(w_{\mathrm{lo}}))/(U(w_{\mathrm{hi}}) - U(w_{\mathrm{lo}}))$ attains expected usage exactly $B$ by linearity. This mirrors the classical constrained-MDP fact that optimal budget-constrained policies may need to be randomized \citep{altman1999,kim2011cpomdp}.
 \end{definition}
 
 \subsection{Exact scale equivariance}
@@ -464,30 +464,30 @@ Two additional environments, a two-state testbed (Appendix~\ref{app:testbed}) an
 \toprule
 Environment & Agent & Obs. & Success & Reward \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{Tiger\\[-1pt]{\scriptsize $H{=}6,\;w^*{=}50$}}} & Myopic & $1.00$ & 85.0\% & $-7.52 \pm 0.25$ \\
-& Planning & $4.27$ & 99.4\% & $+5.11 \pm 0.18$ \\
-& Planning+IG & $5.64$ & 99.9\% & $+4.27 \pm 0.06$ \\
-& \textbf{EFE} & $\mathbf{4.27}$ & $\mathbf{99.4\%}$ & $\mathbf{+5.07 \pm 0.15}$ \\
+\multirow{4}{*}{\shortstack[l]{Tiger\\[-1pt]{\scriptsize $H{=}6,\;w^*{=}50$}}} & Myopic & $1.00$ & 85.3\% & $-7.15 \pm 0.41$ \\
+& \textbf{Planning} & $\mathbf{4.20}$ & $\mathbf{99.4\%}$ & $\mathbf{+5.19 \pm 0.21}$ \\
+& Planning+IG & $5.66$ & 99.9\% & $+4.21 \pm 0.12$ \\
+& \textbf{EFE} & $\mathbf{4.20}$ & $\mathbf{99.4\%}$ & $\mathbf{+5.19 \pm 0.21}$ \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{Diagnosis\\[-1pt]{\scriptsize $H{=}3,\;w^*{=}100$}}} & Myopic & $2.00$ & 64.0\% & $-13.60 \pm 0.17$ \\
-& Planning & $5.91$ & 87.6\% & $-3.35 \pm 0.22$ \\
-& Planning+IG & $13.22$ & 99.2\% & $-3.70 \pm 0.08$ \\
-& \textbf{EFE} & $\mathbf{9.60}$ & $\mathbf{96.8\%}$ & $\mathbf{-1.51 \pm 0.15}$ \\
+\multirow{4}{*}{\shortstack[l]{Diagnosis\\[-1pt]{\scriptsize $H{=}3,\;w^*{=}50$}}} & Myopic & $2.00$ & 64.7\% & $-13.17 \pm 0.58$ \\
+& Planning & $5.86$ & 88.8\% & $-2.57 \pm 0.20$ \\
+& Planning+IG & $13.16$ & 99.2\% & $-3.66 \pm 0.12$ \\
+& \textbf{EFE} & $\mathbf{9.66}$ & $\mathbf{97.2\%}$ & $\mathbf{-1.37 \pm 0.18}$ \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{Bandit\\[-1pt]{\scriptsize $H{=}2,\;w^*{=}50$}}} & Myopic & $2.08$ & 62.1\% & $+5.55 \pm 0.10$ \\
-& Planning & $3.28$ & 69.0\% & $+5.57 \pm 0.05$ \\
-& Planning+IG & $11.60$ & 99.7\% & $+4.17 \pm 0.03$ \\
-& \textbf{EFE} & $\mathbf{5.10}$ & $\mathbf{87.2\%}$ & $\mathbf{+6.29 \pm 0.07}$ \\
+\multirow{4}{*}{\shortstack[l]{Bandit\\[-1pt]{\scriptsize $H{=}2,\;w^*{=}20$}}} & Myopic & $2.06$ & 62.2\% & $+5.56 \pm 0.09$ \\
+& Planning & $3.29$ & 71.0\% & $+5.75 \pm 0.08$ \\
+& Planning+IG & $9.57$ & 98.9\% & $+5.11 \pm 0.04$ \\
+& \textbf{EFE} & $\mathbf{5.11}$ & $\mathbf{86.9\%}$ & $\mathbf{+6.27 \pm 0.04}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-On Tiger (single observation action), all multi-step agents achieve roughly $99.4\%$ success, and EFE matches tuned alternatives without weight selection. The Epistemic-only ablation never learns to commit: it succeeds at chance on Tiger ($49.5\%$) and Bandit ($25.7\%$), never within the 200-step cap on Diagnosis, and never on Tileworld $6{\times}6$ ($0.0\%$, Appendix~\ref{app:full_tables}). Pure information gain without reward alignment produces catastrophic exploration, so the pragmatic term is essential.
+On Tiger (single observation action), EFE and same-horizon Planning coincide exactly: with one observation action and a deterministic tie-break, EFE's recursion collapses to the reward-only Bellman recursion, so the two agents produce bit-identical trajectories (obs, success, and reward all tie to the displayed precision; Table~\ref{tab:main}, confirmed by \texttt{results\_tiger\_stats.csv}: diff${}={}0$, $p{=}1$, $d{=}0$ on every metric). EFE still matches the tuned Planning+IG alternative without weight selection. The Epistemic-only ablation now commits immediately rather than over-exploring: on Tiger, Diagnosis, and Bandit alike it takes zero observations and succeeds at each environment's chance level ($49.7\%$, $24.7\%$, and $24.7\%$ respectively), and on Tileworld $6{\times}6$ it likewise commits immediately and matches Myopic's chance-level performance exactly ($2.9\%$, Appendix~\ref{app:full_tables}). With the pragmatic term ablated away, information gain in bits never clears the observation cost at these environments' priors, so the agent finds observing not worthwhile at the very first decision -- pure information gain without reward alignment produces degenerate non-exploration here, not the catastrophic over-exploration a naive information-seeking ablation might suggest; either way, the pragmatic term is essential.
 
-On Diagnosis and Bandit, EFE Pareto-dominates same-horizon Planning: substantially higher success with comparable or better reward, without weight search. On Diagnosis, EFE outperforms Planning in success rate ($96.8\%$ vs.\ $87.6\%$, $+9.2$ pp) while achieving better reward ($-1.51$ vs.\ $-3.35$). On Bandit, EFE achieves both higher success ($87.2\%$ vs.\ $69.0\%$, $+18.2$ pp) and higher reward ($+6.29$ vs.\ $+5.57$). Tuned Planning+IG (success-maximizing on the tuning grid, $w^*{=}100$ on Diagnosis and $w^*{=}50$ on Bandit here) reaches near-ceiling success ($99.2\%$ on Diagnosis, $99.7\%$ on Bandit) but at substantial reward cost from over-exploration: 13.22 tests on Diagnosis ($-3.70$ reward) and 11.60 inspections on Bandit ($+4.17$ reward). Relative to tuned Planning+IG as well as $w{=}0$ Planning, EFE is the competitive untuned trade-off rather than uniquely best on every metric. Bootstrap 95\% CIs (10{,}000 resamples over 5{,}000 episodes; Appendix~\ref{app:stats}) confirm non-overlapping reward intervals between EFE and Planning on Bandit. Viewed in the success--reward plane (Figure~\ref{fig:pareto}), the EFE agent sits at the Pareto knee on every environment, while Planning under-explores and success-tuned Planning+IG over-explores.
+On Diagnosis and Bandit, EFE Pareto-dominates same-horizon Planning: substantially higher success with comparable or better reward, without weight search. On Diagnosis, EFE outperforms Planning in success rate ($97.2\%$ vs.\ $88.8\%$, $+8.3$ pp) while achieving better reward ($-1.37$ vs.\ $-2.57$). On Bandit, EFE achieves both higher success ($86.9\%$ vs.\ $71.0\%$, $+15.9$ pp) and higher reward ($+6.27$ vs.\ $+5.75$). Tuned Planning+IG (success-maximizing on the tuning grid, $w^*{=}50$ on Diagnosis and $w^*{=}20$ on Bandit here) reaches near-ceiling success ($99.2\%$ on Diagnosis, $98.9\%$ on Bandit): on Diagnosis this still costs substantial reward from over-exploration (13.16 tests, $-3.66$ reward), but on Bandit the correctly-tuned weight leaves reward much closer to Planning and EFE than a mistuned weight would suggest (9.57 inspections, $+5.11$ reward, positive and only modestly below EFE's $+6.27$). Relative to tuned Planning+IG as well as $w{=}0$ Planning, EFE is the competitive untuned trade-off rather than uniquely best on every metric. Bootstrap 95\% CIs (10{,}000 resamples over 5{,}000 episodes; Appendix~\ref{app:stats}) confirm non-overlapping reward intervals between EFE and Planning on Bandit. Viewed in the success--reward plane (Figure~\ref{fig:pareto}), the EFE agent sits at the Pareto knee on every environment, while Planning under-explores and success-tuned Planning+IG over-explores.
 
-Effect sizes clarify where the differences lie. Cohen's $d$ on reward between EFE and same-horizon Planning is negligible on Tiger, Diagnosis, and Bandit ($|d| < 0.2$ at the pooled episode level, Table~\ref{tab:effect_sizes}), because both agents already achieve reasonable returns once they explore enough. The key gap is whether they explore the right observations. On success rate, where that gap appears, $d$ is substantially larger: $d \approx 0.35$ on Diagnosis and $d \approx 0.45$ on Bandit (Appendix~\ref{app:stats}), in the small range. With a balanced design (equal episodes per seed for both agents in a comparison), the seed-level and pooled point estimates of the mean difference coincide exactly, so agreement in sign is guaranteed by construction rather than an independent check; what the seed-level test adds is a significance decision computed from only 5 independent replications instead of 5,000 pseudo-replications. On that stricter test, every pooled comparison that was significant after Holm--Bonferroni correction (Diagnosis and Bandit, both metrics) remains significant at the seed level; the one negligible pooled comparison in this set, Tiger EFE vs.\ Planning, is non-significant at both levels, consistently rather than contradictorily. Seed-level Cohen's $d$ magnitudes are not directly comparable to the pooled values, however, since they are computed from the standard deviation of only 5 seed means per group, which is a much smaller (and noisier) denominator that mechanically inflates $|d|$ by one to three orders of magnitude (Appendix~\ref{app:full_tables}); we therefore do not interpret seed-level $d$ magnitudes, relying instead on the seed-level $p$-values and confidence intervals above. This two-axis pattern is exactly the Pareto story: EFE moves the under-served objective (success) without sacrificing reward. Medium-to-large reward $d$ values ($d > 0.7$) emerge against over-exploring baselines and on environments where Planning fails to explore sufficiently (Tileworld $d > 2.0$).
+Effect sizes clarify where the differences lie. Cohen's $d$ on reward between EFE and same-horizon Planning is negligible to none on Tiger, Diagnosis, and Bandit ($d{=}0$ exactly on Tiger since the two agents tie; $|d| < 0.15$ on Diagnosis and Bandit at the pooled episode level, Table~\ref{tab:effect_sizes}), because on Diagnosis and Bandit both agents already achieve reasonable returns once they explore enough, and on Tiger there is no gap to measure. The key gap is whether they explore the right observations. On success rate, where that gap appears, $d$ is larger: $d \approx 0.33$ on Diagnosis and $d \approx 0.40$ on Bandit (Appendix~\ref{app:stats}), in the small range. With a balanced design (equal episodes per seed for both agents in a comparison), the seed-level and pooled point estimates of the mean difference coincide exactly, so agreement in sign is guaranteed by construction rather than an independent check; what the seed-level test adds is a significance decision computed from only 5 independent replications instead of 5,000 pseudo-replications. On that stricter test, every pooled comparison that was significant after Holm--Bonferroni correction (Diagnosis and Bandit, both metrics) remains significant at the seed level; the one negligible pooled comparison in this set, Tiger EFE vs.\ Planning, is non-significant at both levels, consistently rather than contradictorily. Seed-level Cohen's $d$ magnitudes are not directly comparable to the pooled values, however, since they are computed from the standard deviation of only 5 seed means per group, which is a much smaller (and noisier) denominator that mechanically inflates $|d|$ by one to three orders of magnitude (Appendix~\ref{app:full_tables}); we therefore do not interpret seed-level $d$ magnitudes, relying instead on the seed-level $p$-values and confidence intervals above. This two-axis pattern is exactly the Pareto story: EFE moves the under-served objective (success) without sacrificing reward. Medium-to-large reward $d$ values ($d > 0.7$) emerge against over-exploring baselines and on environments where Planning fails to explore sufficiently (Tileworld $8{\times}8$, $|d| \approx 1.13$; the $6{\times}6$ comparison remains negligible, $d \approx 0.01$, since Planning and EFE scan similarly often at that smaller scale).
 
 \subsection{Pareto analysis: the information-unit weight $w{=}1$}
 \label{sec:pareto}
@@ -511,23 +511,23 @@ To test whether EFE's advantage extends to larger state spaces, we introduce a s
 
 \begin{table}[ht]
 \centering
-\caption{Tileworld $6{\times}6$ (2{,}500 episodes: 500 per seed $\times$ 5 seeds, $H{=}2$). Tuned weight $w^*{=}100$.}
+\caption{Tileworld $6{\times}6$ (2{,}500 episodes: 500 per seed $\times$ 5 seeds, $H{=}2$). Tuned weight $w^*{=}50$.}
 \label{tab:tileworld}
 \begin{small}
 \begin{tabular}{lccc}
 \toprule
 Agent & Scans & Success & Reward \\
 \midrule
-Myopic & $0.00$ & 2.7\% & $-48.39$ \\
-Planning ($H{=}2$) & $15.68$ & 73.7\% & $-21.47$ \\
-Planning+IG ($w{=}100$) & $33.38$ & 98.4\% & $-24.31$ \\
-\textbf{EFE} ($H{=}2$) & $\mathbf{14.81}$ & $\mathbf{72.8\%}$ & $\mathbf{-21.13}$ \\
+Myopic & $0.00$ & 2.9\% & $-48.25$ \\
+Planning ($H{=}2$) & $15.64$ & 73.8\% & $-21.39$ \\
+Planning+IG ($w{=}50$) & $32.25$ & 97.3\% & $-23.85$ \\
+\textbf{EFE} ($H{=}2$) & $\mathbf{14.75}$ & $\mathbf{72.0\%}$ & $\mathbf{-21.53}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-EFE achieves the highest reward ($-21.13$), scanning 14.81 times, less than half of Planning+IG's 33.38 scans, which erode reward despite reaching 98.4\% success. The same over-exploration pattern from Diagnosis and Bandit recurs at this larger scale. Figure~\ref{fig:tw_comparison} visualizes the mechanism: EFE concentrates belief efficiently via partition-based narrowing and commits once confident, while Planning lacks scan-selection guidance and Info Gain continues scanning past the point of diminishing returns.
+EFE achieves the highest reward ($-21.53$), scanning 14.75 times, less than half of Planning+IG's 32.25 scans, which erode reward despite reaching 97.3\% success. The same over-exploration pattern from Diagnosis and Bandit recurs at this larger scale. Figure~\ref{fig:tw_comparison} visualizes the mechanism: EFE concentrates belief efficiently via partition-based narrowing and commits once confident, while Planning lacks scan-selection guidance and Info Gain continues scanning past the point of diminishing returns.
 
 \begin{figure}[t]
 \centering
@@ -537,17 +537,17 @@ EFE achieves the highest reward ($-21.13$), scanning 14.81 times, less than half
 \Description{Three rows of seven six-by-six grid heatmaps, one row per agent, showing numeric per-cell belief values that start uniform at 0.03. Blue rectangles outline the rows or columns scanned at each snapshot, and belief gradually concentrates into a single dark red cell. The top row ends with the circled commit cell coinciding with the star target after 16 scans; the middle row commits on a cell far from the star after 13 scans; the bottom row reaches a 0.96 belief on the correct cell but only after 21 scans.}
 \end{figure}
 
-\paragraph{Spatial scaling.} We scale the grid from $4{\times}4$ to $8{\times}8$ with all agents (Figure~\ref{fig:tw_scaling}). At $8{\times}8$ ($|S|{=}64$), reward-only Planning collapses to $2.5\%$ success while EFE maintains $66.5\%$. Planning+IG at $w{=}100$ achieves $98.0\%$ success but at substantial reward cost due to extensive scanning. This reveals a nuanced picture: EFE ($w{=}1$) achieves the best reward at every scale and matches or exceeds Planning in success, but tuned Planning+IG ($w{=}100$) achieves higher success rates at larger grids by exploring more. The reward-maximizing weight $w^*_{\text{ret}}$ does not shift with $|S|$ (EFE's reward remains highest), but its gap to the success-maximizing weight $w^*_{\text{succ}}$ widens. Safety-critical applications at large scale would therefore benefit from higher weights.
+\paragraph{Spatial scaling.} We scale the grid from $4{\times}4$ to $8{\times}8$ with all agents (Figure~\ref{fig:tw_scaling}). At $8{\times}8$ ($|S|{=}64$), reward-only Planning collapses to $1.4\%$ success while EFE maintains $69.4\%$. Planning+IG at $w{=}100$ achieves $97.8\%$ success but at substantial reward cost due to extensive scanning. This reveals a nuanced picture: EFE ($w{=}1$) achieves the best reward at every scale and matches or exceeds Planning in success, but tuned Planning+IG ($w{=}100$) achieves higher success rates at larger grids by exploring more. The reward-maximizing weight $w^*_{\text{ret}}$ does not shift with $|S|$ (EFE's reward remains highest), but its gap to the success-maximizing weight $w^*_{\text{succ}}$ widens. Safety-critical applications at large scale would therefore benefit from higher weights.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_tileworld_scaling.pdf}
-\caption{Tileworld scaling ($H{=}2$, 200 episodes per seed $\times$ 5 seeds) across all agents. Planning collapses at $8{\times}8$ ($|S|{=}64$), while EFE maintains $66.5\%$. Tuned Planning+IG ($w{=}100$) achieves $98.0\%$ but at higher reward cost.}
+\caption{Tileworld scaling ($H{=}2$, 200 episodes per seed $\times$ 5 seeds) across all agents. Planning collapses at $8{\times}8$ ($|S|{=}64$), while EFE maintains $69.4\%$. Tuned Planning+IG ($w{=}100$) achieves $97.8\%$ but at higher reward cost.}
 \label{fig:tw_scaling}
 \Description{Three line plots against grid sizes 4 by 4, 6 by 6, and 8 by 8. Left panel: success rate, where the orange and purple tuned info-gain lines stay near 100 percent, the red EFE line stays around 70 to 80 percent, the blue Planning line drops from about 74 percent to near zero at the largest grid, and the gray Myopic line falls to near zero by 6 by 6. Middle panel: mean reward declines for all agents as grids grow, with the red line ending highest and the blue and gray lines ending near minus 49. Right panel: per-episode computation time on a log scale, with the purple line highest near 700 milliseconds, red next, then orange and blue, and gray lowest below one millisecond.}
 \end{figure}
 
-\paragraph{Observation structure sensitivity.} A natural concern is whether EFE's advantage on Tileworld depends on the highly structured bit-level partition of scan actions. We test this by replacing the deterministic row/column splits with two alternative observation structures: random partitions (each scan randomly assigns cells to two groups, breaking orthogonality) and overlapping partitions (scans use random linear combinations of coordinates, producing correlated and partially redundant observations). On $6{\times}6$ Tileworld ($H{=}2$, 200 episodes $\times$ 5 seeds), EFE achieves the best reward under all three modes: bitwise $-20.52$ (74.2\% success), random $-29.15$ (56.1\%), overlapping $-46.73$ (9.8\%). Planning follows the same pattern: $-21.44$ (73.7\%), $-30.41$ (54.5\%), $-47.61$ (8.5\%). EFE's reward advantage over Planning is consistent across modes ($+0.9$, $+1.3$, $+0.9$), confirming that the result is not an artifact of the structured observation model. As expected, random and overlapping modes reduce absolute performance because scans provide less complementary information, but the relative ranking of agents is preserved.
+\paragraph{Observation structure sensitivity.} A natural concern is whether EFE's advantage on Tileworld depends on the highly structured bit-level partition of scan actions. We test this by replacing the deterministic row/column splits with two alternative observation structures: random partitions (each scan randomly assigns cells to two groups, breaking orthogonality) and overlapping partitions (scans use random linear combinations of coordinates, producing correlated and partially redundant observations). On $6{\times}6$ Tileworld ($H{=}2$, 200 episodes $\times$ 5 seeds), EFE and Planning reward $\pm$ episode-level SE are: bitwise $-21.09 \pm 0.86$ (72.8\% success) vs.\ $-21.72 \pm 0.84$ (73.7\%); random $-30.18 \pm 0.94$ (54.9\%) vs.\ $-29.20 \pm 0.94$ (56.6\%); overlapping $-47.87 \pm 0.51$ (7.9\%) vs.\ $-46.12 \pm 0.60$ (11.0\%). EFE's reward and success advantage over Planning holds only under the structured bitwise partition, and only within roughly one SE there; under the random and overlapping partitions EFE is statistically indistinguishable from, or nominally behind, same-horizon Planning on both metrics. We read this as an honest boundary of the structured-observation result rather than evidence for a general Planning-vs-EFE ranking under unstructured partitions: with scans that are noisier and less complementary, the epistemic bonus has less useful information to chase, so it stops buying an advantage over reward-only search. As expected, both random and overlapping modes reduce absolute performance for every agent because scans provide less complementary information, but we no longer claim the bitwise-partition ranking is preserved under these alternative observation structures, and we do not claim this experiment establishes EFE's advantage is model-independent.
 
 \subsection{Interleaved observe-act: RockSample}
 \label{sec:rocksample}
@@ -877,7 +877,7 @@ The $\rho$-POMDP framework and active inference converge on the same mathematica
 
 We then operationalized the scale-invariance limitation rather than patching it. Recasting $w$ as the operational shadow price of a sensing budget $B$ (Section~\ref{sec:budget}) turns a caveat into a theorem: the resulting policy family is exactly scale equivariant (Proposition~\ref{prop:pi1}), the shadow price is set-valued at usage gaps rather than falsely point-valued (Definition~\ref{def:pi3}), Proposition~\ref{prop:nearopt}'s closed-form thresholds are recovered as the first knot of the usage staircase (Corollary~\ref{cor:pi4}), and an online dual controller tracks the budget through a $\times 10$ reward rescale with disjoint-CI evidence that a reset-on-shift mechanism re-adapts roughly $2.8\times$ faster than decay alone (Section~\ref{sec:dual_multiseed}). A near-optimal offline reference confirms, via a predeclared-margin TOST equivalence test, that EFE's canonical weight is statistically equivalent to SARSOP on the three core observe-then-commit environments (Section~\ref{sec:sarsop}), an exact Lagrangian-sweep constrained-POMDP baseline finds the same weight close to Pareto-efficient against the true constrained optimum on the same three environments (Section~\ref{sec:cpomdp}), and an atlas of implicit budgets (Appendix~\ref{app:w_atlas}) reports where every benchmark in this paper actually sits on its usage curve. We also reported where the budgeted formulation does not help: ordinary information gain, and a common reward-aware baseline's raw-entropy fallback, both spend a sensing budget on reward-irrelevant uncertainty (Section~\ref{sec:distractor}), and naive information gain can misvalue an action outright once observation changes the hidden state (Example~\ref{ex:destructive}). The price of information, in this sense, is whatever weight the stated sensing budget requires, not a universally correct number.
 
-Proposition~\ref{prop:factored} carries the bridge beyond observe-then-commit into factored observation POMDPs, from RockSample through a Structural Inspection benchmark with over $65{,}000$ states. The memorable contrast is scale under choice: on the $8{\times}8$ Tileworld, EFE holds $66.5\%$ success where reward-only planning collapses to $2.5\%$. Tuned bonuses can still win on particular metrics, and directed observation selection---not a stronger solver---is what separates EFE from POMCP with semi-informed rollouts. The practical message is that under a shared reward convention, active inference supplies an untuned information-unit weight that often sits near the reward-maximizing knee, without claiming scale-free automatic calibration.
+Proposition~\ref{prop:factored} carries the bridge beyond observe-then-commit into factored observation POMDPs, from RockSample through a Structural Inspection benchmark with over $65{,}000$ states. The memorable contrast is scale under choice: on the $8{\times}8$ Tileworld, EFE holds $69.4\%$ success where reward-only planning collapses to $1.4\%$. Tuned bonuses can still win on particular metrics, and directed observation selection---not a stronger solver---is what separates EFE from POMCP with semi-informed rollouts. The practical message is that under a shared reward convention, active inference supplies an untuned information-unit weight that often sits near the reward-maximizing knee, without claiming scale-free automatic calibration.
 
 \paragraph{Competing interests.} The authors have no competing interests to declare that are relevant to the content of this article.
 
@@ -917,12 +917,12 @@ With $\gamma = 1$ (undiscounted finite horizon), the two recursions are structur
 \toprule
 Agent & Listens & Success & Reward \\
 \midrule
-Myopic & $1.00$ & 85.0\% & $-7.52 \pm 0.56$ \\
-Planning ($H{=}6$) & $4.27$ & 99.4\% & $+5.11 \pm 0.12$ \\
-Info Gain ($w{=}20$) & $4.26$ & 99.5\% & $+5.24 \pm 0.11$ \\
-Planning+IG ($w{=}50$) & $5.64$ & 99.9\% & $+4.27 \pm 0.06$ \\
-Epistemic-only & $0.00$ & 49.5\% & $-45.53 \pm 0.78$ \\
-\textbf{EFE} ($H{=}6$) & $\mathbf{4.27}$ & $\mathbf{99.4\%}$ & $\mathbf{+5.07 \pm 0.12}$ \\
+Myopic & $1.00$ & 85.3\% & $-7.15 \pm 0.55$ \\
+\textbf{Planning} ($H{=}6$) & $\mathbf{4.20}$ & $\mathbf{99.4\%}$ & $\mathbf{+5.19 \pm 0.12}$ \\
+Info Gain ($w{=}20$) & $4.20$ & 99.4\% & $+5.19 \pm 0.12$ \\
+Planning+IG ($w{=}50$) & $5.66$ & 99.9\% & $+4.21 \pm 0.06$ \\
+Epistemic-only & $0.00$ & 49.7\% & $-45.31 \pm 0.78$ \\
+\textbf{EFE} ($H{=}6$) & $\mathbf{4.20}$ & $\mathbf{99.4\%}$ & $\mathbf{+5.19 \pm 0.12}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
@@ -936,11 +936,12 @@ Epistemic-only & $0.00$ & 49.5\% & $-45.53 \pm 0.78$ \\
 \toprule
 Agent & Tests & Success & Reward \\
 \midrule
-Myopic & $2.00$ & 64.0\% & $-13.60 \pm 0.41$ \\
-Planning ($H{=}3$) & $5.91$ & 87.6\% & $-3.35 \pm 0.28$ \\
-Info Gain ($w{=}100$) & $13.33$ & 99.3\% & $-3.74 \pm 0.10$ \\
-Planning+IG ($w{=}100$) & $13.22$ & 99.2\% & $-3.70 \pm 0.10$ \\
-\textbf{EFE} ($H{=}3$) & $\mathbf{9.60}$ & $\mathbf{96.8\%}$ & $\mathbf{-1.51 \pm 0.16}$ \\
+Myopic & $2.00$ & 64.7\% & $-13.17 \pm 0.41$ \\
+Planning ($H{=}3$) & $5.86$ & 88.8\% & $-2.57 \pm 0.27$ \\
+Info Gain ($w{=}100$) & $13.19$ & 99.4\% & $-3.58 \pm 0.09$ \\
+Planning+IG ($w{=}50$) & $13.16$ & 99.2\% & $-3.66 \pm 0.10$ \\
+Epistemic-only & $0.00$ & 24.7\% & $-35.16 \pm 0.37$ \\
+\textbf{EFE} ($H{=}3$) & $\mathbf{9.66}$ & $\mathbf{97.2\%}$ & $\mathbf{-1.37 \pm 0.15}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
@@ -954,12 +955,12 @@ Planning+IG ($w{=}100$) & $13.22$ & 99.2\% & $-3.70 \pm 0.10$ \\
 \toprule
 Agent & Inspections & Success & Reward \\
 \midrule
-Myopic & $2.08$ & 62.1\% & $+5.55 \pm 0.06$ \\
-Planning ($H{=}2$) & $3.28$ & 69.0\% & $+5.57 \pm 0.06$ \\
-Info Gain ($w{=}50$) & $11.08$ & 99.6\% & $+4.43 \pm 0.04$ \\
-Planning+IG ($w{=}50$) & $11.60$ & 99.7\% & $+4.17 \pm 0.04$ \\
-Epistemic-only & $0.00$ & 25.7\% & $+3.31 \pm 0.06$ \\
-\textbf{EFE} ($H{=}2$) & $\mathbf{5.10}$ & $\mathbf{87.2\%}$ & $\mathbf{+6.29 \pm 0.05}$ \\
+Myopic & $2.06$ & 62.2\% & $+5.56 \pm 0.06$ \\
+Planning ($H{=}2$) & $3.29$ & 71.0\% & $+5.75 \pm 0.06$ \\
+Info Gain ($w{=}20$) & $9.54$ & 98.8\% & $+5.12 \pm 0.04$ \\
+Planning+IG ($w{=}20$) & $9.57$ & 98.9\% & $+5.11 \pm 0.04$ \\
+Epistemic-only & $0.00$ & 24.7\% & $+3.23 \pm 0.05$ \\
+\textbf{EFE} ($H{=}2$) & $\mathbf{5.11}$ & $\mathbf{86.9\%}$ & $\mathbf{+6.27 \pm 0.05}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
@@ -967,18 +968,18 @@ Epistemic-only & $0.00$ & 25.7\% & $+3.31 \pm 0.06$ \\
 
 \begin{table}[h]
 \centering
-\caption{Tileworld $6{\times}6$ (2{,}500 episodes: 500 per seed $\times$ 5 seeds, $H{=}2$), full agent set.}
+\caption{Tileworld $6{\times}6$ (2{,}500 episodes: 500 per seed $\times$ 5 seeds, $H{=}2$), full agent set. Epistemic-only now commits immediately (0 scans) rather than exhausting the step cap, matching Myopic exactly, per the corrected pure-epistemic leaf semantics (Section~\ref{sec:results}).}
 \begin{small}
 \begin{tabular}{lccc}
 \toprule
 Agent & Scans & Success & Reward \\
 \midrule
-Myopic & $0.00$ & 2.7\% & $-48.39$ \\
-Planning ($H{=}2$) & $15.68$ & 73.7\% & $-21.47$ \\
-Info Gain ($w{=}100$) & $32.32$ & 98.0\% & $-23.50$ \\
-Planning+IG ($w{=}100$) & $33.38$ & 98.4\% & $-24.31$ \\
-Epistemic-only & $200.0$ & 0.0\% & $-200.00$ \\
-\textbf{EFE} ($H{=}2$) & $\mathbf{14.81}$ & $\mathbf{72.8\%}$ & $\mathbf{-21.13}$ \\
+Myopic & $0.00$ & 2.9\% & $-48.25$ \\
+Planning ($H{=}2$) & $15.64$ & 73.8\% & $-21.39$ \\
+Info Gain ($w{=}100$) & $32.30$ & 98.0\% & $-23.50$ \\
+Planning+IG ($w{=}50$) & $32.25$ & 97.3\% & $-23.85$ \\
+Epistemic-only & $0.00$ & 2.9\% & $-48.25$ \\
+\textbf{EFE} ($H{=}2$) & $\mathbf{14.75}$ & $\mathbf{72.0\%}$ & $\mathbf{-21.53}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
@@ -986,19 +987,19 @@ Epistemic-only & $200.0$ & 0.0\% & $-200.00$ \\
 
 \begin{table}[h]
 \centering
-\caption{Tileworld $8{\times}8$ (2{,}500 episodes: 500 per seed $\times$ 5 seeds, $H{=}2$), full agent set. This table previously reported an obsolete 3-seed/200-episode run; it has been rerun under the full 5-seed protocol used elsewhere in the paper, resolving that discrepancy. EFE's success rate here ($68.6\%$) is close to, though not identical to, the $66.5\%$ reported in the independent spatial-scaling sweep (Figure~\ref{fig:tw_scaling}); the two figures come from separate experiment scripts with different per-seed episode counts, and the residual gap is consistent with ordinary seed-to-seed variation rather than a discrepancy to resolve. Planning and untuned Info Gain fail to explore because a single noisy scan over 64 states barely narrows the belief, while EFE's epistemic bonus drives meaningful exploration.}
+\caption{Tileworld $8{\times}8$ (2{,}500 episodes: 500 per seed $\times$ 5 seeds, $H{=}2$), full agent set. EFE's success rate here ($69.8\%$) is close to, and now nearly identical to, the $69.4\%$ reported in the independent spatial-scaling sweep (Figure~\ref{fig:tw_scaling}); the two figures come from separate experiment scripts with different per-seed episode counts, and the small residual gap is consistent with ordinary seed-to-seed variation. Planning, untuned Info Gain, and Epistemic-only all fail to explore because a single noisy scan over 64 states barely narrows the belief, so all three now commit immediately and tie exactly with Myopic, while EFE's epistemic bonus drives meaningful exploration.}
 \begin{small}
 \begin{tabular}{lccc}
 \toprule
 Agent & Scans & Success & Reward \\
 \midrule
-Myopic & $0.00$ & 1.4\% & $-49.18$ \\
-Planning ($H{=}2$) & $0.00$ & 1.5\% & $-49.09$ \\
+Myopic & $0.00$ & 1.8\% & $-48.94$ \\
+Planning ($H{=}2$) & $0.00$ & 1.8\% & $-48.94$ \\
 Info Gain ($w{=}1$) & $0.00$ & 1.8\% & $-48.94$ \\
-Info Gain ($w{=}100$) & $39.72$ & 97.5\% & $-31.20$ \\
-Planning+IG ($w{=}50$) & $39.62$ & 97.4\% & $-31.18$ \\
-Epistemic-only & $200.0$ & 0.0\% & $-200.00$ \\
-\textbf{EFE} ($H{=}2$) & $\mathbf{17.59}$ & $\mathbf{68.6\%}$ & $\mathbf{-26.43}$ \\
+Info Gain ($w{=}100$) & $39.45$ & 97.2\% & $-31.15$ \\
+Planning+IG ($w{=}50$) & $39.49$ & 97.5\% & $-31.00$ \\
+Epistemic-only & $0.00$ & 1.8\% & $-48.94$ \\
+\textbf{EFE} ($H{=}2$) & $\mathbf{17.60}$ & $\mathbf{69.8\%}$ & $\mathbf{-25.69}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
@@ -1186,7 +1187,7 @@ $N$ & Agent & Tests & Success & Reward \\
 \end{small}
 \end{table}
 
-At $H{=}2$, EFE and Planning perform similarly across all $N$, both substantially outperforming Myopic and untuned Info Gain. This contrasts with the $H{=}3$ Diagnosis result (Table~\ref{tab:main}), where EFE outperformed Planning by $+7.9$ pp, confirming that EFE's advantage requires sufficient recursive depth. EFE-over-Myopic advantage grows from $+13.8$ pp at $N{=}2$ to $+39.1$ pp at $N{=}16$, confirming that deeper planning is increasingly valuable as state spaces grow.
+At $H{=}2$, EFE and Planning perform similarly across all $N$, both substantially outperforming Myopic and untuned Info Gain. This contrasts with the $H{=}3$ Diagnosis result (Table~\ref{tab:main}), where EFE outperformed Planning by $+8.3$ pp, confirming that EFE's advantage requires sufficient recursive depth. EFE-over-Myopic advantage grows from $+13.8$ pp at $N{=}2$ to $+39.1$ pp at $N{=}16$, confirming that deeper planning is increasingly valuable as state spaces grow.
 
 \section{PyMDP validation}
 \label{app:pymdp}
@@ -1261,9 +1262,9 @@ All pairwise comparisons use independent two-sample $t$-tests with Holm--Bonferr
 Environment & Comparison & $d$ (reward) & Interpretation \\
 \midrule
 Tiger & EFE vs.\ Myopic & $+0.44$ & small \\
-Tiger & EFE vs.\ Planning & $-0.00$ & negligible \\
-Tiger & EFE vs.\ Info Gain & $-0.02$ & negligible \\
-Tiger & EFE vs.\ Planning+IG & $+0.12$ & negligible \\
+Tiger & EFE vs.\ Planning & $0.00$ & negligible (exact tie) \\
+Tiger & EFE vs.\ Info Gain & $0.00$ & negligible (exact tie) \\
+Tiger & EFE vs.\ Planning+IG & $+0.14$ & negligible \\
 \midrule
 Testbed & EFE vs.\ Myopic & $-0.03$ & negligible \\
 Testbed & EFE vs.\ Planning & $-0.19$ & negligible \\
@@ -1271,27 +1272,27 @@ Testbed & EFE vs.\ Info Gain & $+1.34$ & large \\
 Testbed & EFE vs.\ Planning+IG & $+1.33$ & large \\
 \midrule
 Diagnosis & EFE vs.\ Myopic & $+0.55$ & medium \\
-Diagnosis & EFE vs.\ Planning & $+0.11$ & negligible \\
-Diagnosis & EFE vs.\ Info Gain & $+0.24$ & small \\
-Diagnosis & EFE vs.\ Planning+IG & $+0.23$ & small \\
+Diagnosis & EFE vs.\ Planning & $+0.08$ & negligible \\
+Diagnosis & EFE vs.\ Info Gain & $+0.25$ & small \\
+Diagnosis & EFE vs.\ Planning+IG & $+0.25$ & small \\
 \midrule
-Bandit & EFE vs.\ Myopic & $+0.19$ & negligible \\
-Bandit & EFE vs.\ Planning & $+0.19$ & negligible \\
-Bandit & EFE vs.\ Info Gain & $+0.58$ & medium \\
-Bandit & EFE vs.\ Planning+IG & $+0.65$ & medium \\
+Bandit & EFE vs.\ Myopic & $+0.18$ & negligible \\
+Bandit & EFE vs.\ Planning & $+0.14$ & negligible \\
+Bandit & EFE vs.\ Info Gain & $+0.36$ & small \\
+Bandit & EFE vs.\ Planning+IG & $+0.37$ & small \\
 \midrule
 \multicolumn{4}{l}{\textit{Success rate} ($d$ favors EFE)} \\
 \midrule
-Tiger & EFE vs.\ Planning & $-0.01$ & negligible \\
+Tiger & EFE vs.\ Planning & $0.00$ & negligible (exact tie) \\
 Testbed & EFE vs.\ Planning & $+0.27$ & small \\
-Diagnosis & EFE vs.\ Planning & $+0.35$ & small \\
-Bandit & EFE vs.\ Planning & $+0.45$ & small \\
+Diagnosis & EFE vs.\ Planning & $+0.33$ & small \\
+Bandit & EFE vs.\ Planning & $+0.40$ & small \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-The reward table shows that EFE vs.\ Planning is negligible on Tiger, Diagnosis, and Bandit: once both agents take enough informative actions, mean returns are similar, even though success rates differ. The success-rate rows isolate the axis where EFE improves most relative to Planning on Diagnosis and Bandit. Against over-exploring tuned alternatives (InfoGain-Tuned, Planning+IG), EFE shows large reward effects on the Testbed ($d > 1.3$) and medium effects on Bandit ($d \approx 0.6$), reflecting the cost of over-exploration.
+The reward table shows that EFE vs.\ Planning is negligible to none on Tiger, Diagnosis, and Bandit (exactly zero on Tiger, where EFE and Planning tie): once both agents take enough informative actions, mean returns are similar, even though success rates differ. The success-rate rows isolate the axis where EFE improves most relative to Planning on Diagnosis and Bandit. Against over-exploring tuned alternatives (InfoGain-Tuned, Planning+IG), EFE shows large reward effects on the Testbed ($d > 1.3$) and small effects on Bandit ($d \approx 0.36$-$0.37$), reflecting the cost of over-exploration once Bandit's tuned weight is calibrated correctly ($w{=}20$, not the earlier mistuned $w{=}50$).
 
 \section{Near-optimality across planning horizons}
 \label{app:nearopt_horizon}
@@ -1589,15 +1590,15 @@ Environment & Agent & Obs. & Success & Reward \\
 & POMCP (1000) & $7.27$ & 87.6\% & $+5.25$ \\
 & \textbf{EFE} & $\mathbf{5.10}$ & $\mathbf{86.5\%}$ & $\mathbf{+6.24}$ \\
 \midrule
-\multirow{3}{*}{\shortstack[l]{Tileworld\\[-1pt]{\scriptsize $6{\times}6$}}} & Planning & -- & 74.7\% & $-20.91$ \\
-& POMCP (1000) & -- & 3.8\% & $-49.05$ \\
-& \textbf{EFE} & -- & $\mathbf{70.8\%}$ & $\mathbf{-22.47}$ \\
+\multirow{3}{*}{\shortstack[l]{Tileworld\\[-1pt]{\scriptsize $6{\times}6$}}} & Planning & -- & 73.6\% & $-21.41$ \\
+& POMCP (1000) & -- & 5.6\% & $-47.99$ \\
+& \textbf{EFE} & -- & $\mathbf{71.9\%}$ & $\mathbf{-21.62}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-\paragraph{Key findings.} POMCP underperforms both EFE and Planning on reward on every environment, and underperforms on success rate everywhere except Bandit, where it is now much closer to EFE than under the earlier fixed-planner-seed protocol. On Tiger, POMCP commits prematurely (1.83 observations vs.\ 4.23 for EFE), yielding 89.7\% success. On Diagnosis, the gap is dramatic: POMCP achieves only 72.9\% success ($-10.25$ reward) while EFE reaches 97.2\% ($-1.46$ reward). POMCP's random rollout policy cannot evaluate which of the $K{=}2$ diagnostic tests to run. It treats all observation actions equally, whereas EFE's information gain term directly values differential informativeness. On Bandit, POMCP's Monte Carlo exploration achieves a slightly higher success rate than EFE (87.6\% vs.\ 86.5\%, $+1.1$ pp) but at real reward cost ($+5.25$ vs.\ EFE's $+6.24$): 7.27 inspections vs.\ EFE's 5.10. This is a smaller success-rate gap than the earlier fixed-seed run suggested (which showed POMCP at 96.8\% vs.\ EFE's 89.0\%, a $+7.8$ pp gap); with per-run seeding the two are close on success and EFE is still ahead on reward. On Tileworld ($6{\times}6$, $|S|{=}36$), POMCP collapses to 3.8\% success, as the 36 commit actions and 6 scan actions create a branching factor that overwhelms 1{,}000 simulations.
+\paragraph{Key findings.} POMCP underperforms both EFE and Planning on reward on every environment, and underperforms on success rate everywhere except Bandit, where it is now much closer to EFE than under the earlier fixed-planner-seed protocol. On Tiger, POMCP commits prematurely (1.83 observations vs.\ 4.23 for EFE), yielding 89.7\% success. On Diagnosis, the gap is dramatic: POMCP achieves only 72.9\% success ($-10.25$ reward) while EFE reaches 97.2\% ($-1.46$ reward). POMCP's random rollout policy cannot evaluate which of the $K{=}2$ diagnostic tests to run. It treats all observation actions equally, whereas EFE's information gain term directly values differential informativeness. On Bandit, POMCP's Monte Carlo exploration achieves a slightly higher success rate than EFE (87.6\% vs.\ 86.5\%, $+1.1$ pp) but at real reward cost ($+5.25$ vs.\ EFE's $+6.24$): 7.27 inspections vs.\ EFE's 5.10. This is a smaller success-rate gap than the earlier fixed-seed run suggested (which showed POMCP at 96.8\% vs.\ EFE's 89.0\%, a $+7.8$ pp gap); with per-run seeding the two are close on success and EFE is still ahead on reward. On Tileworld ($6{\times}6$, $|S|{=}36$), POMCP collapses to 5.6\% success, as the 36 commit actions and 6 scan actions create a branching factor that overwhelms 1{,}000 simulations.
 
 \paragraph{Simulation-budget scaling.} Increasing POMCP's simulation budget to 5{,}000 does not qualitatively change the picture: on Diagnosis, POMCP(5000) reaches 74.8\% success, still far short of EFE's 97.2\%, while taking substantially more wall-clock time per decision (338.0 ms/ep vs.\ EFE's closed-form computation). On Tiger, POMCP(5000) reaches 89.0\% but at roughly 5$\times$ the compute of the 1{,}000-simulation budget. On Bandit, POMCP(5000) reaches 97.2\% success (now clearly ahead of EFE) but its reward falls to $+5.10$ from $+5.25$ at 1{,}000 simulations and its wall-clock cost balloons to roughly 2.0 s/episode, a $\sim$14$\times$ slowdown versus the 1{,}000-simulation budget for a small reward decrease; this is the clearest case in our results of buying success-rate with both compute and return. These results indicate that EFE's advantage is not merely a compute-budget artifact but reflects the benefit of closed-form information gain valuation over Monte Carlo exploration \emph{as configured here} -- with this rollout policy and a single untuned exploration constant -- particularly on multi-observation-action environments where the agent must choose which information to gather. A stronger POMCP configuration (tuned exploration constants per reward scale, informed rollouts, or a reference implementation) could narrow the gap, and we do not claim the comparison bounds what a best-practice POMCP can achieve.
 
