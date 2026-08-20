@@ -1656,11 +1656,11 @@ These results demonstrate that the EFE principle of valuing information gain alo
 \section{IDS baseline (observe-then-commit)}
 \label{app:ids}
 
-We adapt information-directed sampling \citep{russo2014} to the observe-then-commit setting by minimizing the information ratio $\Delta^2/I$ over observation actions, where $\Delta$ is the opportunity cost of observing versus committing now and $I$ is expected information gain about the optimal commit. Table~\ref{tab:ids} reports a matched comparison (300 episodes $\times$ 3 seeds) against Myopic, Planning, success-tuned Planning+IG, and EFE.
+We adapt information-directed sampling \citep{russo2014} to the observe-then-commit setting by minimizing the information ratio $\Delta^2/I$ over observation actions, where $\Delta$ is the opportunity cost of observing versus committing now and $I$ is expected information gain about the optimal commit. Table~\ref{tab:ids} reports a matched comparison (2{,}500 episodes: 500 per seed $\times$ 5 seeds, the canonical protocol) against Myopic, Planning, success-tuned Planning+IG, and EFE.
 
 \begin{table}[h]
 \centering
-\caption{IDS vs.\ baselines (300 episodes $\times$ 3 seeds). IDS is competitive on Tiger but over-explores on Diagnosis and Bandit relative to EFE's untuned $w{=}1$, resembling success-tuned Planning+IG on reward.}
+\caption{IDS vs.\ baselines (2{,}500 episodes: 500 per seed $\times$ 5 seeds). IDS is competitive on Tiger (tying every other agent exactly there) but over-explores on Diagnosis and Bandit relative to EFE's untuned $w{=}1$, resembling success-tuned Planning+IG on reward.}
 \label{tab:ids}
 \begin{small}
 \begin{tabular}{llccc}
@@ -1668,25 +1668,25 @@ We adapt information-directed sampling \citep{russo2014} to the observe-then-com
 Environment & Agent & Obs. & Success & Reward \\
 \midrule
 \multirow{5}{*}{Tiger}
-& Myopic & $1.00$ & 87.8\% & $-4.44$ \\
-& Planning & $4.20$ & 99.3\% & $+5.06$ \\
-& Planning+IG ($w{=}20$) & $4.34$ & 99.9\% & $+5.54$ \\
-& EFE & $4.25$ & 99.3\% & $+5.02$ \\
-& IDS & $4.16$ & 99.1\% & $+4.86$ \\
+& Myopic & $1.00$ & 84.6\% & $-7.90$ \\
+& Planning & $4.23$ & 99.6\% & $+5.33$ \\
+& Planning+IG ($w{=}20$) & $4.23$ & 99.6\% & $+5.33$ \\
+& EFE & $4.23$ & 99.6\% & $+5.33$ \\
+& IDS & $4.23$ & 99.6\% & $+5.33$ \\
 \midrule
 \multirow{5}{*}{Diagnosis}
-& Myopic & $2.00$ & 63.3\% & $-14.00$ \\
-& Planning & $5.86$ & 88.4\% & $-2.79$ \\
-& Planning+IG ($w{=}100$) & $13.06$ & 99.1\% & $-3.60$ \\
-& EFE & $9.60$ & 97.1\% & $-1.34$ \\
-& IDS & $13.41$ & 98.9\% & $-4.07$ \\
+& Myopic & $2.00$ & 64.5\% & $-13.29$ \\
+& Planning & $5.85$ & 88.8\% & $-2.59$ \\
+& Planning+IG ($w{=}100$) & $13.17$ & 99.2\% & $-3.68$ \\
+& EFE & $9.68$ & 97.4\% & $-1.26$ \\
+& IDS & $13.17$ & 99.2\% & $-3.63$ \\
 \midrule
 \multirow{5}{*}{Bandit}
-& Myopic & $2.04$ & 60.7\% & $+5.44$ \\
-& Planning & $3.28$ & 69.1\% & $+5.58$ \\
-& Planning+IG ($w{=}100$) & $12.59$ & 100.0\% & $+3.71$ \\
-& EFE & $5.07$ & 86.1\% & $+6.22$ \\
-& IDS & $10.43$ & 99.6\% & $+4.75$ \\
+& Myopic & $2.05$ & 61.6\% & $+5.52$ \\
+& Planning & $3.24$ & 69.9\% & $+5.67$ \\
+& Planning+IG ($w{=}100$) & $12.36$ & 99.8\% & $+3.81$ \\
+& EFE & $5.16$ & 86.9\% & $+6.24$ \\
+& IDS & $10.62$ & 99.5\% & $+4.65$ \\
 \bottomrule
 \end{tabular}
 \end{small}
