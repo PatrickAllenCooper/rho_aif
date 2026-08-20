@@ -4,11 +4,13 @@
 \caption{RockSample results with tree-search agents. RS[5,3] and
  RS[7,4]: 500 episodes $\times$ 10 seeds (5{,}000 episodes). RS[7,8]
  and RS[11,11]: 100 episodes $\times$ 5 seeds (500 episodes, reduced
- protocol; no POMCP baseline at this scale). Greedy samples without
+ protocol). Greedy samples without
  checking. Bold: best mean reward per instance (ties within
  1 SE of the best also bolded). Reward reported as mean $\pm$ SE.
- Steps and Checks omitted (tree-search evaluates all actions); see
- Appendix~\ref{app:rocksample} for per-instance check counts.}
+ Steps and Checks omitted (tree-search evaluates all actions); a
+ POMCP(1000) baseline for every instance is in
+ Appendix~\ref{app:rocksample}, which also reports per-instance
+ step and check counts.}
 \label{tab:rocksample}
 \begin{small}
 \begin{tabular}{llcccc}

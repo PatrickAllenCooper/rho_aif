@@ -7,11 +7,10 @@ fragments (paper/tables/rocksample_main.tex and rocksample_extended.tex) plus
 a console summary. This replaces hand-typed numbers that had drifted out of
 sync with the committed CSVs across three prior revisions of the paper.
 
-RS[5,3] and RS[7,4] were run at 500 episodes x 10 seeds (5,000 episodes,
-including a POMCP baseline). RS[7,8] and RS[11,11] were run at a reduced
-100 episodes x 5 seeds (500 episodes, no POMCP baseline) because full-scale
-POMCP on the larger instances is computationally expensive; this is reported
-honestly in the table caption rather than left unstated.
+RS[5,3] and RS[7,4] were run at 500 episodes x 10 seeds (5,000 episodes).
+RS[7,8] and RS[11,11] were run at a reduced 100 episodes x 5 seeds
+(500 episodes). All four instances now include a POMCP(1000) baseline
+in the extended table.
 """
 
 from pathlib import Path
@@ -47,11 +46,13 @@ def build_main_table() -> str:
         "\\caption{RockSample results with tree-search agents. RS[5,3] and",
         " RS[7,4]: 500 episodes $\\times$ 10 seeds (5{,}000 episodes). RS[7,8]",
         " and RS[11,11]: 100 episodes $\\times$ 5 seeds (500 episodes, reduced",
-        " protocol; no POMCP baseline at this scale). Greedy samples without",
+        " protocol). Greedy samples without",
         " checking. Bold: best mean reward per instance (ties within",
         " 1 SE of the best also bolded). Reward reported as mean $\\pm$ SE.",
-        " Steps and Checks omitted (tree-search evaluates all actions); see",
-        " Appendix~\\ref{app:rocksample} for per-instance check counts.}",
+        " Steps and Checks omitted (tree-search evaluates all actions); a",
+        " POMCP(1000) baseline for every instance is in",
+        " Appendix~\\ref{app:rocksample}, which also reports per-instance",
+        " step and check counts.}",
         "\\label{tab:rocksample}",
         "\\begin{small}",
         "\\begin{tabular}{llcccc}",
@@ -104,8 +105,7 @@ def build_extended_table() -> str:
         "\\begin{table}[ht]",
         "\\centering",
         "\\caption{RockSample extended results: full agent roster including",
-        " POMCP where run (RS[5,3], RS[7,4] only; not run on RS[7,8] and",
-        " RS[11,11] at full budget due to compute cost) and Planning+IG at",
+        " a POMCP(1000) baseline on every instance and Planning+IG at",
         " both $w{=}5$ and $w{=}10$. Steps and checks are episode means.",
         " RS[5,3]/RS[7,4]: 500 episodes $\\times$ 10 seeds. RS[7,8]/RS[11,11]:",
         " 100 episodes $\\times$ 5 seeds.}",
