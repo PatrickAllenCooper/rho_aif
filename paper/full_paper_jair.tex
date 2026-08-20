@@ -804,12 +804,12 @@ $w{=}100$ ($w^*_{\mathrm{succ}}$ Diag./Bandit) & $+4.24$ & $-3.44$ & $+3.91$ & $
 \paragraph{When is $w{=}1$ near-optimal?}
 Proposition~\ref{prop:nearopt} formalizes lower and upper thresholds for the two-state case: $w^*_{\mathrm{lo}}$ depends on reward asymmetry $\alpha = |R^-|/R^+$, informativeness $\eta = I_{\max}/c$, and accuracy $p$, while $w^*_{\mathrm{hi}}$ bounds over-observation at the post-first-observation belief. Table~\ref{tab:alpha_eta} validates this (Bandit omitted as multi-arm). High-asymmetry environments ($\alpha \geq 5$: Tiger, Diagnosis, Tileworld) have $w^*_{\mathrm{lo}} \ll 0$ and $w^*_{\mathrm{hi}} \approx 7$--$8$, so $w{=}1$ is interior. Testbed places $w{=}1$ near the upper bound, consistent with over-exploration.
 
-To assess whether the $H{=}1$ analysis extends to multi-step planning, we conducted a Monte Carlo study over 100 randomly generated two-state environments (sampling $\alpha \in [1, 50]$, $p \in [0.55, 0.95]$, cost $\in [0.1, 5]$). For each environment and $H \in \{1, 2, 3\}$, we compute the reward-optimal $w^*$ by grid search and classify $w{=}1$ as near-optimal when the reward gap from $w^*$ is within $\max(5\%, 0.5)$ of the best reward (Figure~\ref{fig:nearopt_horizon}). The near-optimality rate increases from 11\% at $H{=}1$ to 21\% at $H{=}2$ and 38\% at $H{=}3$, confirming that multi-step planning amplifies the value of observation and expands the region where $w{=}1$ is near-optimal. High-asymmetry environments ($\alpha \geq 10$) follow the same trend: 14\% $\to$ 19\% $\to$ 37\%. This is consistent with the Bandit result, where $\alpha{=}1.1$ and the $H{=}1$ analysis predicts marginal sufficiency, yet multi-step EFE at $H{=}2$ achieves $87.2\%$ success (Table~\ref{tab:main}).
+To assess whether the $H{=}1$ analysis extends to multi-step planning, we conducted a Monte Carlo study over 100 randomly generated two-state environments (sampling $\alpha \in [1, 50]$, $p \in [0.55, 0.95]$, cost $\in [0.1, 5]$). For each environment and $H \in \{1, 2, 3\}$, we compute the reward-optimal $w^*$ by grid search and classify $w{=}1$ as near-optimal when the reward gap from $w^*$ is within $\max(5\%, 0.5)$ of the best reward (Figure~\ref{fig:nearopt_horizon}). The near-optimality rate increases from 30\% at $H{=}1$ to 58\% at $H{=}2$ and 79\% at $H{=}3$, confirming that multi-step planning amplifies the value of observation and expands the region where $w{=}1$ is near-optimal. High-asymmetry environments ($\alpha \geq 10$) follow the same trend: 26\% $\to$ 53\% $\to$ 79\%. This is consistent with the Bandit result, where $\alpha{=}1.1$ and the $H{=}1$ analysis predicts marginal sufficiency, yet multi-step EFE at $H{=}2$ achieves $87.2\%$ success (Table~\ref{tab:main}).
 
-Many real-world decision problems have $\alpha \gg 1$: in medical diagnosis, fault detection, and security screening, a missed condition costs far more than another test. This is the regime where the interval analysis is most favorable to $w{=}1$, and the multi-step study shows the near-optimality basin widening with planning depth ($37\%$ of $\alpha \ge 10$ environments pass at $H{=}3$, up from $14\%$ at $H{=}1$). The practical consequence is calibrated accordingly: in these domains the information-unit weight is a strong untuned starting default under the shared reward convention, not a guarantee of near-optimality, and the budgeted machinery of Section~\ref{sec:budget} is the recourse when the default's induced sensing does not match what the application can afford.
+Many real-world decision problems have $\alpha \gg 1$: in medical diagnosis, fault detection, and security screening, a missed condition costs far more than another test. This is the regime where the interval analysis is most favorable to $w{=}1$, and the multi-step study shows the near-optimality basin widening with planning depth ($79\%$ of $\alpha \ge 10$ environments pass at $H{=}3$, up from $26\%$ at $H{=}1$). The practical consequence is calibrated accordingly: in these domains the information-unit weight is a strong untuned starting default under the shared reward convention, not a guarantee of near-optimality, and the budgeted machinery of Section~\ref{sec:budget} is the recourse when the default's induced sensing does not match what the application can afford.
 
 \paragraph{Robustness to model misspecification.}
-Our main results assume exact knowledge of the generative model. Appendix~\ref{app:misspec} investigates robustness when the agent's believed observation accuracy differs from the true value by up to $\pm 0.15$. On Tiger, success rates remain above 96.7\% across all mismatch levels. On Diagnosis, degradation is larger but graceful. Overestimating sensor accuracy (positive mismatch) is more harmful than underestimating it, because the agent commits prematurely on insufficient evidence. EFE's intrinsic epistemic drive provides a partial buffer: even with a miscalibrated model, the information gain term still encourages observation, compensating for overconfident planning.
+Our main results assume exact knowledge of the generative model. Appendix~\ref{app:misspec} investigates robustness when the agent's believed observation accuracy differs from the true value by up to $\pm 0.15$. On Tiger, success rates remain above 96.9\% across all mismatch levels, and EFE and Planning respond identically to every tested mismatch (Table~\ref{tab:misspec-tiger}), so there is no measurable EFE-specific buffering effect on this environment. On Diagnosis, degradation is larger but graceful, and both agents' behavior steps between two levels rather than degrading smoothly with the mismatch magnitude. Overestimating sensor accuracy (positive mismatch) is more harmful than underestimating it, because the agent commits prematurely on insufficient evidence.
 
 \paragraph{Approximate planning with MCTS-EFE.}
 At each depth the tree branches over $K$ observation actions and then, per action, over its $|\mathcal{O}|$ observation outcomes, so the exact tree search cost is $\mathcal{O}((K \cdot |\mathcal{O}|)^H)$, limiting practical horizons to $H{=}2$--$3$ with $K \geq 3$. To push beyond this, we implement MCTS with EFE as a leaf heuristic: the tree policy uses UCB1 with observation-outcome enumeration, and leaf nodes are evaluated via greedy EFE rollouts. On Tiger at $H{=}10$, MCTS-EFE with 500 simulations achieves 97.7\% success ($\approx$5.9s per 200 episodes), compared to 88.8\% for POMCP at the same simulation count ($\approx$4.1s; the comparison is simulation-matched, not compute-matched --- MCTS-EFE's leaf evaluations are more expensive per simulation). This shows that EFE's closed-form information valuation provides a substantially stronger leaf heuristic than semi-informed rollouts in this configuration. The comparison avoids a pure-random-rollout strawman: our implementation already uses belief-optimal commits (not purely random rollouts): observations are sampled uniformly, but the rollout terminates with the commit action maximizing expected reward under the Bayesian-updated belief (Appendix~\ref{app:pomcp}). The remaining performance gap therefore reflects the value of directed observation selection: EFE chooses which test to run based on information gain, while POMCP samples tests uniformly. The claim is not that EFE-based planning exceeds state-of-the-art POMDP solvers, but that the EFE leaf heuristic provides a principled, zero-tuning alternative to heuristic rollout design. POMCP with fully informed rollouts (e.g., using domain knowledge or a learned value function for observation selection) would narrow the gap further.
@@ -1270,10 +1270,10 @@ Proposition~\ref{prop:nearopt} bounds $w^*_{\mathrm{lo}}$ and $w^*_{\mathrm{hi}}
 \includegraphics[width=0.7\linewidth]{figures/fig_nearopt_horizon.pdf}
 \caption{Fraction of randomly generated two-state environments where $w{=}1$ is near-optimal, as a function of planning horizon $H$, stratified by reward asymmetry $\alpha$. The near-optimality basin widens with horizon, confirming that multi-step planning amplifies the value of observation. 100 environments, $\alpha \in [1,50]$, $p \in [0.55, 0.95]$, cost $\in [0.1, 5]$.}
 \label{fig:nearopt_horizon}
-\Description{A line plot of the percentage of environments passing the near-optimality test against planning horizon values 1, 2, and 3. A dashed black line for all environments rises from about 11 to 38 percent. Of the three colored strata, the blue line rises from 0 to 50 percent, the green line rises from about 13 to 37 percent, and the red line peaks at about 43 percent at horizon 2 before falling back to about 29 percent.}
+\Description{A line plot of the percentage of environments passing the near-optimality test against planning horizon values 1, 2, and 3. A dashed black line for all environments rises from about 30 to 79 percent. Of the three colored strata, the red line (low reward asymmetry) rises from about 71 to 86 percent and flattens, the blue line (moderate asymmetry) rises from about 33 to 75 percent and flattens, and the green line (high asymmetry) rises steadily from about 26 to 79 percent without flattening.}
 \end{figure}
 
-\paragraph{Horizon map: where myopic and deeper planning agree, and where they do not.} Figure~\ref{fig:nearopt_horizon} stratifies only by reward asymmetry $\alpha$. Table~\ref{tab:horizon-map} breaks the same 100 environments down by all three sampled regime axes and adds a direct per-environment comparison of the $H{=}1$ classification against $H{\geq}2$. Every regime axis shows the same qualitative pattern -- near-optimality is rarer at $H{=}1$ than at $H{=}3$ -- but the effect is sharpest for high-informativeness observations ($p \geq 0.85$: $3\% \to 60\%$) and comparatively flat for reward asymmetry alone at the low end ($\alpha < 3$: never near-optimal at $H{=}1$, non-monotone across $H$ on only 7 environments). The per-environment comparison shows the two horizons agree on only half the environments (50 of 100): 47 agree $w{=}1$ is never near-optimal, 3 agree it always is, but 42 environments where $H{=}1$ predicts $w{=}1$ is \emph{not} near-optimal turn out to be near-optimal at some deeper horizon (myopic underclaiming -- the safe direction, a missed opportunity rather than a risk), while 8 environments where $H{=}1$ predicts near-optimality are \emph{not} near-optimal at either $H{=}2$ or $H{=}3$ (myopic overclaiming -- the risky direction: a practitioner who validates $w{=}1$ with a cheap $H{=}1$ check could deploy it at a deeper horizon where it underperforms by more than the 5\% tolerance). This is reported as an empirical boundary map over one random family of two-state environments, not an adaptive-submodularity guarantee; we make no claim that the $H{=}1$ check is monotone or that its errors are bounded in general (the raw per-environment agreement data is in \texttt{results/results\_horizon\_map\_agreement.csv}, generated by \texttt{experiments/build\_horizon\_map.py}).
+\paragraph{Horizon map: where myopic and deeper planning agree, and where they do not.} Figure~\ref{fig:nearopt_horizon} stratifies only by reward asymmetry $\alpha$. Table~\ref{tab:horizon-map} breaks the same 100 environments down by all three sampled regime axes and adds a direct per-environment comparison of the $H{=}1$ classification against $H{\geq}2$. Every regime axis shows the same qualitative pattern -- near-optimality is rarer at $H{=}1$ than at $H{=}3$ -- but the effect is sharpest for high-informativeness observations ($p \geq 0.85$: $17\% \to 90\%$) and comparatively flat for low reward asymmetry ($\alpha < 3$: already $71\%$ near-optimal at $H{=}1$, rising only to $86\%$ by $H{=}2$ and holding there through $H{=}3$, on 7 environments). The per-environment comparison shows the two horizons agree on 44 of the 100 environments: 30 agree $w{=}1$ is always near-optimal, 14 agree it never is, and the remaining 56 environments where $H{=}1$ predicts $w{=}1$ is \emph{not} near-optimal turn out to be near-optimal at some deeper horizon (myopic underclaiming -- the safe direction, a missed opportunity rather than a risk). On this random sample, zero environments show the opposite pattern (myopic overclaiming, where $H{=}1$ predicts near-optimality but a deeper horizon does not deliver it): every environment that passes the $H{=}1$ check also passes at $H{\geq}2$, so a practitioner validating $w{=}1$ with a cheap $H{=}1$ check on this environment family would not have been misled toward deploying it at a deeper horizon where it underperforms. This is a property of the observed sample, not a proven guarantee: we report it as an empirical boundary map over one random family of two-state environments, not an adaptive-submodularity result, and we make no claim that the $H{=}1$ check is monotone or that overclaiming is impossible in general, only that it did not occur here (the raw per-environment agreement data is in \texttt{results/results\_horizon\_map\_agreement.csv}, generated by \texttt{experiments/build\_horizon\_map.py}).
 
 % Table auto-generated by experiments/build_horizon_map.py from
 % results/results_nearopt_horizon.csv -- see that script to regenerate.
@@ -1294,40 +1294,40 @@ We test EFE and Planning agents' sensitivity to discounting by sweeping $\gamma 
 Environment & Agent & $\gamma$ & Obs. & Success & Reward & $\Delta$Succ. \\
 \midrule
 \multirow{8}{*}{Tiger}
-& EFE & 0.90 & 4.10 & 99.4\% & $+5.24$ & \multirow{2}{*}{$+0.4$} \\
-& Planning & 0.90 & 2.75 & 99.0\% & $+6.15$ & \\
-& EFE & 0.95 & 4.26 & 99.8\% & $+5.52$ & \multirow{2}{*}{$+0.2$} \\
-& Planning & 0.95 & 4.20 & 99.6\% & $+5.36$ & \\
-& EFE & 0.99 & 4.38 & 99.2\% & $+4.74$ & \multirow{2}{*}{$-0.6$} \\
-& Planning & 0.99 & 4.12 & 99.8\% & $+5.66$ & \\
-& EFE & 1.00 & 4.21 & 100.0\% & $+5.79$ & \multirow{2}{*}{$+0.4$} \\
-& Planning & 1.00 & 4.09 & 99.6\% & $+5.47$ & \\
+& EFE & 0.90 & 4.33 & 98.8\% & $+4.35$ & \multirow{2}{*}{$+2.8$} \\
+& Planning & 0.90 & 2.70 & 96.0\% & $+2.90$ & \\
+& EFE & 0.95 & 4.33 & 98.8\% & $+4.35$ & \multirow{2}{*}{$0.0$} \\
+& Planning & 0.95 & 4.33 & 98.8\% & $+4.35$ & \\
+& EFE & 0.99 & 4.33 & 98.8\% & $+4.35$ & \multirow{2}{*}{$0.0$} \\
+& Planning & 0.99 & 4.33 & 98.8\% & $+4.35$ & \\
+& EFE & 1.00 & 4.33 & 98.8\% & $+4.35$ & \multirow{2}{*}{$0.0$} \\
+& Planning & 1.00 & 4.33 & 98.8\% & $+4.35$ & \\
 \midrule
 \multirow{8}{*}{Diagnosis}
-& EFE & 0.90 & 5.82 & 86.4\% & $-3.98$ & \multirow{2}{*}{$-1.6$} \\
-& Planning & 0.90 & 5.88 & 88.0\% & $-3.08$ & \\
-& EFE & 0.95 & 6.08 & 89.2\% & $-2.56$ & \multirow{2}{*}{$+1.0$} \\
-& Planning & 0.95 & 6.04 & 88.2\% & $-3.12$ & \\
-& EFE & 0.99 & 9.88 & 97.2\% & $-1.56$ & \multirow{2}{*}{$+7.0$} \\
-& Planning & 0.99 & 5.77 & 90.2\% & $-1.65$ & \\
-& EFE & 1.00 & 9.74 & 97.4\% & $-1.30$ & \multirow{2}{*}{$+7.8$} \\
-& Planning & 1.00 & 5.83 & 89.6\% & $-2.07$ & \\
+& EFE & 0.90 & 5.90 & 88.6\% & $-2.74$ & \multirow{2}{*}{$+0.4$} \\
+& Planning & 0.90 & 5.90 & 88.2\% & $-2.98$ & \\
+& EFE & 0.95 & 5.90 & 88.6\% & $-2.74$ & \multirow{2}{*}{$+0.4$} \\
+& Planning & 0.95 & 5.90 & 88.2\% & $-2.98$ & \\
+& EFE & 0.99 & 9.68 & 97.0\% & $-1.48$ & \multirow{2}{*}{$+9.4$} \\
+& Planning & 0.99 & 5.93 & 87.6\% & $-3.37$ & \\
+& EFE & 1.00 & 9.60 & 95.6\% & $-2.24$ & \multirow{2}{*}{$+6.4$} \\
+& Planning & 1.00 & 5.97 & 89.2\% & $-2.45$ & \\
 \midrule
 \multirow{8}{*}{Bandit}
-& EFE & 0.90 & 2.06 & 59.2\% & $+5.30$ & \multirow{2}{*}{$-4.8$} \\
-& Planning & 0.90 & 2.11 & 64.0\% & $+5.70$ & \\
-& EFE & 0.95 & 2.06 & 60.4\% & $+5.41$ & \multirow{2}{*}{$-3.0$} \\
-& Planning & 0.95 & 2.05 & 63.4\% & $+5.68$ & \\
-& EFE & 0.99 & 4.95 & 85.6\% & $+6.23$ & \multirow{2}{*}{$+22.0$} \\
-& Planning & 0.99 & 2.38 & 63.6\% & $+5.53$ & \\
-& EFE & 1.00 & 5.22 & 86.2\% & $+6.15$ & \multirow{2}{*}{$+16.2$} \\
-& Planning & 1.00 & 3.49 & 70.0\% & $+5.56$ & \\
+& EFE & 0.90 & 2.00 & 61.4\% & $+5.52$ & \multirow{2}{*}{$+0.8$} \\
+& Planning & 0.90 & 2.00 & 60.6\% & $+5.45$ & \\
+& EFE & 0.95 & 2.00 & 61.4\% & $+5.52$ & \multirow{2}{*}{$+0.8$} \\
+& Planning & 0.95 & 2.00 & 60.6\% & $+5.45$ & \\
+& EFE & 0.99 & 5.22 & 86.6\% & $+6.18$ & \multirow{2}{*}{$+22.8$} \\
+& Planning & 0.99 & 2.29 & 63.8\% & $+5.59$ & \\
+& EFE & 1.00 & 5.22 & 86.6\% & $+6.18$ & \multirow{2}{*}{$+16.8$} \\
+& Planning & 1.00 & 3.22 & 69.8\% & $+5.67$ & \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-\paragraph{Discounting erases EFE's advantage on multi-observation environments.} On Tiger (single observation action), both agents achieve ${\geq}99\%$ success across all $\gamma$ values, with negligible gaps. On Diagnosis and Bandit, heavy discounting ($\gamma{=}0.9$--$0.95$) renders both agents effectively myopic, erasing EFE's advantage: at $\gamma{=}0.9$, EFE's epistemic term cannot propagate value through future observations because discounting truncates the effective horizon below the number of observations needed for disambiguation. Both agents observe ${\sim}2$ times on Bandit and ${\sim}6$ times on Diagnosis, behaving identically. The transition between $\gamma{=}0.95$ and $\gamma{=}0.99$ is sharp: at $\gamma{=}0.99$, EFE's success gap over Planning jumps to $+7.0$ pp on Diagnosis and $+22.0$ pp on Bandit, matching the undiscounted pattern. This confirms that EFE's advantage depends on the discount factor preserving a sufficient effective horizon for recursive epistemic evaluation. In practical terms, $\gamma \geq 0.99$ is needed for EFE to differentiate from reward-only planning on these environments.
+\paragraph{Discounting erases EFE's advantage on multi-observation environments.} On Tiger (single observation action), both agents achieve ${\geq}96\%$ success across all $\gamma$ values, with negligible gaps except a $+2.8$ pp EFE advantage at the heaviest discounting tested ($\gamma{=}0.9$); at $\gamma \geq 0.95$ the two agents are numerically identical. On Diagnosis and Bandit, heavy discounting ($\gamma{=}0.9$--$0.95$) renders both agents effectively myopic, erasing most of EFE's advantage: at $\gamma{=}0.9$, EFE's epistemic term cannot propagate value through future observations because discounting truncates the effective horizon below the number of observations needed for disambiguation. Both agents observe ${\sim}2$ times on Bandit and ${\sim}6$ times on Diagnosis, behaving identically (bit-identical rows in Table~\ref{tab:discount}). The transition between $\gamma{=}0.95$ and $\gamma{=}0.99$ is sharp: at $\gamma{=}0.99$, EFE's success gap over Planning jumps to $+9.4$ pp on Diagnosis and $+22.8$ pp on Bandit, matching the undiscounted pattern. This confirms that EFE's advantage depends on the discount factor preserving a sufficient effective horizon for recursive epistemic evaluation. In practical terms, $\gamma \geq 0.99$ is needed for EFE to differentiate from reward-only planning on these environments.
 
 \section{Model misspecification sensitivity}
 \label{app:misspec}
@@ -1343,15 +1343,15 @@ Our main results assume the agent's generative model matches the true environmen
 \toprule
 Agent & $p_{\text{agent}}$ & Mismatch & Obs & Success & Reward \\
 \midrule
-EFE & 0.70 & $-0.15$ & 4.27 & 99.4\% & $+5.11$ \\
-EFE & 0.80 & $-0.05$ & 4.14 & 99.6\% & $+5.46$ \\
-EFE & 0.85 & $\pm 0.00$ & 4.28 & 99.6\% & $+5.32$ \\
-EFE & 0.90 & $+0.05$ & 2.68 & 96.7\% & $+3.66$ \\
-EFE & 0.95 & $+0.10$ & 2.66 & 97.2\% & $+4.30$ \\
+EFE & 0.70 & $-0.15$ & 4.23 & 99.6\% & $+5.33$ \\
+EFE & 0.80 & $-0.05$ & 4.23 & 99.6\% & $+5.33$ \\
+EFE & 0.85 & $\pm 0.00$ & 4.23 & 99.6\% & $+5.33$ \\
+EFE & 0.90 & $+0.05$ & 2.65 & 96.9\% & $+3.91$ \\
+EFE & 0.95 & $+0.10$ & 2.65 & 96.9\% & $+3.91$ \\
 \midrule
-Planning & 0.70 & $-0.15$ & 4.19 & 99.4\% & $+5.20$ \\
-Planning & 0.85 & $\pm 0.00$ & 4.24 & 99.6\% & $+5.36$ \\
-Planning & 0.95 & $+0.10$ & 2.74 & 97.0\% & $+3.92$ \\
+Planning & 0.70 & $-0.15$ & 4.23 & 99.6\% & $+5.33$ \\
+Planning & 0.85 & $\pm 0.00$ & 4.23 & 99.6\% & $+5.33$ \\
+Planning & 0.95 & $+0.10$ & 2.65 & 96.9\% & $+3.91$ \\
 \bottomrule
 \end{tabular}
 \end{small}
@@ -1366,23 +1366,23 @@ Planning & 0.95 & $+0.10$ & 2.74 & 97.0\% & $+3.92$ \\
 \toprule
 Agent & $p_{\text{agent}}$ & Mismatch & Obs & Success & Reward \\
 \midrule
-EFE & 0.65 & $-0.15$ & 5.83 & 89.1\% & $-2.36$ \\
-EFE & 0.75 & $-0.05$ & 9.60 & 97.5\% & $-1.11$ \\
-EFE & 0.80 & $\pm 0.00$ & 9.78 & 97.4\% & $-1.36$ \\
-EFE & 0.85 & $+0.05$ & 5.92 & 88.8\% & $-2.62$ \\
-EFE & 0.90 & $+0.10$ & 5.92 & 89.0\% & $-2.52$ \\
+EFE & 0.65 & $-0.15$ & 5.86 & 88.7\% & $-2.62$ \\
+EFE & 0.75 & $-0.05$ & 9.68 & 97.4\% & $-1.26$ \\
+EFE & 0.80 & $\pm 0.00$ & 9.68 & 97.4\% & $-1.26$ \\
+EFE & 0.85 & $+0.05$ & 5.86 & 88.7\% & $-2.62$ \\
+EFE & 0.90 & $+0.10$ & 5.86 & 88.7\% & $-2.62$ \\
 \midrule
-Planning & 0.65 & $-0.15$ & 5.78 & 88.6\% & $-2.65$ \\
-Planning & 0.80 & $\pm 0.00$ & 5.83 & 89.0\% & $-2.40$ \\
-Planning & 0.90 & $+0.10$ & 5.80 & 87.9\% & $-3.04$ \\
+Planning & 0.65 & $-0.15$ & 5.84 & 89.2\% & $-2.35$ \\
+Planning & 0.80 & $\pm 0.00$ & 5.85 & 88.8\% & $-2.59$ \\
+Planning & 0.90 & $+0.10$ & 5.82 & 88.7\% & $-2.61$ \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-\paragraph{Key findings.} On Tiger, both EFE and Planning agents are remarkably robust: success rates remain above 96.7\% even with $\pm 0.15$ mismatch. The degradation pattern is asymmetric but not in observation count: negative mismatch (underestimating accuracy) leaves observation count essentially unchanged (4.27--4.28 vs.\ the well-calibrated 4.28) while preserving success, whereas positive mismatch (overestimating accuracy) sharply reduces observation count (to 2.66--2.68) and lowers success to 96.7--97.2\%. EFE's inherent epistemic drive provides a partial buffer against over-confident models: when the agent overestimates its sensor accuracy, the information gain term still encourages some observation rather than committing at the first opportunity.
+\paragraph{Key findings.} On Tiger, both EFE and Planning agents are remarkably robust: success rates remain above 96.9\% even with $\pm 0.15$ mismatch. The degradation pattern is asymmetric but not in observation count: negative mismatch (underestimating accuracy, including exact calibration) leaves observation count and success unchanged (4.23 observations, 99.6\% success at every level from $-0.15$ to $0.00$), whereas positive mismatch (overestimating accuracy) sharply reduces observation count (to 2.65) and lowers success to 96.9\%. Under the fixed pipeline, EFE and Planning give numerically identical rows at every mismatch level tested on Tiger (Table~\ref{tab:misspec-tiger}): with a single observation action, the belief-update dynamics driven by the agent's believed accuracy determine when committing becomes attractive, and information gain has no separate observation action to redirect toward, so there is no EFE-specific buffering effect to report here. This is a genuine, environment-specific finding, not a case we can attribute to the epistemic term: the same asymmetric degradation appears in reward-only Planning, which has no information-gain term at all.
 
-On Diagnosis, degradation is graceful but measurable, and observation count moves in the same direction for both signs of mismatch: the well-calibrated agent tests most (9.78 observations at $\pm 0.00$), while both overestimating and underestimating accuracy reduce testing to roughly 5.8--5.9 observations. The mechanisms differ. Overestimating accuracy (the agent believes tests are more informative than they truly are) makes each test look more decisive than it is, so the agent commits prematurely on insufficient evidence, and success drops from 97.4\% to 88.8--89.0\%. Underestimating accuracy makes each test look less informative than it is, so the agent gives up on testing earlier than the well-calibrated policy would, trading some of the well-calibrated policy's test count for a similar-looking success rate (89.1\% at $-0.15$ mismatch) that is now driven by fewer, not more, observations. The EFE agent degrades gracefully across the mismatch range in both directions, but the direction of the count effect is the opposite of what "excessive testing" would predict; the intrinsic epistemic value biases the agent toward testing rather than away from it, but a misspecified accuracy estimate can still cause it to underestimate how much testing that bias should recommend.
+On Diagnosis, EFE's behavior steps between exactly two levels rather than degrading smoothly with mismatch magnitude (Table~\ref{tab:misspec-diag}): a high-testing level (9.68 observations, 97.4\% success) at mismatch $\in \{-0.10, -0.05, 0.00\}$, and a low-testing level (5.86 observations, 88.7\% success) at mismatch $\in \{-0.15, +0.05, +0.10\}$. This is not the ``well-calibrated agent tests most, both directions of error reduce testing'' pattern reported previously: perfect calibration ($\pm 0.00$) ties with two levels of underestimation rather than uniquely maximizing testing, and only the most extreme underestimate tested ($-0.15$) drops to the low-testing level, matching every overestimate we tested. Overestimating accuracy (the agent believes tests are more informative than they truly are) makes each test look more decisive than it is, so the agent commits prematurely on insufficient evidence and lands in the low-testing, lower-success regime at every overestimate level tested. Underestimating accuracy makes each test look less informative than it is, but only past a threshold: mild underestimation ($-0.05$, $-0.10$) does not visibly change behavior from perfect calibration, while severe underestimation ($-0.15$) triggers the same reduced-testing response as overestimation, producing a similar-looking success rate (88.7\%) that is, as before, driven by fewer rather than more observations. Reward-only Planning shows a comparable but not identical step pattern (Table~\ref{tab:misspec-diag}), so this threshold structure is not unique to EFE's epistemic term; we do not have a mechanistic account of why the transition sits precisely where it does and report the pattern descriptively rather than explain it.
 
 \paragraph{Implications for learned models.} These results suggest that EFE-based agents can tolerate moderate model errors without catastrophic failure. In practice, observation models learned from data will have estimation error. The graceful degradation observed here indicates that approximate models suffice for effective EFE-driven information gathering, provided the model does not systematically overestimate sensor informativeness.
 
