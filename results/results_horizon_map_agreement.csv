@@ -1,2 +1,2 @@
 n_envs,agree_near_optimal,agree_not_near_optimal,myopic_overclaims,myopic_underclaims,agreement_rate,monotone_h1_le_h2_rate,max_horizon
-100,3,47,8,42,0.5,0.9,3
+100,30,14,0,56,0.44,0.97,3
