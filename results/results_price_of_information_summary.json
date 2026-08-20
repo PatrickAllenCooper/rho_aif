@@ -27,13 +27,13 @@
   "prop2_rows": 2,
   "verdict": {
     "prop2_jump": "HOLD \u2014 onset brackets {'TestbedPos-p06': 0.030000000000000027, 'TestbedPos-p058': 0.030000000000000027}; U=0 below closed-form threshold",
-    "curve_collapse": "HOLD \u2014 98% of matched w/\u03b1 points within 2\u00b7SE; max spread \u22640.91; crossing brackets differ across \u03b1",
-    "dual_rescale": "HOLD \u2014 usage pinned near B; windowed w ratio post/pre \u22489.33 after \u00d710 reward rescale; re-adaptation 157\u219245 episodes with lr reset-on-shift",
+    "curve_collapse": "HOLD \u2014 100% of matched w/\u03b1 points within 2\u00b7SE; max spread \u22640.00; crossing brackets coincide across \u03b1",
+    "dual_rescale": "HOLD \u2014 usage pinned near B; windowed w ratio post/pre \u224811.54 after \u00d710 reward rescale; re-adaptation 176\u219250 episodes with lr reset-on-shift",
     "shadow_staircases": "PARTIAL \u2014 Bandit/Inspection roughly monotone with SEs; Tiger/Diagnosis/Tileworld still show local non-monotonicity; report brackets+SEs"
   },
   "curves_rows": 25,
-  "collapse_frac_within_noise": 0.9807692307692307,
-  "collapse_max_spread": 0.9066666666666663,
+  "collapse_frac_within_noise": 1.0,
+  "collapse_max_spread": 0.0,
   "bracket_coincidence": {
     "Bandit": {
       "lo_spread": 0.0,
@@ -51,18 +51,18 @@
       "coincide": true
     },
     "Tileworld-6x6": {
-      "lo_spread": 4.117849969712994,
-      "hi_spread": 14.200357199779582,
-      "coincide": false
+      "lo_spread": 8.881784197001252e-16,
+      "hi_spread": 0.0,
+      "coincide": true
     }
   },
-  "brackets_coincide": false,
+  "brackets_coincide": true,
   "scale_rows": 12,
-  "dual_w_ratio_post_pre": 9.326643899090774,
-  "dual_pre_w": 0.291037748361365,
-  "dual_post_w": 2.7144054401596405,
-  "dual_pre_usage": 8.1,
-  "dual_post_usage": 8.1,
+  "dual_w_ratio_post_pre": 11.543353903205652,
+  "dual_pre_w": 0.23389998709750745,
+  "dual_post_w": 2.699990329021764,
+  "dual_pre_usage": 8.0,
+  "dual_post_usage": 8.0,
   "dual_crossing_bracket": {
     "w_lo": 0.1414213562373095,
     "w_hi": 0.3228004742743391
@@ -70,10 +70,10 @@
   "dual_rows": 400,
   "efe_rows": 5,
   "usage_curve_rows": 66,
-  "dual_readapt_decay": 157,
-  "dual_readapt_reset": 45,
+  "dual_readapt_decay": 176,
+  "dual_readapt_reset": 50,
   "dual_reset_events": [
-    217
+    215
   ],
   "dual_reset_rows": 800,
   "interleaved_rows": 12,
@@ -85,44 +85,44 @@
   ],
   "dual_ms_n_seeds": 10,
   "dual_ms_readapt_decay": {
-    "mean": 157.66666666666666,
-    "ci_lo": 148.47345177741272,
-    "ci_hi": 166.8598815559206,
-    "n_recovered": 9,
+    "mean": 150.9,
+    "ci_lo": 142.89060229757845,
+    "ci_hi": 158.90939770242156,
+    "n_recovered": 10,
     "n_total": 10
   },
   "dual_ms_pre_err_decay": {
-    "mean": 0.07599999999999998,
-    "ci_lo": 0.03645309058289841,
-    "ci_hi": 0.11554690941710155
+    "mean": 0.1519999999999996,
+    "ci_lo": 0.0949837980141702,
+    "ci_hi": 0.20901620198582901
   },
   "dual_ms_post_err_decay": {
-    "mean": 0.33999999999999997,
-    "ci_lo": 0.14965674048066613,
-    "ci_hi": 0.5303432595193338
+    "mean": 0.1919999999999999,
+    "ci_lo": 0.06143790851348402,
+    "ci_hi": 0.32256209148651577
   },
   "dual_ms_readapt_reset": {
-    "mean": 56.0,
-    "ci_lo": 48.5451259791552,
-    "ci_hi": 63.4548740208448,
+    "mean": 57.0,
+    "ci_lo": 51.96466882916327,
+    "ci_hi": 62.03533117083673,
     "n_recovered": 10,
     "n_total": 10
   },
   "dual_ms_pre_err_reset": {
-    "mean": 0.12399999999999975,
-    "ci_lo": 0.07114860413911017,
-    "ci_hi": 0.17685139586088933
+    "mean": 0.1519999999999996,
+    "ci_lo": 0.0949837980141702,
+    "ci_hi": 0.20901620198582901
   },
   "dual_ms_post_err_reset": {
-    "mean": 0.0919999999999999,
-    "ci_lo": 0.04978030791206533,
-    "ci_hi": 0.13421969208793447
+    "mean": 0.09999999999999964,
+    "ci_lo": 0.05588185558450243,
+    "ci_hi": 0.14411814441549686
   },
   "dual_ms_cis_disjoint": true,
   "dual_multiseed_rows": 8000,
-  "cost_ratio_min": 1.2141783567134268,
-  "cost_ratio_max": 1.3880222104706506,
-  "cost_ratio_rel_spread": 0.13529623307404212,
+  "cost_ratio_min": 1.2601023017902813,
+  "cost_ratio_max": 1.4140222403037703,
+  "cost_ratio_rel_spread": 0.12002784558975704,
   "cost_test_costs": [
     0.5,
     2.5

@@ -1,6 +1,6 @@
 env,w,implicit_budget,se,family
-Tiger,1.0,4.208,0.07002856560004649,observe_then_commit
-Diagnosis,1.0,9.684000000000001,0.14715977711317707,observe_then_commit
-Bandit,1.0,5.0280000000000005,0.17015874940772222,observe_then_commit
-Tileworld-6x6,1.0,14.825999999999999,0.21722338732282034,observe_then_commit
-Inspection-N8,1.0,18.241999999999997,0.19445822173413002,inspection
+Tiger,1.0,4.368,0.11217842929904127,observe_then_commit
+Diagnosis,1.0,9.772,0.14008568806269966,observe_then_commit
+Bandit,1.0,5.108,0.11114854924829207,observe_then_commit
+Tileworld-6x6,1.0,14.85,0.1259364919314494,observe_then_commit
+Inspection-N8,1.0,15.563999999999998,0.09244457799135627,inspection
