@@ -23,7 +23,7 @@ from rho_aif.benchmark import (
 from run_experiment import SEEDS
 
 
-def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, seeds=None):
+def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, seeds=None, write_csv=True):
     if seeds is None:
         seeds = SEEDS
     cfg = INSPECTION_CONFIGS[config_name]
@@ -112,17 +112,16 @@ def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, see
             f"complete={row['completion_rate']:.1%}  ({dt:.1f}s)"
         )
 
-    os.makedirs("results", exist_ok=True)
     df = pd.DataFrame(results)
-    from run_experiment import provenance_fields
-    prov = provenance_fields(seeds, num_episodes)
-    for k, v in prov.items():
-        df[k] = v
-    csv_name = f"results/results_inspection_n{nc}.csv"
-    import os as _os
-    _os.makedirs(_os.path.dirname(_os.path.abspath(csv_name)), exist_ok=True)
-    df.to_csv(csv_name, index=False)
-    print(f"\nResults saved to {csv_name}")
+    if write_csv:
+        from run_experiment import provenance_fields
+        prov = provenance_fields(seeds, num_episodes)
+        for k, v in prov.items():
+            df[k] = v
+        csv_name = f"results/results_inspection_n{nc}.csv"
+        os.makedirs(os.path.dirname(os.path.abspath(csv_name)), exist_ok=True)
+        df.to_csv(csv_name, index=False)
+        print(f"\nResults saved to {csv_name}")
     return df
 
 
