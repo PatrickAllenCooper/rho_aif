@@ -172,14 +172,14 @@ class TestInspectionSE:
 
     def test_se_reported_in_results(self):
         df = run_inspection_experiment("Inspection-N8", num_episodes=10, seeds=[42], write_csv=False)
-        assert "se_reward" in df.columns
+        assert "se_reward_pooled" in df.columns
         for _, row in df.iterrows():
-            assert row["se_reward"] >= 0
-            assert np.isfinite(row["se_reward"])
+            assert row["se_reward_pooled"] >= 0
+            assert np.isfinite(row["se_reward_pooled"])
 
     def test_se_decreases_with_more_episodes(self):
         df_small = run_inspection_experiment("Inspection-N8", num_episodes=10, seeds=[42], write_csv=False)
         df_large = run_inspection_experiment("Inspection-N8", num_episodes=50, seeds=[42], write_csv=False)
-        se_small = df_small[df_small["agent"].str.contains("Greedy")]["se_reward"].iloc[0]
-        se_large = df_large[df_large["agent"].str.contains("Greedy")]["se_reward"].iloc[0]
+        se_small = df_small[df_small["agent"].str.contains("Greedy")]["se_reward_pooled"].iloc[0]
+        se_large = df_large[df_large["agent"].str.contains("Greedy")]["se_reward_pooled"].iloc[0]
         assert se_large < se_small * 1.5

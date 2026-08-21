@@ -20,6 +20,7 @@ from rho_aif.agents.rocksample_agents import (
     RockSamplePOMCPAgent,
     RockSampleTreeSearchAgent,
 )
+from rho_aif.stats import cohens_d, holm_bonferroni, seed_level_ttest, seed_means
 from run_experiment import SEEDS
 
 
@@ -124,6 +125,7 @@ def run_rocksample_experiment(
     ]
 
     results = []
+    all_episode_results = {}
     for label, make_agent_fn in agent_configs:
         t0 = time.time()
         episode_results = []
@@ -134,6 +136,7 @@ def run_rocksample_experiment(
                 r = run_rocksample_episode(
                     agent, env, seed=seed * 10000 + ep_i, max_steps=max_steps
                 )
+                r["seed"] = seed
                 episode_results.append(r)
 
         dt = time.time() - t0
@@ -142,28 +145,36 @@ def run_rocksample_experiment(
         bads = [r["bad_sampled"] for r in episode_results]
         checks = [r["checks"] for r in episode_results]
 
+        seed_reward_means = seed_means(episode_results, lambda r: r["total_reward"])
+        n_seeds = len(seed_reward_means)
+
         row = {
             "instance": config_name,
             "agent": label,
             "mean_reward": np.mean(rewards),
             "std_reward": np.std(rewards),
-            "se_reward": np.std(rewards) / np.sqrt(len(rewards)),
+            "se_reward_pooled": np.std(rewards) / np.sqrt(len(rewards)),
+            "se_reward_seed_level": (
+                float(np.std(seed_reward_means, ddof=1) / np.sqrt(n_seeds))
+                if n_seeds > 1 else float("nan")
+            ),
             "mean_good": np.mean(goods),
             "mean_bad": np.mean(bads),
             "mean_checks": np.mean(checks),
             "mean_steps": np.mean([r["steps"] for r in episode_results]),
             "time_s": dt,
-            "n_seeds": len(seeds),
+            "n_seeds": n_seeds,
             "episodes_per_seed": num_episodes,
             "seed_list": "|".join(str(s) for s in seeds),
             "tree_depth": td,
         }
         results.append(row)
         print(
-            f"  {label:25s}: reward={row['mean_reward']:+.2f} +/- {row['se_reward']:.2f}  "
+            f"  {label:25s}: reward={row['mean_reward']:+.2f} +/- {row['se_reward_seed_level']:.2f}(seed)  "
             f"good={row['mean_good']:.2f}  bad={row['mean_bad']:.2f}  "
             f"checks={row['mean_checks']:.1f}  steps={row['mean_steps']:.1f}  ({dt:.1f}s)"
         )
+        all_episode_results[label] = episode_results
 
     df = pd.DataFrame(results)
     if csv_name is None:
@@ -171,7 +182,58 @@ def run_rocksample_experiment(
     os.makedirs(os.path.dirname(os.path.abspath(csv_name)), exist_ok=True)
     df.to_csv(csv_name, index=False)
     print(f"\nResults saved to {csv_name}")
+
+    stats_df = compute_rocksample_stats(all_episode_results, config_name)
+    stats_csv = csv_name.replace(".csv", "_stats.csv")
+    stats_df.to_csv(stats_csv, index=False)
+    print(f"Statistics saved to {stats_csv}")
     return df
+
+
+def compute_rocksample_stats(all_episode_results, config_name):
+    """Pairwise seed-level Welch t-tests on reward, Holm-Bonferroni
+    corrected, mirroring compute_full_statistics in run_experiment.py but
+    for RockSample's dict-based episode results."""
+    from scipy.stats import ttest_ind
+
+    labels = list(all_episode_results.keys())
+    rows = []
+    for i in range(len(labels)):
+        for j in range(i + 1, len(labels)):
+            res_a = all_episode_results[labels[i]]
+            res_b = all_episode_results[labels[j]]
+            extractor = lambda r: r["total_reward"]
+            vals_a = np.array([extractor(r) for r in res_a])
+            vals_b = np.array([extractor(r) for r in res_b])
+
+            d = cohens_d(vals_a, vals_b)
+            t_stat, p_val = ttest_ind(vals_a, vals_b, equal_var=False)
+            seed_out = seed_level_ttest(res_a, res_b, extractor)
+
+            rows.append({
+                "instance": config_name,
+                "metric": "Reward",
+                "agent_a": labels[i],
+                "agent_b": labels[j],
+                "mean_a": float(np.mean(vals_a)),
+                "mean_b": float(np.mean(vals_b)),
+                "diff": float(np.mean(vals_a) - np.mean(vals_b)),
+                "cohens_d_pooled": d,
+                "t_stat_pooled": float(t_stat),
+                "p_pooled": float(p_val),
+                "n_seeds": seed_out["n_seeds_a"],
+                "p_seed_level": seed_out["p_value"],
+                "cohens_d_seed_level": seed_out["cohens_d"],
+            })
+
+    p_list = [r["p_pooled"] for r in rows]
+    for r, sig in zip(rows, holm_bonferroni(p_list)):
+        r["significant_hb_pooled"] = sig
+    seed_p_list = [r["p_seed_level"] for r in rows]
+    for r, sig in zip(rows, holm_bonferroni(seed_p_list)):
+        r["significant_hb_seed_level"] = sig
+
+    return pd.DataFrame(rows)
 
 
 # The paper's declared per-instance protocol: episodes per seed and seed set.

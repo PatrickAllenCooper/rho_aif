@@ -20,6 +20,7 @@ from rho_aif.benchmark import (
     INSPECTION_CONFIGS,
     run_inspection_episode,
 )
+from rho_aif.stats import seed_means
 from run_experiment import SEEDS
 
 
@@ -59,6 +60,7 @@ def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, see
     ]
 
     results = []
+    all_episode_results = {}
     for label, make_agent_fn in agent_configs:
         t0 = time.time()
         episode_results = []
@@ -69,6 +71,8 @@ def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, see
                 r = run_inspection_episode(
                     agent, env, seed=seed * 10000 + ep_i
                 )
+                r["seed"] = seed
+                r["accuracy_ep"] = r["correct"] / nc if nc > 0 else 0.0
                 episode_results.append(r)
 
             pct = len(episode_results) / (num_episodes * len(seeds)) * 100
@@ -87,13 +91,26 @@ def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, see
 
         accuracy = np.mean(corrects) / nc if nc > 0 else 0
 
+        seed_reward_means = seed_means(episode_results, lambda r: r["total_reward"])
+        seed_accuracy_means = seed_means(episode_results, lambda r: r["accuracy_ep"])
+        n_seeds = len(seed_reward_means)
+
         row = {
             "instance": config_name,
             "agent": label,
             "mean_reward": np.mean(rewards),
             "std_reward": np.std(rewards),
-            "se_reward": np.std(rewards) / np.sqrt(len(rewards)),
+            "se_reward_pooled": np.std(rewards) / np.sqrt(len(rewards)),
+            "se_reward_seed_level": (
+                float(np.std(seed_reward_means, ddof=1) / np.sqrt(n_seeds))
+                if n_seeds > 1 else float("nan")
+            ),
             "accuracy": accuracy,
+            "se_accuracy_seed_level": (
+                float(np.std(seed_accuracy_means, ddof=1) / np.sqrt(n_seeds))
+                if n_seeds > 1 else float("nan")
+            ),
+            "n_seeds": n_seeds,
             "mean_correct": np.mean(corrects),
             "mean_missed": np.mean(misseds),
             "mean_false_alarm": np.mean(false_alarms),
@@ -106,11 +123,13 @@ def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, see
         }
         results.append(row)
         print(
-            f"  {label:25s}: reward={row['mean_reward']:+.2f} +/- {row['se_reward']:.2f}  "
-            f"acc={accuracy:.1%}  log_score={row['mean_log_score']:+.3f}  "
+            f"  {label:25s}: reward={row['mean_reward']:+.2f} +/- {row['se_reward_seed_level']:.2f}(seed)  "
+            f"acc={accuracy:.1%} +/- {row['se_accuracy_seed_level']:.1%}(seed)  "
+            f"log_score={row['mean_log_score']:+.3f}  "
             f"brier={row['mean_brier']:.3f}  tests={row['mean_tests']:.1f}  "
             f"complete={row['completion_rate']:.1%}  ({dt:.1f}s)"
         )
+        all_episode_results[label] = episode_results
 
     df = pd.DataFrame(results)
     if write_csv:
@@ -122,7 +141,64 @@ def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, see
         os.makedirs(os.path.dirname(os.path.abspath(csv_name)), exist_ok=True)
         df.to_csv(csv_name, index=False)
         print(f"\nResults saved to {csv_name}")
+
+        stats_df = compute_inspection_stats(all_episode_results, config_name)
+        stats_csv = f"results/results_inspection_n{nc}_stats.csv"
+        stats_df.to_csv(stats_csv, index=False)
+        print(f"Statistics saved to {stats_csv}")
     return df
+
+
+def compute_inspection_stats(all_episode_results, config_name):
+    """Pairwise seed-level Welch t-tests (reward and per-component accuracy),
+    Holm-Bonferroni corrected, mirroring compute_full_statistics in
+    run_experiment.py but for Structural Inspection's dict-based episode
+    results (reward, accuracy) rather than EpisodeResult objects."""
+    from rho_aif.stats import cohens_d, holm_bonferroni, seed_level_ttest
+    from scipy.stats import ttest_ind
+
+    labels = list(all_episode_results.keys())
+    rows = []
+    for metric_name, extractor in [
+        ("Reward", lambda r: r["total_reward"]),
+        ("Accuracy", lambda r: r["accuracy_ep"]),
+    ]:
+        for i in range(len(labels)):
+            for j in range(i + 1, len(labels)):
+                res_a = all_episode_results[labels[i]]
+                res_b = all_episode_results[labels[j]]
+                vals_a = np.array([extractor(r) for r in res_a])
+                vals_b = np.array([extractor(r) for r in res_b])
+
+                d = cohens_d(vals_a, vals_b)
+                t_stat, p_val = ttest_ind(vals_a, vals_b, equal_var=False)
+
+                seed_out = seed_level_ttest(res_a, res_b, extractor)
+
+                rows.append({
+                    "instance": config_name,
+                    "metric": metric_name,
+                    "agent_a": labels[i],
+                    "agent_b": labels[j],
+                    "mean_a": float(np.mean(vals_a)),
+                    "mean_b": float(np.mean(vals_b)),
+                    "diff": float(np.mean(vals_a) - np.mean(vals_b)),
+                    "cohens_d_pooled": d,
+                    "t_stat_pooled": float(t_stat),
+                    "p_pooled": float(p_val),
+                    "n_seeds": seed_out["n_seeds_a"],
+                    "p_seed_level": seed_out["p_value"],
+                    "cohens_d_seed_level": seed_out["cohens_d"],
+                })
+
+    p_list = [r["p_pooled"] for r in rows]
+    for r, sig in zip(rows, holm_bonferroni(p_list)):
+        r["significant_hb_pooled"] = sig
+    seed_p_list = [r["p_seed_level"] for r in rows]
+    for r, sig in zip(rows, holm_bonferroni(seed_p_list)):
+        r["significant_hb_seed_level"] = sig
+
+    return pd.DataFrame(rows)
 
 
 if __name__ == "__main__":

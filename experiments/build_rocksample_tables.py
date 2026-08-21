@@ -34,8 +34,30 @@ def load(instance_file: str) -> pd.DataFrame:
     return pd.read_csv(RESULTS / instance_file)
 
 
+def load_stats(instance_file: str) -> pd.DataFrame:
+    return pd.read_csv(RESULTS / instance_file.replace(".csv", "_stats.csv"))
+
+
+def tied_with_best(stats_df: pd.DataFrame, label: str, best_label: str) -> bool:
+    """True iff label is the best itself, or is not significantly different
+    from best_label per the seed-level Welch test (Holm-Bonferroni
+    corrected), matching this row against the stats CSV's Reward rows."""
+    if label == best_label:
+        return True
+    match = stats_df[
+        (stats_df["metric"] == "Reward")
+        & (
+            ((stats_df["agent_a"] == label) & (stats_df["agent_b"] == best_label))
+            | ((stats_df["agent_a"] == best_label) & (stats_df["agent_b"] == label))
+        )
+    ]
+    if match.empty:
+        return False
+    return not bool(match.iloc[0]["significant_hb_seed_level"])
+
+
 def fmt_reward(row) -> str:
-    return f"${row['mean_reward']:+.2f} \\pm {row['se_reward']:.2f}$"
+    return f"${row['mean_reward']:+.2f} \\pm {row['se_reward_seed_level']:.2f}$"
 
 
 def build_main_table() -> str:
@@ -47,10 +69,12 @@ def build_main_table() -> str:
         " RS[7,4]: 500 episodes $\\times$ 10 seeds (5{,}000 episodes). RS[7,8]",
         " and RS[11,11]: 100 episodes $\\times$ 5 seeds (500 episodes, reduced",
         " protocol). Greedy samples without",
-        " checking. Bold: best mean reward per instance (ties within",
-        " 1 SE of the best also bolded). Reward reported as mean $\\pm$ pooled",
-        " episode-level SE (no seed-level replicate statistics computed for",
-        " this environment; bolded ties are descriptive, not a hypothesis test).",
+        " checking. Bold: best mean reward per instance, plus any agent not",
+        " significantly different from it by a seed-level Welch $t$-test with",
+        " Holm--Bonferroni correction (full pairwise table in",
+        " Appendix~\\ref{app:rocksample}). Reward reported as mean $\\pm$",
+        " seed-level SE (SE of the per-seed means, RS[5,3]/RS[7,4]: 10 seeds;",
+        " RS[7,8]/RS[11,11]: 5 seeds).",
         " Steps and Checks omitted (tree-search evaluates all actions); a",
         " POMCP(1000) baseline for every instance is in",
         " Appendix~\\ref{app:rocksample}, which also reports per-instance",
@@ -64,6 +88,7 @@ def build_main_table() -> str:
     ]
     for instance, fname, depth in INSTANCES:
         df = load(fname)
+        stats_df = load_stats(fname)
         rows = []
         for template in MAIN_AGENTS:
             label = template.format(d=depth)
@@ -71,11 +96,10 @@ def build_main_table() -> str:
             if match.empty:
                 continue
             rows.append((label, match.iloc[0]))
-        best_reward = max(r["mean_reward"] for _, r in rows)
-        best_se = max(r["se_reward"] for _, r in rows)
+        best_label = max(rows, key=lambda lr: lr[1]["mean_reward"])[0]
         lines.append(f"\\multirow{{{len(rows)}}}{{*}}{{{instance}}}")
         for label, r in rows:
-            is_best = r["mean_reward"] >= best_reward - best_se
+            is_best = tied_with_best(stats_df, label, best_label)
             reward_str = fmt_reward(r)
             if is_best:
                 reward_str = f"\\mathbf{{{reward_str[1:-1]}}}"

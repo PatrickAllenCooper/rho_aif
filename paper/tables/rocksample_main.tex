@@ -5,10 +5,12 @@
  RS[7,4]: 500 episodes $\times$ 10 seeds (5{,}000 episodes). RS[7,8]
  and RS[11,11]: 100 episodes $\times$ 5 seeds (500 episodes, reduced
  protocol). Greedy samples without
- checking. Bold: best mean reward per instance (ties within
- 1 SE of the best also bolded). Reward reported as mean $\pm$ pooled
- episode-level SE (no seed-level replicate statistics computed for
- this environment; bolded ties are descriptive, not a hypothesis test).
+ checking. Bold: best mean reward per instance, plus any agent not
+ significantly different from it by a seed-level Welch $t$-test with
+ Holm--Bonferroni correction (full pairwise table in
+ Appendix~\ref{app:rocksample}). Reward reported as mean $\pm$
+ seed-level SE (SE of the per-seed means, RS[5,3]/RS[7,4]: 10 seeds;
+ RS[7,8]/RS[11,11]: 5 seeds).
  Steps and Checks omitted (tree-search evaluates all actions); a
  POMCP(1000) baseline for every instance is in
  Appendix~\ref{app:rocksample}, which also reports per-instance
@@ -20,28 +22,28 @@
 Instance & Agent & Good & Bad & Reward \\
 \midrule
 \multirow{4}{*}{RS[5,3]}
- & Greedy & $1.49$ & $1.51$ & $+3.71 \pm 0.25$ \\
- & Planning ($w{=}0$, d=3) & $0.99$ & $0.04$ & $+14.28 \pm 0.11$ \\
- & Plan+IG ($w{=}5$, d=3) & $1.44$ & $0.01$ & $\mathbf{+16.41 \pm 0.11}$ \\
+ & Greedy & $1.49$ & $1.51$ & $+3.71 \pm 0.26$ \\
+ & Planning ($w{=}0$, d=3) & $0.99$ & $0.04$ & $+14.28 \pm 0.13$ \\
+ & Plan+IG ($w{=}5$, d=3) & $1.44$ & $0.01$ & $\mathbf{+16.41 \pm 0.13}$ \\
  & EFE ($w{=}1$, d=3) & $1.44$ & $0.03$ & $\mathbf{+16.47 \pm 0.12}$ \\
 \midrule
 \multirow{4}{*}{RS[7,4]}
- & Greedy & $1.98$ & $2.02$ & $-1.38 \pm 0.29$ \\
+ & Greedy & $1.98$ & $2.02$ & $-1.38 \pm 0.36$ \\
  & Planning ($w{=}0$, d=4) & $0.95$ & $0.05$ & $+13.97 \pm 0.11$ \\
- & Plan+IG ($w{=}5$, d=4) & $1.69$ & $0.01$ & $+14.56 \pm 0.12$ \\
- & EFE ($w{=}1$, d=4) & $1.44$ & $0.01$ & $\mathbf{+15.96 \pm 0.12}$ \\
+ & Plan+IG ($w{=}5$, d=4) & $1.69$ & $0.01$ & $+14.56 \pm 0.14$ \\
+ & EFE ($w{=}1$, d=4) & $1.44$ & $0.01$ & $\mathbf{+15.96 \pm 0.15}$ \\
 \midrule
 \multirow{4}{*}{RS[7,8]}
- & Greedy & $4.02$ & $3.98$ & $-5.60 \pm 1.23$ \\
- & Planning ($w{=}0$, d=3) & $0.48$ & $0.03$ & $+12.31 \pm 0.24$ \\
- & Plan+IG ($w{=}5$, d=3) & $3.40$ & $0.01$ & $\mathbf{+23.76 \pm 0.51}$ \\
- & EFE ($w{=}1$, d=3) & $2.61$ & $0.06$ & $+21.85 \pm 0.53$ \\
+ & Greedy & $4.02$ & $3.98$ & $-5.60 \pm 1.03$ \\
+ & Planning ($w{=}0$, d=3) & $0.48$ & $0.03$ & $+12.31 \pm 0.35$ \\
+ & Plan+IG ($w{=}5$, d=3) & $3.40$ & $0.01$ & $\mathbf{+23.76 \pm 0.58}$ \\
+ & EFE ($w{=}1$, d=3) & $2.61$ & $0.06$ & $\mathbf{+21.85 \pm 0.79}$ \\
 \midrule
 \multirow{4}{*}{RS[11,11]}
- & Greedy & $5.48$ & $5.52$ & $-18.90 \pm 1.45$ \\
- & Planning ($w{=}0$, d=2) & $0.48$ & $0.03$ & $\mathbf{+13.23 \pm 0.24}$ \\
- & Plan+IG ($w{=}5$, d=2) & $0.50$ & $0.03$ & $\mathbf{+13.18 \pm 0.25}$ \\
- & EFE ($w{=}1$, d=2) & $0.48$ & $0.03$ & $\mathbf{+13.23 \pm 0.24}$ \\
+ & Greedy & $5.48$ & $5.52$ & $-18.90 \pm 1.04$ \\
+ & Planning ($w{=}0$, d=2) & $0.48$ & $0.03$ & $\mathbf{+13.23 \pm 0.18}$ \\
+ & Plan+IG ($w{=}5$, d=2) & $0.50$ & $0.03$ & $\mathbf{+13.18 \pm 0.15}$ \\
+ & EFE ($w{=}1$, d=2) & $0.48$ & $0.03$ & $\mathbf{+13.23 \pm 0.18}$ \\
 \bottomrule
 \end{tabular}
 \end{small}
