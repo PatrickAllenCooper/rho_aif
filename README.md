@@ -13,11 +13,7 @@ The package provides:
 
 Requires Python 3.9+.
 
-```bash
-pip install rho-aif
-```
-
-For development from a clone:
+PyPI publication is planned but not yet live, so `pip install rho-aif` does not work yet. Install from a clone instead:
 
 ```bash
 git clone https://github.com/PatrickAllenCooper/rho_aif.git

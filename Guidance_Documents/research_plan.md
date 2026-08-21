@@ -4,8 +4,9 @@
 
 **Last Updated**: July 20, 2026  
 **Project Lead**: Patrick Cooper  
-**Collaborator**: David Baines  
 **Advisor**: Ashutosh Trehan
+
+**[Correction, 2026-08-21]**: David Baines was listed here as a collaborator. Pat confirms he is off the project and contributed nothing; he is not an author or collaborator on this work. The line above is corrected in place per this project's error-correction convention (never silently deleted); see the same date's note in `full_paper_plan.md` and CLAUDE.md's People section.
 
 ---
 
@@ -234,7 +235,7 @@ In preparation for the arXiv preprint's public code link, the repository was res
 - Experimental execution
 - Results analysis and visualization
 
-### David Baines (Theoretical Lead)
+### David Baines (Theoretical Lead) [Correction, 2026-08-21: this was the planned role at project start; Pat confirms Baines is off the project and contributed nothing against it. Not an author or collaborator on the actual work.]
 - POMDP and rho-POMDP model formalization
 - NeurIPS paper formatting and drafting
 - Convergence analysis
