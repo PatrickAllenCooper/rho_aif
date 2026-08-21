@@ -1459,6 +1459,37 @@
       \field{pages}{1968\bibrangedash 1974}
       \range{pages}{7}
     \endentry
+    \entry{kouw2026bethe}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=0bf9d905bb74272cb8c0e108c619354f}{%
+           family={Kouw},
+           familyi={K\bibinitperiod},
+           given={W.\bibnamedelimi M.},
+           giveni={W\bibinitperiod\bibinitdelim M\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{0bf9d905bb74272cb8c0e108c619354f}
+      \strng{fullhash}{0bf9d905bb74272cb8c0e108c619354f}
+      \strng{fullhashraw}{0bf9d905bb74272cb8c0e108c619354f}
+      \strng{bibnamehash}{0bf9d905bb74272cb8c0e108c619354f}
+      \strng{authorbibnamehash}{0bf9d905bb74272cb8c0e108c619354f}
+      \strng{authornamehash}{0bf9d905bb74272cb8c0e108c619354f}
+      \strng{authorfullhash}{0bf9d905bb74272cb8c0e108c619354f}
+      \strng{authorfullhashraw}{0bf9d905bb74272cb8c0e108c619354f}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprinttype}{arXiv}
+      \field{howpublished}{arXiv preprint arXiv:2608.17167}
+      \field{title}{Expected free energy as an information constraint on the {B}ethe {L}agrangian}
+      \field{year}{2026}
+      \verb{eprint}
+      \verb 2608.17167
+      \endverb
+    \endentry
     \entry{kurniawati2008}{inproceedings}{}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=69599fee451025559b00dc698d42fa42}{%
@@ -1497,6 +1528,47 @@
       \field{booktitle}{Robotics: Science and Systems}
       \field{title}{{SARSOP}: Efficient point-based {POMDP} planning by approximating optimally reachable belief spaces}
       \field{year}{2008}
+    \endentry
+    \entry{laouar2026voi}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=a8e1fdc59d7c7c11757d0afd71b104cf}{%
+           family={Laouar},
+           familyi={L\bibinitperiod},
+           given={Z.},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=198c4d9dd7c4c8ed5465e0d989b65483}{%
+           family={Ho},
+           familyi={H\bibinitperiod},
+           given={Q.\bibnamedelimi H.},
+           giveni={Q\bibinitperiod\bibinitdelim H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9f0c62150c67b8fac7cc7bc69c43060d}{%
+           family={Sunberg},
+           familyi={S\bibinitperiod},
+           given={Z.},
+           giveni={Z\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{3f05c066d7d39f7a7a829b9695cdd0b3}
+      \strng{fullhash}{6916feea51bfe1959cdffffa6186ccff}
+      \strng{fullhashraw}{6916feea51bfe1959cdffffa6186ccff}
+      \strng{bibnamehash}{6916feea51bfe1959cdffffa6186ccff}
+      \strng{authorbibnamehash}{6916feea51bfe1959cdffffa6186ccff}
+      \strng{authornamehash}{3f05c066d7d39f7a7a829b9695cdd0b3}
+      \strng{authorfullhash}{6916feea51bfe1959cdffffa6186ccff}
+      \strng{authorfullhashraw}{6916feea51bfe1959cdffffa6186ccff}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International Conference on Automated Planning and Scheduling}
+      \field{title}{Leveraging the value of information in {POMDP} planning}
+      \field{year}{2026}
+      \field{pages}{152\bibrangedash 160}
+      \range{pages}{9}
     \endentry
     \entry{levine2018}{misc}{}{}
       \name{author}{1}{}{%
@@ -2423,6 +2495,53 @@
       \field{pages}{1157\bibrangedash 1185}
       \range{pages}{29}
     \endentry
+    \entry{stocco2024recursive}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{un=0,uniquepart=base,hash=146b60132b38dd69f76be36a8653916f}{%
+           family={Stocco},
+           familyi={S\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=9a76f3450168e6be8be591c765eac92a}{%
+           family={Chundi},
+           familyi={C\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e12809fae3ee8be2d96727a3b698be81}{%
+           family={Jamgochian},
+           familyi={J\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c5bfe331d34f6c45505f275ba5a7ee61}{%
+           family={Kochenderfer},
+           familyi={K\bibinitperiod},
+           given={M.\bibnamedelimi J.},
+           giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{335cf657afd4b63091e6c54ffc834568}
+      \strng{fullhash}{87ac08096d07c31de807afb84fec57e0}
+      \strng{fullhashraw}{87ac08096d07c31de807afb84fec57e0}
+      \strng{bibnamehash}{87ac08096d07c31de807afb84fec57e0}
+      \strng{authorbibnamehash}{87ac08096d07c31de807afb84fec57e0}
+      \strng{authornamehash}{335cf657afd4b63091e6c54ffc834568}
+      \strng{authorfullhash}{87ac08096d07c31de807afb84fec57e0}
+      \strng{authorfullhashraw}{87ac08096d07c31de807afb84fec57e0}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International Conference on Automated Planning and Scheduling}
+      \field{title}{Addressing myopic constrained {POMDP} planning with recursive dual ascent}
+      \field{year}{2024}
+      \field{pages}{565\bibrangedash 569}
+      \range{pages}{5}
+    \endentry
     \entry{sunberg2018}{inproceedings}{}{}
       \name{author}{2}{}{%
         {{un=0,uniquepart=base,hash=cecc175accb427cace990e19199f0272}{%
@@ -2455,6 +2574,49 @@
       \field{booktitle}{International Conference on Automated Planning and Scheduling}
       \field{title}{Online algorithms for {POMDP}s with continuous state, action, and observation spaces}
       \field{year}{2018}
+    \endentry
+    \entry{sweeney2026equivalences}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=9aa9d8ea1effef68715a504887971683}{%
+           family={Sweeney},
+           familyi={S\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b4c7dd008ab8709ed1474024cce5a949}{%
+           family={Ruiz-Serra},
+           familyi={R\bibinithyphendelim S\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=81b00279426e22d276bc5dca8bc5fe4d}{%
+           family={Harré},
+           familyi={H\bibinitperiod},
+           given={M.\bibnamedelimi S.},
+           giveni={M\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{23ea7457e6049fd46913817e18ccce34}
+      \strng{fullhash}{2c4340a2dec265172d4a4f61c201bfd3}
+      \strng{fullhashraw}{2c4340a2dec265172d4a4f61c201bfd3}
+      \strng{bibnamehash}{2c4340a2dec265172d4a4f61c201bfd3}
+      \strng{authorbibnamehash}{2c4340a2dec265172d4a4f61c201bfd3}
+      \strng{authornamehash}{23ea7457e6049fd46913817e18ccce34}
+      \strng{authorfullhash}{2c4340a2dec265172d4a4f61c201bfd3}
+      \strng{authorfullhashraw}{2c4340a2dec265172d4a4f61c201bfd3}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Entropy}
+      \field{number}{1}
+      \field{title}{Decision, inference, and information: Formal equivalences under active inference}
+      \field{volume}{28}
+      \field{year}{2026}
+      \field{pages}{1}
+      \range{pages}{1}
     \endentry
     \entry{todorov2007}{inproceedings}{}{}
       \name{author}{1}{}{%
@@ -2691,6 +2853,37 @@
       \field{year}{2025}
       \field{pages}{3}
       \range{pages}{1}
+    \endentry
+    \entry{wei2024voi}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=972a70752627746739e9586a12cd93c6}{%
+           family={Wei},
+           familyi={W\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{972a70752627746739e9586a12cd93c6}
+      \strng{fullhash}{972a70752627746739e9586a12cd93c6}
+      \strng{fullhashraw}{972a70752627746739e9586a12cd93c6}
+      \strng{bibnamehash}{972a70752627746739e9586a12cd93c6}
+      \strng{authorbibnamehash}{972a70752627746739e9586a12cd93c6}
+      \strng{authornamehash}{972a70752627746739e9586a12cd93c6}
+      \strng{authorfullhash}{972a70752627746739e9586a12cd93c6}
+      \strng{authorfullhashraw}{972a70752627746739e9586a12cd93c6}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprinttype}{arXiv}
+      \field{howpublished}{arXiv preprint arXiv:2408.06542}
+      \field{title}{Value of information and reward specification in active inference and {POMDP}s}
+      \field{year}{2024}
+      \verb{eprint}
+      \verb 2408.06542
+      \endverb
     \endentry
     \entry{ye2017}{article}{}{}
       \name{author}{4}{}{%
