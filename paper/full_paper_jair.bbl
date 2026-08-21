@@ -261,6 +261,35 @@
       \field{pages}{382\bibrangedash 386}
       \range{pages}{5}
     \endentry
+    \entry{boutilier2002}{inproceedings}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=5e877bb5b531c2c55d586fd0037b1465}{%
+           family={Boutilier},
+           familyi={B\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{5e877bb5b531c2c55d586fd0037b1465}
+      \strng{fullhash}{5e877bb5b531c2c55d586fd0037b1465}
+      \strng{fullhashraw}{5e877bb5b531c2c55d586fd0037b1465}
+      \strng{bibnamehash}{5e877bb5b531c2c55d586fd0037b1465}
+      \strng{authorbibnamehash}{5e877bb5b531c2c55d586fd0037b1465}
+      \strng{authornamehash}{5e877bb5b531c2c55d586fd0037b1465}
+      \strng{authorfullhash}{5e877bb5b531c2c55d586fd0037b1465}
+      \strng{authorfullhashraw}{5e877bb5b531c2c55d586fd0037b1465}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{AAAI Conference on Artificial Intelligence}
+      \field{title}{A {POMDP} formulation of preference elicitation problems}
+      \field{year}{2002}
+      \field{pages}{239\bibrangedash 246}
+      \range{pages}{8}
+    \endentry
     \entry{burda2019}{inproceedings}{}{}
       \name{author}{4}{}{%
         {{un=0,uniquepart=base,hash=071e4f9cdcbde6e15805f0f6ea38b8b1}{%

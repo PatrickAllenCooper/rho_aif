@@ -1,0 +1,2 @@
+env,budget_B_EFE,R_ref_depth3_lagrangian,lam_bracket_lo,lam_bracket_hi,R_EFE,gap_EFE,gap_EFE_pct,note,seed_list,episodes_per_seed,git_sha,generated_utc
+"RS[7,8]",9.842,12.306,0.48896638427146416,0.48896638427146416,21.849,-9.543000000000001,-77.54753778644564,"R_ref is a depth-3 tree-search Lagrangian reference, NOT a near-optimal bound (SARSOP is not tractable at this scale); see module docstring.",42|123|456|789|1024,100,4119035,2026-08-21T18:02:35Z

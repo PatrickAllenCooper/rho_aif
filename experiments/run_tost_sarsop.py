@@ -72,6 +72,12 @@ def main() -> None:
     p.add_argument("--episodes", type=int, default=500)
     p.add_argument("--alpha", type=float, default=0.05)
     p.add_argument("--envs", nargs="*", default=["Tiger", "Diagnosis", "Bandit"])
+    p.add_argument(
+        "--out", default=None,
+        help="Output CSV path. Defaults to results/results_tost_sarsop.csv, the canonical "
+             "n=5 file the main paper table draws from -- pass a different path for any "
+             "non-canonical protocol (e.g. a different seed count) to avoid overwriting it.",
+    )
     args = p.parse_args()
 
     pomdpsol = Path(args.pomdpsol)
@@ -134,7 +140,7 @@ def main() -> None:
         )
 
     df = pd.DataFrame(rows)
-    out = RESULTS / "results_tost_sarsop.csv"
+    out = Path(args.out) if args.out else RESULTS / "results_tost_sarsop.csv"
     df.to_csv(out, index=False)
     print(f"\nSaved {out}")
     print(df.to_string(index=False))

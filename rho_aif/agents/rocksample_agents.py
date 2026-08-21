@@ -430,11 +430,20 @@ class RockSampleTreeSearchAgent:
     exit is terminal.
     """
 
-    def __init__(self, env, info_weight: float = 1.0, max_depth: int = 3):
+    def __init__(self, env, info_weight: float = 1.0, max_depth: int = 3, usage_lambda: Optional[float] = None):
         self.env = env
         self.belief = RockSampleBeliefState(env.num_rocks)
         self.info_weight = info_weight
         self.max_depth = max_depth
+        # usage_lambda is None by default, preserving the information-floor
+        # dual (self.info_weight * ig) used everywhere else in this file
+        # exactly. When set, the check-action valuation instead applies a
+        # literal usage-cap Lagrangian penalty (-usage_lambda per check,
+        # independent of information gain), mirroring
+        # experiments/run_cpomdp_baseline.py's SARSOP-side Lagrangian export
+        # for the observe-then-commit environments. Used only by
+        # experiments/run_rocksample_cpomdp_reference.py.
+        self.usage_lambda = usage_lambda
         self._cache = {}
 
     def reset(self):
@@ -573,7 +582,10 @@ class RockSampleTreeSearchAgent:
 
             ig = prior_h - expected_post_h
             check_action = self.env.NUM_MOVE_ACTIONS + k
-            val = self.env.move_cost + self.info_weight * ig + expected_cont
+            if self.usage_lambda is not None:
+                val = self.env.move_cost - self.usage_lambda + expected_cont
+            else:
+                val = self.env.move_cost + self.info_weight * ig + expected_cont
             if val > best_value:
                 best_value = val
                 best_action = check_action
