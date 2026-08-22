@@ -17,7 +17,7 @@ from rho_aif.agents.rocksample_agents import (
     RockSampleGreedyAgent,
     RockSampleEFEAgent,
     RockSamplePlanningIGAgent,
-    RockSamplePOMCPAgent,
+    RockSampleFlatMCAgent,
     RockSampleTreeSearchAgent,
 )
 from rho_aif.stats import cohens_d, holm_bonferroni, seed_level_ttest, seed_means
@@ -113,7 +113,7 @@ def run_rocksample_experiment(
 
     agent_configs = [
         ("Greedy", lambda: RockSampleGreedyAgent(env)),
-        ("POMCP (1000)", lambda: RockSamplePOMCPAgent(env, num_simulations=1000)),
+        ("Flat-MC (1000)", lambda: RockSampleFlatMCAgent(env, num_simulations=1000)),
         (f"Planning (d={td})",
          lambda: RockSampleTreeSearchAgent(env, info_weight=0.0, max_depth=td)),
         (f"Plan+IG w=5 (d={td})",

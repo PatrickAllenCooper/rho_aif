@@ -9,7 +9,7 @@ sync with the committed CSVs across three prior revisions of the paper.
 
 RS[5,3] and RS[7,4] were run at 500 episodes x 10 seeds (5,000 episodes).
 RS[7,8] and RS[11,11] were run at a reduced 100 episodes x 5 seeds
-(500 episodes). All four instances now include a POMCP(1000) baseline
+(500 episodes). All four instances now include a Flat-MC(1000) baseline
 in the extended table.
 """
 
@@ -76,7 +76,7 @@ def build_main_table() -> str:
         " seed-level SE (SE of the per-seed means, RS[5,3]/RS[7,4]: 10 seeds;",
         " RS[7,8]/RS[11,11]: 5 seeds).",
         " Steps and Checks omitted (tree-search evaluates all actions); a",
-        " POMCP(1000) baseline for every instance is in",
+        " Flat-MC(1000) baseline for every instance is in",
         " Appendix~\\ref{app:rocksample}, which also reports per-instance",
         " step and check counts.}",
         "\\label{tab:rocksample}",
@@ -117,7 +117,7 @@ def build_main_table() -> str:
 
 EXT_AGENT_ORDER = [
     "Greedy",
-    "POMCP (1000)",
+    "Flat-MC (1000)",
     "Planning ({d})",
     "Plan+IG w=5 ({d})",
     "Plan+IG w=10 ({d})",
@@ -131,7 +131,7 @@ def build_extended_table() -> str:
         "\\begin{table}[ht]",
         "\\centering",
         "\\caption{RockSample extended results: full agent roster including",
-        " a POMCP(1000) baseline on every instance and Planning+IG at",
+        " a flat one-ply Monte Carlo (Flat-MC) baseline on every instance and Planning+IG at",
         " both $w{=}5$ and $w{=}10$. Steps and checks are episode means.",
         " RS[5,3]/RS[7,4]: 500 episodes $\\times$ 10 seeds. RS[7,8]/RS[11,11]:",
         " 100 episodes $\\times$ 5 seeds.}",

@@ -1,0 +1,5 @@
+env,planning_horizon,w_succ_infogain_myopic,w_succ_planning_ig
+tiger_env,6,20.0,50.0
+testbed_env,4,20.0,10.0
+diag_env,3,100.0,50.0
+bandit_env,2,20.0,20.0

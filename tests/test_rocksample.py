@@ -6,7 +6,7 @@ from rho_aif.environments.rocksample import RockSampleEnv
 from rho_aif.agents.rocksample_agents import (
     RockSampleTreeSearchAgent,
     RockSampleGreedyAgent,
-    RockSamplePOMCPAgent,
+    RockSampleFlatMCAgent,
 )
 
 
@@ -247,7 +247,7 @@ class TestRockSampleTreeSearch:
             move_cost=-0.5, max_steps=60,
         )
         env.reset(seed=42)
-        agent = RockSamplePOMCPAgent(env, num_simulations=200)
+        agent = RockSampleFlatMCAgent(env, num_simulations=200)
         agent.reset()
         steps = 0
         for _ in range(60):

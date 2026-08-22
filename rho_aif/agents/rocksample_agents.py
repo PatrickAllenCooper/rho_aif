@@ -311,13 +311,36 @@ class RockSamplePlanningIGAgent:
         _update_belief_common(self.belief, self.env, action, observation)
 
 
-class RockSamplePOMCPAgent:
+class RockSampleFlatMCAgent:
     """
-    POMCP-style agent for RockSample with Monte Carlo rollouts.
+    Flat (one-ply) Monte Carlo rollout evaluator for RockSample.
 
-    Uses sampled rock qualities from the factored belief to evaluate actions
-    via forward simulation. The rollout policy is a greedy heuristic that
-    (given sampled rock qualities) moves to and samples good rocks, then exits.
+    NOT POMCP. This agent builds no search tree and uses no UCB1 selection: it
+    allocates an equal number of simulations to each root action, evaluates each
+    by forward simulation under a rock-quality hypothesis sampled from its own
+    factored belief, and takes the argmax of the resulting mean returns. That is
+    a flat one-ply Monte Carlo / QMDP-flavored evaluator, closer to sparse
+    sampling at depth 1 than to Silver and Veness (2010).
+
+    Two consequences matter for interpreting its results, and both are reported
+    in the manuscript rather than left implicit:
+
+      1. The rollout policy (``_greedy_rollout_action``) conditions on the
+         sampled rock-quality hypothesis, so within a rollout it never needs to
+         check a rock. Checking therefore accrues no simulated value beyond the
+         one-ply root action itself, and the agent cannot represent the value of
+         a check that informs a *later* decision.
+      2. On the larger instances this degenerates: the agent checks almost
+         continuously at the root (82.4 checks/episode on RS[7,8], 165.8 on
+         RS[11,11]) and never reaches the exit, hitting the episode step cap on
+         100% of episodes for both instances. Its large negative returns are
+         that truncation, not a directed-checking deficit of the kind the
+         genuine tree-search POMCP in ``rho_aif/agents/pomcp.py`` exhibits on
+         the observe-then-commit environments.
+
+    A genuine POMCP baseline for RockSample (search tree, UCB1 node selection,
+    particle-filter belief propagation through the tree) is left to future work;
+    this agent is retained as a weak reference point under an accurate name.
     """
 
     def __init__(self, env, num_simulations: int = 1000, rollout_depth: int = 30):

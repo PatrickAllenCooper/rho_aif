@@ -2,12 +2,12 @@ Environment,Comparison,Cohen's d,Effect
 Tiger,EFE vs Myopic,+0.438,small
 Tiger,EFE vs Planning,+0.000,negligible
 Tiger,EFE vs InfoGain-Tuned,+0.000,negligible
-Tiger,EFE vs Planning+IG,+0.000,negligible
+Tiger,EFE vs Planning+IG,+0.144,negligible
 Tiger,EFE vs Thompson,+0.093,negligible
 Testbed,EFE vs Myopic,-0.073,negligible
 Testbed,EFE vs Planning,-0.183,negligible
 Testbed,EFE vs InfoGain-Tuned,+0.693,medium
-Testbed,EFE vs Planning+IG,+1.022,large
+Testbed,EFE vs Planning+IG,+0.693,medium
 Testbed,EFE vs Thompson,-0.183,negligible
 Diagnosis,EFE vs Myopic,+0.546,medium
 Diagnosis,EFE vs Planning,+0.077,negligible

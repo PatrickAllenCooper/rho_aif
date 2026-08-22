@@ -137,6 +137,10 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | SARSOP near-optimal baseline (requires `tools/build_sarsop.sh`) | `python experiments/run_sarsop_baseline.py` |
 | w* atlas appendix table | `python experiments/run_w_atlas.py` |
 | Distractor-robustness experiment (Stage G2) | `python experiments/run_distractor_diagnosis.py` |
+| Supplementary battery (Testbed appendix table, bootstrap CIs, effect sizes, full pairwise stats) | `python experiments/run_supplementary.py` |
+| Pareto sweep + reward-maximizing weight brackets | `python experiments/run_pareto.py pareto` |
+| Bandit w=100 depth comparison (Discussion) | `python experiments/run_bandit_w100_depth_comparison.py` |
+| Compute-matched POMCP check | `python experiments/run_pomcp_compute_matched.py` |
 | Proper-scoring calibration table | `python experiments/run_calibration_table.py` |
 | Per-test value-of-information audit case study | `python experiments/run_audit_case_study.py` |
 | Destructive-sensing boundary example | `python -m pytest tests/test_destructive_boundary.py -v` |

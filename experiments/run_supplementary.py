@@ -105,6 +105,7 @@ def main():
     seeds = SEEDS
     num_episodes = 1000
 
+    tuned_weights = []
     all_bootstrap_rows = []
     all_effect_rows = []
     all_stats_dfs = []
@@ -117,11 +118,19 @@ def main():
     tiger_env = TigerEnv(listen_accuracy=0.85, listen_cost=1.0,
                          correct_reward=10.0, incorrect_penalty=-100.0)
     best_w = tune_info_gain_weight(tiger_env, tune_episodes=200)
+    best_w_pig = tune_info_gain_weight(
+        tiger_env, tune_episodes=200,
+        agent_class=PlanningInfoGainAgent,
+        agent_kwargs={"planning_horizon": 6},
+    )
+    tuned_weights.append({"env": "tiger_env", "planning_horizon": 6,
+                          "w_succ_infogain_myopic": float(best_w),
+                          "w_succ_planning_ig": float(best_w_pig)})
     tiger_configs = [
         ("Myopic", MyopicAgent, {}),
         ("Planning", PlanningAgent, {"planning_horizon": 6}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
-        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 6, "info_gain_weight": best_w}),
+        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 6, "info_gain_weight": best_w_pig}),
         ("EFE", EFEAgent, {"planning_horizon": 6}),
         ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
@@ -138,11 +147,19 @@ def main():
     testbed_env = InfoSeekingEnv(observation_accuracy=0.75, observation_cost=0.1,
                                 correct_reward=1.0, incorrect_penalty=-1.0)
     best_w_tb = tune_info_gain_weight(testbed_env, tune_episodes=200)
+    best_w_tb_pig = tune_info_gain_weight(
+        testbed_env, tune_episodes=200,
+        agent_class=PlanningInfoGainAgent,
+        agent_kwargs={"planning_horizon": 4},
+    )
+    tuned_weights.append({"env": "testbed_env", "planning_horizon": 4,
+                          "w_succ_infogain_myopic": float(best_w_tb),
+                          "w_succ_planning_ig": float(best_w_tb_pig)})
     testbed_configs = [
         ("Myopic", MyopicAgent, {}),
         ("Planning", PlanningAgent, {"planning_horizon": 4}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w_tb}),
-        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 4, "info_gain_weight": best_w_tb}),
+        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 4, "info_gain_weight": best_w_tb_pig}),
         ("EFE", EFEAgent, {"planning_horizon": 4}),
         ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
@@ -159,11 +176,19 @@ def main():
     diag_env = DiagnosisEnv(num_conditions=4, test_accuracy=0.80, test_cost=1.0,
                             correct_reward=10.0, incorrect_penalty=-50.0)
     best_w_d = tune_info_gain_weight(diag_env, tune_episodes=200)
+    best_w_d_pig = tune_info_gain_weight(
+        diag_env, tune_episodes=200,
+        agent_class=PlanningInfoGainAgent,
+        agent_kwargs={"planning_horizon": 3},
+    )
+    tuned_weights.append({"env": "diag_env", "planning_horizon": 3,
+                          "w_succ_infogain_myopic": float(best_w_d),
+                          "w_succ_planning_ig": float(best_w_d_pig)})
     diag_configs = [
         ("Myopic", MyopicAgent, {}),
         ("Planning", PlanningAgent, {"planning_horizon": 3}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w_d}),
-        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 3, "info_gain_weight": best_w_d}),
+        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 3, "info_gain_weight": best_w_d_pig}),
         ("EFE", EFEAgent, {"planning_horizon": 3}),
         ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
@@ -180,11 +205,19 @@ def main():
     bandit_env = BanditEnv(num_arms=4, inspect_accuracy=0.80, inspect_cost=0.5,
                            correct_reward=10.0, small_reward=1.0)
     best_w_b = tune_info_gain_weight(bandit_env, tune_episodes=200)
+    best_w_b_pig = tune_info_gain_weight(
+        bandit_env, tune_episodes=200,
+        agent_class=PlanningInfoGainAgent,
+        agent_kwargs={"planning_horizon": 2},
+    )
+    tuned_weights.append({"env": "bandit_env", "planning_horizon": 2,
+                          "w_succ_infogain_myopic": float(best_w_b),
+                          "w_succ_planning_ig": float(best_w_b_pig)})
     bandit_configs = [
         ("Myopic", MyopicAgent, {}),
         ("Planning", PlanningAgent, {"planning_horizon": 2}),
         ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w_b}),
-        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 2, "info_gain_weight": best_w_b}),
+        ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": 2, "info_gain_weight": best_w_b_pig}),
         ("EFE", EFEAgent, {"planning_horizon": 2}),
         ("Thompson", ThompsonSamplingAgent, {"num_samples": 100}),
     ]
@@ -203,6 +236,8 @@ def main():
     print(f"Effect sizes saved to results/results_effect_sizes.csv")
 
     full_stats_df = pd.concat(all_stats_dfs, ignore_index=True)
+    pd.DataFrame(tuned_weights).to_csv("results/results_supplementary_tuned_weights.csv", index=False)
+    print("Tuned weights saved to results/results_supplementary_tuned_weights.csv")
     full_stats_df.to_csv("results/results_full_statistics.csv", index=False)
     print(f"Full pairwise statistics saved to results/results_full_statistics.csv")
 
