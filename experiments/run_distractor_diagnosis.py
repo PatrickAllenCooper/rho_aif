@@ -101,6 +101,19 @@ def run_distractor_episode(agent, env, max_steps: int = 200, seed=None) -> Dict[
     }
 
 
+def _seed_level_stats(results_by_seed: Dict[int, List[dict]], key: str):
+    """Per-seed means of `key`, then SE across those seed means (n=len(seeds)).
+    Complements the pooled episode-level SE, which understates uncertainty
+    since episodes within a seed share an agent instance / RNG stream."""
+    seed_means = np.array([
+        float(np.mean([r[key] for r in seed_results]))
+        for seed_results in results_by_seed.values()
+    ])
+    n_seeds = len(seed_means)
+    se = float(np.std(seed_means, ddof=1) / np.sqrt(n_seeds)) if n_seeds > 1 else float("nan")
+    return float(np.mean(seed_means)), se, n_seeds
+
+
 def run_sweep(
     seeds: Sequence[int] = SEEDS,
     num_episodes: int = 100,
@@ -123,30 +136,39 @@ def run_sweep(
     for i, w in enumerate(w_grid):
         w = float(w)
         results = []
+        results_by_seed: Dict[int, List[dict]] = {}
         for seed in seeds:
             np.random.seed(int(seed))
             agent = PlanningInfoGainAgent(
                 obs_models, config, planning_horizon=planning_horizon, info_gain_weight=w
             )
+            seed_results = []
             for _ep in range(num_episodes):
-                results.append(run_distractor_episode(agent, env, seed=int(seed) * 10000 + _ep))
+                seed_results.append(run_distractor_episode(agent, env, seed=int(seed) * 10000 + _ep))
+            results_by_seed[int(seed)] = seed_results
+            results.extend(seed_results)
         rewards = [r["total_reward"] for r in results]
         n_obs = [r["num_observations"] for r in results]
         task = [r["task_tests"] for r in results]
         dist = [r["distractor_tests"] for r in results]
         frac = [r["distractor_fraction"] for r in results]
         succ = [r["success"] for r in results]
+        mean_frac_seed, se_frac_seed, n_seeds_ = _seed_level_stats(results_by_seed, "distractor_fraction")
+        mean_reward_seed, se_reward_seed, _ = _seed_level_stats(results_by_seed, "total_reward")
         row = {
             "agent": "Planning+IG",
             "w": w,
             "mean_reward": float(np.mean(rewards)),
             "se_reward": float(np.std(rewards) / np.sqrt(len(rewards))),
+            "se_reward_seed_level": se_reward_seed,
             "mean_usage": float(np.mean(n_obs)),
             "se_usage": float(np.std(n_obs) / np.sqrt(len(n_obs))),
             "mean_task_tests": float(np.mean(task)),
             "mean_distractor_tests": float(np.mean(dist)),
             "mean_distractor_fraction": float(np.mean(frac)),
             "se_distractor_fraction": float(np.std(frac) / np.sqrt(len(frac))),
+            "se_distractor_fraction_seed_level": se_frac_seed,
+            "n_seeds": n_seeds_,
             "success_rate": float(np.mean(succ)),
         }
         rows.append(row)
@@ -167,28 +189,37 @@ def run_sweep(
         ("IDS", lambda: IDSAgent(obs_models, config)),
     ):
         results = []
+        results_by_seed: Dict[int, List[dict]] = {}
         for seed in seeds:
             np.random.seed(int(seed))
             agent = make_agent()
+            seed_results = []
             for _ep in range(num_episodes):
-                results.append(run_distractor_episode(agent, env, seed=int(seed) * 10000 + _ep))
+                seed_results.append(run_distractor_episode(agent, env, seed=int(seed) * 10000 + _ep))
+            results_by_seed[int(seed)] = seed_results
+            results.extend(seed_results)
         rewards = [r["total_reward"] for r in results]
         n_obs = [r["num_observations"] for r in results]
         task = [r["task_tests"] for r in results]
         dist = [r["distractor_tests"] for r in results]
         frac = [r["distractor_fraction"] for r in results]
         succ = [r["success"] for r in results]
+        mean_frac_seed, se_frac_seed, n_seeds_ = _seed_level_stats(results_by_seed, "distractor_fraction")
+        mean_reward_seed, se_reward_seed, _ = _seed_level_stats(results_by_seed, "total_reward")
         row = {
             "agent": label,
             "w": float("nan"),
             "mean_reward": float(np.mean(rewards)),
             "se_reward": float(np.std(rewards) / np.sqrt(len(rewards))),
+            "se_reward_seed_level": se_reward_seed,
             "mean_usage": float(np.mean(n_obs)),
             "se_usage": float(np.std(n_obs) / np.sqrt(len(n_obs))),
             "mean_task_tests": float(np.mean(task)),
             "mean_distractor_tests": float(np.mean(dist)),
             "mean_distractor_fraction": float(np.mean(frac)),
             "se_distractor_fraction": float(np.std(frac) / np.sqrt(len(frac))),
+            "se_distractor_fraction_seed_level": se_frac_seed,
+            "n_seeds": n_seeds_,
             "success_rate": float(np.mean(succ)),
         }
         rows.append(row)

@@ -64,6 +64,9 @@ def run_mcts_tiger_sweep(seeds=None, csv_path="results/results_mcts_efe.csv"):
                 "reward": exact_s["mean_reward"], "std_reward": exact_s["std_reward"],
                 "obs": exact_s["mean_observations"],
                 "wall_clock_s": exact_time, "ms_per_ep": exact_time / total_ep * 1000,
+                "n_seeds": exact_s.get("n_seeds", float("nan")),
+                "se_success_seed_level": exact_s.get("se_success_seed_level", float("nan")),
+                "se_reward_seed_level": exact_s.get("se_reward_seed_level", float("nan")),
             })
             print(
                 f"    Exact EFE(H={horizon}): success={exact_s['success_rate']:.1%}  "
@@ -89,6 +92,9 @@ def run_mcts_tiger_sweep(seeds=None, csv_path="results/results_mcts_efe.csv"):
                 "reward": mcts_s["mean_reward"], "std_reward": mcts_s["std_reward"],
                 "obs": mcts_s["mean_observations"],
                 "wall_clock_s": mcts_time, "ms_per_ep": mcts_time / total_ep * 1000,
+                "n_seeds": mcts_s.get("n_seeds", float("nan")),
+                "se_success_seed_level": mcts_s.get("se_success_seed_level", float("nan")),
+                "se_reward_seed_level": mcts_s.get("se_reward_seed_level", float("nan")),
             })
             print(
                 f"    MCTS-EFE({n_sims}): success={mcts_s['success_rate']:.1%}  "
@@ -105,6 +111,9 @@ def run_mcts_tiger_sweep(seeds=None, csv_path="results/results_mcts_efe.csv"):
                 exploration_constant=5.0,
             )
             pomcp_s = summarize_results(pomcp_raw)
+            from rho_aif.stats import seed_level_ttest
+            _cmp_success = seed_level_ttest(mcts_raw, pomcp_raw, lambda r: float(r.success))
+            _cmp_reward = seed_level_ttest(mcts_raw, pomcp_raw, lambda r: r.total_reward)
             pomcp_time = time.time() - t0
             rows.append({
                 "env": "Tiger", "agent": f"POMCP({n_sims})",
@@ -113,6 +122,11 @@ def run_mcts_tiger_sweep(seeds=None, csv_path="results/results_mcts_efe.csv"):
                 "reward": pomcp_s["mean_reward"], "std_reward": pomcp_s["std_reward"],
                 "obs": pomcp_s["mean_observations"],
                 "wall_clock_s": pomcp_time, "ms_per_ep": pomcp_time / total_ep * 1000,
+                "n_seeds": pomcp_s.get("n_seeds", float("nan")),
+                "se_success_seed_level": pomcp_s.get("se_success_seed_level", float("nan")),
+                "se_reward_seed_level": pomcp_s.get("se_reward_seed_level", float("nan")),
+                "p_success_vs_mcts_seed_level": _cmp_success["p_value"],
+                "p_reward_vs_mcts_seed_level": _cmp_reward["p_value"],
             })
             print(
                 f"    POMCP({n_sims}): success={pomcp_s['success_rate']:.1%}  "
@@ -159,6 +173,9 @@ def run_mcts_tileworld(seeds=None, csv_path="results/results_mcts_efe.csv", exis
         "reward": exact_s["mean_reward"], "std_reward": exact_s["std_reward"],
         "obs": exact_s["mean_observations"],
         "wall_clock_s": exact_time, "ms_per_ep": exact_time / total_ep * 1000,
+        "n_seeds": exact_s.get("n_seeds", float("nan")),
+        "se_success_seed_level": exact_s.get("se_success_seed_level", float("nan")),
+        "se_reward_seed_level": exact_s.get("se_reward_seed_level", float("nan")),
     })
     print(
         f"    Exact EFE: success={exact_s['success_rate']:.1%}  "
@@ -181,6 +198,9 @@ def run_mcts_tileworld(seeds=None, csv_path="results/results_mcts_efe.csv", exis
             "reward": mcts_s["mean_reward"], "std_reward": mcts_s["std_reward"],
             "obs": mcts_s["mean_observations"],
             "wall_clock_s": mcts_time, "ms_per_ep": mcts_time / total_ep * 1000,
+            "n_seeds": mcts_s.get("n_seeds", float("nan")),
+            "se_success_seed_level": mcts_s.get("se_success_seed_level", float("nan")),
+            "se_reward_seed_level": mcts_s.get("se_reward_seed_level", float("nan")),
         })
         print(
             f"    MCTS-EFE({n_sims}): success={mcts_s['success_rate']:.1%}  "
@@ -195,6 +215,9 @@ def run_mcts_tileworld(seeds=None, csv_path="results/results_mcts_efe.csv", exis
             exploration_constant=5.0,
         )
         pomcp_s = summarize_results(pomcp_raw)
+        from rho_aif.stats import seed_level_ttest
+        _cmp_success = seed_level_ttest(mcts_raw, pomcp_raw, lambda r: float(r.success))
+        _cmp_reward = seed_level_ttest(mcts_raw, pomcp_raw, lambda r: r.total_reward)
         pomcp_time = time.time() - t0
         rows.append({
             "env": "Tileworld-4x4", "agent": f"POMCP({n_sims})",
@@ -203,6 +226,11 @@ def run_mcts_tileworld(seeds=None, csv_path="results/results_mcts_efe.csv", exis
             "reward": pomcp_s["mean_reward"], "std_reward": pomcp_s["std_reward"],
             "obs": pomcp_s["mean_observations"],
             "wall_clock_s": pomcp_time, "ms_per_ep": pomcp_time / total_ep * 1000,
+            "n_seeds": pomcp_s.get("n_seeds", float("nan")),
+            "se_success_seed_level": pomcp_s.get("se_success_seed_level", float("nan")),
+            "se_reward_seed_level": pomcp_s.get("se_reward_seed_level", float("nan")),
+            "p_success_vs_mcts_seed_level": _cmp_success["p_value"],
+            "p_reward_vs_mcts_seed_level": _cmp_reward["p_value"],
         })
         print(
             f"    POMCP({n_sims}): success={pomcp_s['success_rate']:.1%}  "
@@ -247,6 +275,9 @@ def run_mcts_tileworld_6x6(seeds=None, csv_path="results/results_mcts_efe.csv", 
         "reward": exact_s["mean_reward"], "std_reward": exact_s["std_reward"],
         "obs": exact_s["mean_observations"],
         "wall_clock_s": exact_time, "ms_per_ep": exact_time / total_ep * 1000,
+        "n_seeds": exact_s.get("n_seeds", float("nan")),
+        "se_success_seed_level": exact_s.get("se_success_seed_level", float("nan")),
+        "se_reward_seed_level": exact_s.get("se_reward_seed_level", float("nan")),
     })
     print(
         f"    Exact EFE: success={exact_s['success_rate']:.1%}  "
@@ -269,6 +300,9 @@ def run_mcts_tileworld_6x6(seeds=None, csv_path="results/results_mcts_efe.csv", 
             "reward": mcts_s["mean_reward"], "std_reward": mcts_s["std_reward"],
             "obs": mcts_s["mean_observations"],
             "wall_clock_s": mcts_time, "ms_per_ep": mcts_time / total_ep * 1000,
+            "n_seeds": mcts_s.get("n_seeds", float("nan")),
+            "se_success_seed_level": mcts_s.get("se_success_seed_level", float("nan")),
+            "se_reward_seed_level": mcts_s.get("se_reward_seed_level", float("nan")),
         })
         print(
             f"    MCTS-EFE({n_sims}): success={mcts_s['success_rate']:.1%}  "
@@ -283,6 +317,9 @@ def run_mcts_tileworld_6x6(seeds=None, csv_path="results/results_mcts_efe.csv", 
             exploration_constant=5.0,
         )
         pomcp_s = summarize_results(pomcp_raw)
+        from rho_aif.stats import seed_level_ttest
+        _cmp_success = seed_level_ttest(mcts_raw, pomcp_raw, lambda r: float(r.success))
+        _cmp_reward = seed_level_ttest(mcts_raw, pomcp_raw, lambda r: r.total_reward)
         pomcp_time = time.time() - t0
         rows.append({
             "env": "Tileworld-6x6", "agent": f"POMCP({n_sims})",
@@ -291,6 +328,11 @@ def run_mcts_tileworld_6x6(seeds=None, csv_path="results/results_mcts_efe.csv", 
             "reward": pomcp_s["mean_reward"], "std_reward": pomcp_s["std_reward"],
             "obs": pomcp_s["mean_observations"],
             "wall_clock_s": pomcp_time, "ms_per_ep": pomcp_time / total_ep * 1000,
+            "n_seeds": pomcp_s.get("n_seeds", float("nan")),
+            "se_success_seed_level": pomcp_s.get("se_success_seed_level", float("nan")),
+            "se_reward_seed_level": pomcp_s.get("se_reward_seed_level", float("nan")),
+            "p_success_vs_mcts_seed_level": _cmp_success["p_value"],
+            "p_reward_vs_mcts_seed_level": _cmp_reward["p_value"],
         })
         print(
             f"    POMCP({n_sims}): success={pomcp_s['success_rate']:.1%}  "
@@ -339,6 +381,9 @@ def run_mcts_diagnosis_sweep(seeds=None, csv_path="results/results_mcts_efe.csv"
         "reward": exact_s["mean_reward"], "std_reward": exact_s["std_reward"],
         "obs": exact_s["mean_observations"],
         "wall_clock_s": exact_time, "ms_per_ep": exact_time / total_ep * 1000,
+        "n_seeds": exact_s.get("n_seeds", float("nan")),
+        "se_success_seed_level": exact_s.get("se_success_seed_level", float("nan")),
+        "se_reward_seed_level": exact_s.get("se_reward_seed_level", float("nan")),
     })
     print(
         f"    Exact EFE(H=3): success={exact_s['success_rate']:.1%}  "
@@ -367,6 +412,9 @@ def run_mcts_diagnosis_sweep(seeds=None, csv_path="results/results_mcts_efe.csv"
             "reward": mcts_s["mean_reward"], "std_reward": mcts_s["std_reward"],
             "obs": mcts_s["mean_observations"],
             "wall_clock_s": mcts_time, "ms_per_ep": mcts_time / total_ep * 1000,
+            "n_seeds": mcts_s.get("n_seeds", float("nan")),
+            "se_success_seed_level": mcts_s.get("se_success_seed_level", float("nan")),
+            "se_reward_seed_level": mcts_s.get("se_reward_seed_level", float("nan")),
         })
         print(
             f"    MCTS-EFE({n_sims}): success={mcts_s['success_rate']:.1%}  "
@@ -383,6 +431,9 @@ def run_mcts_diagnosis_sweep(seeds=None, csv_path="results/results_mcts_efe.csv"
             exploration_constant=5.0,
         )
         pomcp_s = summarize_results(pomcp_raw)
+        from rho_aif.stats import seed_level_ttest
+        _cmp_success = seed_level_ttest(mcts_raw, pomcp_raw, lambda r: float(r.success))
+        _cmp_reward = seed_level_ttest(mcts_raw, pomcp_raw, lambda r: r.total_reward)
         pomcp_time = time.time() - t0
         rows.append({
             "env": "Diagnosis-N4", "agent": f"POMCP({n_sims})",
@@ -391,6 +442,11 @@ def run_mcts_diagnosis_sweep(seeds=None, csv_path="results/results_mcts_efe.csv"
             "reward": pomcp_s["mean_reward"], "std_reward": pomcp_s["std_reward"],
             "obs": pomcp_s["mean_observations"],
             "wall_clock_s": pomcp_time, "ms_per_ep": pomcp_time / total_ep * 1000,
+            "n_seeds": pomcp_s.get("n_seeds", float("nan")),
+            "se_success_seed_level": pomcp_s.get("se_success_seed_level", float("nan")),
+            "se_reward_seed_level": pomcp_s.get("se_reward_seed_level", float("nan")),
+            "p_success_vs_mcts_seed_level": _cmp_success["p_value"],
+            "p_reward_vs_mcts_seed_level": _cmp_reward["p_value"],
         })
         print(
             f"    POMCP({n_sims}): success={pomcp_s['success_rate']:.1%}  "
@@ -408,5 +464,6 @@ if __name__ == "__main__":
     os.makedirs("figures", exist_ok=True)
     rows = run_mcts_tiger_sweep()
     rows = run_mcts_diagnosis_sweep(existing_rows=rows)
-    run_mcts_tileworld(existing_rows=rows)
+    rows = run_mcts_tileworld(existing_rows=rows)
+    run_mcts_tileworld_6x6(existing_rows=rows)
     print("\nAll MCTS-EFE results saved to results/results_mcts_efe.csv")

@@ -146,6 +146,7 @@ def run_rocksample_experiment(
         checks = [r["checks"] for r in episode_results]
 
         seed_reward_means = seed_means(episode_results, lambda r: r["total_reward"])
+        seed_bad_means = seed_means(episode_results, lambda r: r["bad_sampled"])
         n_seeds = len(seed_reward_means)
 
         row = {
@@ -160,6 +161,10 @@ def run_rocksample_experiment(
             ),
             "mean_good": np.mean(goods),
             "mean_bad": np.mean(bads),
+            "se_bad_seed_level": (
+                float(np.std(seed_bad_means, ddof=1) / np.sqrt(n_seeds))
+                if n_seeds > 1 else float("nan")
+            ),
             "mean_checks": np.mean(checks),
             "mean_steps": np.mean([r["steps"] for r in episode_results]),
             "time_s": dt,
@@ -198,33 +203,36 @@ def compute_rocksample_stats(all_episode_results, config_name):
 
     labels = list(all_episode_results.keys())
     rows = []
-    for i in range(len(labels)):
-        for j in range(i + 1, len(labels)):
-            res_a = all_episode_results[labels[i]]
-            res_b = all_episode_results[labels[j]]
-            extractor = lambda r: r["total_reward"]
-            vals_a = np.array([extractor(r) for r in res_a])
-            vals_b = np.array([extractor(r) for r in res_b])
+    for metric_name, extractor in [
+        ("Reward", lambda r: r["total_reward"]),
+        ("Bad", lambda r: r["bad_sampled"]),
+    ]:
+        for i in range(len(labels)):
+            for j in range(i + 1, len(labels)):
+                res_a = all_episode_results[labels[i]]
+                res_b = all_episode_results[labels[j]]
+                vals_a = np.array([extractor(r) for r in res_a])
+                vals_b = np.array([extractor(r) for r in res_b])
 
-            d = cohens_d(vals_a, vals_b)
-            t_stat, p_val = ttest_ind(vals_a, vals_b, equal_var=False)
-            seed_out = seed_level_ttest(res_a, res_b, extractor)
+                d = cohens_d(vals_a, vals_b)
+                t_stat, p_val = ttest_ind(vals_a, vals_b, equal_var=False)
+                seed_out = seed_level_ttest(res_a, res_b, extractor)
 
-            rows.append({
-                "instance": config_name,
-                "metric": "Reward",
-                "agent_a": labels[i],
-                "agent_b": labels[j],
-                "mean_a": float(np.mean(vals_a)),
-                "mean_b": float(np.mean(vals_b)),
-                "diff": float(np.mean(vals_a) - np.mean(vals_b)),
-                "cohens_d_pooled": d,
-                "t_stat_pooled": float(t_stat),
-                "p_pooled": float(p_val),
-                "n_seeds": seed_out["n_seeds_a"],
-                "p_seed_level": seed_out["p_value"],
-                "cohens_d_seed_level": seed_out["cohens_d"],
-            })
+                rows.append({
+                    "instance": config_name,
+                    "metric": metric_name,
+                    "agent_a": labels[i],
+                    "agent_b": labels[j],
+                    "mean_a": float(np.mean(vals_a)),
+                    "mean_b": float(np.mean(vals_b)),
+                    "diff": float(np.mean(vals_a) - np.mean(vals_b)),
+                    "cohens_d_pooled": d,
+                    "t_stat_pooled": float(t_stat),
+                    "p_pooled": float(p_val),
+                    "n_seeds": seed_out["n_seeds_a"],
+                    "p_seed_level": seed_out["p_value"],
+                    "cohens_d_seed_level": seed_out["cohens_d"],
+                })
 
     p_list = [r["p_pooled"] for r in rows]
     for r, sig in zip(rows, holm_bonferroni(p_list)):

@@ -75,10 +75,12 @@ def main():
             ("IDS", IDSAgent, {}),
         ]
 
+        raw_by_agent = {}
         for name, cls, kwargs in agents:
             raw = run_experiment_multi_seed(
                 cls, env, args.episodes, seeds=seeds, **kwargs
             )
+            raw_by_agent[name] = raw
             s = summarize_results(raw)
             row = {
                 "environment": env_name,
@@ -88,6 +90,9 @@ def main():
                 "mean_reward": s["mean_reward"],
                 "std_reward": s["std_reward"],
                 "n_episodes": len(raw),
+                "n_seeds": s.get("n_seeds", float("nan")),
+                "se_success_seed_level": s.get("se_success_seed_level", float("nan")),
+                "se_reward_seed_level": s.get("se_reward_seed_level", float("nan")),
             }
             row.update(provenance_fields(seeds, args.episodes))
             rows.append(row)
@@ -95,6 +100,19 @@ def main():
                 f"  {name:28s} obs={row['mean_observations']:.2f}  "
                 f"succ={row['success_rate']:.1%}  "
                 f"rew={row['mean_reward']:+.3f}",
+                flush=True,
+            )
+
+        if "EFE" in raw_by_agent and "IDS" in raw_by_agent:
+            from rho_aif.stats import seed_level_ttest
+            cmp_reward = seed_level_ttest(
+                raw_by_agent["EFE"], raw_by_agent["IDS"], lambda r: r.total_reward
+            )
+            for row in rows:
+                if row["environment"] == env_name and row["agent"] in ("EFE", "IDS"):
+                    row["p_reward_efe_vs_ids_seed_level"] = cmp_reward["p_value"]
+            print(
+                f"  [EFE vs IDS reward, seed-level Welch] p={cmp_reward['p_value']:.4g}",
                 flush=True,
             )
 

@@ -146,6 +146,9 @@ def run_transfer_experiment(
                 "std_reward": summary["std_reward"],
                 "se_reward": summary["std_reward"] / np.sqrt(len(all_episode_results)),
                 "mean_observations": summary["mean_observations"],
+                "n_seeds": summary.get("n_seeds", float("nan")),
+                "se_reward_seed_level": summary.get("se_reward_seed_level", float("nan")),
+                "se_success_seed_level": summary.get("se_success_seed_level", float("nan")),
             }
             row.update(provenance_fields(seeds, num_episodes))
             results.append(row)

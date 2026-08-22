@@ -85,7 +85,9 @@ def run_misspec_sweep(seeds=None, num_episodes=500):
                     agent_cls, env, true_accuracy, p_agent, **kwargs
                 )
                 for i in range(num_episodes):
-                    all_results.append(run_episode(agent, env, seed=seed * 10000 + i))
+                    r = run_episode(agent, env, seed=seed * 10000 + i)
+                    r.seed = seed
+                    all_results.append(r)
             s = summarize_results(all_results)
             rows.append({
                 "env": "Tiger",
@@ -99,6 +101,8 @@ def run_misspec_sweep(seeds=None, num_episodes=500):
                 "obs": s["mean_observations"],
                 "n_seeds": len(seeds),
                 "n_episodes": num_episodes * len(seeds),
+                "se_success_seed_level": s.get("se_success_seed_level", float("nan")),
+                "se_reward_seed_level": s.get("se_reward_seed_level", float("nan")),
             })
             print(
                 f"  {agent_name:10s} p_agent={p_agent:.2f} "
@@ -136,7 +140,9 @@ def run_misspec_sweep(seeds=None, num_episodes=500):
                     agent_cls, env_diag, true_acc_diag, p_agent, **kwargs
                 )
                 for i in range(num_episodes):
-                    all_results.append(run_episode(agent, env_diag, seed=seed * 10000 + i))
+                    r = run_episode(agent, env_diag, seed=seed * 10000 + i)
+                    r.seed = seed
+                    all_results.append(r)
             s = summarize_results(all_results)
             rows.append({
                 "env": "Diagnosis",
@@ -150,6 +156,8 @@ def run_misspec_sweep(seeds=None, num_episodes=500):
                 "obs": s["mean_observations"],
                 "n_seeds": len(seeds),
                 "n_episodes": num_episodes * len(seeds),
+                "se_success_seed_level": s.get("se_success_seed_level", float("nan")),
+                "se_reward_seed_level": s.get("se_reward_seed_level", float("nan")),
             })
             print(
                 f"  {agent_name:10s} p_agent={p_agent:.2f} "

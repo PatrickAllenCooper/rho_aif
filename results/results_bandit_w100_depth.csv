@@ -1,0 +1,3 @@
+env,agent,w,horizon,mean_observations,success_rate,mean_reward,n_seeds,se_observations_seed_level,se_reward_seed_level,seed_list,episodes_per_seed,git_sha,generated_utc,p_observations_vs_myopic_seed_level
+Bandit,InfoGain-myopic,100.0,1,11.5044,0.998,4.2298,5,,0.07512616055675952,42|123|456|789|1024,500,3cfd77b,2026-08-21T20:26:31Z,
+Bandit,Planning+IG,100.0,2,12.3592,0.9984,3.806,5,,0.06823122452367385,42|123|456|789|1024,500,3cfd77b,2026-08-21T20:26:31Z,0.003286802404678984

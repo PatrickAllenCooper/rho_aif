@@ -895,7 +895,9 @@ def run_scaling_analysis(seeds: List[int] = None):
                 np.random.seed(seed)
                 agent = make_agent(agent_class, env, **kwargs)
                 for i in range(episodes):
-                    results.append(run_episode(agent, env, seed=seed * 10000 + i))
+                    r = run_episode(agent, env, seed=seed * 10000 + i)
+                    r.seed = seed
+                    results.append(r)
             dt = time.time() - t0
             s = summarize_results(results)
             s["N"] = n

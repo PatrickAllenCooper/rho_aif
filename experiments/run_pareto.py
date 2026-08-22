@@ -19,9 +19,13 @@ from rho_aif.environments.info_seeking import InfoSeekingEnv
 from rho_aif.environments.tiger import TigerEnv
 from rho_aif.environments.diagnosis import DiagnosisEnv
 from rho_aif.environments.bandit import BanditEnv
+from rho_aif.environments.tileworld import TileworldEnv
 from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
 from rho_aif.agents.efe import EFEAgent
-from run_experiment import make_agent, run_experiment, run_experiment_multi_seed, summarize_results, SEEDS
+from run_experiment import (
+    make_agent, run_experiment, run_experiment_multi_seed, summarize_results,
+    provenance_fields, SEEDS,
+)
 
 
 def run_pareto_sweep(
@@ -37,7 +41,8 @@ def run_pareto_sweep(
     if seeds is None:
         seeds = SEEDS
 
-    sweep = {"w": [], "success": [], "reward": [], "obs": []}
+    sweep = {"w": [], "success": [], "reward": [], "obs": [],
+             "se_reward_seed_level": [], "se_success_seed_level": [], "n_seeds": []}
     for w in weights:
         raw = run_experiment_multi_seed(PlanningInfoGainAgent, env, num_episodes,
                                         seeds=seeds,
@@ -47,7 +52,11 @@ def run_pareto_sweep(
         sweep["success"].append(s["success_rate"])
         sweep["reward"].append(s["mean_reward"])
         sweep["obs"].append(s["mean_observations"])
-        print(f"    w={w:>6.2f}  success={s['success_rate']:.1%}  reward={s['mean_reward']:+.2f}")
+        sweep["se_reward_seed_level"].append(s.get("se_reward_seed_level", float("nan")))
+        sweep["se_success_seed_level"].append(s.get("se_success_seed_level", float("nan")))
+        sweep["n_seeds"].append(s.get("n_seeds", float("nan")))
+        print(f"    w={w:>6.2f}  success={s['success_rate']:.1%}  reward={s['mean_reward']:+.2f}"
+              f"  (seed SE {s.get('se_reward_seed_level', float('nan')):.3f})")
 
     efe_raw = run_experiment_multi_seed(EFEAgent, env, num_episodes, seeds=seeds,
                                         planning_horizon=horizon)
@@ -67,7 +76,7 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
     if n == 1:
         axes = [axes]
 
-    panel_labels = ["(a)", "(b)", "(c)", "(d)"]
+    panel_labels = ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)"]
 
     for idx, (env_name, ax) in enumerate(zip(envs, axes)):
         data = all_results[env_name]
@@ -224,6 +233,10 @@ if __name__ == "__main__":
                       correct_reward=10.0, small_reward=1.0),
             2
         ),
+        "Tileworld": (
+            TileworldEnv(grid_size=6),
+            2
+        ),
     }
 
     import sys
@@ -239,6 +252,44 @@ if __name__ == "__main__":
 
         plot_pareto(all_results)
         print("\nPareto figure saved to figures/fig_pareto.pdf")
+
+        # Persist the full sweep plus each environment's reward-maximizing
+        # weight w*_ret and its seed-level SE, so Table tab:alpha_eta's
+        # w*_ret column is traceable to a committed, regenerable CSV instead
+        # of being an undocumented literal (Stage-K statistical audit finding).
+        import pandas as pd
+        sweep_rows = []
+        summary_rows = []
+        for env_name, data in all_results.items():
+            sw = data["sweep"]
+            for i, w in enumerate(sw["w"]):
+                sweep_rows.append({
+                    "env": env_name, "w": w, "success": sw["success"][i],
+                    "reward": sw["reward"][i], "obs": sw["obs"][i],
+                    "se_reward_seed_level": sw["se_reward_seed_level"][i],
+                    "se_success_seed_level": sw["se_success_seed_level"][i],
+                    "n_seeds": sw["n_seeds"][i],
+                })
+            best_idx = int(np.argmax(sw["reward"]))
+            summary_rows.append({
+                "env": env_name,
+                "w_star_ret": sw["w"][best_idx],
+                "reward_at_w_star_ret": sw["reward"][best_idx],
+                "se_reward_seed_level_at_w_star_ret": sw["se_reward_seed_level"][best_idx],
+                "success_at_w_star_ret": sw["success"][best_idx],
+                "efe_reward": data["efe"]["reward"],
+                "efe_success": data["efe"]["success"],
+            })
+        sweep_df = pd.DataFrame(sweep_rows)
+        summary_df = pd.DataFrame(summary_rows)
+        for df in (sweep_df, summary_df):
+            prov = provenance_fields(SEEDS, 500)
+            for k, v in prov.items():
+                df[k] = v
+        sweep_df.to_csv("results/results_pareto_sweep.csv", index=False)
+        summary_df.to_csv("results/results_pareto_wstar.csv", index=False)
+        print("\nSaved results/results_pareto_sweep.csv and results/results_pareto_wstar.csv")
+        print(summary_df.to_string(index=False))
 
     if cmd in ("accuracy", "all"):
         print(f"\n{'=' * 60}")

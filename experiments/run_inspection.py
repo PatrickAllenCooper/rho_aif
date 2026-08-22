@@ -93,6 +93,7 @@ def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, see
 
         seed_reward_means = seed_means(episode_results, lambda r: r["total_reward"])
         seed_accuracy_means = seed_means(episode_results, lambda r: r["accuracy_ep"])
+        seed_tests_means = seed_means(episode_results, lambda r: r["tests"])
         n_seeds = len(seed_reward_means)
 
         row = {
@@ -115,6 +116,10 @@ def run_inspection_experiment(config_name="Inspection-N8", num_episodes=500, see
             "mean_missed": np.mean(misseds),
             "mean_false_alarm": np.mean(false_alarms),
             "mean_tests": np.mean(tests),
+            "se_tests_seed_level": (
+                float(np.std(seed_tests_means, ddof=1) / np.sqrt(n_seeds))
+                if n_seeds > 1 else float("nan")
+            ),
             "completion_rate": np.mean(all_diag),
             "mean_steps": np.mean([r["steps"] for r in episode_results]),
             "mean_log_score": np.mean(log_scores),
@@ -162,6 +167,7 @@ def compute_inspection_stats(all_episode_results, config_name):
     for metric_name, extractor in [
         ("Reward", lambda r: r["total_reward"]),
         ("Accuracy", lambda r: r["accuracy_ep"]),
+        ("Tests", lambda r: r["tests"]),
     ]:
         for i in range(len(labels)):
             for j in range(i + 1, len(labels)):
