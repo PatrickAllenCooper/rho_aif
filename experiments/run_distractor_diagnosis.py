@@ -184,8 +184,22 @@ def run_sweep(
     # Planning (w=0, already in the grid), EFE (w=1, information-unit weight
     # under bits), and IDS as a reward-aware contrast that explicitly
     # discounts information about the optimal commit.
+    #
+    # Two further references close the loop on the manuscript's proposed fix.
+    # "EFE (w=1, reward-relevant)" and "Plan+IG (w=5, reward-relevant)" score
+    # information gain on the marginal over reward-equivalence classes of
+    # hidden states rather than on the full state belief, which is derived
+    # from the commit reward matrix alone (rho_aif.scoring). Belief dynamics
+    # are unchanged: the continuation always propagates the full joint
+    # posterior, and only the epistemic scoring term differs.
     for label, make_agent in (
         ("EFE (w=1)", lambda: EFEAgent(obs_models, config, planning_horizon=planning_horizon)),
+        ("EFE (w=1, reward-relevant)",
+         lambda: EFEAgent(obs_models, config, planning_horizon=planning_horizon,
+                          reward_relevant_info=True)),
+        ("Plan+IG (w=5, reward-relevant)",
+         lambda: PlanningInfoGainAgent(obs_models, config, planning_horizon=planning_horizon,
+                                       info_gain_weight=5.0, reward_relevant_info=True)),
         ("IDS", lambda: IDSAgent(obs_models, config)),
     ):
         results = []

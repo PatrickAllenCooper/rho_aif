@@ -101,3 +101,42 @@ def extract_true_state(info: dict, env=None) -> int:
         if getattr(env, "_goal_pos", None) is not None and hasattr(env, "_pos_to_idx"):
             return int(env._pos_to_idx(tuple(env._goal_pos)))
     raise KeyError("Could not determine true hidden state from info or env")
+
+
+def reward_equivalence_classes(commit_reward_matrix: ArrayLike) -> np.ndarray:
+    """Partition hidden states into reward-equivalence classes.
+
+    Two states are reward-equivalent when every commit action pays the same in
+    both, so no belief mass moved between them can ever change which commit
+    action is optimal. The partition is derived from the commit reward matrix
+    alone, which is the only relevance signal an observe-then-commit agent
+    legitimately holds (see rho_aif.benchmark.make_env_config, which passes
+    agents only the observation costs and this matrix).
+
+    Parameters
+    ----------
+    commit_reward_matrix
+        Array of shape (num_commit_actions, num_states).
+
+    Returns
+    -------
+    Integer array of shape (num_states,) mapping each state to its class index.
+    On an environment where no two states are reward-equivalent this is a
+    permutation of range(num_states), and information gain computed on the
+    class marginal reduces exactly to ordinary state information gain.
+    """
+    matrix = np.asarray(commit_reward_matrix, dtype=float)
+    if matrix.ndim != 2:
+        raise ValueError("commit_reward_matrix must be 2-D (actions x states)")
+    _, class_of_state = np.unique(matrix.T, axis=0, return_inverse=True)
+    return np.asarray(class_of_state, dtype=int).ravel()
+
+
+def reward_relevant_marginal(
+    belief: ArrayLike, class_of_state: ArrayLike, num_classes: int
+) -> np.ndarray:
+    """Marginalise a state belief onto reward-equivalence classes."""
+    b = np.asarray(belief, dtype=float)
+    return np.bincount(
+        np.asarray(class_of_state, dtype=int), weights=b, minlength=num_classes
+    )

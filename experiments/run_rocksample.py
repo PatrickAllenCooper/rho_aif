@@ -13,6 +13,7 @@ import time
 import os
 
 from rho_aif.environments.rocksample import RockSampleEnv
+from rho_aif.agents.rocksample_pomcp import RockSamplePOMCPAgent
 from rho_aif.agents.rocksample_agents import (
     RockSampleGreedyAgent,
     RockSampleEFEAgent,
@@ -59,6 +60,23 @@ ROCKSAMPLE_CONFIGS = {
 }
 
 
+def make_rocksample_env(config_name: str, max_steps=None):
+    """Build the environment for a named RockSample instance.
+
+    Shared with experiments/run_rocksample_pomcp.py so both batteries run
+    against identical geometry and identical model parameters.
+    """
+    cfg = ROCKSAMPLE_CONFIGS[config_name]
+    gs, nr = cfg["grid_size"], cfg["num_rocks"]
+    return RockSampleEnv(
+        grid_size=gs,
+        num_rocks=nr,
+        rock_positions=cfg["rock_positions"],
+        move_cost=-0.5,
+        max_steps=max_steps if max_steps is not None else gs * gs + nr * 10,
+    )
+
+
 def run_rocksample_episode(agent, env, seed=None, max_steps=100):
     obs, info = env.reset(seed=seed)
     agent.reset()
@@ -75,7 +93,10 @@ def run_rocksample_episode(agent, env, seed=None, max_steps=100):
             num_checks += 1
 
         if terminated or truncated:
+            was_truncated = bool(truncated) and not bool(terminated)
             break
+    else:
+        was_truncated = True
 
     return {
         "total_reward": total_reward,
@@ -83,12 +104,13 @@ def run_rocksample_episode(agent, env, seed=None, max_steps=100):
         "bad_sampled": info.get("total_bad_sampled", 0),
         "steps": env._step_count,
         "checks": num_checks,
+        "truncated": 1.0 if was_truncated else 0.0,
     }
 
 
 def run_rocksample_experiment(
     config_name="RS[5,3]", num_episodes=500, seeds=None,
-    override_depth=None, csv_name=None,
+    override_depth=None, csv_name=None, pomcp_config=None,
 ):
     if seeds is None:
         seeds = SEEDS
@@ -103,26 +125,29 @@ def run_rocksample_experiment(
           f"{num_episodes} episodes x {len(seeds)} seeds")
     print("=" * 70)
 
-    env = RockSampleEnv(
-        grid_size=gs,
-        num_rocks=nr,
-        rock_positions=rp,
-        move_cost=-0.5,
-        max_steps=max_steps,
-    )
+    env = make_rocksample_env(config_name, max_steps=max_steps)
 
+    # Factories take the per-run seed so agents with internal randomness get a
+    # seed-controlled stream, matching vary_agent_seed in run_experiment.py and
+    # the protocol line in CLAUDE.md. Agents without internal randomness accept
+    # and ignore it.
     agent_configs = [
-        ("Greedy", lambda: RockSampleGreedyAgent(env)),
-        ("Flat-MC (1000)", lambda: RockSampleFlatMCAgent(env, num_simulations=1000)),
+        ("Greedy", lambda seed: RockSampleGreedyAgent(env)),
+        ("Flat-MC (1000)", lambda seed: RockSampleFlatMCAgent(env, num_simulations=1000)),
         (f"Planning (d={td})",
-         lambda: RockSampleTreeSearchAgent(env, info_weight=0.0, max_depth=td)),
+         lambda seed: RockSampleTreeSearchAgent(env, info_weight=0.0, max_depth=td)),
         (f"Plan+IG w=5 (d={td})",
-         lambda: RockSampleTreeSearchAgent(env, info_weight=5.0, max_depth=td)),
+         lambda seed: RockSampleTreeSearchAgent(env, info_weight=5.0, max_depth=td)),
         (f"Plan+IG w=10 (d={td})",
-         lambda: RockSampleTreeSearchAgent(env, info_weight=10.0, max_depth=td)),
+         lambda seed: RockSampleTreeSearchAgent(env, info_weight=10.0, max_depth=td)),
         (f"EFE w=1 (d={td})",
-         lambda: RockSampleTreeSearchAgent(env, info_weight=1.0, max_depth=td)),
+         lambda seed: RockSampleTreeSearchAgent(env, info_weight=1.0, max_depth=td)),
     ]
+    if pomcp_config is not None:
+        agent_configs.append((
+            pomcp_config["label"],
+            lambda seed: RockSamplePOMCPAgent(env, seed=seed, **pomcp_config["kwargs"]),
+        ))
 
     results = []
     all_episode_results = {}
@@ -131,7 +156,7 @@ def run_rocksample_experiment(
         episode_results = []
         for seed in seeds:
             np.random.seed(seed)
-            agent = make_agent_fn()
+            agent = make_agent_fn(int(seed))
             for ep_i in range(num_episodes):
                 r = run_rocksample_episode(
                     agent, env, seed=seed * 10000 + ep_i, max_steps=max_steps
@@ -167,6 +192,10 @@ def run_rocksample_experiment(
             ),
             "mean_checks": np.mean(checks),
             "mean_steps": np.mean([r["steps"] for r in episode_results]),
+            "truncation_rate": float(np.mean([r["truncated"] for r in episode_results])),
+            "mean_planning_ms": dt * 1000.0 / max(
+                1, sum(r["steps"] for r in episode_results)
+            ),
             "time_s": dt,
             "n_seeds": n_seeds,
             "episodes_per_seed": num_episodes,

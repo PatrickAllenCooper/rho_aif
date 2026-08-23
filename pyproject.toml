@@ -64,3 +64,6 @@ include = ["rho_aif*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "slow: longer-running battery checks",
+]

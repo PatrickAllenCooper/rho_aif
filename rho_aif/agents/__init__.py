@@ -13,6 +13,14 @@ from rho_aif.agents.mcts_efe import MCTSEFEAgent
 from rho_aif.agents.ids import IDSAgent
 from rho_aif.agents.pomcp import POMCPAgent
 from rho_aif.agents.dual_descent import DualWeightAgent
+from rho_aif.agents.rocksample_agents import (
+    RockSampleGreedyAgent,
+    RockSampleEFEAgent,
+    RockSamplePlanningIGAgent,
+    RockSampleFlatMCAgent,
+    RockSampleTreeSearchAgent,
+)
+from rho_aif.agents.rocksample_pomcp import RockSamplePOMCPAgent
 
 __all__ = [
     "BaseAgent",
@@ -31,4 +39,10 @@ __all__ = [
     "IDSAgent",
     "POMCPAgent",
     "DualWeightAgent",
+    "RockSampleGreedyAgent",
+    "RockSampleEFEAgent",
+    "RockSamplePlanningIGAgent",
+    "RockSampleFlatMCAgent",
+    "RockSampleTreeSearchAgent",
+    "RockSamplePOMCPAgent",
 ]

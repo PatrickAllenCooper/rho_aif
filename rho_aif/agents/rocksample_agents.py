@@ -17,6 +17,26 @@ from typing import List, Tuple, Optional
 from copy import deepcopy
 
 
+def _bayes_check(p_good: float, observation: int, accuracy: float) -> float:
+    """Posterior P(rock is good) after one noisy check.
+
+    Shared by RockSampleBeliefState.update_check and by the POMCP planner's
+    internal simulator, so the planner's model of a check and the real belief
+    update cannot drift apart.
+    """
+    if observation == 1:
+        p_obs_given_good = accuracy
+        p_obs_given_bad = 1.0 - accuracy
+    else:
+        p_obs_given_good = 1.0 - accuracy
+        p_obs_given_bad = accuracy
+
+    p_obs = p_good * p_obs_given_good + (1 - p_good) * p_obs_given_bad
+    if p_obs > 1e-10:
+        return (p_good * p_obs_given_good) / p_obs
+    return p_good
+
+
 class RockSampleBeliefState:
     """
     Factored belief over K independent rock qualities.
@@ -37,17 +57,9 @@ class RockSampleBeliefState:
     def update_check(self, rock_idx: int, observation: int, accuracy: float):
         if observation == 2:
             return
-        p_good = self.rock_beliefs[rock_idx]
-        if observation == 1:
-            p_obs_given_good = accuracy
-            p_obs_given_bad = 1.0 - accuracy
-        else:
-            p_obs_given_good = 1.0 - accuracy
-            p_obs_given_bad = accuracy
-
-        p_obs = p_good * p_obs_given_good + (1 - p_good) * p_obs_given_bad
-        if p_obs > 1e-10:
-            self.rock_beliefs[rock_idx] = (p_good * p_obs_given_good) / p_obs
+        self.rock_beliefs[rock_idx] = _bayes_check(
+            self.rock_beliefs[rock_idx], observation, accuracy
+        )
 
     def mark_sampled(self, rock_idx: int):
         self.rock_sampled[rock_idx] = True

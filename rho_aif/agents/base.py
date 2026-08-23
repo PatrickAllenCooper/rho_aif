@@ -8,8 +8,10 @@ Action layout: actions 0..K-1 are observation actions, K..K+N-1 are commit actio
 """
 
 import numpy as np
+from scipy.stats import entropy as scipy_entropy
 from typing import List, Union
 from rho_aif.belief import BeliefState
+from rho_aif.scoring import reward_equivalence_classes, reward_relevant_marginal
 
 
 class BaseAgent:
@@ -48,6 +50,41 @@ class BaseAgent:
         self.belief = BeliefState(self.num_states)
 
         self._active_obs_model_idx = 0
+
+        # Reward-relevance weighting is opt-in and off by default, so every
+        # existing agent and every existing number is unchanged.
+        self._init_reward_relevance(False)
+
+    def _init_reward_relevance(self, enabled: bool) -> None:
+        """Enable or disable reward-relevance-weighted information gain.
+
+        When enabled, information gain is measured on the marginal over
+        reward-equivalence classes of hidden states rather than on the full
+        state belief. Belief dynamics are untouched: only the scoring term
+        changes.
+        """
+        self.reward_relevant_info = bool(enabled)
+        if enabled:
+            self._class_of_state = reward_equivalence_classes(self.commit_rewards)
+            self._num_reward_classes = int(self._class_of_state.max()) + 1
+        else:
+            self._class_of_state = None
+            self._num_reward_classes = 0
+
+    def _info_entropy(self, belief: np.ndarray) -> float:
+        """Entropy (bits) of the distribution information gain is scored on.
+
+        With reward relevance off this is the ordinary state-belief entropy.
+        With it on, states that pay identically under every commit action are
+        collapsed into one class first, so belief mass moved between them
+        earns no credit.
+        """
+        if not self.reward_relevant_info:
+            return float(scipy_entropy(belief, base=2))
+        marginal = reward_relevant_marginal(
+            belief, self._class_of_state, self._num_reward_classes
+        )
+        return float(scipy_entropy(marginal, base=2))
 
     def reset(self) -> None:
         self.belief.reset()

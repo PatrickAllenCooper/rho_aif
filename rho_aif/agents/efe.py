@@ -37,12 +37,14 @@ class EFEAgent(BaseAgent):
         planning_horizon: int = 4,
         discount: float = 1.0,
         record_audit: bool = False,
+        reward_relevant_info: bool = False,
     ):
         super().__init__(observation_models, env_config)
         self.planning_horizon = planning_horizon
         self.discount = discount
         self.record_audit = record_audit
         self.audit_log: List[DecisionAudit] = []
+        self._init_reward_relevance(reward_relevant_info)
 
     def select_action(self) -> int:
         belief = self.belief.belief
@@ -140,7 +142,7 @@ class EFEAgent(BaseAgent):
         """
         model = self.obs_models[obs_action]
         num_outcomes = model.shape[1]
-        prior_entropy = scipy_entropy(belief, base=2)
+        prior_entropy = self._info_entropy(belief)
         expected_posterior_entropy = 0.0
         expected_continuation = 0.0
 
@@ -152,8 +154,10 @@ class EFEAgent(BaseAgent):
             posterior = model[:, obs_idx] * belief
             posterior = posterior / posterior.sum()
 
-            expected_posterior_entropy += prob_obs * scipy_entropy(posterior, base=2)
+            expected_posterior_entropy += prob_obs * self._info_entropy(posterior)
 
+            # The continuation always propagates the full joint posterior.
+            # Only the scoring term above is reward-relevance weighted.
             _, continuation_g = self._evaluate(posterior, depth + 1)
             expected_continuation += prob_obs * continuation_g
 
