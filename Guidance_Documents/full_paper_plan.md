@@ -728,3 +728,33 @@ First measurement, 200 episodes on one seed, pending the full 5-seed protocol: P
 **Tests**: 10 in `tests/test_reward_relevance.py`, including the substantive assertion that the distractor test's information gain is exactly zero under the variant and strictly positive without it, and that its expected free energy rises by exactly the amount of that withdrawn credit.
 
 434/434 tests passing, up from 386.
+
+### 9.17.5 Six-lens adversarial audit of the four workstreams (2026-08-23)
+
+**Instrument**: a 30-agent workflow. Six independent finder lenses (POMCP algorithm correctness, POMCP experimental protocol, the relevance-variant's correctness, damage introduced by the automated editing passes, stale claims, and test quality), each finding then handed to a skeptic prompted to refute it by reading the code and defaulting to refuted. Finders were told the repository's specific historical bug classes by name.
+
+**Result**: 24 findings raised, 21 confirmed, 3 refuted. Four rated blocking.
+
+This is the campaign's clearest confirmation of the 9.16 thesis that instrument diversity, not iteration depth, determines what verification finds. Every one of these defects was introduced or missed *by me* within the preceding six hours, after I had already read each file I was editing.
+
+**The three that matter most.**
+
+1. **`holm_bonferroni` was NaN-unsafe and had zero test coverage.** A NaN p-value fails the `p <= alpha/(n-rank)` test and hits the `break`, terminating the step-down, so every comparison sorting after it was written as non-significant regardless of its own p-value. Where the NaN landed was an artifact of Python's sort stability, so the number of suppressed comparisons varied with input order. Roughly ten call sites pass unfiltered p-lists. The trigger was imminent, not hypothetical: the `random` rollout policy exits at step one on every seed, returning exactly 9.5 with zero variance, so its pairwise Welch tests are NaN, and the distractor sweep was running while this was found. It was killed mid-flight.
+
+   The audit's own recommendation was followed: fix the shared helper rather than filter at each call site. Every committed `*_stats.csv` was then re-derived under the fixed helper. Six carry NaN p-values and **not one published significance verdict changes**. The defect was latent, never shipped. This is the second time in this project that a shared statistics helper silently degraded results across many scripts (the first was `summarize_results()` dropping seed-level SE, 9.15), and both times the helper had no direct test. 15 tests added, including one asserting the outcome is invariant to the NaN's position in the input.
+
+2. **A seventh instance of the "Pareto knee on every environment" overclaim.** 9.16 recorded this as corrected in six locations. Three more survived in both manuscripts. The worst opens Section `sec:pareto` with an unqualified universal, 21 lines after the same file states the correctly scoped version and immediately below a figure caption that already names both exceptions. It was missed because the earlier sweep searched for a string ("every environment") that one of the three instances does not contain. **The lesson to carry forward is that string-matching sweeps for a claim pattern under-count it, and this pattern has now recurred across four separate correction rounds.**
+
+3. **Three verbless fragments created by my own colon-removal pass, including the paper's central definition.** Both manuscripts stated the operational shadow price as an orphaned appositive where a colon had been. The fragment-repair sweep in `63d49b7` claimed every split point was read back and missed all three, because it only inspected splits recoverable from the diff of the immediately preceding commit and these came from an earlier one.
+
+**Code defects fixed**: `num_simulations_run` echoed the constructor argument instead of counting loop iterations, so the anti-dead-code test written to commemorate `mcts_efe.py`'s `min(self.num_simulations, 50)` was blind to precisely that bug shape; `_leaf_estimate` credited a phantom "exit next step" continuation where the step cap rather than the planning horizon bound the tree; the hindsight rollout ablation could never emit a check (the write-off filter admits only beliefs in `[0.15, 0.85)` and a particle is binary), so it differed from the headline along two axes rather than one; a write-only `particles` field on every node.
+
+**Protocol defect fixed**: `frozen_config` had no completeness guard, and `_run_tuning_configs` checkpoints after every cell, so a sweep in flight is byte-indistinguishable on disk from a finished one. Launching an evaluation battery would have frozen a configuration selected from a partial grid. The new guard fired for real on the still-running sweep. `_tuning_score` also NaN-dropped configurations evaluated on only some instances rather than failing.
+
+**Test defects fixed, verified by mutation.** Four tests passed for the wrong reason. Each was repaired and then checked by re-running the audit's own mutation, not by inspection. The first repair of the subtree-reuse test still let a gutted `_advance_root` through, because retaining a *stale* root also leaves a non-None root with carried visits; the test now asserts root identity against the realised `(action, observation)` child.
+
+**A measurement correction the audit produced as a by-product**: the distractor onset weight both manuscripts report as "$\approx 10$" is actually in $(3.5, 4.0]$. The $\approx 10$ was an artifact of a log grid that jumps from 3.16 straight to 10 and never samples between. The qualitative claim survives (the onset still exceeds $w{=}1$, which is why EFE stays clear of the distractor on this instance) but the number is wrong. The sweep grid now carries refinement points at 3.5, 4.0, 4.5 and 5.0 to bracket the onset directly, per the project's own crossing-bracket convention.
+
+**Refuted (3)**, recorded because reviewer error rate is part of characterising the instrument: a claim that `_tuning_score`'s normalisation is not rank-stable, a claim that rollout-only rows are stamped with parameters the agent never reads, and a claim that the fixed reference agents are unselectable for lacking new provenance columns. Each was checked against the code and did not hold.
+
+**Verdict: HOLD.** Every confirmed finding is fixed, 450/450 tests passing (up from 434), and the two evaluation batteries were relaunched under the corrected code rather than being allowed to complete under the defective version.
