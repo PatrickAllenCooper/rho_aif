@@ -61,6 +61,10 @@ class _RolloutOnlyAgent:
     """
 
     def __init__(self, env, rollout_policy: str = "approach", seed: Optional[int] = None):
+        if rollout_policy == "hindsight":
+            # The hindsight policy reads the sampled quality vector, which a
+            # standalone agent does not have and must not have.
+            raise ValueError("hindsight is a tree ablation, not a standalone policy")
         self._inner = RockSamplePOMCPAgent(
             env,
             num_simulations=1,

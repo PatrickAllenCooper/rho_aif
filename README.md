@@ -141,6 +141,9 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | Pareto sweep + reward-maximizing weight brackets | `python experiments/run_pareto.py pareto` |
 | Bandit w=100 depth comparison (Discussion) | `python experiments/run_bandit_w100_depth_comparison.py` |
 | Compute-matched POMCP check | `python experiments/run_pomcp_compute_matched.py` |
+| RockSample POMCP: configuration selection on tuning seeds | `python experiments/run_rocksample_pomcp.py tuning` |
+| RockSample POMCP: simulation-budget sweep | `python experiments/run_rocksample_pomcp.py budget` (reads the frozen config from the tuning CSV) |
+| RockSample POMCP: rollout, discount, belief-mode sensitivity | `python experiments/run_rocksample_pomcp.py sensitivity` |
 | Proper-scoring calibration table | `python experiments/run_calibration_table.py` |
 | Per-test value-of-information audit case study | `python experiments/run_audit_case_study.py` |
 | Destructive-sensing boundary example | `python -m pytest tests/test_destructive_boundary.py -v` |
@@ -156,7 +159,7 @@ python -m pytest tests/ -v
 
 ```bibtex
 @article{cooper2026efe,
-  title={Expected Free Energy as Belief-Dependent Utility for $\rho$-{POMDP}s},
+  title={Pricing the Sensing Budget in $\rho$-{POMDP}s, with Expected Free Energy as the Canonical Information Weight},
   author={Cooper, Patrick and Velasquez, Alvaro},
   year={2026}
 }

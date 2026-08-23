@@ -670,3 +670,61 @@ Prose and disclosure fixes: **C2** the three RockSample deviations from Smith an
 **Verification**: both manuscripts compile clean throughout (JAIR 69pp via pdflatex -> biber -> pdflatex x2, zero undefined references/citations; LNCS via tectonic, exit 0), 386/386 tests passing after the agent rename and all script changes, and `build_rocksample_tables.py` regenerated the auto-built table fragments under the new label.
 
 **Verdict**: the panel's central diagnosis is the one worth carrying forward, and it is not about any individual defect. The AE observed that in *every* instance the committed artifact was correct and the prose had drifted from it -- a propagation-discipline failure, not a data-validity failure -- and that this manuscript reached the panel after five internal referee rounds and a 48-agent statistical audit and still yielded roughly fifteen instances of the same species. C15(a)'s per-table producer traceability is the structural fix and matters more than any single numeric correction in this round. The AE's closing line is the accurate summary of this project's failure mode: the authors keep correcting the science faster than they propagate the corrections into the prose.
+
+---
+
+## 9.17 Four-workstream revision: budget-first framing, conciseness, a genuine POMCP, and the relevance-weighted variant (2026-08-23)
+
+**Origin**: Pat asked for four changes proposed after the mock JAIR panel, "emphasizing clarity and conciseness throughout the paper", under explicit formatting laws (no semicolons, no rhetorical colons, no rhetorical italics or bold, no in-prose lists, varied sentence length, simple language that still carries technical detail). Two scoping answers governed the work: the format ban applies to prose only, so structural markup stays, and appendix material is merged first with only residue deleted.
+
+### 9.17.1 Workstream 1: budget-first framing (`b28bec6`)
+
+Three of five mock reviewers called the EFE equivalence incremental. They were reading the paper in the order it presents itself. The title led with the equivalence, the structured abstract led with it, and contribution one was it, while the shadow-price material that no reviewer called incremental arrived second everywhere.
+
+Inverted at the entry and exit points rather than by reordering the body, because Section 4 depends on Section 3's Planning+IG family and Corollary PI-4 bridges back to Proposition 2. Title is now "Pricing the Sensing Budget in rho-POMDPs, with Expected Free Energy as the Canonical Information Weight". The JAIR structured abstract, the contributions enumerate, the Discussion, and the Conclusion all now lead with the budget and reach the equivalence as the mechanism that makes the price curve interpretable. The Introduction was already budget-first and needed no change.
+
+### 9.17.2 Workstream 2: conciseness and the format laws (`cf08890`)
+
+All 150 prose semicolons in the JAIR file and 127 in the LNCS master removed. What remains is math spacing and the `w*(B;alpha)` parameter notation. 87 rhetorical colons converted to sentence breaks under a verb-presence guard, then a sample of 22 conversions read back for grammaticality. 19 rhetorical italics removed, keeping definitional first uses, proof-part labels, and bibliography venue names. Four definitional bolds converted to italics to match the project's own stated convention.
+
+An erratum note reading `\textbf{[Corrected 2026-08-22]}` was shipping inside a table caption. Removed from both files. The correction remains recorded in 9.15.
+
+Five bloated passages rewritten, keeping every number and every calibrated concession while cutting layered hedging: the SARSOP TOST equivalence (561 words), prior-art positioning (502), the Pareto analysis (478), the RS[11,11] discussion (417), and the effect-size discussion (340). Five instances of meta-narration about the paper's own rhetorical choices were cut, of the form "we report this rather than leaving it for the reader to infer".
+
+**Appendix outcome, and a correction to the plan.** The plan targeted roughly halving the appendix by deleting eight zero-reference sections. A reference audit showed that assumption was wrong. Most zero-reference appendices are not redundant, they are *orphaned evidence for claims the body actually makes*. `app:obs_scaling` is the only direct isolation of the "advantage requires multiple observation actions" claim in Contribution 4. `app:calibration` scores terminal beliefs rather than decisions, a distinct evidentiary axis. `app:audit` is the only place the Discussion's interpretability claim is exposed. `app:full_tables` was assumed to duplicate the body table and does not, since it carries three further agents including the Thompson sampling baseline the mock panel required be reported.
+
+Deleting these to hit a page target would have weakened supported claims, which the project's north star forbids. What was done instead: five illustrative-figure sections merged into one Supplementary figures section retaining every figure, two genuinely redundant sections deleted (`app:extended_efe`, which restated the trajectory analysis at a different K, and `app:stopping`, on which no claim depended), and the four orphans cited from the claims they support, closing four real orphan-evidence gaps.
+
+**Verdict: PARTIAL.** The prose is materially cleaner and every format law is satisfied, but the appendix was not halved and the JAIR manuscript moved only 69 to 68 pages, because the pass traded density for readability roughly evenly. A 50% appendix cut is not reachable without deleting load-bearing evidence. This is recorded as a deliberate refusal of the target, not a shortfall.
+
+Both manuscripts compile clean with zero undefined references and zero undefined citations. Six LaTeX errors in the JAIR log were verified pre-existing by building HEAD from a clean `git archive`. Propagation verified mechanically: 186 shared prose paragraphs across the two files, differing only where the formats legitimately diverge (structured versus unstructured abstract, reproducibility checklist, bibliography).
+
+### 9.17.3 Workstream 3: a genuine RockSample POMCP (`b28bec6`, experiments in progress)
+
+Closes the hole left when the mislabelled `POMCP` baseline was relabelled `Flat-MC` and its Silver and Veness attribution withdrawn (9.16). `rho_aif/agents/rocksample_pomcp.py` is a real history tree with UCB1 selection, mean (UCT) backup, and Monte Carlo rollouts.
+
+Three design points were established by measurement during planning, not assumed, and each corrects a plausible-looking choice that fails:
+
+1. `RockSampleEnv.exit_action` is position-independent, so `exit_reward + move_cost` is an unconditional zero-variance outside option at every step. The leaf value at the depth bound must be that same continuation value. With a leaf value of zero the agent exits at step one in every configuration tested. `leaf_value="zero"` is retained with a test asserting the collapse, as a regression witness.
+2. The rollout policy must read the simulated belief, never the sampled quality particle. A hindsight rollout reproduces the Flat-MC pathology exactly, at 30.8 checks per episode and -3.27 reward against 11.10 for a history-measurable rollout, and it breaks the history-measurability condition POMCP's convergence argument assumes.
+3. **Found during implementation, not in the design**: the literature's preferred-action heuristic is under-specified for this parameterisation. It does not say whether to spend a check at long range or walk closer first. The long-range reading scores +9.24 standalone, below the unconditional exit value of +9.50, so a POMCP built on it correctly exits immediately and its tree never grows past depth 5. The walk-closer reading scores +17.21 standalone and yields a tree reaching depth 14 that responds to simulation budget (+14.25 at 1024 simulations, +16.45 at 4096). Rather than pick by hand after seeing that, `rollout_policy` was added to the predeclared tuning sweep.
+
+An initial rollout implementation also had a real bug worth recording: it never wrote off rocks it believed were bad, so it checked forever and hit the step cap, scoring -11.71. Fixed with a write-off threshold, which is what brought the standalone policies in line with the design prototype's measurements.
+
+**Protocol**: configuration selection runs on `TUNING_SEEDS = [11, 22, 33]`, disjoint from `SEEDS` and `EXTENDED_SEEDS`, as a two-stage coordinate sweep rather than the planned 90-cell grid, which projected to roughly eight hours on the larger tuning instance. Stage A sweeps rollout policy and exploration constant, Stage B sweeps planning horizon and root criterion at Stage A's argmax. The selection metric is predeclared as the mean over tuning instances of the within-instance min-max normalised mean reward, so the larger instance's wider reward range cannot decide the configuration alone. The budget and sensitivity batteries read the frozen configuration back off the tuning CSV rather than hardcoding it, keeping every evaluation number traceable to the artifact that selected it.
+
+**Tests**: 22 in `tests/test_rocksample_pomcp.py`. The anti-dead-code group exists because `mcts_efe.py` shipped with unreachable UCB1, an inert exploration constant, and a silently capped simulation count. `test_no_inert_parameters` is parametrised over all eight constructor knobs rather than the ones someone remembered to check. Leakage is proven three ways: a `_LeakGuard` proxy raising on ground-truth attributes, a source-level grep, and a complement-qualities replay asserting the action sequence is invariant to the hidden vector.
+
+`run_rocksample.py` agent factories now take the per-run seed. They were zero-argument lambdas, so an agent could not receive it, in violation of the protocol line in CLAUDE.md. Result rows gain `truncation_rate` and `mean_planning_ms`.
+
+### 9.17.4 Workstream 4: reward-relevance-weighted information gain (`b28bec6`, full battery in progress)
+
+The manuscript described this fix and stated it was not run. It is now implemented and measured.
+
+States are partitioned into reward-equivalence classes from the commit reward matrix alone, which is the only relevance signal `make_env_config` gives an agent, and information gain is scored on the class marginal. Belief dynamics are untouched, since the continuation always propagates the full joint posterior. The flag is opt-in, so every existing number is unchanged, and on an environment with no reward-equivalent states it reduces exactly to ordinary information gain, which the tests assert.
+
+First measurement, 200 episodes on one seed, pending the full 5-seed protocol: Plan+IG at w=5 spends 2.72 tests per episode on the distractor, 22.9% of its sensing budget, and loses 2.72 reward against EFE. With relevance weighting it takes zero distractor tests and recovers the entire gap, -5.68 to -2.96, at identical success (0.94). EFE at w=1 never took the distractor in the first place, so the variant leaves it unchanged. If the full battery confirms this, the "left to future work" sentence in the distractor section is retired.
+
+**Tests**: 10 in `tests/test_reward_relevance.py`, including the substantive assertion that the distractor test's information gain is exactly zero under the variant and strictly positive without it, and that its expected free energy rises by exactly the amount of that withdrawn credit.
+
+434/434 tests passing, up from 386.
