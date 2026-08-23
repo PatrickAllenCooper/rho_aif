@@ -213,19 +213,36 @@ TUNING_SIMULATIONS = 1024
 TUNING_KEYS = ["exploration_constant", "planning_horizon", "root_criterion", "rollout_policy"]
 
 
-def _tuning_score(df: pd.DataFrame) -> pd.Series:
+def _tuning_score(df: pd.DataFrame, require_full_coverage: bool = False) -> pd.Series:
     """Predeclared selection metric: mean over tuning instances of the
     within-instance min-max normalised mean reward.
 
     Normalising within instance first stops the larger instance's wider reward
     range from deciding the configuration on its own.
+
+    Summing per-instance Series aligns on the index, so a configuration
+    evaluated on only some instances becomes NaN and then sorts to the end,
+    which would silently drop it from selection rather than fail. Such
+    configurations are therefore reported explicitly, and with
+    require_full_coverage they are an error.
     """
+    instances = sorted(df["instance"].unique())
     parts = []
-    for instance, grp in df.groupby("instance"):
+    for instance in instances:
+        grp = df[df["instance"] == instance]
         per_cfg = grp.groupby(TUNING_KEYS)["mean_reward"].mean()
         span = per_cfg.max() - per_cfg.min()
         parts.append((per_cfg - per_cfg.min()) / span if span > 0 else per_cfg * 0.0)
-    return sum(parts) / len(parts)
+
+    score = sum(parts) / len(parts)
+    partial = score[score.isna()]
+    if len(partial):
+        msg = (f"{len(partial)} configuration(s) evaluated on only some of "
+               f"{instances}: {list(partial.index)}")
+        if require_full_coverage:
+            raise RuntimeError(msg)
+        print(f"  warning: {msg}", flush=True)
+    return score.dropna()
 
 
 def _run_tuning_configs(configs, rows, out, episodes, stage_name):
@@ -298,14 +315,57 @@ def run_tuning(out="results/results_rocksample_pomcp_tuning.csv", episodes=TUNIN
     return df
 
 
-def frozen_config(tuning_csv="results/results_rocksample_pomcp_tuning.csv") -> dict:
+def expected_tuning_configs():
+    """The configurations the declared two-stage protocol must cover.
+
+    Stage B depends on stage A's argmax, so the exact stage-B cells are not
+    known in advance, but their count is.
+    """
+    n_a = 1
+    for v in TUNING_STAGE_A.values():
+        n_a *= len(v)
+    n_b = 1
+    for v in TUNING_STAGE_B.values():
+        n_b *= len(v)
+    return n_a, n_b - 1  # the stage-A argmax is not re-run in stage B
+
+
+def assert_tuning_complete(df: pd.DataFrame, tuning_csv: str):
+    """Refuse to freeze a configuration from a partial tuning sweep.
+
+    _run_tuning_configs checkpoints after every cell, so a sweep still in
+    flight is byte-indistinguishable on disk from a finished one. Without this
+    guard, launching an evaluation battery while tuning is running silently
+    selects from whatever fraction of the declared grid happens to exist.
+    """
+    n_a, n_b = expected_tuning_configs()
+    per_stage = df.groupby("stage").size().to_dict()
+    got_a = per_stage.get("tuning-A", 0)
+    got_b = per_stage.get("tuning-B", 0)
+    want_a, want_b = n_a * len(TUNING_INSTANCES), n_b * len(TUNING_INSTANCES)
+    missing_h = set(TUNING_STAGE_B["planning_horizon"]) - set(df["planning_horizon"].unique())
+    if got_a != want_a or got_b != want_b:
+        raise RuntimeError(
+            f"{tuning_csv} is incomplete: stage A has {got_a}/{want_a} rows and "
+            f"stage B has {got_b}/{want_b}. Unevaluated planning horizons: "
+            f"{sorted(missing_h) or 'none'}. Let the tuning stage finish before "
+            "running an evaluation battery, or pass an explicit cfg."
+        )
+
+
+def frozen_config(tuning_csv="results/results_rocksample_pomcp_tuning.csv",
+                  strict: bool = True) -> dict:
     """Read the frozen configuration back off the tuning CSV.
 
     Reading it from disk rather than hardcoding it keeps every evaluation
-    battery traceable to the artifact that selected it.
+    battery traceable to the artifact that selected it. The completeness check
+    is on by default so a partial sweep raises instead of quietly selecting
+    from a fraction of the declared grid.
     """
     df = pd.read_csv(tuning_csv)
-    best = _tuning_score(df).sort_values(ascending=False).index[0]
+    if strict:
+        assert_tuning_complete(df, tuning_csv)
+    best = _tuning_score(df, require_full_coverage=strict).sort_values(ascending=False).index[0]
     cfg = dict(zip(TUNING_KEYS, best))
     return {
         "exploration_constant": float(cfg["exploration_constant"]),

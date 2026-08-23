@@ -65,16 +65,21 @@ class RockSamplePOMCPNode:
     Position and the sampled-rock set are deterministic functions of the
     action prefix, so they are threaded down the recursion as arguments
     rather than stored here.
+
+    Nodes carry no particle sets. Silver and Veness accumulate ``B(hao)`` at
+    each history node, but this agent's belief lives at the agent level, as
+    either the exact factored posterior or one unweighted particle set filtered
+    in ``update``. A per-node particle list would be written on every descent
+    and never read, so it is not kept.
     """
 
-    __slots__ = ["visit_count", "value_sum", "children", "obs_children", "particles"]
+    __slots__ = ["visit_count", "value_sum", "children", "obs_children"]
 
     def __init__(self):
         self.visit_count = 0
         self.value_sum = 0.0
         self.children: Dict[int, "RockSamplePOMCPNode"] = {}
         self.obs_children: Dict[Tuple[int, int], "RockSamplePOMCPNode"] = {}
-        self.particles: List[Tuple[int, ...]] = []
 
     @property
     def value(self) -> float:
@@ -199,6 +204,7 @@ class RockSamplePOMCPAgent:
         self._rock_positions: Optional[List[Tuple[int, int]]] = None
         self._acc_cache: Dict[Tuple[Tuple[int, int], int], float] = {}
         self._t = 0
+        self._leaf_has_continuation = True
         self._root: Optional[RockSamplePOMCPNode] = None
         self._particles: List[Tuple[int, ...]] = []
         self._num_reinvigorations = 0
@@ -220,6 +226,7 @@ class RockSamplePOMCPAgent:
         self._rock_positions = None
         self._acc_cache = {}
         self._t = 0
+        self._leaf_has_continuation = True
         self._root = None
         self._num_reinvigorations = 0
         self.diagnostics = {}
@@ -249,6 +256,12 @@ class RockSamplePOMCPAgent:
             "num_history_nodes": 0,
             "num_ucb_calls": 0,
             "num_rollouts": 0,
+            # Counted in the loop below, never copied from self.num_simulations.
+            # An echo of the constructor argument cannot detect a cap applied at
+            # the use site, which is exactly how mcts_efe.py's silent cap at 50
+            # survived: the historical bug was min(self.num_simulations, 50) in
+            # the search loop, not in __init__.
+            "num_simulations_run": 0,
         }
 
         sampled0 = self.belief.rock_sampled
@@ -257,6 +270,7 @@ class RockSamplePOMCPAgent:
         for _ in range(self.num_simulations):
             quals = self._sample_particle()
             self._simulate(root, quals, pos, sampled0, bel0, 0, depth_bound, stats)
+            stats["num_simulations_run"] += 1
 
         self._root = root
         action = self._select_root_action(root, pos, sampled0)
@@ -267,7 +281,7 @@ class RockSamplePOMCPAgent:
                 "num_history_nodes": stats["num_history_nodes"],
                 "num_ucb_calls": stats["num_ucb_calls"],
                 "num_rollouts": stats["num_rollouts"],
-                "num_simulations_run": self.num_simulations,
+                "num_simulations_run": stats["num_simulations_run"],
                 "planning_horizon_used": depth_bound,
                 "root_visit_counts": {
                     a: n.visit_count for a, n in root.children.items()
@@ -296,9 +310,21 @@ class RockSamplePOMCPAgent:
     # ------------------------------------------------------------------
 
     def _depth_bound(self) -> int:
+        """Depth bound for this decision, and whether a step survives it.
+
+        Sets ``self._leaf_has_continuation``. When the bound comes from
+        ``planning_horizon`` the episode continues past the leaf, so the
+        guaranteed "exit on the next step" continuation really is available.
+        When the episode's step cap is what bound the tree, the search has
+        already spent every remaining step reaching that leaf and no exit is
+        possible, so crediting one would inflate every non-terminating branch
+        by ``exit_reward + move_cost``.
+        """
         if not self.budget_aware_horizon:
+            self._leaf_has_continuation = True
             return self.planning_horizon
         remaining = int(self.env.max_steps) - self._t
+        self._leaf_has_continuation = remaining > self.planning_horizon
         return max(1, min(self.planning_horizon, remaining))
 
     def _simulate(self, node, quals, pos, sampled, bel, depth, depth_bound, stats) -> float:
@@ -330,8 +356,6 @@ class RockSamplePOMCPAgent:
                 child = RockSamplePOMCPNode()
                 node.obs_children[key] = child
                 stats["num_history_nodes"] += 1
-            if self.belief_mode == "particle":
-                child.particles.append(tuple(int(q) for q in quals))
             total = reward + self.discount * self._simulate(
                 child, quals, pos2, sampled2, bel2, depth + 1, depth_bound, stats
             )
@@ -461,15 +485,19 @@ class RockSamplePOMCPAgent:
             return int(actions[self._rng.randint(0, len(actions))])
 
         if self.rollout_policy == "hindsight":
-            scores = np.asarray(quals, dtype=float)
-            check_floor = self.ROLLOUT_CHECK_ACCURACY_PREFERRED
-        else:
-            scores = bel
-            check_floor = (
-                self.ROLLOUT_CHECK_ACCURACY_APPROACH
-                if self.rollout_policy == "approach"
-                else self.ROLLOUT_CHECK_ACCURACY_PREFERRED
-            )
+            # A state-conditioned rollout already knows every rock's quality, so
+            # no rock is ever unresolved and checking has no value. This policy
+            # therefore emits only moves, samples, and exit, which is precisely
+            # the ablation's point: it is what a rollout that reads the particle
+            # instead of the belief degenerates into.
+            return self._hindsight_action(quals, pos, sampled)
+
+        scores = bel
+        check_floor = (
+            self.ROLLOUT_CHECK_ACCURACY_APPROACH
+            if self.rollout_policy == "approach"
+            else self.ROLLOUT_CHECK_ACCURACY_PREFERRED
+        )
 
         for k in range(env.num_rocks):
             if (
@@ -516,12 +544,37 @@ class RockSamplePOMCPAgent:
                 best_k = k
 
         if best_k is not None:
-            if self.rollout_policy == "hindsight":
-                return _move_toward_common(env, pos, self._rock_positions[best_k])
             if self._check_accuracy(pos, best_k) >= check_floor:
                 return env.NUM_MOVE_ACTIONS + best_k
             return _move_toward_common(env, pos, self._rock_positions[best_k])
 
+        return env.exit_action
+
+    def _hindsight_action(self, quals, pos, sampled) -> int:
+        """State-conditioned rollout, retained as a documented ablation.
+
+        It reads the sampled quality vector rather than the simulated belief,
+        which is what Silver and Veness's convergence argument rules out and
+        what reproduces the Flat-MC pathology. It never checks, because a
+        policy that already knows every quality has nothing to learn from a
+        check.
+        """
+        env = self.env
+        for k in range(env.num_rocks):
+            if not sampled[k] and self._rock_positions[k] == pos and quals[k] == 1:
+                return env.sample_action
+
+        best_k, best_dist = None, float("inf")
+        for k in range(env.num_rocks):
+            if sampled[k] or quals[k] != 1:
+                continue
+            dist = abs(pos[0] - self._rock_positions[k][0]) + abs(
+                pos[1] - self._rock_positions[k][1]
+            )
+            if dist < best_dist:
+                best_dist, best_k = dist, k
+        if best_k is not None:
+            return _move_toward_common(env, pos, self._rock_positions[best_k])
         return env.exit_action
 
     def _leaf_estimate(self, pos, bel, sampled) -> float:
@@ -535,6 +588,10 @@ class RockSamplePOMCPAgent:
         inconsistency there is what produced the exit-at-step-one collapse.
         """
         if self.leaf_value == "zero":
+            return 0.0
+        if not self._leaf_has_continuation:
+            # The episode's step cap bound the tree, so nothing follows this
+            # leaf and there is no continuation to value.
             return 0.0
         if self.leaf_value == "greedy_belief":
             return self._greedy_belief_value(pos, bel, sampled)

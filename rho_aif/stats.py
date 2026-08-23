@@ -5,6 +5,8 @@ Provides bootstrap confidence intervals, effect sizes, and
 multiple-comparison correction for rigorous reporting.
 """
 
+import math
+
 import numpy as np
 from typing import List, Tuple, Dict
 
@@ -46,16 +48,35 @@ def cohens_d(group1: np.ndarray, group2: np.ndarray) -> float:
 
 def holm_bonferroni(p_values: List[float], alpha: float = 0.05) -> List[bool]:
     """
-    Apply Holm-Bonferroni correction for multiple comparisons.
+    Apply the Holm-Bonferroni step-down correction for multiple comparisons.
 
-    Returns list of booleans indicating significance after correction.
+    Returns a list of booleans indicating significance after correction.
+
+    NaN p-values are excluded from the family rather than ranked with it. A NaN
+    arises when a test is undefined, which here means both arms had zero
+    variance and identical means, so the comparison carries no evidence either
+    way. Ranking NaN inside the family was a real defect: NaN fails the
+    ``p <= alpha/(n-rank)`` test, and the step-down breaks on the first
+    failure, so a NaN landing early in the sort order silently marked every
+    comparison after it non-significant regardless of its p-value. Where NaN
+    sorted was an artifact of Python's sort stability, so the number of
+    suppressed comparisons varied with input order. Excluded entries are
+    reported as not significant, which is correct, and they no longer inflate
+    the family size ``n`` either.
     """
     n = len(p_values)
-    indexed = sorted(enumerate(p_values), key=lambda x: x[1])
     significant = [False] * n
 
-    for rank, (orig_idx, p) in enumerate(indexed):
-        adjusted_alpha = alpha / (n - rank)
+    valid = [
+        (i, float(p)) for i, p in enumerate(p_values)
+        if p is not None and not math.isnan(float(p))
+    ]
+    m = len(valid)
+    if m == 0:
+        return significant
+
+    for rank, (orig_idx, p) in enumerate(sorted(valid, key=lambda x: x[1])):
+        adjusted_alpha = alpha / (m - rank)
         if p <= adjusted_alpha:
             significant[orig_idx] = True
         else:

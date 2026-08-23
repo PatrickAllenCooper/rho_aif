@@ -120,9 +120,20 @@ class TestSearchTreeIsReal:
 
     @pytest.mark.parametrize("n", [7, 1000, 4096])
     def test_num_simulations_is_not_capped(self, n):
+        """num_simulations_run must be counted in the search loop.
+
+        The historical bug it guards against, mcts_efe.py's
+        `min(self.num_simulations, 50)`, was applied at the use site, not in
+        __init__. A diagnostic that echoed the constructor argument would be
+        blind to exactly that shape, so this asserts the counter is a counter.
+        """
         env = make_env()
         _, diag = root_diagnostics(env, num_simulations=n)
         assert diag["num_simulations_run"] == n
+        # A counter, not an echo: it must be consistent with the other
+        # per-simulation counters, each of which is genuinely incremented.
+        assert diag["num_rollouts"] <= diag["num_simulations_run"]
+        assert diag["num_ucb_calls"] + diag["num_rollouts"] >= diag["num_simulations_run"]
 
     def test_exploration_constant_changes_root_visit_distribution(self):
         env = make_env()
@@ -174,15 +185,22 @@ class TestSearchTreeIsReal:
         def probe(**override):
             kwargs = dict(base)
             kwargs.update(override)
-            # budget_aware_horizon only bites near the step cap.
+            # budget_aware_horizon only bites near the step cap, so the probe
+            # is taken there. It reads the same search-behaviour triple as
+            # every other knob rather than planning_horizon_used, which is a
+            # verbatim echo of _depth_bound() and would make the assertion
+            # circular: it would prove only that _depth_bound branches on the
+            # flag, never that the bound reaches the search.
             if knob == "budget_aware_horizon":
                 np.random.seed(0)
                 env.reset(seed=3)
                 agent = RockSamplePOMCPAgent(env, **kwargs)
                 agent.reset()
                 agent._t = env.max_steps - 2
-                agent.select_action()
-                return agent.diagnostics["planning_horizon_used"]
+                action = agent.select_action()
+                diag = agent.diagnostics
+                return (action, tuple(sorted(diag["root_visit_counts"].items())),
+                        diag["max_tree_depth"])
             action, diag = root_diagnostics(env, **kwargs)
             return (action, tuple(sorted(diag["root_visit_counts"].items())),
                     diag["max_tree_depth"])
@@ -473,15 +491,60 @@ class TestCorrectness:
         agent = RockSamplePOMCPAgent(env, num_simulations=64, exploration_constant=5.0,
                                      rollout_policy="approach")
         result = run_episode(agent, env, seed=43)
+        # steps <= max_steps is unfalsifiable, since run_episode bounds its own
+        # loop by max_steps. Asserting the episode actually TERMINATED is the
+        # real condition, and it is what the Flat-MC baseline failed on the two
+        # large instances while every loop-bound assertion stayed green.
+        assert not result["truncated"], f"truncated at the step cap on {grid_size}x{num_rocks}"
         assert result["steps"] <= env.max_steps
 
-    def test_subtree_reuse_runs_and_changes_nothing_structural(self):
+    def test_subtree_reuse_actually_reuses(self):
+        """reuse_subtree was the one knob with no behavioural coverage.
+
+        Both mutations that make it inert, gutting _advance_root and hard-wiring
+        the flag to False, left the whole suite green. This asserts the observable
+        consequence: with reuse on, the retained root carries visits accumulated
+        before the real action was taken, so its total exceeds the simulation
+        budget of the decision that follows.
+        """
         env = make_env()
         np.random.seed(0)
+        env.reset(seed=47)
         agent = RockSamplePOMCPAgent(env, num_simulations=256, exploration_constant=5.0,
                                      rollout_policy="approach", reuse_subtree=True)
-        result = run_episode(agent, env, seed=47)
-        assert result["steps"] >= 1
+        agent.reset()
+        action = agent.select_action()
+        previous_root = agent._root
+        obs, _r, term, trunc, _i = env.step(action)
+        agent.update(action, obs)
+        assert not (term or trunc)
+
+        # The retained root must be the child under the realised
+        # (action, observation), not simply the old root left in place. A
+        # no-op _advance_root also leaves a non-None root with carried visits,
+        # so identity is what distinguishes reuse from staleness.
+        expected = previous_root.obs_children.get((action, obs))
+        assert expected is not None, "no history child for the realised transition"
+        assert agent._root is expected, "root did not advance to the realised child"
+        assert agent._root is not previous_root
+
+        carried = agent._root.visit_count
+        assert carried > 0
+        agent.select_action()
+        assert agent._root.visit_count > agent.num_simulations, (
+            "root visits did not carry over, so the subtree was rebuilt")
+
+    def test_subtree_reuse_off_rebuilds_the_root(self):
+        env = make_env()
+        np.random.seed(0)
+        env.reset(seed=47)
+        agent = RockSamplePOMCPAgent(env, num_simulations=256, exploration_constant=5.0,
+                                     rollout_policy="approach", reuse_subtree=False)
+        agent.reset()
+        action = agent.select_action()
+        obs, *_ = env.step(action)
+        agent.update(action, obs)
+        assert agent._root is None
 
     def test_legal_action_mask_excludes_wall_bumps_and_sampled_rocks(self):
         env = make_env()

@@ -220,10 +220,13 @@ def run_sweep(
     obs_models = get_obs_models(env)
     config = make_env_config(env)
 
-    # w = 5 is the weight the manuscript quotes for the tuned Planning+IG
-    # comparison, so it is added explicitly rather than left between grid
-    # points, and both variants are run there.
-    w_grid = sorted(set(list(make_log_w_grid(0.0, 100.0, n_grid)) + [5.0]))
+    # The bare 12-point log grid jumps from 3.16 straight to 10, so it never
+    # samples the region where distractor spending actually begins and the
+    # onset can only be reported as "somewhere below 10". Refinement points at
+    # 3.5, 4.0, 4.5 and 5.0 bracket the onset directly, and w = 5 is also the
+    # weight the manuscript quotes for the tuned Planning+IG comparison.
+    ONSET_REFINEMENT = [3.5, 4.0, 4.5, 5.0]
+    w_grid = sorted(set(list(make_log_w_grid(0.0, 100.0, n_grid)) + ONSET_REFINEMENT))
     rows: List[dict] = []
     episodes_by_cell: Dict[tuple, List[dict]] = {}
 
