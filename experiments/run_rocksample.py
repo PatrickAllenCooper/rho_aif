@@ -193,7 +193,12 @@ def run_rocksample_experiment(
             "mean_checks": np.mean(checks),
             "mean_steps": np.mean([r["steps"] for r in episode_results]),
             "truncation_rate": float(np.mean([r["truncated"] for r in episode_results])),
-            "mean_planning_ms": dt * 1000.0 / max(
+            # End-to-end wall clock per environment step, which includes the
+            # agent's planning plus environment stepping and belief update.
+            # Deliberately NOT named mean_planning_ms: run_rocksample_pomcp.py
+            # uses that name for pure in-agent planning time measured by the
+            # agent itself, and the two are not comparable.
+            "mean_wallclock_ms_per_step": dt * 1000.0 / max(
                 1, sum(r["steps"] for r in episode_results)
             ),
             "time_s": dt,

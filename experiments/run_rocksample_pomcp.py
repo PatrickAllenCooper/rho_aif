@@ -42,7 +42,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from rho_aif.agents.rocksample_pomcp import RockSamplePOMCPAgent
 from rho_aif.stats import holm_bonferroni, seed_level_ttest, seed_means
 from run_experiment import EXTENDED_SEEDS, SEEDS
-from run_rocksample import ROCKSAMPLE_CONFIGS, make_rocksample_env
+from run_rocksample import (
+    ROCKSAMPLE_CONFIGS,
+    compute_rocksample_stats,
+    make_rocksample_env,
+)
 
 # Disjoint from SEEDS and EXTENDED_SEEDS. Configuration is selected on these
 # and frozen before the evaluation batteries run.
@@ -365,15 +369,46 @@ BUDGET_PROTOCOL = {
 }
 
 
+
+def _write_stats(episodes_by_instance: Dict[str, Dict[str, List[dict]]], csv_path: str):
+    """Pairwise seed-level Welch tests per instance, Holm-Bonferroni corrected
+    within instance, matching compute_rocksample_stats' convention so the POMCP
+    battery carries the same uncertainty reporting as every other RockSample
+    table.
+
+    Asserts the episode results actually arrived. The failure mode this guards
+    against is silent: statistics get computed in memory and then dropped
+    before reaching disk, which happened independently in six scripts here.
+    """
+    frames = []
+    for instance, by_agent in episodes_by_instance.items():
+        assert by_agent, f"no episode results retained for {instance}"
+        for label, eps in by_agent.items():
+            assert eps and "seed" in eps[0], f"episode results for {label} lack seed tags"
+        frames.append(compute_rocksample_stats(by_agent, instance))
+    if not frames:
+        return
+    stats_csv = csv_path.replace(".csv", "_stats.csv")
+    os.makedirs(os.path.dirname(os.path.abspath(stats_csv)), exist_ok=True)
+    pd.concat(frames, ignore_index=True).to_csv(stats_csv, index=False)
+    print(f"Statistics saved to {stats_csv}", flush=True)
+
+
 def run_budget_sweep(out="results/results_rocksample_pomcp_budget.csv", cfg=None,
                      time_ceiling_hours=DEFAULT_TIME_CEILING_HOURS):
     cfg = cfg or frozen_config()
     print(f"Frozen configuration: {cfg}", flush=True)
     rows: List[dict] = []
+    # Episode-level results are retained per instance so the companion
+    # statistics file can be written. Dropping them here is the exact
+    # "computed then discarded" defect that recurred across six scripts in
+    # this repository, so it is guarded by an assertion below.
+    episodes_by_instance: Dict[str, Dict[str, List[dict]]] = {}
 
     for instance, proto in BUDGET_PROTOCOL.items():
         print(f"\n{instance}", flush=True)
-        row, _ = evaluate(
+        episodes_by_instance.setdefault(instance, {})
+        row, eps = evaluate(
             lambda env, seed: _RolloutOnlyAgent(
                 env, rollout_policy=cfg["rollout_policy"], seed=seed
             ),
@@ -385,10 +420,11 @@ def run_budget_sweep(out="results/results_rocksample_pomcp_budget.csv", cfg=None
             time_ceiling_hours=time_ceiling_hours,
         )
         rows.append(row)
+        episodes_by_instance[instance][row["agent"]] = eps
         _checkpoint(rows, out)
 
         for n_sims in proto["budgets"]:
-            row, _ = evaluate(
+            row, eps = evaluate(
                 lambda env, seed, n=n_sims: RockSamplePOMCPAgent(
                     env, num_simulations=n, seed=seed, **cfg
                 ),
@@ -400,8 +436,10 @@ def run_budget_sweep(out="results/results_rocksample_pomcp_budget.csv", cfg=None
                 time_ceiling_hours=time_ceiling_hours,
             )
             rows.append(row)
+            episodes_by_instance[instance][row["agent"]] = eps
             _checkpoint(rows, out)
 
+    _write_stats(episodes_by_instance, out)
     print(f"\nBudget sweep saved to {out}")
     return pd.DataFrame(rows)
 
@@ -433,10 +471,11 @@ def run_sensitivity(out="results/results_rocksample_pomcp_sensitivity.csv", cfg=
     ]
 
     rows: List[dict] = []
+    episodes: Dict[str, List[dict]] = {}
     for label, override in variants:
         merged = dict(cfg)
         merged.update(override)
-        row, _ = evaluate(
+        row, eps = evaluate(
             lambda env, seed, m=merged: RockSamplePOMCPAgent(
                 env, num_simulations=SENSITIVITY_SIMULATIONS, seed=seed, **m
             ),
@@ -449,10 +488,11 @@ def run_sensitivity(out="results/results_rocksample_pomcp_sensitivity.csv", cfg=
             time_ceiling_hours=time_ceiling_hours,
         )
         rows.append(row)
+        episodes[row["agent"]] = eps
         _checkpoint(rows, out)
 
     for policy in ("preferred", "approach", "random"):
-        row, _ = evaluate(
+        row, eps = evaluate(
             lambda env, seed, p=policy: _RolloutOnlyAgent(env, rollout_policy=p, seed=seed),
             SENSITIVITY_INSTANCE,
             f"Rollout only ({policy})",
@@ -463,8 +503,10 @@ def run_sensitivity(out="results/results_rocksample_pomcp_sensitivity.csv", cfg=
             time_ceiling_hours=time_ceiling_hours,
         )
         rows.append(row)
+        episodes[row["agent"]] = eps
         _checkpoint(rows, out)
 
+    _write_stats({SENSITIVITY_INSTANCE: episodes}, out)
     print(f"\nSensitivity saved to {out}")
     return pd.DataFrame(rows)
 
