@@ -350,9 +350,11 @@ class RockSampleFlatMCAgent:
          genuine tree-search POMCP in ``rho_aif/agents/pomcp.py`` exhibits on
          the observe-then-commit environments.
 
-    A genuine POMCP baseline for RockSample (search tree, UCB1 node selection,
-    particle-filter belief propagation through the tree) is left to future work;
-    this agent is retained as a weak reference point under an accurate name.
+    A genuine POMCP baseline for RockSample now exists as
+    ``rho_aif.agents.rocksample_pomcp.RockSamplePOMCPAgent`` (search tree, UCB1
+    node selection, mean backup, and an optional particle filter). This agent
+    is retained as a weak reference point under an accurate name, and its
+    numbers should not be read as evidence about POMCP.
     """
 
     def __init__(self, env, num_simulations: int = 1000, rollout_depth: int = 30):

@@ -20,7 +20,10 @@ from rho_aif.agents.rocksample_agents import (
     RockSampleFlatMCAgent,
     RockSampleTreeSearchAgent,
 )
-from rho_aif.agents.rocksample_pomcp import RockSamplePOMCPAgent
+from rho_aif.agents.rocksample_pomcp import (
+    RockSamplePOMCPAgent,
+    RockSampleRolloutOnlyAgent,
+)
 
 __all__ = [
     "BaseAgent",
@@ -45,4 +48,5 @@ __all__ = [
     "RockSampleFlatMCAgent",
     "RockSampleTreeSearchAgent",
     "RockSamplePOMCPAgent",
+    "RockSampleRolloutOnlyAgent",
 ]

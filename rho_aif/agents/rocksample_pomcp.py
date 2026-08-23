@@ -689,3 +689,55 @@ class RockSamplePOMCPAgent:
         if self._root is None:
             return
         self._root = self._root.obs_children.get((action, observation))
+
+
+class RockSampleRolloutOnlyAgent:
+    """RockSamplePOMCPAgent's rollout policy run standalone, with no search tree.
+
+    Every POMCP row should be reported alongside this agent at the same
+    protocol. On RockSample the rollout policy carries most of the score, so
+    without the companion row a reader cannot tell how much the search tree
+    adds, and the POMCP number can be dismissed in either direction.
+
+    It shares the POMCP agent's belief update and rollout policy exactly, so
+    the comparison isolates the tree and nothing else.
+    """
+
+    def __init__(self, env, rollout_policy: str = "approach", seed: Optional[int] = None):
+        if rollout_policy == "hindsight":
+            # The hindsight policy reads the sampled quality vector, which a
+            # standalone agent does not have and must not have.
+            raise ValueError("hindsight is a tree ablation, not a standalone policy")
+        self._inner = RockSamplePOMCPAgent(
+            env,
+            num_simulations=1,
+            rollout_policy=rollout_policy,
+            seed=seed,
+            collect_diagnostics=False,
+        )
+        self.env = env
+        self.rollout_policy = rollout_policy
+        self.belief = self._inner.belief
+        self.diagnostics_history: List[Dict] = []
+
+    def reset(self):
+        self._inner.reset()
+        self.belief = self._inner.belief
+        self.diagnostics_history = []
+
+    def select_action(self) -> int:
+        t0 = time.perf_counter()
+        self._inner._ensure_rock_positions()
+        action = self._inner._rollout_action(
+            None,
+            self.env._agent_pos,
+            self._inner.belief.rock_sampled,
+            self._inner.belief.rock_beliefs,
+        )
+        self.diagnostics_history.append(
+            {"planning_ms": (time.perf_counter() - t0) * 1000.0, "max_tree_depth": 0}
+        )
+        return int(action)
+
+    def update(self, action: int, observation: int):
+        self._inner.update(action, observation)

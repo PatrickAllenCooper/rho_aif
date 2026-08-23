@@ -13,7 +13,10 @@ import time
 import os
 
 from rho_aif.environments.rocksample import RockSampleEnv
-from rho_aif.agents.rocksample_pomcp import RockSamplePOMCPAgent
+from rho_aif.agents.rocksample_pomcp import (
+    RockSamplePOMCPAgent,
+    RockSampleRolloutOnlyAgent,
+)
 from rho_aif.agents.rocksample_agents import (
     RockSampleGreedyAgent,
     RockSampleEFEAgent,
@@ -110,7 +113,7 @@ def run_rocksample_episode(agent, env, seed=None, max_steps=100):
 
 def run_rocksample_experiment(
     config_name="RS[5,3]", num_episodes=500, seeds=None,
-    override_depth=None, csv_name=None, pomcp_config=None,
+    override_depth=None, csv_name=None, extra_agents=None,
 ):
     if seeds is None:
         seeds = SEEDS
@@ -143,11 +146,24 @@ def run_rocksample_experiment(
         (f"EFE w=1 (d={td})",
          lambda seed: RockSampleTreeSearchAgent(env, info_weight=1.0, max_depth=td)),
     ]
-    if pomcp_config is not None:
-        agent_configs.append((
-            pomcp_config["label"],
-            lambda seed: RockSamplePOMCPAgent(env, seed=seed, **pomcp_config["kwargs"]),
-        ))
+    # extra_agents is a list of specs, each {"label", "kind", "kwargs"}. Two
+    # kinds are supported. "pomcp" builds a RockSamplePOMCPAgent. "rollout_only"
+    # builds that agent's rollout policy as a standalone agent with no search
+    # tree, which is what makes "how much does the tree add over its own
+    # rollout" answerable at the same protocol as every other row.
+    for spec in (extra_agents or []):
+        if spec["kind"] == "pomcp":
+            agent_configs.append((
+                spec["label"],
+                lambda seed, sp=spec: RockSamplePOMCPAgent(env, seed=seed, **sp["kwargs"]),
+            ))
+        elif spec["kind"] == "rollout_only":
+            agent_configs.append((
+                spec["label"],
+                lambda seed, sp=spec: RockSampleRolloutOnlyAgent(env, seed=seed, **sp["kwargs"]),
+            ))
+        else:
+            raise ValueError(f"unknown extra agent kind {spec['kind']!r}")
 
     results = []
     all_episode_results = {}
@@ -304,18 +320,45 @@ def run_depth_check():
     )
 
 
+HEADLINE_POMCP_SIMULATIONS = 2048
+
+
+def headline_extra_agents(tuning_csv="results/results_rocksample_pomcp_tuning.csv"):
+    """The POMCP row and its rollout-only companion, at the frozen configuration.
+
+    The configuration is read back off the tuning CSV rather than hardcoded, so
+    every reported POMCP number stays traceable to the artifact that selected
+    it. Returns an empty list when the tuning CSV is absent, which keeps the
+    canonical battery reproducible without it.
+    """
+    import os
+    if not os.path.exists(tuning_csv):
+        print(f"  (no {tuning_csv}; skipping POMCP rows)")
+        return []
+    from run_rocksample_pomcp import frozen_config
+    cfg = frozen_config(tuning_csv)
+    return [
+        {"label": f"POMCP ({HEADLINE_POMCP_SIMULATIONS} sims)", "kind": "pomcp",
+         "kwargs": {"num_simulations": HEADLINE_POMCP_SIMULATIONS, **cfg}},
+        {"label": f"Rollout only ({cfg['rollout_policy']})", "kind": "rollout_only",
+         "kwargs": {"rollout_policy": cfg["rollout_policy"]}},
+    ]
+
+
 if __name__ == "__main__":
     import sys
 
     cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
+    with_pomcp = "--no-pomcp" not in sys.argv
+    extra = headline_extra_agents() if with_pomcp else []
     if cmd == "depth-check":
         run_depth_check()
     elif cmd in ROCKSAMPLE_CONFIGS:
         proto = ROCKSAMPLE_PROTOCOL[cmd]
-        run_rocksample_experiment(config_name=cmd, **proto)
+        run_rocksample_experiment(config_name=cmd, extra_agents=extra, **proto)
     else:
         for config_name in ROCKSAMPLE_CONFIGS:
             proto = ROCKSAMPLE_PROTOCOL[config_name]
-            run_rocksample_experiment(config_name=config_name, **proto)
+            run_rocksample_experiment(config_name=config_name, extra_agents=extra, **proto)
             print()
         run_depth_check()
