@@ -41,7 +41,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from rho_aif.agents.rocksample_pomcp import (
     RockSamplePOMCPAgent,
-    RockSampleRolloutOnlyAgent as _RolloutOnlyAgent,
+    RockSampleRolloutOnlyAgent,
 )
 from rho_aif.stats import holm_bonferroni, seed_level_ttest, seed_means
 from run_experiment import EXTENDED_SEEDS, SEEDS
@@ -427,7 +427,7 @@ def run_budget_sweep(out="results/results_rocksample_pomcp_budget.csv", cfg=None
         print(f"\n{instance}", flush=True)
         episodes_by_instance.setdefault(instance, {})
         row, eps = evaluate(
-            lambda env, seed: _RolloutOnlyAgent(
+            lambda env, seed: RockSampleRolloutOnlyAgent(
                 env, rollout_policy=cfg["rollout_policy"], seed=seed
             ),
             instance,
@@ -511,7 +511,7 @@ def run_sensitivity(out="results/results_rocksample_pomcp_sensitivity.csv", cfg=
 
     for policy in ("preferred", "approach", "random"):
         row, eps = evaluate(
-            lambda env, seed, p=policy: _RolloutOnlyAgent(env, rollout_policy=p, seed=seed),
+            lambda env, seed, p=policy: RockSampleRolloutOnlyAgent(env, rollout_policy=p, seed=seed),
             SENSITIVITY_INSTANCE,
             f"Rollout only ({policy})",
             SENSITIVITY_EPISODES,
@@ -529,9 +529,72 @@ def run_sensitivity(out="results/results_rocksample_pomcp_sensitivity.csv", cfg=
     return pd.DataFrame(rows)
 
 
+# ----------------------------------------------------------------------
+# Stage 4: does the frozen planning horizon handicap the baseline?
+# ----------------------------------------------------------------------
+
+HORIZON_INSTANCE = "RS[5,3]"
+HORIZON_EPISODES = 100
+HORIZON_GRID = [10, 15, 25, 40]
+HORIZON_BUDGETS = [2048, 16384]
+
+
+def run_horizon_check(out="results/results_rocksample_pomcp_horizon.csv", cfg=None,
+                      time_ceiling_hours=DEFAULT_TIME_CEILING_HOURS):
+    """A disclosed post-hoc diagnostic, not a re-tuning.
+
+    The budget sweep shows POMCP getting *worse* with more simulations, and the
+    behavioural trace shows why it might: as the budget grows, checks, steps
+    and good rocks all fall, so the tree converges toward exiting early. One
+    explanation is that the frozen planning horizon is shorter than the
+    collection tour its own rollout policy plays, so the tree cannot see the
+    tour's value and more simulations only sharpen a conclusion that is wrong
+    because it is truncated.
+
+    That is exactly the "you handicapped the baseline" objection, so it is
+    measured rather than argued. This runs on the canonical evaluation seeds
+    and is therefore NOT eligible to re-select the frozen configuration, which
+    was fixed on disjoint tuning seeds. Whatever it shows is reported as a
+    post-hoc diagnostic alongside the predeclared row.
+    """
+    cfg = cfg or frozen_config()
+    rows: List[dict] = []
+    episodes: Dict[str, List[dict]] = {}
+
+    row, eps = evaluate(
+        lambda env, seed: RockSampleRolloutOnlyAgent(
+            env, rollout_policy=cfg["rollout_policy"], seed=seed),
+        HORIZON_INSTANCE,
+        f"Rollout only ({cfg['rollout_policy']})",
+        HORIZON_EPISODES, SEEDS,
+        extra={"num_simulations": 0, "stage": "horizon", "planning_horizon": 0, **{
+            k: v for k, v in cfg.items() if k != "planning_horizon"}},
+        time_ceiling_hours=time_ceiling_hours,
+    )
+    rows.append(row); episodes[row["agent"]] = eps; _checkpoint(rows, out)
+
+    for n_sims in HORIZON_BUDGETS:
+        for horizon in HORIZON_GRID:
+            merged = dict(cfg); merged["planning_horizon"] = horizon
+            row, eps = evaluate(
+                lambda env, seed, m=merged, n=n_sims: RockSamplePOMCPAgent(
+                    env, num_simulations=n, seed=seed, **m),
+                HORIZON_INSTANCE,
+                f"POMCP (H={horizon}, {n_sims} sims)",
+                HORIZON_EPISODES, SEEDS,
+                extra={"num_simulations": n_sims, "stage": "horizon", **merged},
+                time_ceiling_hours=time_ceiling_hours,
+            )
+            rows.append(row); episodes[row["agent"]] = eps; _checkpoint(rows, out)
+
+    _write_stats({HORIZON_INSTANCE: episodes}, out)
+    print(f"\nHorizon check saved to {out}")
+    return pd.DataFrame(rows)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("stage", choices=["tuning", "budget", "sensitivity", "all"])
+    parser.add_argument("stage", choices=["tuning", "budget", "sensitivity", "horizon", "all"])
     parser.add_argument("--episodes", type=int, default=None)
     parser.add_argument("--time-ceiling", type=float, default=DEFAULT_TIME_CEILING_HOURS)
     args = parser.parse_args()
@@ -542,3 +605,5 @@ if __name__ == "__main__":
         run_budget_sweep(time_ceiling_hours=args.time_ceiling)
     if args.stage in ("sensitivity", "all"):
         run_sensitivity(time_ceiling_hours=args.time_ceiling)
+    if args.stage in ("horizon", "all"):
+        run_horizon_check(time_ceiling_hours=args.time_ceiling)
