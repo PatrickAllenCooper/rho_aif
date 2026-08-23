@@ -706,7 +706,11 @@ Closes the hole left when the mislabelled `POMCP` baseline was relabelled `Flat-
 Three design points were established by measurement during planning, not assumed, and each corrects a plausible-looking choice that fails:
 
 1. `RockSampleEnv.exit_action` is position-independent, so `exit_reward + move_cost` is an unconditional zero-variance outside option at every step. The leaf value at the depth bound must be that same continuation value. With a leaf value of zero the agent exits at step one in every configuration tested. `leaf_value="zero"` is retained with a test asserting the collapse, as a regression witness.
-2. The rollout policy must read the simulated belief, never the sampled quality particle. A hindsight rollout reproduces the Flat-MC pathology exactly, at 30.8 checks per episode and -3.27 reward against 11.10 for a history-measurable rollout, and it breaks the history-measurability condition POMCP's convergence argument assumes.
+2. The rollout policy must read the simulated belief, never the sampled quality particle, because a state-conditioned rollout breaks the history-measurability condition POMCP's convergence argument assumes.
+
+   **[Correction, 2026-08-23, later the same day]** An earlier version of this entry claimed a hindsight rollout "reproduces the Flat-MC pathology exactly, at 30.8 checks per episode and -3.27 reward". Those numbers came from a throwaway prototype built during planning, not from the shipped agent, and I propagated them into this ledger without rerunning them. The shipped agent's own sensitivity battery (`results_rocksample_pomcp_sensitivity.csv`, RS[5,3], 100 episodes x 5 canonical seeds, 2048 simulations) measures the hindsight variant at **+12.17 +/- 0.37 reward with 14.6 checks and 23.5 steps**, against the frozen configuration's +12.81 +/- 0.43 with 3.0 checks and 7.5 steps. The two are not significantly different on reward (seed-level Welch p = 0.29).
+
+   The accurate claim is directional, not catastrophic: a hindsight rollout drives the tree to check roughly five times more often and take three times more steps, for no reward gain. That is the check-spam signature, without the negative-reward collapse the prototype showed. This is the same prose-drift failure the project keeps hitting, committed by me, in the very entry describing a fix for a mislabelled baseline.
 3. **Found during implementation, not in the design**: the literature's preferred-action heuristic is under-specified for this parameterisation. It does not say whether to spend a check at long range or walk closer first. The long-range reading scores +9.24 standalone, below the unconditional exit value of +9.50, so a POMCP built on it correctly exits immediately and its tree never grows past depth 5. The walk-closer reading scores +17.21 standalone and yields a tree reaching depth 14 that responds to simulation budget (+14.25 at 1024 simulations, +16.45 at 4096). Rather than pick by hand after seeing that, `rollout_policy` was added to the predeclared tuning sweep.
 
 An initial rollout implementation also had a real bug worth recording: it never wrote off rocks it believed were bad, so it checked forever and hit the step cap, scoring -11.71. Fixed with a write-off threshold, which is what brought the standalone policies in line with the design prototype's measurements.
@@ -758,3 +762,25 @@ This is the campaign's clearest confirmation of the 9.16 thesis that instrument 
 **Refuted (3)**, recorded because reviewer error rate is part of characterising the instrument: a claim that `_tuning_score`'s normalisation is not rank-stable, a claim that rollout-only rows are stamped with parameters the agent never reads, and a claim that the fixed reference agents are unselectable for lacking new provenance columns. Each was checked against the code and did not hold.
 
 **Verdict: HOLD.** Every confirmed finding is fixed, 450/450 tests passing (up from 434), and the two evaluation batteries were relaunched under the corrected code rather than being allowed to complete under the defective version.
+
+### 9.17.6 POMCP sensitivity battery: the search tree makes RockSample worse (2026-08-23)
+
+`results/results_rocksample_pomcp_sensitivity.csv` and its companion `_stats.csv`, RS[5,3], 100 episodes x the 5 canonical seeds, 2048 simulations, frozen configuration c=5 / H=10 / value / approach.
+
+**The headline finding is negative and it should be reported as such.** POMCP at the frozen configuration scores **+12.81 +/- 0.43**. Its own rollout policy, run standalone with no search tree at all, scores **+17.16 +/- 0.44**. The gap is 4.34 reward with seed-level Welch p = 0.000103, and it survives Holm-Bonferroni over the full 182-comparison family. The search tree is not adding value on this domain at this budget. It is subtracting it.
+
+The behavioural signature says how. POMCP takes 7.5 steps and collects 0.68 good rocks. Its rollout alone takes 13.6 steps and collects 1.48. The tree commits to exiting earlier than the policy it rolls out with. The mechanism is the position-independent exit interacting with mean (UCT) backup: exit is a zero-variance +9.50 available from any cell, while every other branch's value is a mean over simulations that UCB1 forces to include inferior actions, so the exploration that makes UCT sound is exactly what drags the alternatives below the outside option.
+
+**This is precisely why the design mandated a standalone rollout row at the same protocol.** Reporting +12.81 alone would have read as a competent baseline. Reporting it beside +17.16 shows what it actually is.
+
+**Design choices validated by measurement rather than argument.** Two configurations collapse to exactly +9.50 with zero variance, which is the unconditional exit value, confirming the reasoning that fixed them: `leaf_value="zero"` (the regression witness) and `discount=0.95`. `discount=0.99` partially collapses to +10.05. The `gamma = 1.0` and exit-valued-leaf choices are therefore evidenced, not asserted.
+
+**Two disclosures that must reach the manuscript.**
+
+1. `belief_mode="particle"`, the literal unweighted particle filter with rejection sampling, scores +12.93 +/- 0.25 against the exact-posterior default's +12.81 +/- 0.43, p = 0.81. The exact factored belief is not doing the work, which is the answer to the predictable "then it is not POMCP" objection.
+
+2. `leaf_value="greedy_belief"` scores **+14.52 +/- 0.34**, nominally 1.70 above the frozen configuration (p = 0.0148, not significant after Holm over this family). `leaf_value` was fixed by design argument and deliberately kept out of the tuning grid. A referee is entitled to say POMCP was handicapped by that choice, and the honest response is to report the row and say so rather than re-tune after seeing evaluation-seed data. Re-selecting now would contaminate the predeclared protocol, since the sensitivity battery ran on `SEEDS`, not `TUNING_SEEDS`.
+
+`no_budget_aware_horizon` is bit-identical to the frozen row on RS[5,3], as expected: at H=10 the 55-step cap is never approached, so the flag is a no-op on this instance. It is not a no-op on RS[11,11].
+
+The Holm-Bonferroni correction over this family flags 61 of 182 comparisons significant with 9 NaN cells present. Under the pre-fix helper those NaNs could have truncated the step-down (9.17.5); the corrected helper excludes them from the family instead.
