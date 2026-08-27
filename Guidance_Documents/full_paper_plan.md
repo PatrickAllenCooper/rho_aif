@@ -777,6 +777,16 @@ This is the campaign's clearest confirmation of the 9.16 thesis that instrument 
 
 **Verdict: HOLD.** Review panel round 1 launched; iteration continues until no reviewer returns below accept-with-minor-revisions.
 
+### 9.17.9 JAIR review panel rounds 1 and 2: unanimous accept-with-minor-revisions twice, conditions discharged (2026-08-27)
+
+**Protocol**: five expertise-differentiated reviewers (POMDP planning, active inference, belief-space planning, empirical methodology/statistics, senior generalist) on JAIR's real verdict scale, each instructed to verify claims against the committed CSVs and code rather than the prose, plus adversarial skeptic verification of every finding before any fix was trusted, plus an adjudicating AE. Same construction as the 9.16 mock panel, rerun from scratch against the current manuscript.
+
+**Round 1**: unanimous accept-with-minor-revisions, zero refuted findings, 30 consolidated conditions. All 30 discharged (commits through `8f5cc97`), including the full figure-aesthetic unification under `rho_aif/figstyle.py` (19 figures, one palette, no-overlap annotation with leader arrows, two stale figures caught disagreeing with their own CSVs) and the writing-style enforcement pass (no em dashes, no prose colons or semicolons).
+
+**Round 2**: unanimous accept-with-minor-revisions again, zero refuted findings, 21 conditions. The stop condition Pat set (uniform accept-with-minor-revisions or better) is met and holding across two consecutive rounds. 19 of 21 conditions discharged in `dca49fa`. The two most substantive: C1, the RockSample Holm families pooled metrics, which is anti-conservative for tie-with-best bolding because non-rejection is treated as evidence, so the producer now corrects within metric (this moved the RS[7,8] reward bold to the standalone heuristic alone); and C2, the nat/bit innocuousness claim was false on Bandit, where 0.69 sits outside the [1,2] tied bracket and the nearest measured lower weight is strictly worse.
+
+**Still open from round 2**: C15 (Navigation scaling battery lacked seed-level SEs entirely, the same computed-then-discarded species as the 9.15 systemic bug; producer fixed, rerun in progress) and C20 (the RS[11,11] horizon sweep, H=15 measured at -7.535 +/- 1.20 against H=10's +12.94, deeper horizons still running; integration lands when the sweep completes). Both close in 9.17.10 with a round-3 confirmation panel after.
+
 ### 9.17.7 Bibliography hallucination audit for JAIR submission (2026-08-27)
 
 A dedicated audit of all 68 entries in `paper/full_paper_jair.bib`, with web verification of the 13 highest-risk entries (recent additions, key/year mismatches, and the authors' own IWAI entry). **Headline: no hallucinated references.** Every entry resolves to a real paper with the stated authors, title, and venue. All 68 are cited, no citation dangles.
