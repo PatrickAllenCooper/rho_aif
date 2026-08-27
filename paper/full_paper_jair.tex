@@ -1079,7 +1079,7 @@ Figure~\ref{fig:traj} decomposes EFE within Tiger episodes. The agent commits at
 \includegraphics[width=0.78\linewidth]{figures/fig_obs_scaling.pdf}
 \caption{Observation action scaling on Diagnosis ($N{=}8$, $H{=}3$, 500 episodes). EFE's advantage over Planning grows with $K$, confirming that EFE is most valuable when the agent must choose among differentially informative observations.}
 \label{fig:obs_scaling}
-\Description{Two line plots against the number of observation actions, from 1 to 3. Left: success rates rise for all four agents, from roughly 21 to 26 percent at one action to about 97 to 100 percent for the red and purple lines, 84 percent for the blue line, and 55 percent for the gray line at three actions. Right: mean reward rises from between about minus 37 and minus 42 at one action to between about minus 6 and minus 20 at three actions, with the red line ending highest and the purple dotted line starting lowest.}
+\Description{Two line plots against the number of observation actions, from 1 to 3. In the left panel success rates rise for all four agents, from roughly 19 to 23 percent at one action to about 96 to 98 percent for the vermillion and pink lines, 83 percent for the blue line, and 55 percent for the gray line at three actions. Right: mean reward rises from between about minus 37 and minus 42 at one action to between about minus 6 and minus 20 at three actions, with the red line ending highest and the purple dotted line starting lowest.}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -1098,12 +1098,12 @@ Holding $N{=}8$ fixed on Diagnosis and varying $K$ from 1 to 3 isolates the ``wh
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.78\linewidth]{figures/fig_asymmetry_sweep.pdf}
-\caption{Reward asymmetry sweep on Tiger ($H{=}6$, 500 episodes per point). EFE and Planning adapt smoothly across three orders of magnitude in penalty. Info Gain's fixed weight produces inconsistent performance.}
+\caption{Reward asymmetry sweep on Tiger ($H{=}6$, 500 episodes per point, 5 canonical seeds). EFE and Planning adapt their listening as the penalty grows, with EFE rising from $2.7$ observations at $|R^-|{=}1$ to $5.8$ at $500$. The fixed tuned weight listens $4.37$ times at every penalty. That over-listens at low stakes, costing about $1.6$ reward against reward-only Planning at $|R^-|{=}1$, and sits marginally ahead of EFE only at the largest penalty.}
 \label{fig:sweep}
-\Description{Two line plots against penalty magnitude on a log axis from 1 to 500, with five agents per panel. Left: success rates, where the purple and orange lines hold near 100 percent, the red line stays between about 95 and 100 percent, the blue line rises from about 84 percent to near 100, the gray dashed line fluctuates around 83 to 88 percent, and the orange line dips to about 96.5 percent at the largest penalty. Right: mean reward, where all lines run flat near plus 5 except the gray line, which plunges to about minus 70 at the largest penalty, and the orange line, which drops to about minus 10.}
+\Description{Two line plots against penalty magnitude on a log axis from 1 to 500, with five agents per panel. In the left panel the pink and orange lines hold near 100 percent success, the vermillion EFE line holds near 97 percent and joins them from a penalty of 100 onward, the blue Planning line steps up from about 84 percent to join EFE at a penalty of 5, and the gray dashed Myopic line stays flat near 84 percent. In the right panel every line runs flat near plus 5 to 7 except the gray Myopic line, which falls steadily to about minus 75 at the largest penalty.}
 \end{figure}
 
-To test whether EFE's Tiger parity holds across reward scales, we sweep the penalty magnitude from $|R^-|{=}1$ to $500$ (Figure~\ref{fig:sweep}). EFE adapts its exploration depth on its own and tracks the reward-optimal strategy without reconfiguration. Info Gain collapses at low penalties, where its fixed weight of $w{=}20$, tuned at $|R^-|{=}100$, drives excessive listening.
+To test whether EFE's Tiger parity holds across reward scales, we sweep the penalty magnitude from $|R^-|{=}1$ to $500$ (Figure~\ref{fig:sweep}). EFE adapts its listening on its own, from $2.7$ observations at the smallest penalty to $5.8$ at the largest, tracking the stakes without reconfiguration. The fixed weight of $w{=}20$, tuned at $|R^-|{=}100$, listens $4.37$ times at every penalty. At low stakes that over-listening costs about $1.6$ reward against reward-only Planning. At the largest penalty the fixed weight sits marginally ahead of EFE ($4.61$ against $4.23$), so the case for adaptation is robustness across the sweep rather than uniform dominance.
 
 \subsection{Belief evolution}
 \label{app:tw_belief}
