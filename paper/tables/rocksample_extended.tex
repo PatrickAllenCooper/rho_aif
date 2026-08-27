@@ -2,7 +2,9 @@
 \begin{table}[ht]
 \centering
 \caption{RockSample extended results: full agent roster including
- a flat one-ply Monte Carlo (Flat-MC) baseline on every instance and Planning+IG at
+ a flat one-ply Monte Carlo (Flat-MC) reference, the genuine POMCP at
+ its tuned frozen configuration, POMCP's rollout policy run
+ standalone (Rollout only), and Planning+IG at
  both $w{=}5$ and $w{=}10$. Steps and checks are episode means.
  RS[5,3]/RS[7,4]: 500 episodes $\times$ 10 seeds. RS[7,8]/RS[11,11]:
  100 episodes $\times$ 5 seeds.}
@@ -12,37 +14,45 @@
 \toprule
 Instance & Agent & Steps & Checks & Good & Bad & Reward \\
 \midrule
-\multirow{6}{*}{RS[5,3]}
+\multirow{8}{*}{RS[5,3]}
  & Greedy & $12.00$ & $0.00$ & $1.49$ & $1.51$ & $+3.71 \pm 0.26$ \\
  & Flat-MC (1000) & $51.00$ & $20.69$ & $1.22$ & $0.03$ & $-9.92 \pm 0.20$ \\
+ & POMCP (2048 sims) & $7.47$ & $2.97$ & $0.68$ & $0.03$ & $+12.74 \pm 0.11$ \\
  & Planning (d=3) & $10.38$ & $3.71$ & $0.99$ & $0.04$ & $+14.28 \pm 0.13$ \\
  & Plan+IG w=5 (d=3) & $15.81$ & $5.36$ & $1.44$ & $0.01$ & $+16.41 \pm 0.13$ \\
  & Plan+IG w=10 (d=3) & $20.35$ & $6.63$ & $1.48$ & $0.00$ & $+14.60 \pm 0.11$ \\
  & EFE w=1 (d=3) & $15.26$ & $4.79$ & $1.44$ & $0.03$ & $+16.47 \pm 0.12$ \\
+ & Rollout only (approach) & $13.48$ & $3.00$ & $1.41$ & $0.07$ & $+16.67 \pm 0.13$ \\
 \midrule
-\multirow{6}{*}{RS[7,4]}
+\multirow{8}{*}{RS[7,4]}
  & Greedy & $22.00$ & $0.00$ & $1.98$ & $2.02$ & $-1.38 \pm 0.36$ \\
  & Flat-MC (1000) & $85.97$ & $41.05$ & $1.58$ & $0.04$ & $-25.51 \pm 0.20$ \\
+ & POMCP (2048 sims) & $8.67$ & $3.46$ & $0.66$ & $0.03$ & $+12.01 \pm 0.06$ \\
  & Planning (d=4) & $10.00$ & $2.00$ & $0.95$ & $0.05$ & $+13.97 \pm 0.11$ \\
  & Plan+IG w=5 (d=4) & $24.55$ & $8.15$ & $1.69$ & $0.01$ & $+14.56 \pm 0.14$ \\
  & Plan+IG w=10 (d=4) & $26.82$ & $8.80$ & $1.78$ & $0.01$ & $+14.27 \pm 0.15$ \\
  & EFE w=1 (d=4) & $16.81$ & $5.36$ & $1.44$ & $0.01$ & $+15.96 \pm 0.15$ \\
+ & Rollout only (approach) & $23.98$ & $4.00$ & $1.88$ & $0.10$ & $+15.85 \pm 0.17$ \\
 \midrule
-\multirow{6}{*}{RS[7,8]}
+\multirow{8}{*}{RS[7,8]}
  & Greedy & $32.00$ & $0.00$ & $4.02$ & $3.98$ & $-5.60 \pm 1.03$ \\
  & Flat-MC (1000) & $129.00$ & $82.43$ & $1.51$ & $0.05$ & $-49.90 \pm 0.57$ \\
+ & POMCP (2048 sims) & $22.18$ & $11.77$ & $1.71$ & $0.10$ & $+15.07 \pm 0.45$ \\
  & Planning (d=3) & $4.51$ & $1.00$ & $0.48$ & $0.03$ & $+12.31 \pm 0.35$ \\
  & Plan+IG w=5 (d=3) & $40.27$ & $14.19$ & $3.40$ & $0.01$ & $+23.76 \pm 0.58$ \\
  & Plan+IG w=10 (d=3) & $57.47$ & $18.26$ & $3.94$ & $0.01$ & $+20.55 \pm 0.29$ \\
  & EFE w=1 (d=3) & $27.26$ & $9.84$ & $2.61$ & $0.06$ & $+21.85 \pm 0.79$ \\
+ & Rollout only (approach) & $36.02$ & $8.00$ & $3.83$ & $0.19$ & $+28.33 \pm 0.82$ \\
 \midrule
-\multirow{6}{*}{RS[11,11]}
+\multirow{8}{*}{RS[11,11]}
  & Greedy & $57.00$ & $0.00$ & $5.48$ & $5.52$ & $-18.90 \pm 1.04$ \\
  & Flat-MC (1000) & $231.00$ & $165.75$ & $2.98$ & $0.16$ & $-87.22 \pm 0.48$ \\
+ & POMCP (2048 sims) & $3.28$ & $1.60$ & $0.49$ & $0.03$ & $+12.94 \pm 0.24$ \\
  & Planning (d=2) & $2.50$ & $1.00$ & $0.48$ & $0.03$ & $+13.23 \pm 0.18$ \\
  & Plan+IG w=5 (d=2) & $3.09$ & $1.56$ & $0.50$ & $0.03$ & $+13.18 \pm 0.15$ \\
  & Plan+IG w=10 (d=2) & $3.09$ & $1.56$ & $0.50$ & $0.03$ & $+13.18 \pm 0.15$ \\
  & EFE w=1 (d=2) & $2.50$ & $1.00$ & $0.48$ & $0.03$ & $+13.23 \pm 0.18$ \\
+ & Rollout only (approach) & $62.44$ & $11.00$ & $5.22$ & $0.23$ & $+28.66 \pm 0.83$ \\
 \bottomrule
 \end{tabular}
 \end{small}
