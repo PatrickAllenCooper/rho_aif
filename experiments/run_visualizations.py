@@ -522,7 +522,7 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
                  lw=1.8, label=f"Test {k}", marker=".", markersize=4)
 
     ax2.set_ylabel("Information gain (bits)")
-    ax2.legend(loc="upper right", ncol=2)
+    ax2.legend(loc="center left", bbox_to_anchor=(1.005, 0.5), ncol=1)
     ax2.set_title("(b) Per-test expected information gain", fontsize=9)
 
     ax3 = axes[2]
