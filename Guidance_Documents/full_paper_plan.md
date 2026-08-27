@@ -763,6 +763,20 @@ This is the campaign's clearest confirmation of the 9.16 thesis that instrument 
 
 **Verdict: HOLD.** Every confirmed finding is fixed, 450/450 tests passing (up from 434), and the two evaluation batteries were relaunched under the corrected code rather than being allowed to complete under the defective version.
 
+### 9.17.8 JAIR submission-readiness pass: build fixed, tables regenerated, full reconciliation applied (2026-08-27)
+
+**Build**: the manuscript now compiles with zero LaTeX errors for the first time. Three root causes, none previously diagnosed correctly: the acmauthoryear citation style defines \citep/\citet itself, so biblatex's natbib=true collided with it (the old \undef workaround targeted the wrong culprit); \newtheorem{remark}[theorem] ran before acmart creates the theorem counter in \AtEndPreamble, swallowing the Remark environment via error recovery; and the reproducibility-checklist itemize passed enumitem options that were never loaded in the JAIR file, typesetting the literal option text into the shipped PDF. Remark 3.6 now renders with shared numbering, verified via pdftotext.
+
+**Data**: the headline battery completed on all four instances. Lineage check exact on all four (every pre-existing agent reproduces its committed value to zero absolute difference). Cross-protocol check exact (the heuristic's +28.658 +/- 0.831 on RS[11,11] identical between the budget sweep and the independent headline rerun).
+
+**Tables**: both RockSample tables regenerated with the POMCP row and the standalone heuristic row, per Pat's decision that the bold falls where the data says. The heuristic takes the bold outright on RS[7,8] and RS[11,11]. Enlarging the agent family from six to eight enlarged the Holm family from 30 to 56 comparisons per instance and flipped exactly one published call (RS[7,8] w=10-vs-w=5, p=0.003 uncorrected, no longer significant) -- reconciled in main text and appendix.
+
+**Reconciliation**: a full manuscript-to-CSV audit returned 13 findings, all applied identically to both manuscripts, including two arithmetic errors in the correction-family sentence (30 should be 56, and 45 should be 18 for Structural Inspection -- the second error predating this week entirely), three appendix claims contradicting the corrected main text, and stale agent-set descriptions. The distractor section reconciled clean: all 12 quantitative claims match their CSVs.
+
+**JAIR requirements verified against jair.org**: no anonymization requirement, PDF format mandatory, reproducibility checklist mandatory (present as an appendix), three mandatory survey questions (drafted in 8.9, updated to the budget-first framing), prior-publication disclosure required (present in the manuscript and in Q3). Submission PDF is 1.4 MB against the sub-15 MB guidance.
+
+**Verdict: HOLD.** Review panel round 1 launched; iteration continues until no reviewer returns below accept-with-minor-revisions.
+
 ### 9.17.7 Bibliography hallucination audit for JAIR submission (2026-08-27)
 
 A dedicated audit of all 68 entries in `paper/full_paper_jair.bib`, with web verification of the 13 highest-risk entries (recent additions, key/year mismatches, and the authors' own IWAI entry). **Headline: no hallucinated references.** Every entry resolves to a real paper with the stated authors, title, and venue. All 68 are cited, no citation dangles.
