@@ -808,8 +808,12 @@ def run_navigation_scaling(
     print("=" * 72)
     print("NAVIGATION SCALING (multiple grid sizes)")
     print("=" * 72)
+    from rho_aif.stats import holm_bonferroni, seed_level_ttest, seed_means
+
     rows = []
+    all_grid_results = {}
     for gs in grid_sizes:
+        grid_episode_results = {}
         max_steps = 3 * gs * gs
         # Depth 3 on large grids makes NavEFE prohibitively slow; step budget is the main scaling knob.
         planning_horizon = 2
@@ -840,6 +844,10 @@ def run_navigation_scaling(
                     results.append(run_episode(agent, env, seed=seed * 10000 + i))
             dt = time.time() - t0
             s = summarize_results(results)
+            # Seed-level SEs, matching the standard every other battery meets.
+            reward_seed = seed_means(results, lambda r: r.total_reward)
+            success_seed = seed_means(results, lambda r: float(r.success))
+            n_seeds = len(reward_seed)
             row = {
                 "grid_size": gs,
                 "num_states": gs * gs,
@@ -849,19 +857,59 @@ def run_navigation_scaling(
                 "mean_observations": s["mean_observations"],
                 "std_observations": s["std_observations"],
                 "success_rate": s["success_rate"],
+                "se_success_seed_level": (
+                    float(np.std(success_seed, ddof=1) / np.sqrt(n_seeds))
+                    if n_seeds > 1 else float("nan")
+                ),
                 "mean_reward": s["mean_reward"],
                 "std_reward": s["std_reward"],
+                "se_reward_seed_level": (
+                    float(np.std(reward_seed, ddof=1) / np.sqrt(n_seeds))
+                    if n_seeds > 1 else float("nan")
+                ),
                 "time_s": dt,
             }
             row.update(provenance_fields(seeds, num_episodes))
             rows.append(row)
+            grid_episode_results[agent_label] = results
             print(
                 f"  {agent_label:12s} success={s['success_rate']:.1%} "
                 f"reward={s['mean_reward']:+.2f} obs={s['mean_observations']:.1f} ({dt:.1f}s)"
             )
+        all_grid_results[gs] = grid_episode_results
     df = pd.DataFrame(rows)
     df.to_csv(output_csv, index=False)
     print(f"\nSaved {output_csv}")
+
+    # Companion seed-level statistics, Holm-corrected within metric per grid.
+    stats_rows = []
+    for gs, by_agent in all_grid_results.items():
+        labels = list(by_agent)
+        for metric_name, extract in (
+            ("Reward", lambda r: r.total_reward),
+            ("Success", lambda r: float(r.success)),
+            ("Observations", lambda r: float(r.num_observations)),
+        ):
+            for i in range(len(labels)):
+                for j in range(i + 1, len(labels)):
+                    out = seed_level_ttest(by_agent[labels[i]], by_agent[labels[j]], extract)
+                    stats_rows.append({
+                        "grid_size": gs, "metric": metric_name,
+                        "agent_a": labels[i], "agent_b": labels[j],
+                        "mean_a": float(np.mean([extract(r) for r in by_agent[labels[i]]])),
+                        "mean_b": float(np.mean([extract(r) for r in by_agent[labels[j]]])),
+                        "n_seeds": out["n_seeds_a"],
+                        "p_seed_level": out["p_value"],
+                    })
+    for gs in {r["grid_size"] for r in stats_rows}:
+        for metric_name in {r["metric"] for r in stats_rows}:
+            idx = [i for i, r in enumerate(stats_rows)
+                   if r["grid_size"] == gs and r["metric"] == metric_name]
+            for i, sig in zip(idx, holm_bonferroni([stats_rows[i]["p_seed_level"] for i in idx])):
+                stats_rows[i]["significant_hb_seed_level"] = sig
+    stats_csv = output_csv.replace(".csv", "_seed_stats.csv")
+    pd.DataFrame(stats_rows).to_csv(stats_csv, index=False)
+    print(f"Saved {stats_csv}")
     return df
 
 

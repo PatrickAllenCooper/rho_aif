@@ -284,12 +284,17 @@ def compute_rocksample_stats(all_episode_results, config_name):
                     "cohens_d_seed_level": seed_out["cohens_d"],
                 })
 
-    p_list = [r["p_pooled"] for r in rows]
-    for r, sig in zip(rows, holm_bonferroni(p_list)):
-        r["significant_hb_pooled"] = sig
-    seed_p_list = [r["p_seed_level"] for r in rows]
-    for r, sig in zip(rows, holm_bonferroni(seed_p_list)):
-        r["significant_hb_seed_level"] = sig
+    # Holm-Bonferroni is applied within metric, not pooled across metrics.
+    # Pooling Reward and Bad into one family made the correction stricter, and
+    # since the table's bolding rule treats a NON-rejection as a tie with the
+    # best row, a stricter family was the lenient direction for bolding. Each
+    # metric's pairwise comparisons form one family of C(A,2) tests.
+    for metric_name in {r["metric"] for r in rows}:
+        idx = [i for i, r in enumerate(rows) if r["metric"] == metric_name]
+        for i, sig in zip(idx, holm_bonferroni([rows[i]["p_pooled"] for i in idx])):
+            rows[i]["significant_hb_pooled"] = sig
+        for i, sig in zip(idx, holm_bonferroni([rows[i]["p_seed_level"] for i in idx])):
+            rows[i]["significant_hb_seed_level"] = sig
 
     return pd.DataFrame(rows)
 
