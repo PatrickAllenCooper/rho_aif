@@ -763,6 +763,22 @@ This is the campaign's clearest confirmation of the 9.16 thesis that instrument 
 
 **Verdict: HOLD.** Every confirmed finding is fixed, 450/450 tests passing (up from 434), and the two evaluation batteries were relaunched under the corrected code rather than being allowed to complete under the defective version.
 
+### 9.17.7 Bibliography hallucination audit for JAIR submission (2026-08-27)
+
+A dedicated audit of all 68 entries in `paper/full_paper_jair.bib`, with web verification of the 13 highest-risk entries (recent additions, key/year mismatches, and the authors' own IWAI entry). **Headline: no hallucinated references.** Every entry resolves to a real paper with the stated authors, title, and venue. All 68 are cited, no citation dangles.
+
+**Fixed in this pass**: `parr2019`'s issue number was factually wrong (`5` where Biological Cybernetics 113 is issue 5--6, confirmed against Crossref and Springer) and had survived the 9.12 "0 factual discrepancies" verdict -- fixed in both the .bib and the LNCS thebibliography. All seven arXiv entries carried both `howpublished` and `eprint` fields and printed their IDs twice in the reference list -- `howpublished` dropped. `cooper2026iwai` printed as though already published; it now carries a plain "To appear" note, with the abridgement relationship stated where it belongs, in the manuscript's disclosure paragraph. The `haarnoja2018sac` note contained a positional cross-reference ("the original ICML paper above") fragile to sort order -- removed. Both manuscripts said SAC tunes its temperature "by dual gradient ascent" where the cited paper's own wording is dual gradient *descent* -- fixed in three prose sites and the LNCS note. Stale bib header count (62 -> 68) fixed.
+
+**Corrections to the 9.12 record itself, in place per the error-correction convention**:
+- 9.12 records two citation-key/year mismatches. There are four: `todorov2007` and `walraven2024` (recorded) plus `dacosta2020b` (year 2023) and `champion2024` (year 2026), both the same benign key-is-preprint-year pattern, both printing correctly.
+- 9.12's arithmetic does not close (14 previously verified + 45 newly checked = 59, not 62) and the "per-entry verification log" it cites does not exist as a file. The aggregate claim of 62/62 checked cannot be audited from the repository. This audit's per-entry verdict table now serves as that log for the current 68.
+- The verification record itself (8.4 and price_of_information.md) records `blum1954` as issue 3; Project Euclid says issue 2. The bib was already correct -- the record was wrong.
+- `boutilier2002` was added 104 minutes after the 9.12 pass closed and was never covered by it. Now independently verified (AAAI/IAAI 2002, pp. 239--246, DBLP conf/aaai/Boutilier02).
+
+**Deliberate conventions kept**: `sweeney2026equivalences` keeps year 2026 (Entropy vol. 28 cover year, issued 2025-12-19), matching the cover-year convention already used for `walraven2024`, `spaan2015`, and `shani2013`. `gundersen2024jair` remains JAIR-file-only by design (it cites the checklist that file alone carries).
+
+**Verdict: HOLD.**
+
 ### 9.17.6 POMCP sensitivity battery: the search tree makes RockSample worse (2026-08-23)
 
 `results/results_rocksample_pomcp_sensitivity.csv` and its companion `_stats.csv`, RS[5,3], 100 episodes x the 5 canonical seeds, 2048 simulations, frozen configuration c=5 / H=10 / value / approach.

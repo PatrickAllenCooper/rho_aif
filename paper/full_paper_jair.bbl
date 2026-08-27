@@ -192,7 +192,6 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{eprinttype}{arXiv}
-      \field{howpublished}{arXiv preprint arXiv:2502.02549}
       \field{title}{Anytime incremental $\rho${POMDP} planning in continuous spaces}
       \field{year}{2025}
       \verb{eprint}
@@ -417,7 +416,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the 7th International Workshop on Active Inference (IWAI 2026)}
-      \field{note}{Accepted as poster and spotlight presentation; abridged version of the observe-then-commit equivalence results in this article}
+      \field{note}{To appear}
       \field{series}{Communications in Computer and Information Science}
       \field{title}{Expected free energy as belief-dependent utility for $\rho$-{POMDP}s}
       \field{year}{2026}
@@ -530,7 +529,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Neural Computation}
-      \field{number}{5}
+      \field{number}{5--6}
       \field{title}{Reward maximization through discrete active inference}
       \field{volume}{35}
       \field{year}{2023}
@@ -575,7 +574,6 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{eprinttype}{arXiv}
-      \field{howpublished}{arXiv preprint arXiv:2504.14898}
       \field{title}{Expected free energy-based planning as variational inference}
       \field{year}{2025}
       \verb{eprint}
@@ -1198,8 +1196,6 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{eprinttype}{arXiv}
-      \field{howpublished}{arXiv preprint arXiv:1812.05905}
-      \field{note}{The applications paper introducing automatic entropy-temperature tuning by dual gradient ascent; the original ICML paper above uses a fixed temperature}
       \field{title}{Soft actor-critic algorithms and applications}
       \field{year}{2018}
       \verb{eprint}
@@ -1512,7 +1508,6 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{eprinttype}{arXiv}
-      \field{howpublished}{arXiv preprint arXiv:2608.17167}
       \field{title}{Expected free energy as an information constraint on the {B}ethe {L}agrangian}
       \field{year}{2026}
       \verb{eprint}
@@ -1623,7 +1618,6 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{eprinttype}{arXiv}
-      \field{howpublished}{arXiv preprint arXiv:1805.00909}
       \field{title}{Reinforcement learning and control as probabilistic inference: Tutorial and review}
       \field{year}{2018}
       \verb{eprint}
@@ -1905,7 +1899,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Biological Cybernetics}
-      \field{number}{5}
+      \field{number}{5--6}
       \field{title}{Generalised free energy and active inference}
       \field{volume}{113}
       \field{year}{2019}
@@ -2441,7 +2435,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Operations Research}
-      \field{number}{5}
+      \field{number}{5--6}
       \field{title}{The optimal control of partially observable {M}arkov processes over a finite horizon}
       \field{volume}{21}
       \field{year}{1973}
@@ -2788,7 +2782,6 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{eprinttype}{arXiv}
-      \field{howpublished}{arXiv preprint arXiv:2407.17032}
       \field{title}{Gymnasium: A standard interface for reinforcement learning environments}
       \field{year}{2024}
       \verb{eprint}
@@ -2907,7 +2900,6 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{eprinttype}{arXiv}
-      \field{howpublished}{arXiv preprint arXiv:2408.06542}
       \field{title}{Value of information and reward specification in active inference and {POMDP}s}
       \field{year}{2024}
       \verb{eprint}
