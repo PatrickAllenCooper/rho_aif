@@ -30,17 +30,37 @@ from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
 from rho_aif.agents.efe import EFEAgent
 from run_experiment import make_agent, EpisodeResult, tune_info_gain_weight
 from rho_aif.belief import BeliefState
+from rho_aif import figstyle
+
+
+def _style(name, lw):
+    """Line style for an agent from the shared figstyle mapping."""
+    s = figstyle.agent_style(name)
+    return {"color": s["color"], "ls": s["linestyle"], "marker": s["marker"], "lw": lw}
 
 
 AGENT_STYLES = {
-    "Myopic":        {"color": "#888888", "ls": "--", "marker": "s", "lw": 1.5},
-    "Planning":      {"color": "#2196F3", "ls": "-",  "marker": "^", "lw": 2.0},
-    "InfoGain-Tuned":{"color": "#FF9800", "ls": "-.", "marker": "D", "lw": 1.5},
-    "Planning+IG":   {"color": "#9C27B0", "ls": ":",  "marker": "v", "lw": 2.0},
-    "EFE":           {"color": "#D32F2F", "ls": "-",  "marker": "o", "lw": 2.5},
+    "Myopic":         _style("Myopic", 1.5),
+    "Planning":       _style("Planning", 1.8),
+    "InfoGain-Tuned": _style("InfoGain-Tuned", 1.8),
+    "Planning+IG":    _style("Planning+IG", 2.0),
+    "EFE":            _style("EFE", 2.2),
 }
 
-TEST_COLORS = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
+# Observation-action (test) colors: not agents, so drawn from the shared
+# categorical cycle rather than the agent mapping.
+TEST_COLORS = [figstyle.BLUE, figstyle.ORANGE, figstyle.GREEN, figstyle.PINK]
+
+# One perceptually-uniform colormap for every belief heatmap. Magma keeps the
+# "brighter warm colors = higher belief" reading of the previous colormap.
+HEATMAP_CMAP = "magma"
+
+
+def _save_fig(fig, save_path):
+    """Save the PDF artifact of record plus its PNG twin."""
+    base = os.path.splitext(save_path)[0]
+    fig.savefig(base + ".pdf", bbox_inches="tight", dpi=300)
+    fig.savefig(base + ".png", bbox_inches="tight", dpi=300)
 
 
 @dataclass
@@ -210,6 +230,7 @@ def run_simple_episode(agent, env, max_steps=200, seed=None):
 def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
     """Three-panel heatmap: EFE vs Planning vs InfoGain-Tuned belief evolution."""
     print("  Generating belief evolution heatmap...")
+    figstyle.apply()
     np.random.seed(seed)
 
     env = DiagnosisEnv(
@@ -255,21 +276,22 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
 
         ax = axes[ax_idx]
         im = ax.imshow(
-            belief_matrix, aspect="auto", cmap="inferno",
+            belief_matrix, aspect="auto", cmap=HEATMAP_CMAP,
             vmin=0, vmax=1.0, interpolation="nearest",
         )
+        ax.grid(False)
 
         commit_step = result["num_observations"]
-        ax.axvline(commit_step, color="white", ls="--", lw=1.5, alpha=0.8)
+        ax.axvline(commit_step, color="white", ls="--", lw=1.5, alpha=0.9)
 
         ax.plot(
             [-0.5, n_steps - 0.5],
             [true_state, true_state],
-            color="#00FF00", ls="-", lw=0.8, alpha=0.6,
+            color=figstyle.GREEN, ls="-", lw=1.2, alpha=0.9,
         )
         ax.annotate(
-            f"true={true_state}", xy=(0, true_state),
-            fontsize=6, color="#00FF00", va="bottom",
+            f"true={true_state}", xy=(0.2, true_state),
+            fontsize=7, color=figstyle.GREEN, va="bottom",
         )
 
         ax.set_xlabel("Time step")
@@ -285,14 +307,16 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
 
         if n_states <= 16:
             ax.set_yticks(range(0, n_states, 2))
+        from matplotlib.ticker import MaxNLocator
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
     cbar_ax = fig.add_axes([0.92, 0.15, 0.015, 0.7])
     fig.colorbar(im, cax=cbar_ax, label="Belief probability")
 
     plt.tight_layout(rect=[0, 0, 0.91, 1])
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
+    _save_fig(fig, save_path)
     plt.close()
-    print(f"  Saved {save_path}")
+    print(f"  Saved {save_path} (+ .png)")
 
 
 # ---------------------------------------------------------------------------
@@ -302,6 +326,7 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
 def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_efficiency_curves.pdf"):
     """Three-panel: entropy decay, survival curve, cumulative reward over steps."""
     print("  Generating exploration efficiency curves...")
+    figstyle.apply()
     np.random.seed(seed)
 
     env = DiagnosisEnv(
@@ -377,8 +402,7 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
     ax1.set_xlabel("Time step")
     ax1.set_ylabel("Belief entropy (bits)")
     ax1.set_title("(a) Entropy decay")
-    ax1.grid(True, alpha=0.2)
-    ax1.legend(fontsize=7, loc="upper right")
+    ax1.legend(loc="upper right")
 
     for label, style in AGENT_STYLES.items():
         if label not in all_data:
@@ -394,7 +418,6 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
     ax2.set_xlabel("Time step")
     ax2.set_ylabel("Episodes still observing (%)")
     ax2.set_title("(b) Observation survival")
-    ax2.grid(True, alpha=0.2)
     ax2.set_ylim([-2, 102])
 
     for label, style in AGENT_STYLES.items():
@@ -424,12 +447,14 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
     ax3.set_xlabel("Time step")
     ax3.set_ylabel("Cumulative reward")
     ax3.set_title("(c) Cumulative reward")
-    ax3.grid(True, alpha=0.2)
+
+    for ax in (ax1, ax2, ax3):
+        figstyle.style_axis(ax)
 
     plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
+    _save_fig(fig, save_path)
     plt.close()
-    print(f"  Saved {save_path}")
+    print(f"  Saved {save_path} (+ .png)")
 
 
 # ---------------------------------------------------------------------------
@@ -439,6 +464,7 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
 def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
     """Four-panel EFE decomposition over an extended Diagnosis episode."""
     print("  Generating extended EFE decomposition...")
+    figstyle.apply()
 
     env = DiagnosisEnv(
         num_conditions=8, num_tests=3, test_accuracy=0.75,
@@ -473,23 +499,20 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
     ax1 = axes[0]
     commit_vals = [t.best_commit_value for t in all_traces]
     observe_vals = [t.best_observe_value for t in all_traces]
-    ax1.plot(steps, commit_vals, color="#D32F2F", lw=2.5, label="Value of committing", zorder=3)
-    ax1.plot(steps, observe_vals, color="#2196F3", lw=2.5, label="Value of observing", zorder=3)
+    ax1.plot(steps, commit_vals, color=figstyle.VERMILLION, lw=2.2,
+             label="Value of committing", zorder=3)
+    ax1.plot(steps, observe_vals, color=figstyle.BLUE, lw=2.2,
+             label="Value of observing", zorder=3)
 
     if commit_trace:
-        ax1.axvline(commit_trace.step, color="#333333", ls=":", lw=1.5, alpha=0.7)
-        ylim = ax1.get_ylim()
-        ax1.annotate("commit", xy=(commit_trace.step, ylim[1] * 0.95),
-                     fontsize=8, ha="right", color="#333333")
+        ax1.axvline(commit_trace.step, color=figstyle.GRAY, ls=":", lw=1.5, alpha=0.8)
+        y0, y1 = ax1.get_ylim()
+        ax1.annotate("commit", xy=(commit_trace.step - 0.15, y0 + 0.55 * (y1 - y0)),
+                     fontsize=8, ha="right", va="center", color=figstyle.GRAY)
 
     ax1.set_ylabel("$-\\mathcal{G}$ (value)")
-    ax1.set_title(
-        f"Extended EFE decomposition -- Diagnosis N=8, K=3 "
-        f"(episode seed={target_seed}, {'correct' if result.success else 'wrong'})",
-        fontsize=10,
-    )
-    ax1.legend(fontsize=8, loc="lower right")
-    ax1.grid(True, alpha=0.2)
+    ax1.set_title("(a) Value of committing vs observing", fontsize=9)
+    ax1.legend(loc="lower right")
 
     ax2 = axes[1]
     num_tests = len(all_traces[0].per_test_ig)
@@ -499,16 +522,14 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
                  lw=1.8, label=f"Test {k}", marker=".", markersize=4)
 
     ax2.set_ylabel("Information gain (bits)")
-    ax2.legend(fontsize=7, loc="upper right", ncol=2)
-    ax2.grid(True, alpha=0.2)
+    ax2.legend(loc="upper right", ncol=2)
     ax2.set_title("(b) Per-test expected information gain", fontsize=9)
 
     ax3 = axes[2]
     entropies = [t.belief_entropy for t in all_traces]
-    ax3.fill_between(steps, entropies, alpha=0.2, color="#4CAF50")
-    ax3.plot(steps, entropies, color="#4CAF50", lw=2)
+    ax3.fill_between(steps, entropies, alpha=0.2, color=figstyle.GREEN)
+    ax3.plot(steps, entropies, color=figstyle.GREEN, lw=2)
     ax3.set_ylabel("Entropy (bits)")
-    ax3.grid(True, alpha=0.2)
     ax3.set_title("(c) Belief entropy", fontsize=9)
 
     ax4 = axes[3]
@@ -521,16 +542,20 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
     legend_patches = [plt.Rectangle((0, 0), 1, 1, fc=TEST_COLORS[k])
                       for k in range(num_tests)]
     ax4.legend(legend_patches, [f"Test {k}" for k in range(num_tests)],
-               fontsize=7, loc="upper right", ncol=num_tests)
+               loc="center left", bbox_to_anchor=(1.005, 0.5), ncol=1)
     ax4.set_yticks([])
+    ax4.grid(False)
     ax4.set_xlabel("Time step")
     ax4.set_title("(d) Test selection sequence", fontsize=9)
     ax4.set_ylim(-0.5, 0.5)
 
+    for ax in (ax1, ax2, ax3, ax4):
+        figstyle.style_axis(ax)
+
     plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
+    _save_fig(fig, save_path)
     plt.close()
-    print(f"  Saved {save_path}")
+    print(f"  Saved {save_path} (+ .png)")
 
 
 # ---------------------------------------------------------------------------

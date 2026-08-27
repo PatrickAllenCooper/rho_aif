@@ -29,6 +29,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from rho_aif import figstyle
 from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
 from rho_aif.environments.bandit import BanditEnv
 from rho_aif.environments.diagnosis import DiagnosisEnv
@@ -103,25 +104,37 @@ def best_w_ret(rows: List[dict]) -> float:
 
 
 def plot_scaling(df: pd.DataFrame, out_path: Path) -> None:
+    """One panel per environment. Each curve is one reward scale k, the star
+    marks that curve's reward-maximizing weight w*_ret, and the dashed
+    vertical line sits at w=1 (the EFE weight)."""
+    figstyle.apply()
     envs = sorted(df["environment"].unique())
+    panel_letters = "abcdefgh"
     fig, axes = plt.subplots(1, len(envs), figsize=(4.2 * len(envs), 3.6), squeeze=False)
-    for ax, env_name in zip(axes[0], envs):
+    legend_locs = {"Bandit": "center right", "Diagnosis": "lower right"}
+    for panel_i, (ax, env_name) in enumerate(zip(axes[0], envs)):
         sub = df[df["environment"] == env_name]
-        for k, grp in sub.groupby("scale_k"):
-            ax.plot(grp["w"], grp["reward"], marker="o", label=f"k={k:g}")
+        for (k, grp), color in zip(sub.groupby("scale_k"), figstyle.ENV_CYCLE):
+            grp = grp.sort_values("w")
+            ax.plot(grp["w"], grp["reward"], marker="o", color=color,
+                    label=f"$k={k:g}$")
             w_star = grp.loc[grp["reward"].idxmax(), "w"]
             r_star = grp["reward"].max()
-            ax.scatter([w_star], [r_star], marker="*", s=120, zorder=5)
+            ax.scatter([w_star], [r_star], marker="*", s=140, zorder=5,
+                       color=color, edgecolors="white", linewidths=0.6)
+        ax.axvline(1.0, color=figstyle.GRAY, ls="--", lw=0.8, alpha=0.7,
+                   zorder=1)
         ax.set_xscale("log")
+        figstyle.style_axis(ax)
         ax.set_xlabel("Planning+IG weight $w$")
-        ax.set_ylabel("Mean reward")
-        ax.set_title(env_name)
-        ax.legend(fontsize=8)
-        ax.axvline(1.0, color="gray", ls="--", lw=0.8, alpha=0.7)
-    fig.suptitle("Reward rescaling: $w^*_{\\mathrm{ret}}$ shifts as $k$", y=1.02)
+        if panel_i == 0:
+            ax.set_ylabel("Mean reward")
+        ax.set_title(f"({panel_letters[panel_i]}) {env_name}")
+        ax.legend(loc=legend_locs.get(env_name, "best"))
     fig.tight_layout()
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_path, bbox_inches="tight")
+    fig.savefig(out_path)
+    fig.savefig(out_path.with_suffix(".png"))
     plt.close(fig)
 
 
@@ -145,7 +158,31 @@ def main():
     parser.add_argument(
         "--figure", type=Path, default=Path("figures/fig_reward_scaling.pdf")
     )
+    parser.add_argument(
+        "--replot", action="store_true",
+        help="Rebuild the figure from the committed CSVs without re-running "
+             "any episodes.")
     args = parser.parse_args()
+
+    if args.replot:
+        df = pd.read_csv(args.output)
+        summary_path = args.output.with_name("results_reward_scaling_summary.csv")
+        sdf = pd.read_csv(summary_path)
+        # Cross-check: the starred argmax the figure draws must agree with the
+        # committed summary's w_ret for every (environment, k) cell.
+        for _, srow in sdf.iterrows():
+            grp = df[(df["environment"] == srow["environment"])
+                     & (df["scale_k"] == srow["scale_k"])]
+            w_star = float(grp.loc[grp["reward"].idxmax(), "w"])
+            if abs(w_star - float(srow["w_ret"])) > 1e-9:
+                raise SystemExit(
+                    f"Summary/detail mismatch for {srow['environment']} "
+                    f"k={srow['scale_k']}: detail argmax {w_star} vs summary "
+                    f"w_ret {srow['w_ret']}")
+        plot_scaling(df, args.figure)
+        print(f"Replotted {args.figure} (and .png twin) from {args.output} "
+              f"and {summary_path}")
+        return
 
     seeds = SEEDS[: args.seeds]
     all_rows = []

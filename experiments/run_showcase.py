@@ -1,22 +1,45 @@
 #!/usr/bin/env python3
 """
-Showcase experiments: reward asymmetry sweep and EFE decomposition trajectories.
+Showcase experiments: reward asymmetry sweep, EFE decomposition trajectories,
+and observation-action scaling.
 
 Produces publication-quality figures that visualize the core dynamics of
 EFE-as-rho: automatic adaptation to reward structure and the intrinsic
 explore-exploit transition.
+
+Provenance: the two sweeps persist their data to
+``results/results_showcase_asymmetry.csv`` and
+``results/results_showcase_obs_scaling.csv`` (this script is the single
+producer of both), and the figures can be regenerated from those committed
+CSVs without re-running the batteries::
+
+    python experiments/run_showcase.py            # full battery: run + CSVs + figures
+    python experiments/run_showcase.py --replot   # figures only, from committed CSVs
+
+The trajectory figure (fig_efe_trajectory) is a seeded demo-episode trace
+with no numeric table claim behind it; it is deterministic and cheap, so it
+is re-traced in both modes rather than persisted.
+
+Protocol: 5 canonical seeds {42, 123, 456, 789, 1024} x 100 episodes per
+seed = 500 episodes per sweep point (matching the 500-episodes-per-point
+protocol the figures have always used, now with explicit per-episode
+seeding via env.reset(seed=...) instead of an unseeded episode stream).
 """
+
+import argparse
+import os
 
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import pandas as pd
 from matplotlib.lines import Line2D
 from scipy.stats import entropy as scipy_entropy
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
-import json
 
+from rho_aif import figstyle
 from rho_aif.environments.tiger import TigerEnv
 from rho_aif.environments.diagnosis import DiagnosisEnv
 from rho_aif.agents.myopic import MyopicAgent
@@ -24,7 +47,21 @@ from rho_aif.agents.planning import PlanningAgent
 from rho_aif.agents.info_gain import InformationGainAgent
 from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
 from rho_aif.agents.efe import EFEAgent
-from run_experiment import make_agent, run_episode, run_experiment, summarize_results, tune_info_gain_weight
+from run_experiment import (
+    SEEDS,
+    make_agent,
+    provenance_fields,
+    run_experiment_multi_seed,
+    summarize_results,
+    tune_info_gain_weight,
+)
+
+ASYMMETRY_CSV = "results/results_showcase_asymmetry.csv"
+OBS_SCALING_CSV = "results/results_showcase_obs_scaling.csv"
+
+# 5 canonical seeds x 100 episodes = 500 episodes per sweep point, the
+# episode count both sweeps have always used per point.
+EPISODES_PER_SEED = 100
 
 
 # ---------------------------------------------------------------------------
@@ -33,20 +70,25 @@ from run_experiment import make_agent, run_episode, run_experiment, summarize_re
 
 def run_reward_asymmetry_sweep(
     penalties: List[float] = None,
-    num_episodes: int = 500,
+    episodes_per_seed: int = EPISODES_PER_SEED,
     horizon: int = 6,
-    seed: int = 42,
+    seeds: List[int] = None,
+    csv_path: str = ASYMMETRY_CSV,
 ) -> Dict:
-    """Sweep Tiger penalty from mild to extreme, measuring each agent's response."""
+    """Sweep Tiger penalty from mild to extreme, measuring each agent's
+    response, and persist the sweep to ``csv_path``."""
 
     if penalties is None:
         penalties = [1, 2, 5, 10, 20, 50, 100, 200, 500]
+    if seeds is None:
+        seeds = SEEDS
 
-    results = {name: {"penalties": [], "success": [], "reward": [], "obs": []}
+    results = {name: {"penalties": [], "success": [], "reward": [], "obs": [],
+                      "se_success": [], "se_reward": []}
                for name in ["Myopic", "Planning", "InfoGain-Tuned", "Planning+IG", "EFE"]}
+    rows = []
 
     for pen in penalties:
-        np.random.seed(seed)
         env = TigerEnv(
             listen_accuracy=0.85,
             listen_cost=1.0,
@@ -55,23 +97,50 @@ def run_reward_asymmetry_sweep(
         )
         print(f"  Penalty = -{pen}")
 
+        # NOTE: this weight is tuned on the myopic InformationGainAgent (on
+        # the dedicated TUNING_SEED stream) and reused for Planning+IG, the
+        # protocol this figure has always used. The main-table baselines tune
+        # Planning+IG on its own class per the tuner's contract.
         best_w = tune_info_gain_weight(env, tune_episodes=100)
 
         configs = [
             ("Myopic", MyopicAgent, {}),
             ("Planning", PlanningAgent, {"planning_horizon": horizon}),
             ("InfoGain-Tuned", InformationGainAgent, {"info_gain_weight": best_w}),
-            ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w}),
+            ("Planning+IG", PlanningInfoGainAgent,
+             {"planning_horizon": horizon, "info_gain_weight": best_w}),
             ("EFE", EFEAgent, {"planning_horizon": horizon}),
         ]
 
         for name, cls, kwargs in configs:
-            raw = run_experiment(cls, env, num_episodes, **kwargs)
+            raw = run_experiment_multi_seed(cls, env, episodes_per_seed,
+                                            seeds=seeds, **kwargs)
             s = summarize_results(raw)
             results[name]["penalties"].append(pen)
             results[name]["success"].append(s["success_rate"])
             results[name]["reward"].append(s["mean_reward"])
             results[name]["obs"].append(s["mean_observations"])
+            results[name]["se_success"].append(s["se_success_seed_level"])
+            results[name]["se_reward"].append(s["se_reward_seed_level"])
+
+            row = {
+                "penalty": pen,
+                "agent": name,
+                "success_rate": s["success_rate"],
+                "se_success_seed_level": s["se_success_seed_level"],
+                "mean_reward": s["mean_reward"],
+                "se_reward_seed_level": s["se_reward_seed_level"],
+                "mean_observations": s["mean_observations"],
+                "planning_horizon": kwargs.get("planning_horizon", float("nan")),
+                "info_gain_weight": kwargs.get("info_gain_weight", float("nan")),
+                "n_seeds": s["n_seeds"],
+            }
+            row.update(provenance_fields(seeds, episodes_per_seed))
+            rows.append(row)
+
+    os.makedirs(os.path.dirname(csv_path), exist_ok=True)
+    pd.DataFrame(rows).to_csv(csv_path, index=False)
+    print(f"  Saved {csv_path}")
 
     return results
 
@@ -164,17 +233,23 @@ def collect_trajectories(
 
 def run_obs_action_scaling(
     n_states: int = 8,
-    num_episodes: int = 500,
+    episodes_per_seed: int = EPISODES_PER_SEED,
     horizon: int = 3,
-    seed: int = 42,
+    seeds: List[int] = None,
+    csv_path: str = OBS_SCALING_CSV,
 ) -> Dict:
-    """Vary K (number of tests) while holding N fixed."""
+    """Vary K (number of tests) while holding N fixed, and persist the sweep
+    to ``csv_path``."""
 
-    results = {name: {"K": [], "success": [], "reward": []}
+    if seeds is None:
+        seeds = SEEDS
+
+    results = {name: {"K": [], "success": [], "reward": [], "obs": [],
+                      "se_success": [], "se_reward": []}
                for name in ["Myopic", "Planning", "Planning+IG", "EFE"]}
+    rows = []
 
     for k in [1, 2, 3]:
-        np.random.seed(seed)
         env = DiagnosisEnv(
             num_conditions=n_states,
             num_tests=k,
@@ -185,22 +260,84 @@ def run_obs_action_scaling(
         )
         print(f"  K = {k} tests (N = {n_states})")
 
+        # Same weight-transfer note as the asymmetry sweep applies here.
         best_w = tune_info_gain_weight(env, tune_episodes=100)
 
         configs = [
             ("Myopic", MyopicAgent, {}),
             ("Planning", PlanningAgent, {"planning_horizon": horizon}),
-            ("Planning+IG", PlanningInfoGainAgent, {"planning_horizon": horizon, "info_gain_weight": best_w}),
+            ("Planning+IG", PlanningInfoGainAgent,
+             {"planning_horizon": horizon, "info_gain_weight": best_w}),
             ("EFE", EFEAgent, {"planning_horizon": horizon}),
         ]
 
         for name, cls, kwargs in configs:
-            raw = run_experiment(cls, env, num_episodes, **kwargs)
+            raw = run_experiment_multi_seed(cls, env, episodes_per_seed,
+                                            seeds=seeds, **kwargs)
             s = summarize_results(raw)
             results[name]["K"].append(k)
             results[name]["success"].append(s["success_rate"])
             results[name]["reward"].append(s["mean_reward"])
+            results[name]["obs"].append(s["mean_observations"])
+            results[name]["se_success"].append(s["se_success_seed_level"])
+            results[name]["se_reward"].append(s["se_reward_seed_level"])
 
+            row = {
+                "num_tests_K": k,
+                "num_conditions_N": n_states,
+                "agent": name,
+                "success_rate": s["success_rate"],
+                "se_success_seed_level": s["se_success_seed_level"],
+                "mean_reward": s["mean_reward"],
+                "se_reward_seed_level": s["se_reward_seed_level"],
+                "mean_observations": s["mean_observations"],
+                "planning_horizon": kwargs.get("planning_horizon", float("nan")),
+                "info_gain_weight": kwargs.get("info_gain_weight", float("nan")),
+                "n_seeds": s["n_seeds"],
+            }
+            row.update(provenance_fields(seeds, episodes_per_seed))
+            rows.append(row)
+
+    os.makedirs(os.path.dirname(csv_path), exist_ok=True)
+    pd.DataFrame(rows).to_csv(csv_path, index=False)
+    print(f"  Saved {csv_path}")
+
+    return results
+
+
+# ---------------------------------------------------------------------------
+# Replot path: rebuild the sweep dicts from the committed CSVs
+# ---------------------------------------------------------------------------
+
+def load_asymmetry_from_csv(csv_path: str = ASYMMETRY_CSV) -> Dict:
+    df = pd.read_csv(csv_path)
+    results = {}
+    for name, g in df.groupby("agent", sort=False):
+        g = g.sort_values("penalty")
+        results[name] = {
+            "penalties": g["penalty"].tolist(),
+            "success": g["success_rate"].tolist(),
+            "reward": g["mean_reward"].tolist(),
+            "obs": g["mean_observations"].tolist(),
+            "se_success": g["se_success_seed_level"].tolist(),
+            "se_reward": g["se_reward_seed_level"].tolist(),
+        }
+    return results
+
+
+def load_obs_scaling_from_csv(csv_path: str = OBS_SCALING_CSV) -> Dict:
+    df = pd.read_csv(csv_path)
+    results = {}
+    for name, g in df.groupby("agent", sort=False):
+        g = g.sort_values("num_tests_K")
+        results[name] = {
+            "K": g["num_tests_K"].tolist(),
+            "success": g["success_rate"].tolist(),
+            "reward": g["mean_reward"].tolist(),
+            "obs": g["mean_observations"].tolist(),
+            "se_success": g["se_success_seed_level"].tolist(),
+            "se_reward": g["se_reward_seed_level"].tolist(),
+        }
     return results
 
 
@@ -208,60 +345,64 @@ def run_obs_action_scaling(
 # Figure generation
 # ---------------------------------------------------------------------------
 
-AGENT_STYLES = {
-    "Myopic":        {"color": "#888888", "ls": "--", "marker": "s", "lw": 1.5},
-    "Planning":      {"color": "#2196F3", "ls": "-",  "marker": "^", "lw": 2.0},
-    "InfoGain-Tuned":{"color": "#FF9800", "ls": "-.", "marker": "D", "lw": 1.5},
-    "Planning+IG":   {"color": "#9C27B0", "ls": ":",  "marker": "v", "lw": 2.0},
-    "EFE":           {"color": "#D32F2F", "ls": "-",  "marker": "o", "lw": 2.5},
-}
+def _plot_agent_series(ax, x, y, yerr, name):
+    """One agent series in the shared style, with seed-level error bars."""
+    style = figstyle.agent_style(name)
+    ax.errorbar(x, y, yerr=yerr, label=name, capsize=2, elinewidth=0.8,
+                markersize=4.5, **style)
 
 
 def plot_reward_asymmetry_sweep(results: Dict, save_path: str = "figures/fig_asymmetry_sweep.pdf"):
     """Two-panel figure: success rate and reward vs penalty magnitude."""
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+    figstyle.apply()
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9, 3.4))
 
-    for name, style in AGENT_STYLES.items():
+    order = ["Myopic", "Planning", "InfoGain-Tuned", "Planning+IG", "EFE"]
+    for name in order:
         if name not in results:
             continue
         d = results[name]
-        ax1.plot(d["penalties"], [s * 100 for s in d["success"]],
-                 color=style["color"], ls=style["ls"], marker=style["marker"],
-                 lw=style["lw"], markersize=5, label=name)
-        ax2.plot(d["penalties"], d["reward"],
-                 color=style["color"], ls=style["ls"], marker=style["marker"],
-                 lw=style["lw"], markersize=5, label=name)
+        se_s = [s * 100 for s in d.get("se_success", [0] * len(d["penalties"]))]
+        _plot_agent_series(ax1, d["penalties"], [s * 100 for s in d["success"]],
+                           se_s, name)
+        _plot_agent_series(ax2, d["penalties"], d["reward"],
+                           d.get("se_reward"), name)
 
-    ax1.set_xlabel("Penalty magnitude $|R^-|$")
+    for ax in (ax1, ax2):
+        ax.set_xscale("log")
+        ax.set_xlabel("Penalty magnitude $|R^-|$")
+        figstyle.style_axis(ax)
+
     ax1.set_ylabel("Success rate (%)")
-    ax1.set_xscale("log")
-    ax1.set_ylim([40, 102])
-    ax1.grid(True, alpha=0.3)
     ax1.set_title("(a) Success rate vs. reward asymmetry")
-
-    ax2.set_xlabel("Penalty magnitude $|R^-|$")
     ax2.set_ylabel("Mean reward")
-    ax2.set_xscale("log")
-    ax2.grid(True, alpha=0.3)
     ax2.set_title("(b) Reward vs. reward asymmetry")
 
-    ax1.legend(fontsize=8, loc="lower right")
+    handles, labels = ax1.get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=5,
+               bbox_to_anchor=(0.5, -0.06))
 
-    plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
-    plt.close()
-    print(f"  Saved {save_path}")
+    fig.tight_layout()
+    fig.savefig(save_path)
+    fig.savefig(save_path.replace(".pdf", ".png"))
+    plt.close(fig)
+    print(f"  Saved {save_path} (+ .png)")
 
 
 def plot_efe_trajectories(all_traces, save_path: str = "figures/fig_efe_trajectory.pdf"):
     """Plot EFE decomposition for representative episodes."""
+    figstyle.apply()
     successful = [(t, s, r) for t, s, r in all_traces if s and len(t) >= 3]
     if not successful:
         successful = all_traces[:3]
 
-    fig, axes = plt.subplots(1, 3, figsize=(12, 3.5))
+    fig, axes = plt.subplots(1, 3, figsize=(10, 3.0))
     titles = ["(a) Short episode", "(b) Medium episode", "(c) Long episode"]
     successful.sort(key=lambda x: len(x[0]))
+
+    commit_color = figstyle.VERMILLION
+    observe_color = figstyle.BLUE
+    entropy_color = figstyle.GREEN
 
     indices = [0, len(successful) // 2, -1]
     for ax_idx, (ax, title) in enumerate(zip(axes, titles)):
@@ -271,17 +412,19 @@ def plot_efe_trajectories(all_traces, save_path: str = "figures/fig_efe_trajecto
         observe_vals = [-t.best_observe_efe for t in traces]
         entropies = [t.belief_entropy for t in traces]
 
-        ax.plot(steps, commit_vals, color="#D32F2F", lw=2, label="$-\\mathcal{G}$(commit)")
-        ax.plot(steps, observe_vals, color="#2196F3", lw=2, label="$-\\mathcal{G}$(observe)")
+        ax.plot(steps, commit_vals, color=commit_color, lw=1.8)
+        ax.plot(steps, observe_vals, color=observe_color, lw=1.8)
 
-        ax2_twin = ax.twinx()
-        ax2_twin.fill_between(steps, entropies, alpha=0.15, color="#4CAF50")
-        ax2_twin.plot(steps, entropies, color="#4CAF50", lw=1.5, ls="--", label="$H(b)$")
-        ax2_twin.set_ylim([0, 1.2])
+        ax_twin = ax.twinx()
+        ax_twin.fill_between(steps, entropies, alpha=0.12, color=entropy_color)
+        ax_twin.plot(steps, entropies, color=entropy_color, lw=1.4, ls="--")
+        ax_twin.set_ylim([0, 1.25])
+        ax_twin.grid(False)
+        ax_twin.spines["top"].set_visible(False)
         if ax_idx == 2:
-            ax2_twin.set_ylabel("Belief entropy (bits)", fontsize=9)
+            ax_twin.set_ylabel("Belief entropy (bits)")
         else:
-            ax2_twin.set_yticklabels([])
+            ax_twin.set_yticks([])
 
         commit_step = None
         for t in traces:
@@ -289,101 +432,119 @@ def plot_efe_trajectories(all_traces, save_path: str = "figures/fig_efe_trajecto
                 commit_step = t.step
                 break
         if commit_step is not None:
-            ax.axvline(commit_step, color="#333333", ls=":", lw=1, alpha=0.7)
-            ax.annotate("commit", xy=(commit_step, ax.get_ylim()[1] * 0.9),
-                        fontsize=7, ha="right", color="#333333")
+            ax.axvline(commit_step, color=figstyle.GRAY, ls=":", lw=1, alpha=0.8)
+            y0, y1 = ax.get_ylim()
+            # Mid-height, just left of the line: the curves occupy the top
+            # and bottom of the panel, so mid-height is reliably empty.
+            ax.annotate("commit", xy=(commit_step, y0 + 0.52 * (y1 - y0)),
+                        xytext=(-4, 0), textcoords="offset points",
+                        fontsize=7.5, ha="right", va="center",
+                        color=figstyle.GRAY, rotation=90)
 
         ax.set_xlabel("Step")
+        if len(steps) <= 6:
+            ax.set_xticks(steps)
         if ax_idx == 0:
             ax.set_ylabel("Value ($-\\mathcal{G}$)")
-        ax.set_title(title, fontsize=10)
-        ax.grid(True, alpha=0.2)
+        ax.set_title(title)
+        figstyle.style_axis(ax)
 
-    handles1 = [Line2D([0], [0], color="#D32F2F", lw=2, label="$-\\mathcal{G}$(commit)"),
-                Line2D([0], [0], color="#2196F3", lw=2, label="$-\\mathcal{G}$(observe)"),
-                Line2D([0], [0], color="#4CAF50", lw=1.5, ls="--", label="$H(b)$ entropy")]
-    fig.legend(handles=handles1, loc="lower center", ncol=3, fontsize=9,
-               bbox_to_anchor=(0.5, -0.05))
+    handles = [Line2D([0], [0], color=commit_color, lw=1.8,
+                      label="$-\\mathcal{G}$(commit)"),
+               Line2D([0], [0], color=observe_color, lw=1.8,
+                      label="$-\\mathcal{G}$(observe)"),
+               Line2D([0], [0], color=entropy_color, lw=1.4, ls="--",
+                      label="Belief entropy $H(b)$")]
+    fig.legend(handles=handles, loc="lower center", ncol=3,
+               bbox_to_anchor=(0.5, -0.08))
 
-    plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
-    plt.close()
-    print(f"  Saved {save_path}")
+    fig.tight_layout()
+    fig.savefig(save_path)
+    fig.savefig(save_path.replace(".pdf", ".png"))
+    plt.close(fig)
+    print(f"  Saved {save_path} (+ .png)")
 
 
 def plot_obs_action_scaling(results: Dict, save_path: str = "figures/fig_obs_scaling.pdf"):
     """Plot success and reward vs number of observation actions K."""
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+    figstyle.apply()
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9, 3.4))
 
-    scale_styles = {
-        "Myopic":      {"color": "#888888", "ls": "--", "marker": "s", "lw": 1.5},
-        "Planning":    {"color": "#2196F3", "ls": "-",  "marker": "^", "lw": 2.0},
-        "Planning+IG": {"color": "#9C27B0", "ls": ":",  "marker": "v", "lw": 2.0},
-        "EFE":         {"color": "#D32F2F", "ls": "-",  "marker": "o", "lw": 2.5},
-    }
-
-    for name, style in scale_styles.items():
+    order = ["Myopic", "Planning", "Planning+IG", "EFE"]
+    for name in order:
         if name not in results:
             continue
         d = results[name]
-        ax1.plot(d["K"], [s * 100 for s in d["success"]],
-                 color=style["color"], ls=style["ls"], marker=style["marker"],
-                 lw=style["lw"], markersize=7, label=name)
-        ax2.plot(d["K"], d["reward"],
-                 color=style["color"], ls=style["ls"], marker=style["marker"],
-                 lw=style["lw"], markersize=7, label=name)
+        se_s = [s * 100 for s in d.get("se_success", [0] * len(d["K"]))]
+        _plot_agent_series(ax1, d["K"], [s * 100 for s in d["success"]],
+                           se_s, name)
+        _plot_agent_series(ax2, d["K"], d["reward"], d.get("se_reward"), name)
 
-    ax1.set_xlabel("Number of observation actions $K$")
+    for ax in (ax1, ax2):
+        ax.set_xlabel("Number of observation actions $K$")
+        ax.set_xticks([1, 2, 3])
+        figstyle.style_axis(ax)
+
     ax1.set_ylabel("Success rate (%)")
-    ax1.set_xticks([1, 2, 3])
-    ax1.grid(True, alpha=0.3)
     ax1.set_title("(a) Success vs. observation action complexity")
-    ax1.legend(fontsize=8)
-
-    ax2.set_xlabel("Number of observation actions $K$")
+    ax1.legend(loc="upper left")
     ax2.set_ylabel("Mean reward")
-    ax2.set_xticks([1, 2, 3])
-    ax2.grid(True, alpha=0.3)
     ax2.set_title("(b) Reward vs. observation action complexity")
 
-    plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
-    plt.close()
-    print(f"  Saved {save_path}")
+    fig.tight_layout()
+    fig.savefig(save_path)
+    fig.savefig(save_path.replace(".pdf", ".png"))
+    plt.close(fig)
+    print(f"  Saved {save_path} (+ .png)")
 
 
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
+def run_trajectory_demo():
+    """Seeded demo-episode traces for fig_efe_trajectory (deterministic)."""
+    np.random.seed(42)
+    env = TigerEnv(listen_accuracy=0.85, listen_cost=1.0,
+                   correct_reward=10.0, incorrect_penalty=-100.0)
+    agent = make_agent(EFEAgent, env, planning_horizon=6)
+    trajectories = collect_trajectories(env, agent, n_episodes=50, seed=42)
+    plot_efe_trajectories(trajectories)
+
+
 if __name__ == "__main__":
-    import os
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--replot", action="store_true",
+                        help="Regenerate the figures from the committed CSVs "
+                             "(and re-trace the cheap seeded demo) without "
+                             "re-running the sweep batteries.")
+    args = parser.parse_args()
+
     os.makedirs("figures", exist_ok=True)
 
     print("=" * 72)
     print("EXPERIMENT 1: Reward Asymmetry Sweep")
     print("=" * 72)
-    sweep_results = run_reward_asymmetry_sweep(
-        penalties=[1, 2, 5, 10, 20, 50, 100, 200, 500],
-        num_episodes=500,
-        horizon=6,
-    )
+    if args.replot:
+        sweep_results = load_asymmetry_from_csv()
+        print(f"  Loaded {ASYMMETRY_CSV}")
+    else:
+        sweep_results = run_reward_asymmetry_sweep()
     plot_reward_asymmetry_sweep(sweep_results)
 
     print("\n" + "=" * 72)
     print("EXPERIMENT 2: EFE Decomposition Trajectories")
     print("=" * 72)
-    np.random.seed(42)
-    env = TigerEnv(listen_accuracy=0.85, listen_cost=1.0,
-                   correct_reward=10.0, incorrect_penalty=-100.0)
-    agent = make_agent(EFEAgent, env, planning_horizon=6)
-    trajectories = collect_trajectories(env, agent, n_episodes=50)
-    plot_efe_trajectories(trajectories)
+    run_trajectory_demo()
 
     print("\n" + "=" * 72)
     print("EXPERIMENT 3: Observation Action Complexity Scaling")
     print("=" * 72)
-    obs_results = run_obs_action_scaling(n_states=8, num_episodes=500, horizon=3)
+    if args.replot:
+        obs_results = load_obs_scaling_from_csv()
+        print(f"  Loaded {OBS_SCALING_CSV}")
+    else:
+        obs_results = run_obs_action_scaling()
     plot_obs_action_scaling(obs_results)
 
     print("\nAll figures saved to figures/")

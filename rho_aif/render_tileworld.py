@@ -7,6 +7,8 @@ Produces:
   3. Scan region atlas showing all spatial partitions
 """
 
+import os
+
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
@@ -19,6 +21,14 @@ from dataclasses import dataclass, field
 from rho_aif.environments.tileworld import TileworldEnv
 from rho_aif.agents.base import BaseAgent
 from rho_aif.belief import BeliefState
+from rho_aif import figstyle
+
+
+def _save_fig(fig, save_path):
+    """Save the PDF artifact of record plus its PNG twin."""
+    base = os.path.splitext(save_path)[0]
+    fig.savefig(base + ".pdf", bbox_inches="tight", dpi=300)
+    fig.savefig(base + ".png", bbox_inches="tight", dpi=300)
 
 
 @dataclass
@@ -139,20 +149,20 @@ def _draw_grid(
                     rect = mpatches.FancyBboxPatch(
                         (c - 0.48, r - 0.48), 0.96, 0.96,
                         boxstyle="round,pad=0.02",
-                        linewidth=2.0, edgecolor="#2196F3",
+                        linewidth=2.0, edgecolor=figstyle.BLUE,
                         facecolor="none", zorder=3,
                     )
                     ax.add_patch(rect)
 
     if show_target and target_cell is not None:
         tr, tc = target_cell // grid_size, target_cell % grid_size
-        ax.plot(tc, tr, marker="*", markersize=14, color="#00C853",
+        ax.plot(tc, tr, marker="*", markersize=14, color=figstyle.GREEN,
                 markeredgecolor="black", markeredgewidth=0.8, zorder=5)
 
     if commit_cell is not None:
         cr, cc = commit_cell // grid_size, commit_cell % grid_size
         circle = plt.Circle((cc, cr), 0.4, fill=False,
-                            edgecolor="#D32F2F", linewidth=2.5, zorder=5)
+                            edgecolor=figstyle.VERMILLION, linewidth=2.5, zorder=5)
         ax.add_patch(circle)
 
     for r in range(grid_size + 1):
@@ -232,13 +242,9 @@ def render_belief_evolution(
             vmax=vmax,
         )
 
-    fig.suptitle(
-        f"{episode.agent_name} on {episode.grid_size}x{episode.grid_size} Tileworld",
-        fontsize=11, fontweight="bold", y=1.02,
-    )
-
+    # No suptitle: the LaTeX caption carries the description.
     plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
+    _save_fig(fig, save_path)
     plt.close()
 
 
@@ -333,7 +339,7 @@ def render_agent_comparison(
                 )
 
     plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
+    _save_fig(fig, save_path)
     plt.close()
 
 

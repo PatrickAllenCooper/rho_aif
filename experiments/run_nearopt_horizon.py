@@ -7,16 +7,27 @@ the exact reward-optimal weight w* at H=1..5 and measure how often w=1
 achieves >= 95% of optimal reward.
 """
 
+import argparse
+import os
+import sys
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import os
 
+_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(_ROOT))
+sys.path.insert(0, str(_ROOT / "experiments"))
+
+from rho_aif import figstyle
 from rho_aif.environments.info_seeking import InfoSeekingEnv
 from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
 from run_experiment import make_agent, run_episode
+
+RESULTS_CSV = _ROOT / "results" / "results_nearopt_horizon.csv"
 
 
 def evaluate_weight_fast(env, w, horizon, num_episodes=100, seed=42):
@@ -98,7 +109,9 @@ def run_nearopt_study(
 
 
 def plot_nearopt(df, output_path="figures/fig_nearopt_horizon.pdf"):
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    figstyle.apply()
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
     alpha_bins = [
         (1, 3, "$\\alpha < 3$"),
@@ -108,36 +121,49 @@ def plot_nearopt(df, output_path="figures/fig_nearopt_horizon.pdf"):
 
     fig, ax = plt.subplots(1, 1, figsize=(5, 3.5))
     horizons = sorted(df["horizon"].unique())
-    colors = ["#E57373", "#64B5F6", "#81C784"]
+    markers = ["o", "^", "D"]
 
-    for (lo, hi, label), color in zip(alpha_bins, colors):
+    for (lo, hi, label), color, marker in zip(
+            alpha_bins, figstyle.ENV_CYCLE, markers):
         mask = (df["alpha"] >= lo) & (df["alpha"] < hi)
         sub = df[mask]
         fracs = []
         for h in horizons:
             hm = sub[sub["horizon"] == h]
             fracs.append(hm["near_optimal"].mean() * 100 if len(hm) > 0 else 0)
-        ax.plot(horizons, fracs, marker="o", label=label,
-                color=color, linewidth=2, markersize=6)
+        ax.plot(horizons, fracs, marker=marker, label=label, color=color)
 
     all_fracs = [df[df["horizon"] == h]["near_optimal"].mean() * 100 for h in horizons]
-    ax.plot(horizons, all_fracs, marker="s", label="All", color="black",
-            linewidth=2, markersize=6, linestyle="--")
+    ax.plot(horizons, all_fracs, marker="s", label="All",
+            color=figstyle.BLACK, linestyle="--")
 
+    figstyle.style_axis(ax)
     ax.set_xlabel("Planning horizon $H$")
-    ax.set_ylabel("$w{=}1$ near-optimal (% of envs)")
+    ax.set_ylabel("$w{=}1$ near-optimal (% of environments)")
     ax.set_xticks(horizons)
     ax.set_ylim(0, 102)
-    ax.legend(fontsize=8, loc="upper left")
-    ax.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(output_path, bbox_inches="tight")
-    print(f"  Saved {output_path}")
-    plt.close()
+    ax.legend(loc="upper left")
+    fig.tight_layout()
+    fig.savefig(output_path)
+    fig.savefig(output_path.with_suffix(".png"))
+    print(f"  Saved {output_path} and {output_path.with_suffix('.png')}")
+    plt.close(fig)
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--replot", action="store_true",
+        help="Rebuild the figure from the committed CSV without re-running "
+             "any episodes.")
+    args = parser.parse_args()
+
     os.makedirs("figures", exist_ok=True)
+
+    if args.replot:
+        df = pd.read_csv(RESULTS_CSV)
+        plot_nearopt(df)
+        sys.exit(0)
 
     print("Near-optimality Monte Carlo study")
     print("=" * 60)

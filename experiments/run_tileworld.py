@@ -33,15 +33,21 @@ from rho_aif.render_tileworld import (
     run_recorded_episode, render_belief_evolution,
     render_agent_comparison, render_scan_atlas,
 )
+from rho_aif import figstyle
 
 
-AGENT_STYLES = {
-    "Myopic":        {"color": "#888888", "ls": "--", "marker": "s"},
-    "Planning":      {"color": "#2196F3", "ls": "-",  "marker": "^"},
-    "InfoGain-Tuned":{"color": "#FF9800", "ls": "-.", "marker": "D"},
-    "Planning+IG":   {"color": "#9C27B0", "ls": ":",  "marker": "v"},
-    "EFE":           {"color": "#D32F2F", "ls": "-",  "marker": "o"},
-}
+SCALING_CSV = "results/results_tileworld_scaling.csv"
+
+# Agent order for the scaling figure legend (colors/linestyles/markers come
+# from the shared figstyle module so every figure in the paper agrees).
+SCALING_AGENT_ORDER = ["Myopic", "Planning", "InfoGain-Tuned", "Planning+IG", "EFE"]
+
+
+def save_fig(fig, save_path):
+    """Save the PDF artifact of record plus its PNG twin."""
+    base, _ = os.path.splitext(save_path)
+    fig.savefig(base + ".pdf")
+    fig.savefig(base + ".png")
 
 
 def find_good_episode_seed(
@@ -60,8 +66,14 @@ def find_good_episode_seed(
 
 
 def fig_belief_evolution(save_path="figures/fig_tileworld_belief.pdf"):
-    """Figure A: EFE belief evolution on 6x6 Tileworld."""
+    """Figure A: EFE belief evolution on 6x6 Tileworld.
+
+    The demo episode is deterministic: ``find_good_episode_seed`` scans a
+    fixed seed range with the global RNG reseeded per candidate, and the
+    chosen seed is passed to ``env.reset`` for the recorded episode.
+    """
     print("  Generating Tileworld belief evolution...")
+    figstyle.apply()
     env = TileworldEnv(grid_size=6)
     seed = find_good_episode_seed(
         env, EFEAgent, {"planning_horizon": 2},
@@ -78,8 +90,15 @@ def fig_belief_evolution(save_path="figures/fig_tileworld_belief.pdf"):
 
 
 def fig_agent_comparison(save_path="figures/fig_tileworld_comparison.pdf"):
-    """Figure B: Side-by-side EFE vs Planning vs InfoGain-Tuned."""
+    """Figure B: Side-by-side EFE vs Planning vs InfoGain-Tuned.
+
+    Deterministic demo: the InfoGain weight tuner runs on its own fixed seed
+    stream (``TUNING_SEED``), the shared episode seed comes from the
+    deterministic ``find_good_episode_seed`` search, and every agent replays
+    the same seeded episode.
+    """
     print("  Generating Tileworld agent comparison...")
+    figstyle.apply()
     env = TileworldEnv(grid_size=6)
 
     print("    Tuning InfoGain weight...")
@@ -111,9 +130,14 @@ def fig_agent_comparison(save_path="figures/fig_tileworld_comparison.pdf"):
     print(f"    Saved {save_path}")
 
 
-def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
-    """Figure C: Scaling analysis across grid sizes with computation time."""
-    print("  Generating Tileworld scaling analysis...")
+def run_scaling_battery(csv_path=SCALING_CSV):
+    """Run the Tileworld scaling battery and write the results CSV.
+
+    This is the compute half of the scaling figure. The plotting half,
+    ``fig_scaling_replot``, reads the CSV this function writes, so the figure
+    can be rebuilt (restyled) without re-running any episodes.
+    """
+    print("  Running Tileworld scaling battery...")
 
     grid_sizes = [4, 6, 8]
     horizon = 2
@@ -181,64 +205,71 @@ def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
     for row in csv_rows:
         row.update(prov)
     os.makedirs("results", exist_ok=True)
-    pd.DataFrame(csv_rows).to_csv("results/results_tileworld_scaling.csv", index=False)
-    print("    Saved results/results_tileworld_scaling.csv")
+    pd.DataFrame(csv_rows).to_csv(csv_path, index=False)
+    print(f"    Saved {csv_path}")
+    return csv_path
 
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 4))
 
-    for name, style in AGENT_STYLES.items():
-        if name not in results:
+def fig_scaling_replot(csv_path=SCALING_CSV,
+                       save_path="figures/fig_tileworld_scaling.pdf"):
+    """Figure C: rebuild the scaling figure from the committed results CSV.
+
+    Reads ``results/results_tileworld_scaling.csv`` (written by
+    ``run_scaling_battery``) and replots without re-running any episodes.
+    """
+    print(f"  Plotting Tileworld scaling from {csv_path}...")
+    figstyle.apply()
+    df = pd.read_csv(csv_path)
+    grid_sizes = sorted(df["grid_size"].unique())
+
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(11.5, 3.4))
+
+    for name in SCALING_AGENT_ORDER:
+        sub = df[df["agent"] == name].sort_values("grid_size")
+        if sub.empty:
             continue
-        data = results[name]
-        ax1.plot(data["grid_size"], data["success"],
-                 color=style["color"], ls=style["ls"], marker=style["marker"],
-                 lw=2, label=name)
+        style = figstyle.agent_style(name)
+        ax1.errorbar(sub["grid_size"], sub["success_rate"] * 100,
+                     yerr=sub["se_success_seed_level"] * 100,
+                     capsize=2, elinewidth=0.8, label=name, **style)
+        ax2.errorbar(sub["grid_size"], sub["mean_reward"],
+                     yerr=sub["se_reward_seed_level"],
+                     capsize=2, elinewidth=0.8, label=name, **style)
+        ax3.plot(sub["grid_size"], sub["sec_per_episode"] * 1000,
+                 label=name, **style)
 
     ax1.set_xlabel("Grid size")
     ax1.set_ylabel("Success rate (%)")
     ax1.set_title("(a) Success rate vs grid size")
-    ax1.set_xticks(grid_sizes)
-    ax1.set_xticklabels([f"{g}x{g}" for g in grid_sizes])
-    ax1.legend(fontsize=8)
-    ax1.grid(True, alpha=0.2)
-
-    for name, style in AGENT_STYLES.items():
-        if name not in results:
-            continue
-        data = results[name]
-        ax2.plot(data["grid_size"], data["reward"],
-                 color=style["color"], ls=style["ls"], marker=style["marker"],
-                 lw=2, label=name)
 
     ax2.set_xlabel("Grid size")
     ax2.set_ylabel("Mean reward")
     ax2.set_title("(b) Reward vs grid size")
-    ax2.set_xticks(grid_sizes)
-    ax2.set_xticklabels([f"{g}x{g}" for g in grid_sizes])
-    ax2.grid(True, alpha=0.2)
-
-    for name, style in AGENT_STYLES.items():
-        if name not in results:
-            continue
-        data = results[name]
-        ax3.plot(data["grid_size"], [t * 1000 for t in data["time_s"]],
-                 color=style["color"], ls=style["ls"], marker=style["marker"],
-                 lw=2, label=name)
 
     ax3.set_xlabel("Grid size")
     ax3.set_ylabel("Time per episode (ms)")
     ax3.set_title("(c) Computation cost")
-    ax3.set_xticks(grid_sizes)
-    ax3.set_xticklabels([f"{g}x{g}" for g in grid_sizes])
     ax3.set_yscale("log")
-    ax3.grid(True, alpha=0.2)
 
-    plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
-    plt.close()
-    print(f"    Saved {save_path}")
+    for ax in (ax1, ax2, ax3):
+        figstyle.style_axis(ax)
+        ax.set_xticks(grid_sizes)
+        ax.set_xticklabels([f"{g}$\\times${g}" for g in grid_sizes])
 
-    return results
+    handles, labels = ax1.get_legend_handles_labels()
+    fig.legend(handles, labels, ncol=len(labels), loc="lower center",
+               bbox_to_anchor=(0.5, -0.06), frameon=False)
+    fig.tight_layout(rect=[0, 0.03, 1, 1])
+
+    save_fig(fig, save_path)
+    plt.close(fig)
+    print(f"    Saved {save_path} (+ .png)")
+
+
+def fig_scaling(save_path="figures/fig_tileworld_scaling.pdf"):
+    """Figure C: full path — run the scaling battery, then plot from its CSV."""
+    csv_path = run_scaling_battery()
+    fig_scaling_replot(csv_path=csv_path, save_path=save_path)
 
 
 def run_tileworld_experiment(grid_size=6, num_episodes=500, seeds=None):
@@ -350,7 +381,7 @@ if __name__ == "__main__":
 
         fig_belief_evolution()
         fig_agent_comparison()
-        scaling_results = fig_scaling()
+        fig_scaling()
 
     if cmd in ("experiment", "all"):
         print("\n")
@@ -364,5 +395,10 @@ if __name__ == "__main__":
 
     if cmd == "scaling":
         fig_scaling()
+
+    if cmd == "replot":
+        # Rebuild the scaling figure from the committed CSV without
+        # re-running any episodes.
+        fig_scaling_replot()
 
     print("\nDone.")

@@ -20,6 +20,7 @@ See Guidance_Documents/price_of_information.md for the Stage G2 writeup.
 
 from __future__ import annotations
 
+import argparse
 import os
 import sys
 from pathlib import Path
@@ -35,6 +36,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from rho_aif import figstyle
 from rho_aif.agents.efe import EFEAgent
 from rho_aif.agents.ids import IDSAgent
 from rho_aif.agents.planning import PlanningAgent
@@ -349,36 +351,39 @@ def plot_composition(df: pd.DataFrame, path: Path) -> None:
         (df["w"].notna()) & (df["agent"] == "Planning+IG (reward-relevant)")
     ].sort_values("w")
 
+    figstyle.apply()
     fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.2))
     ax = axes[0]
     ax.bar(range(len(plain)), plain["mean_task_tests"],
-           label="task-relevant tests", color="C0")
+           label="task-relevant tests", color=figstyle.BLUE)
     ax.bar(range(len(plain)), plain["mean_distractor_tests"],
-           bottom=plain["mean_task_tests"], label="distractor test", color="C3")
+           bottom=plain["mean_task_tests"], label="distractor tests",
+           color=figstyle.VERMILLION)
     ax.set_xticks(range(len(plain)))
-    ax.set_xticklabels([f"{w:.3g}" for w in plain["w"]], rotation=45, fontsize=7)
-    ax.set_xlabel("Info-gain weight w")
+    ax.set_xticklabels([f"{w:.3g}" for w in plain["w"]],
+                       rotation=45, ha="right", fontsize=7.5)
+    figstyle.style_axis(ax)
+    ax.set_xlabel("Info-gain weight $w$")
     ax.set_ylabel("Mean tests per episode")
-    ax.set_title("Ordinary information gain: usage composition")
-    ax.legend(fontsize=8)
-    ax.grid(True, alpha=0.3, axis="y")
+    ax.set_title("(a) Usage composition, ordinary information gain")
+    ax.legend(loc="upper left")
 
     ax2 = axes[1]
     ax2.errorbar(plain["w"], plain["mean_distractor_fraction"],
                  yerr=plain["se_distractor_fraction_seed_level"],
-                 marker="o", ms=4, capsize=3, color="C3",
+                 marker="o", ms=4, capsize=3, color=figstyle.VERMILLION,
                  label="ordinary information gain")
     if not relevant.empty:
         ax2.errorbar(relevant["w"], relevant["mean_distractor_fraction"],
                      yerr=relevant["se_distractor_fraction_seed_level"],
-                     marker="s", ms=4, capsize=3, color="C2",
+                     marker="s", ms=4, capsize=3, color=figstyle.GREEN,
                      label="reward-relevance weighted")
     ax2.set_xscale("symlog", linthresh=0.1)
-    ax2.set_xlabel("Info-gain weight w")
+    figstyle.style_axis(ax2)
+    ax2.set_xlabel("Info-gain weight $w$")
     ax2.set_ylabel("Distractor fraction of usage")
-    ax2.set_title("Relevance weighting removes distractor spend")
-    ax2.legend(fontsize=8)
-    ax2.grid(True, alpha=0.3)
+    ax2.set_title("(b) Distractor fraction, ordinary vs. relevance-weighted")
+    ax2.legend(loc="upper left")
     ax2.set_ylim(-0.02, max(0.3, float(plain["mean_distractor_fraction"].max()) * 1.2))
 
     fig.tight_layout()
@@ -390,8 +395,21 @@ def plot_composition(df: pd.DataFrame, path: Path) -> None:
 
 
 def main() -> None:
-    df = run_sweep()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--replot", action="store_true",
+        help="Rebuild the figure from the committed CSV without re-running "
+             "any episodes.")
+    args = parser.parse_args()
+
+    if args.replot:
+        df = pd.read_csv(RESULTS / "results_distractor_diagnosis.csv")
+    else:
+        df = run_sweep()
     plot_composition(df, FIGURES / "distractor_composition")
+
+    if args.replot:
+        return
 
     def _frac(agent, w=None):
         sel = df[df["agent"] == agent]

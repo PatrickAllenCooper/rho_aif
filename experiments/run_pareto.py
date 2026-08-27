@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 from typing import Dict, List
 import os
 
+from rho_aif import figstyle
 from rho_aif.environments.info_seeking import InfoSeekingEnv
 from rho_aif.environments.tiger import TigerEnv
 from rho_aif.environments.diagnosis import DiagnosisEnv
@@ -68,15 +69,67 @@ def run_pareto_sweep(
     return {"sweep": sweep, "efe": efe}
 
 
+# Weights whose points get an in-panel annotation. Where consecutive weights
+# are exactly reward-and-success tied (the paper's bracket convention), the
+# whole tied bracket is labeled once, e.g. "w=0.01-20".
+ANNOTATED_WEIGHTS = {0.01, 1.0, 10.0, 100.0}
+# Caption-named points beyond the default subset (fig:pareto names w=20 as
+# Pareto-dominating w=1 on Tileworld).
+CAPTION_WEIGHTS = {"Tileworld": {20.0}}
+# The bracket containing w=1 sits under the large diamond+star markers, so
+# its label needs a longer manual leader. Offsets are in points, chosen per
+# environment to point into empty plot area; the fallback works for any
+# environment added later.
+W1_LABEL_OFFSETS = {
+    "Tiger": (30, 8, "left"),
+    "Testbed": (-26, -16, "right"),
+    "Diagnosis": (-30, 6, "right"),
+    "Bandit": (-20, 12, "right"),
+    "Tileworld": (-16, -16, "right"),
+}
+# Targeted nudges for non-w=1 labels that would otherwise sit on the sweep
+# polyline, keyed by (env, first weight of the tied bracket).
+MANUAL_LABEL_OFFSETS = {
+    ("Tileworld", 0.01): (9, -12, "left"),
+}
+
+
+def _tied_weight_groups(ws, succ, rew, rtol=1e-9):
+    """Group consecutive sweep points that are exactly tied on both axes."""
+    groups = []
+    for i, w in enumerate(ws):
+        if groups and np.isclose(succ[i], groups[-1]["succ"], rtol=rtol) \
+                and np.isclose(rew[i], groups[-1]["rew"], rtol=rtol):
+            groups[-1]["ws"].append(w)
+        else:
+            groups.append({"ws": [w], "succ": succ[i], "rew": rew[i]})
+    return groups
+
+
 def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
-    """4-panel Pareto frontier: success vs reward for each environment."""
+    """Pareto frontier panels: success vs reward for each environment.
+
+    Layout is a 2x3 grid (five environment panels plus the legend in the
+    empty sixth cell). Styling comes from rho_aif.figstyle: the sweep series
+    is Planning+IG (pink, dotted), the w=1 diamond is Planning+IG's marker
+    for the canonical weight, and the EFE agent is the vermillion star. The
+    two markers coincide by Proposition 1, so the star is drawn smaller on
+    top of the diamond.
+    """
+    figstyle.apply()
     envs = list(all_results.keys())
     n = len(envs)
-    fig, axes = plt.subplots(1, n, figsize=(3.2 * n, 3.5))
-    if n == 1:
-        axes = [axes]
+    if n >= 5:
+        nrows, ncols = 2, 3
+        fig, axes = plt.subplots(nrows, ncols, figsize=(9.6, 6.2))
+        axes = axes.ravel()
+    else:
+        nrows, ncols = 1, n
+        fig, axes = plt.subplots(1, n, figsize=(3.2 * n, 3.5))
+        axes = np.atleast_1d(axes)
 
     panel_labels = ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)"]
+    pig = figstyle.agent_style("Planning+IG")
 
     for idx, (env_name, ax) in enumerate(zip(envs, axes)):
         data = all_results[env_name]
@@ -84,58 +137,133 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
         efe = data["efe"]
 
         succ = [s * 100 for s in sw["success"]]
-        rew = sw["reward"]
-        ws = sw["w"]
+        rew = list(sw["reward"])
+        ws = list(sw["w"])
 
-        ax.plot(succ, rew, color="#2196F3", lw=2.0, alpha=0.5, zorder=1)
-        ax.scatter(succ, rew, c="#2196F3", s=60, zorder=2, edgecolors="white", linewidths=0.7)
+        # w-ordered sweep polyline, kept light so markers and labels dominate.
+        ax.plot(succ, rew, color=pig["color"], linestyle=pig["linestyle"],
+                lw=1.4, alpha=0.5, zorder=1)
+        ax.scatter(succ, rew, c=pig["color"], s=32, zorder=2,
+                   edgecolors="white", linewidths=0.6)
 
-        for i, w in enumerate(ws):
-            if w in [0.01, 1.0, 10.0, 100.0]:
-                if w == 1.0:
-                    offset = (7, -14)
-                elif w == 0.01:
-                    offset = (-10, 8)
-                elif w == 100.0:
-                    offset = (-10, -12)
-                else:
-                    offset = (7, 7)
-                ax.annotate(f"$w$={w:g}", (succ[i], rew[i]),
-                            textcoords="offset points", xytext=offset,
-                            fontsize=7, color="#2196F3", alpha=0.9,
-                            fontweight="bold")
-
+        # Planning+IG at w=1 (diamond) and the EFE agent (star). They
+        # coincide by Proposition 1, so draw the star smaller on top.
         w1_idx = next((i for i, w in enumerate(ws) if abs(w - 1.0) < 0.01), None)
         if w1_idx is not None:
-            ax.scatter([succ[w1_idx]], [rew[w1_idx]], c="#2196F3", s=140,
-                       marker="D", zorder=4, edgecolors="black", linewidths=1.2)
+            ax.scatter([succ[w1_idx]], [rew[w1_idx]], c=pig["color"], s=170,
+                       marker="D", zorder=4, edgecolors="black", linewidths=1.0)
+        ax.scatter([efe["success"] * 100], [efe["reward"]],
+                   c=figstyle.AGENT_COLORS["EFE"], s=120,
+                   marker="*", zorder=5, edgecolors="black", linewidths=0.7)
 
-        ax.scatter([efe["success"] * 100], [efe["reward"]], c="#D32F2F", s=180,
-                   marker="*", zorder=5, edgecolors="black", linewidths=1.0)
+        # Per-panel limits fitted to the data, with headroom for labels.
+        lo_x, hi_x = min(succ), max(succ)
+        lo_y = min(rew + [efe["reward"]])
+        hi_y = max(rew + [efe["reward"]])
+        xr = (hi_x - lo_x) or 1.0
+        yr = (hi_y - lo_y) or 1.0
+        ax.set_xlim(lo_x - 0.22 * xr, hi_x + 0.22 * xr)
+        ax.set_ylim(lo_y - 0.14 * yr, hi_y + 0.16 * yr)
 
-        ax.set_xlabel("Success rate (%)", fontsize=9)
-        if idx == 0:
-            ax.set_ylabel("Mean reward", fontsize=9)
-        ax.set_title(f"{panel_labels[idx]} {env_name}", fontsize=10)
-        ax.grid(True, alpha=0.2)
-        ax.tick_params(labelsize=8)
+        # Annotate the labeled weight subset plus caption-named points. Tied
+        # brackets get one label spanning the bracket (e.g. "w=0.01-20").
+        wanted = ANNOTATED_WEIGHTS | CAPTION_WEIGHTS.get(env_name, set())
+        points = []
+        x_mid = lo_x + 0.55 * xr
+        for g in _tied_weight_groups(ws, succ, rew):
+            if not wanted & set(g["ws"]):
+                continue
+            if len(g["ws"]) > 1:
+                label = f"$w$={g['ws'][0]:g}–{g['ws'][-1]:g}"
+            else:
+                label = f"$w$={g['ws'][0]:g}"
+            manual = None
+            if 1.0 in g["ws"]:
+                # This point carries the diamond and star markers. Label it
+                # with a longer leader into empty area so nothing occludes.
+                manual = W1_LABEL_OFFSETS.get(env_name, (-24, -14, "right"))
+            elif (env_name, g["ws"][0]) in MANUAL_LABEL_OFFSETS:
+                manual = MANUAL_LABEL_OFFSETS[(env_name, g["ws"][0])]
+            if manual is not None:
+                dx, dy, ha = manual
+                ax.annotate(label, xy=(g["succ"], g["rew"]),
+                            xytext=(dx, dy), textcoords="offset points",
+                            fontsize=7.5, color=figstyle.GRAY,
+                            ha=ha, va="center",
+                            arrowprops=dict(arrowstyle="-", lw=0.5,
+                                            color=figstyle.GRAY,
+                                            shrinkA=2, shrinkB=10))
+                continue
+            side = -1 if g["succ"] > x_mid else 1
+            points.append((g["succ"], g["rew"], label, side))
+        figstyle.annotate_no_overlap(ax, points)
+
+        ax.set_xlabel("Success rate (%)")
+        if idx % ncols == 0:
+            ax.set_ylabel("Mean reward")
+        ax.set_title(f"{panel_labels[idx]} {env_name}")
+        figstyle.style_axis(ax)
 
     from matplotlib.lines import Line2D
     legend_elements = [
-        Line2D([0], [0], color="#2196F3", lw=1.5, marker="o", markersize=5,
+        Line2D([0], [0], color=pig["color"], linestyle=pig["linestyle"],
+               lw=1.4, alpha=0.7, marker="o", markersize=4.5,
                label="Planning+IG (sweep over $w$)"),
-        Line2D([0], [0], color="#2196F3", marker="D", markersize=8, ls="none",
-               markeredgecolor="black", label="Planning+IG $w{=}1$"),
-        Line2D([0], [0], color="#D32F2F", marker="*", markersize=12, ls="none",
-               markeredgecolor="black", label="EFE agent ($w{=}1$)"),
+        Line2D([0], [0], color=pig["color"], marker="D", markersize=9,
+               ls="none", markeredgecolor="black",
+               label="Planning+IG $w{=}1$"),
+        Line2D([0], [0], color=figstyle.AGENT_COLORS["EFE"], marker="*",
+               markersize=12, ls="none", markeredgecolor="black",
+               label="EFE agent ($w{=}1$)"),
     ]
-    fig.legend(handles=legend_elements, loc="lower center", ncol=3, fontsize=8,
-               bbox_to_anchor=(0.5, -0.08))
+    if n >= 5 and len(axes) > n:
+        for extra_ax in axes[n:]:
+            extra_ax.axis("off")
+        axes[n].legend(handles=legend_elements, loc="center")
+        plt.tight_layout()
+    else:
+        fig.legend(handles=legend_elements, loc="lower center", ncol=3,
+                   bbox_to_anchor=(0.5, -0.08))
+        plt.tight_layout()
 
-    plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
+    base, _ = os.path.splitext(save_path)
+    plt.savefig(base + ".pdf")
+    plt.savefig(base + ".png")
     plt.close()
-    print(f"  Saved {save_path}")
+    print(f"  Saved {base}.pdf and {base}.png")
+
+
+def load_pareto_results(
+    sweep_csv: str = "results/results_pareto_sweep.csv",
+    wstar_csv: str = "results/results_pareto_wstar.csv",
+) -> Dict:
+    """Reconstruct plot_pareto's input from the committed sweep CSVs.
+
+    Reads the sweep points from results_pareto_sweep.csv and the EFE
+    reference point from results_pareto_wstar.csv (columns efe_reward and
+    efe_success), so the figure can be rebuilt without re-running episodes.
+    """
+    import pandas as pd
+    sweep_df = pd.read_csv(sweep_csv)
+    wstar_df = pd.read_csv(wstar_csv).set_index("env")
+    all_results = {}
+    for env_name in sweep_df["env"].drop_duplicates():
+        g = sweep_df[sweep_df["env"] == env_name].sort_values("w")
+        all_results[env_name] = {
+            "sweep": {
+                "w": g["w"].tolist(),
+                "success": g["success"].tolist(),
+                "reward": g["reward"].tolist(),
+                "obs": g["obs"].tolist(),
+                "se_reward_seed_level": g["se_reward_seed_level"].tolist(),
+                "se_success_seed_level": g["se_success_seed_level"].tolist(),
+            },
+            "efe": {
+                "success": float(wstar_df.loc[env_name, "efe_success"]),
+                "reward": float(wstar_df.loc[env_name, "efe_reward"]),
+            },
+        }
+    return all_results
 
 
 def run_accuracy_sensitivity(
@@ -241,6 +369,13 @@ if __name__ == "__main__":
 
     import sys
     cmd = sys.argv[1] if len(sys.argv) > 1 else "pareto"
+
+    if cmd == "figure":
+        # Replot mode: rebuild figures/fig_pareto.{pdf,png} from the
+        # committed CSVs without re-running any episodes.
+        all_results = load_pareto_results()
+        plot_pareto(all_results)
+        print("\nPareto figure rebuilt from results/results_pareto_sweep.csv")
 
     if cmd in ("pareto", "all"):
         all_results = {}
