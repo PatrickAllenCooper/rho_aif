@@ -892,7 +892,7 @@ EFE is not recommended when $\alpha \approx 1$ (symmetric penalties), in navigat
 \paragraph{Limitations and future work.}
 The formal equivalence extends from observe-then-commit (Proposition~\ref{prop:equivalence}) to factored observation POMDPs (Proposition~\ref{prop:factored}), covering settings where observation actions preserve the hidden state. POMDPs where information-gathering actions change the hidden state (e.g., destructive testing) require the full coupling term $\Delta_T$ and are not covered. Extending the formal treatment to such settings remains future work. For slowly drifting hidden states (e.g., progressive disease), $\Delta_T$ is small but nonzero. The approximation error scales with the per-step transition entropy $H(s'_{\mathrm{hid}} | s_{\mathrm{hid}}, a)$, and characterizing the regime where this remains acceptable is an open question.
 
-On the practical side, scaling MCTS-EFE to multi-observation environments requires more efficient tree policies, as discussed above. The EFE agent assumes a known generative model. The misspecification analysis (Appendix~\ref{app:misspec}) shows graceful degradation with moderate model errors, but extending to full model learning (where AIF and BAMDPs converge) remains important future work. Navigation (Appendix~\ref{app:navigation}) shows that scale alone does not rescue epistemic planning when the observation model is proximity-based. NavMyopic leads at $3{\times}3$, $5{\times}5$, and $7{\times}7$. The practical contrast is with domains that offer explicit, choice-set observation actions (Diagnosis, Tileworld, RockSample), where EFE separates from reward-only planning once $|S| \geq 16$ and the horizon reaches the informative actions, with the exception RockSample[11,11] documents. At that scale the separation vanishes because no feasible search depth reaches the informative checks. This work is primarily theoretical, though the principled derivation of exploration weights could benefit safety-critical decision-making by reducing reliance on ad-hoc tuning.
+On the practical side, scaling MCTS-EFE to multi-observation environments requires more efficient tree policies, as discussed above. The EFE agent assumes a known generative model. The misspecification analysis (Appendix~\ref{app:misspec}) shows graceful degradation with moderate model errors, but extending to full model learning (where AIF and BAMDPs converge) remains important future work. Navigation (Appendix~\ref{app:navigation}) shows that scale alone does not rescue epistemic planning when the observation model is proximity-based. NavMyopic leads nominally at all three grid sizes tested and significantly at $5{\times}5$, and no epistemic agent significantly beats it at any size (Appendix~\ref{app:navigation}). The practical contrast is with domains that offer explicit, choice-set observation actions (Diagnosis, Tileworld, RockSample), where EFE separates from reward-only planning once $|S| \geq 16$ and the horizon reaches the informative actions, with the exception RockSample[11,11] documents. At that scale the separation vanishes because no feasible search depth reaches the informative checks. This work is primarily theoretical, though the principled derivation of exploration weights could benefit safety-critical decision-making by reducing reliance on ad-hoc tuning.
 
 \section{Conclusion}
 
@@ -1181,7 +1181,7 @@ Navigation uses only move actions. The goal cell is hidden, and each move yields
 
 \begin{table}[htbp]
 \centering
-\caption{Navigation scaling ($150$ episodes per seed $\times$ $5$ seeds = $750$ episodes per agent per grid). Step budget $3n^2$. NavEFE uses depth-limited planning $H{=}2$. See \texttt{results\_navigation\_scaling.csv}.}
+\caption{Navigation scaling ($150$ episodes per seed $\times$ $5$ seeds = $750$ episodes per agent per grid). Step budget $3n^2$. NavEFE uses depth-limited planning $H{=}2$. Uncertainty is seed-level SE. See \texttt{results\_navigation\_scaling.csv} and the companion seed-level Welch tests in \texttt{results\_navigation\_scaling\_seed\_stats.csv}.}
 \label{tab:nav_scaling}
 %% Numbers in this table are produced by experiments/run_experiment.py navigation-scaling
 \begin{small}
@@ -1189,23 +1189,23 @@ Navigation uses only move actions. The goal cell is hidden, and each move yields
 \toprule
 Grid & $|S|$ & Agent & Success & Mean reward \\
 \midrule
-\multirow{3}{*}{$3{\times}3$} & \multirow{3}{*}{$9$} & NavMyopic & $90.4\%$ & $+2.04$ \\
-& & NavInfoGain & $86.4\%$ & $-1.37$ \\
-& & NavEFE ($H{=}2$) & $87.2\%$ & $-1.29$ \\
+\multirow{3}{*}{$3{\times}3$} & \multirow{3}{*}{$9$} & NavMyopic & $90.4 \pm 1.3\%$ & $+2.04 \pm 1.51$ \\
+& & NavInfoGain & $86.4 \pm 1.6\%$ & $-1.37 \pm 1.69$ \\
+& & NavEFE ($H{=}2$) & $87.2 \pm 1.7\%$ & $-1.29 \pm 1.58$ \\
 \midrule
-\multirow{3}{*}{$5{\times}5$} & \multirow{3}{*}{$25$} & NavMyopic & $80.7\%$ & $-16.64$ \\
-& & NavInfoGain & $76.0\%$ & $-23.24$ \\
-& & NavEFE ($H{=}2$) & $74.4\%$ & $-25.76$ \\
+\multirow{3}{*}{$5{\times}5$} & \multirow{3}{*}{$25$} & NavMyopic & $80.7 \pm 1.4\%$ & $-16.64 \pm 1.54$ \\
+& & NavInfoGain & $76.0 \pm 1.5\%$ & $-23.24 \pm 1.75$ \\
+& & NavEFE ($H{=}2$) & $74.4 \pm 1.2\%$ & $-25.76 \pm 1.14$ \\
 \midrule
-\multirow{3}{*}{$7{\times}7$} & \multirow{3}{*}{$49$} & NavMyopic & $65.7\%$ & $-38.42$ \\
-& & NavInfoGain & $60.3\%$ & $-44.28$ \\
-& & NavEFE ($H{=}2$) & $62.8\%$ & $-40.86$ \\
+\multirow{3}{*}{$7{\times}7$} & \multirow{3}{*}{$49$} & NavMyopic & $65.7 \pm 2.8\%$ & $-38.42 \pm 2.77$ \\
+& & NavInfoGain & $60.3 \pm 1.2\%$ & $-44.28 \pm 1.12$ \\
+& & NavEFE ($H{=}2$) & $62.8 \pm 0.7\%$ & $-40.86 \pm 0.77$ \\
 \bottomrule
 \end{tabular}
 \end{small}
 \end{table}
 
-NavMyopic (move toward the highest-probability cell) remains the strongest baseline at every scale. Extra steps devoted to exploratory detours incur the per-move cost without the sharp information returns seen when tests can be chosen explicitly. This is not a failure of $w{=}1$ so much as a structural regime change relative to our main benchmarks. Importantly, NavEFE is competitive with one-step NavInfoGain at $7{\times}7$ (higher mean reward, comparable success), showing that recursive epistemic valuation is not harmful once the grid is large enough that myopic IG is already costly. The contrast with Tileworld (Figure~\ref{fig:tw_scaling}) underscores condition (1) in Section~\ref{sec:discussion}. EFE's clearest wins appear when the agent must select among differentially informative observation actions, not only where to translate next under a smooth proximity field.
+NavMyopic (move toward the highest-probability cell) is the strongest baseline at every scale, nominally at $3{\times}3$ and $7{\times}7$ and significantly at $5{\times}5$, where its lead over NavEFE holds on reward ($p{=}0.002$), success ($p{=}0.010$), and observation count ($p{=}0.001$, all seed-level Welch, Holm-corrected within metric, \texttt{results\_navigation\_scaling\_seed\_stats.csv}). At the other two sizes no pairwise difference survives correction at 5 seeds. Extra steps devoted to exploratory detours incur the per-move cost without the sharp information returns seen when tests can be chosen explicitly, and at no size does an epistemic agent significantly beat the myopic rule. This is not a failure of $w{=}1$ so much as a structural regime change relative to our main benchmarks. NavEFE is competitive with one-step NavInfoGain at $7{\times}7$, with nominally higher mean reward ($-40.86$ against $-44.28$, seed-level $p{=}0.040$ uncorrected, not significant after Holm) and comparable success, evidence that recursive epistemic valuation is not harmful once the grid is large enough that myopic information gain is already costly. The contrast with Tileworld (Figure~\ref{fig:tw_scaling}) underscores condition (1) in Section~\ref{sec:discussion}. EFE's clearest wins appear when the agent must select among differentially informative observation actions, not only where to translate next under a smooth proximity field.
 
 \section{Scaling analysis}
 \label{app:scaling}

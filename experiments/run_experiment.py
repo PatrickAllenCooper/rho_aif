@@ -841,7 +841,11 @@ def run_navigation_scaling(
                 np.random.seed(seed)
                 agent = make_fn()
                 for i in range(num_episodes):
-                    results.append(run_episode(agent, env, seed=seed * 10000 + i))
+                    ep = run_episode(agent, env, seed=seed * 10000 + i)
+                    # run_episode does not persist the seed; tag with the
+                    # canonical seed so seed-level grouping sees 5 groups.
+                    ep.seed = seed
+                    results.append(ep)
             dt = time.time() - t0
             s = summarize_results(results)
             # Seed-level SEs, matching the standard every other battery meets.
