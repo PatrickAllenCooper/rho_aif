@@ -540,7 +540,8 @@ HORIZON_BUDGETS = [2048, 16384]
 
 
 def run_horizon_check(out="results/results_rocksample_pomcp_horizon.csv", cfg=None,
-                      time_ceiling_hours=DEFAULT_TIME_CEILING_HOURS):
+                      time_ceiling_hours=DEFAULT_TIME_CEILING_HOURS,
+                      instance=HORIZON_INSTANCE, budgets=None):
     """A disclosed post-hoc diagnostic, not a re-tuning.
 
     The budget sweep shows POMCP getting *worse* with more simulations, and the
@@ -558,13 +559,14 @@ def run_horizon_check(out="results/results_rocksample_pomcp_horizon.csv", cfg=No
     post-hoc diagnostic alongside the predeclared row.
     """
     cfg = cfg or frozen_config()
+    budgets = budgets or HORIZON_BUDGETS
     rows: List[dict] = []
     episodes: Dict[str, List[dict]] = {}
 
     row, eps = evaluate(
         lambda env, seed: RockSampleRolloutOnlyAgent(
             env, rollout_policy=cfg["rollout_policy"], seed=seed),
-        HORIZON_INSTANCE,
+        instance,
         f"Rollout only ({cfg['rollout_policy']})",
         HORIZON_EPISODES, SEEDS,
         extra={"num_simulations": 0, "stage": "horizon", "planning_horizon": 0, **{
@@ -573,13 +575,13 @@ def run_horizon_check(out="results/results_rocksample_pomcp_horizon.csv", cfg=No
     )
     rows.append(row); episodes[row["agent"]] = eps; _checkpoint(rows, out)
 
-    for n_sims in HORIZON_BUDGETS:
+    for n_sims in budgets:
         for horizon in HORIZON_GRID:
             merged = dict(cfg); merged["planning_horizon"] = horizon
             row, eps = evaluate(
                 lambda env, seed, m=merged, n=n_sims: RockSamplePOMCPAgent(
                     env, num_simulations=n, seed=seed, **m),
-                HORIZON_INSTANCE,
+                instance,
                 f"POMCP (H={horizon}, {n_sims} sims)",
                 HORIZON_EPISODES, SEEDS,
                 extra={"num_simulations": n_sims, "stage": "horizon", **merged},
@@ -587,14 +589,14 @@ def run_horizon_check(out="results/results_rocksample_pomcp_horizon.csv", cfg=No
             )
             rows.append(row); episodes[row["agent"]] = eps; _checkpoint(rows, out)
 
-    _write_stats({HORIZON_INSTANCE: episodes}, out)
+    _write_stats({instance: episodes}, out)
     print(f"\nHorizon check saved to {out}")
     return pd.DataFrame(rows)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("stage", choices=["tuning", "budget", "sensitivity", "horizon", "all"])
+    parser.add_argument("stage", choices=["tuning", "budget", "sensitivity", "horizon", "horizon-11x11", "all"])
     parser.add_argument("--episodes", type=int, default=None)
     parser.add_argument("--time-ceiling", type=float, default=DEFAULT_TIME_CEILING_HOURS)
     args = parser.parse_args()
@@ -607,3 +609,12 @@ if __name__ == "__main__":
         run_sensitivity(time_ceiling_hours=args.time_ceiling)
     if args.stage in ("horizon", "all"):
         run_horizon_check(time_ceiling_hours=args.time_ceiling)
+    if args.stage == "horizon-11x11":
+        # C15 closure: the RS[11,11] mechanism narrative includes POMCP, so the
+        # horizon diagnostic must exist on that instance too. 2,048 simulations
+        # only; the 16,384 tier is prohibitively slow at RS[11,11]'s step cost.
+        run_horizon_check(
+            out="results/results_rocksample_pomcp_horizon_11x11.csv",
+            time_ceiling_hours=args.time_ceiling,
+            instance="RS[11,11]", budgets=[2048],
+        )

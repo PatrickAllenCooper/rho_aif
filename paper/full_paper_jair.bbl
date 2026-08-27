@@ -1553,6 +1553,46 @@
       \field{title}{{SARSOP}: Efficient point-based {POMDP} planning by approximating optimally reachable belief spaces}
       \field{year}{2008}
     \endentry
+    \entry{kushner1978}{book}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=1ed29ca8d2b16f090f280df6bab6e0f6}{%
+           family={Kushner},
+           familyi={K\bibinitperiod},
+           given={Harold\bibnamedelima J.},
+           giveni={H\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=4f44b423042d24f9bc808ac6d4c1b9b4}{%
+           family={Clark},
+           familyi={C\bibinitperiod},
+           given={Dean\bibnamedelima S.},
+           giveni={D\bibinitperiod\bibinitdelim S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{location}{1}{%
+        {New York}%
+      }
+      \list{publisher}{1}{%
+        {Springer-Verlag}%
+      }
+      \strng{namehash}{bba094ed7a0f0209be687fb90e1a4172}
+      \strng{fullhash}{bba094ed7a0f0209be687fb90e1a4172}
+      \strng{fullhashraw}{bba094ed7a0f0209be687fb90e1a4172}
+      \strng{bibnamehash}{bba094ed7a0f0209be687fb90e1a4172}
+      \strng{authorbibnamehash}{bba094ed7a0f0209be687fb90e1a4172}
+      \strng{authornamehash}{bba094ed7a0f0209be687fb90e1a4172}
+      \strng{authorfullhash}{bba094ed7a0f0209be687fb90e1a4172}
+      \strng{authorfullhashraw}{bba094ed7a0f0209be687fb90e1a4172}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{series}{Applied Mathematical Sciences}
+      \field{title}{Stochastic Approximation Methods for Constrained and Unconstrained Systems}
+      \field{volume}{26}
+      \field{year}{1978}
+    \endentry
     \entry{laouar2026voi}{inproceedings}{}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=a8e1fdc59d7c7c11757d0afd71b104cf}{%

@@ -7,7 +7,7 @@ hidden state -- not another reward/usage winner-count table -- for reward-only
 Planning, EFE (w=1), and the strongest available reference per instance:
 SARSOP's near-optimal alpha-vector policy for the three OTC environments with
 a built solver (Tiger, Diagnosis, Bandit; Stage F), and a Planning+IG agent at
-the Stage G w* atlas's higher canonical budget for Structural Inspection,
+the w* atlas's higher canonical budget for Structural Inspection,
 where SARSOP was not run (state spaces of 256 and 65,536 are outside the
 scope of the near-optimal solver used here).
 
@@ -220,7 +220,7 @@ def main() -> None:
         "\\caption{Proper-scoring calibration of the terminal belief against the",
         " true hidden state (log score in nats, Brier score; mean $\\pm$ SE over",
         " 5 seeds). Reference is SARSOP for the three OTC environments and",
-        " Planning+IG at the Stage G atlas's higher canonical budget for",
+        " Planning+IG at the atlas's higher canonical budget (Appendix~\\ref{app:w_atlas}) for",
         " Structural Inspection, where the near-optimal solver used here does not",
         " scale to the instance's state space.}",
         "\\label{tab:calibration}",

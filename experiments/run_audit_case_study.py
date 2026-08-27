@@ -136,7 +136,7 @@ def main() -> None:
         f"\\caption{{Per-action value-of-information audit for one representative decision",
         f" ({args.instance}, info-gain weight $w={args.info_weight:g}$, step {step_for_table} of the",
         " episode seeded at " + str(args.seeds[0]) + "). Total score is the maximized planning",
-        " objective (Section 6); the chosen action need not have the largest raw information",
+        " objective (Section~\\ref{sec:methodology}). The chosen action need not have the largest raw information",
         " gain once sensing cost and downstream task value are accounted for.}",
         "\\label{tab:audit-case-study}",
         "\\small",

@@ -161,7 +161,7 @@ def main() -> None:
         " usage range of the Planning+IG family, implicit EFE budget",
         " $B_{\\mathrm{EFE}} = U(w{=}1)$ (mean $\\pm$ SE over seeds), and crossing",
         " brackets $w^*(B)$ at two canonical budgets per instance. Brackets are",
-        " set-valued (Definition PI-3); no closed-form meta-model is implied.}",
+        " set-valued (Definition~\\ref{def:pi3}). No closed-form meta-model is implied.}",
         "\\label{tab:w-atlas}",
         "\\small",
         "\\begin{tabular}{lcccc}",

@@ -450,10 +450,17 @@ def solve_shadow_price_from_curve(
     """
     Solve w*(B) from a precomputed usage curve.
 
-    Returns the grid point minimizing |U - B|, plus the **step bracket**:
-    the last w with U below B and the first w with U at/above B (when such
-    neighbors exist). Also reports SEs at those points and the curve's
-    [U_min, U_max] range.
+    Returns the grid point minimizing |U - B| (w_star, within tol counts as
+    achievable), plus the **step bracket**: the last w with U strictly below B
+    and the first subsequent w with U at or above B. ``bracketed`` is True
+    only when that strict straddle exists, so every bracketed row satisfies
+    U(w_lo) < B <= U(w_hi) and the per-episode mixture probability
+    q = (B - U(w_lo)) / (U(w_hi) - U(w_lo)) lies in (0, 1].
+
+    The tolerance affects only the nearest-point achievability call, never
+    the bracket. An earlier version applied tol to the bracket thresholds as
+    well, which let a grid point below the budget be reported as the upper
+    bracket endpoint and flagged bracketed=True without a real crossing.
     """
     if not curve:
         raise ValueError("curve must be nonempty")
@@ -469,21 +476,24 @@ def solve_shadow_price_from_curve(
     ties = np.where(np.abs(errs - errs[best_i]) <= 1e-12)[0]
     best_i = int(ties[0])
 
-    # Step bracket: last below budget, first at/above budget along sorted w.
-    below = np.where(us < budget - tol)[0]
-    above = np.where(us >= budget - tol)[0]
-    if len(below) and len(above):
+    # Step bracket: last w with U strictly below B, then the first w after it
+    # with U at or above B. Strict thresholds, no tolerance.
+    below = np.where(us < budget)[0]
+    if len(below):
         lo_i = int(below[-1])
-        # first above that is >= lo_i when possible
-        above_after = above[above >= lo_i]
-        hi_i = int(above_after[0]) if len(above_after) else int(above[0])
-        if hi_i < lo_i:
-            lo_i, hi_i = hi_i, lo_i
-        bracketed = True
+        above_after = np.where(us[lo_i + 1:] >= budget)[0]
+        if len(above_after):
+            hi_i = int(lo_i + 1 + above_after[0])
+            bracketed = True
+        else:
+            hi_i = min(len(ws) - 1, best_i + 1)
+            bracketed = False
     else:
         lo_i = max(0, best_i - 1)
         hi_i = min(len(ws) - 1, best_i + 1)
         bracketed = False
+    if bracketed:
+        assert us[lo_i] < budget <= us[hi_i], (us[lo_i], budget, us[hi_i])
 
     achievable = bool(errs[best_i] <= tol or (u_min - tol <= budget <= u_max + tol))
     note = ""
