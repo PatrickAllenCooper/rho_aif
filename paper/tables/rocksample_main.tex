@@ -8,10 +8,11 @@
  search-tree solver at its tuned, frozen configuration (2{,}048
  simulations, Appendix~\ref{app:rocksample}). Rollout only runs
  POMCP's approach-then-check rollout policy standalone, with no
- search tree. Bold: best mean reward per instance, plus any agent not
- significantly different from it by a seed-level Welch $t$-test with
- Holm--Bonferroni correction (full pairwise table in
- Appendix~\ref{app:rocksample}). Reward reported as mean $\pm$
+ search tree. Bold marks the best mean reward per instance plus any
+ agent not significantly different from it by a seed-level Welch
+ $t$-test with Holm--Bonferroni correction, corrected within metric
+ (complete pairwise statistics in the committed
+ \texttt{results\_rocksample\_*\_stats.csv} files). Reward reported as mean $\pm$
  seed-level SE (SE of the per-seed means, RS[5,3]/RS[7,4]: 10 seeds;
  RS[7,8]/RS[11,11]: 5 seeds).
  Steps and Checks omitted here (per-instance step and check counts,
