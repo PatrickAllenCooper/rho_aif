@@ -33,17 +33,18 @@ ENVS = {
     "Tiger": {
         "make": lambda: TigerEnv(),
         "horizon": 6,
-        "w_succ": 20,
+        # Planning+IG-class w*_succ from results_supplementary_tuned_weights.csv.
+        "w_succ": 50,
     },
     "Diagnosis": {
         "make": lambda: DiagnosisEnv(num_conditions=4),
         "horizon": 3,
-        "w_succ": 100,
+        "w_succ": 50,
     },
     "Bandit": {
         "make": lambda: BanditEnv(num_arms=4),
         "horizon": 2,
-        "w_succ": 100,
+        "w_succ": 20,
     },
 }
 

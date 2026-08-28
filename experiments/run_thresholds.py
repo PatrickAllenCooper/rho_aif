@@ -56,7 +56,9 @@ ENV_PARAMS = {
         "c": 1.0,
         "R_plus": 10.0,
         "R_minus": -50.0,
-        "w_ret": 0.5,
+        # Unique Pareto argmax from results_pareto_wstar.csv (w=20); the other
+        # rows' scalar w_ret values are members of tied brackets.
+        "w_ret": 20.0,
         "note": "Two-state reduction matching Diagnosis reward scale",
     },
 }

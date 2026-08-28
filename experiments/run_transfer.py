@@ -44,7 +44,9 @@ TRANSFER_ENVS = {
             listen_cost=1.0,
         ),
         "horizon": 6,
-        "w_succ": 20,
+        # Planning+IG-class w*_succ from results_supplementary_tuned_weights.csv
+        # (the evaluated agent class; the myopic-class weight is 20).
+        "w_succ": 50,
         "w_ret": 1.0,
     },
     "Diagnosis": {
@@ -56,7 +58,8 @@ TRANSFER_ENVS = {
             test_cost=1.0,
         ),
         "horizon": 3,
-        "w_succ": 100,
+        # Planning+IG-class w*_succ (myopic-class is 100).
+        "w_succ": 50,
         "w_ret": 0.5,
     },
     "Bandit": {
@@ -68,7 +71,8 @@ TRANSFER_ENVS = {
             inspect_cost=0.5,
         ),
         "horizon": 2,
-        "w_succ": 100,
+        # Planning+IG-class w*_succ (equal to the myopic-class weight here).
+        "w_succ": 20,
         "w_ret": 1.0,
     },
     "Testbed": {
@@ -79,7 +83,8 @@ TRANSFER_ENVS = {
             observation_cost=0.1,
         ),
         "horizon": 4,
-        "w_succ": 50,
+        # Planning+IG-class w*_succ (myopic-class is 20).
+        "w_succ": 10,
         "w_ret": 0.5,
     },
 }
