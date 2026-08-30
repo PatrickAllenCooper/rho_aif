@@ -339,7 +339,11 @@ def run_partition_sensitivity(grid_size=6, num_episodes=200, seeds=None):
                 np.random.seed(seed)
                 agent = make_agent(agent_class, env, **kwargs)
                 for i in range(num_episodes):
-                    result = run_episode(agent, env)
+                    # Seed the environment stream per episode, matching every
+                    # other battery. This call was previously unseeded, the
+                    # only such call in experiments/.
+                    result = run_episode(agent, env, seed=seed * 10000 + i)
+                    result.seed = seed
                     results.append(result)
             dt = time.time() - t0
             s = summarize_results(results)
@@ -347,6 +351,11 @@ def run_partition_sensitivity(grid_size=6, num_episodes=200, seeds=None):
                 "mode": mode, "agent": label,
                 "success": s["success_rate"],
                 "reward": s["mean_reward"],
+                "se_reward_seed_level": s.get("se_reward_seed_level", float("nan")),
+                "se_success_seed_level": s.get("se_success_seed_level", float("nan")),
+                "n_seeds": s.get("n_seeds", len(seeds)),
+                "seed_list": "|".join(str(x) for x in seeds),
+                "episodes_per_seed": num_episodes,
                 "se_reward": np.std([r.total_reward for r in results]) / np.sqrt(len(results)),
                 "obs": s["mean_observations"],
                 "time_s": dt,
