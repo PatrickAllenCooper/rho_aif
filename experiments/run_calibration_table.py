@@ -61,7 +61,10 @@ INSPECTION_ENVS = ["Inspection-N8", "Inspection-N16"]
 # reused here rather than re-tuned, so the two artifacts stay consistent.
 INSPECTION_REFERENCE_W = {
     "Inspection-N8": 100.0,
-    "Inspection-N16": 23.71373705661655,
+    # Was 23.71373705661655, which was this instance's w_hi2 before the atlas
+    # was regenerated (dfd5dae) and became its w_lo2, the endpoint Definition
+    # PI-3 excludes. Both rows now use the current w_hi2, as the rule states.
+    "Inspection-N16": 100.0,
 }
 
 
