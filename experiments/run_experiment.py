@@ -927,8 +927,12 @@ def run_scaling_analysis(seeds: List[int] = None):
     if seeds is None:
         seeds = SEEDS
 
+    from rho_aif.stats import holm_bonferroni, seed_level_ttest
+
     scaling_data = []
+    all_episodes = {}
     for n in [2, 4, 8, 16]:
+        by_agent = {}
         print(f"--- N = {n} ---")
         env = DiagnosisEnv(num_conditions=n, test_accuracy=0.80, test_cost=1.0,
                            correct_reward=10.0, incorrect_penalty=-50.0)
@@ -956,17 +960,49 @@ def run_scaling_analysis(seeds: List[int] = None):
             s["time_s"] = dt
             s.update(provenance_fields(seeds, episodes))
             scaling_data.append(s)
+            by_agent[agent_label] = results
             print(
                 f"  {agent_label:10s}: obs={s['mean_observations']:.2f}  "
                 f"success={s['success_rate']:.1%}  "
                 f"reward={s['mean_reward']:+.3f}  "
                 f"({dt:.1f}s)"
             )
+        all_episodes[n] = by_agent
         print()
 
     df = pd.DataFrame(scaling_data)
     df.to_csv("results/results_scaling.csv", index=False)
     print("Scaling results saved to results/results_scaling.csv")
+
+    # Companion seed-level Welch tests, Holm-corrected within metric per N.
+    # The table caption's tie claims cite these, so they must exist on disk.
+    stats_rows = []
+    for n, by_agent in all_episodes.items():
+        labels = list(by_agent)
+        for metric_name, extract in (
+            ("Reward", lambda r: r.total_reward),
+            ("Success", lambda r: float(r.success)),
+            ("Observations", lambda r: float(r.num_observations)),
+        ):
+            for i in range(len(labels)):
+                for jj in range(i + 1, len(labels)):
+                    out = seed_level_ttest(by_agent[labels[i]], by_agent[labels[jj]], extract)
+                    stats_rows.append({
+                        "N": n, "metric": metric_name,
+                        "agent_a": labels[i], "agent_b": labels[jj],
+                        "mean_a": float(np.mean([extract(r) for r in by_agent[labels[i]]])),
+                        "mean_b": float(np.mean([extract(r) for r in by_agent[labels[jj]]])),
+                        "n_seeds": out["n_seeds_a"],
+                        "p_seed_level": out["p_value"],
+                    })
+    for n in {r["N"] for r in stats_rows}:
+        for metric_name in {r["metric"] for r in stats_rows}:
+            idx = [i for i, r in enumerate(stats_rows)
+                   if r["N"] == n and r["metric"] == metric_name]
+            for i, sig in zip(idx, holm_bonferroni([stats_rows[i]["p_seed_level"] for i in idx])):
+                stats_rows[i]["significant_hb_seed_level"] = sig
+    pd.DataFrame(stats_rows).to_csv("results/results_scaling_stats.csv", index=False)
+    print("Saved results/results_scaling_stats.csv")
     return df
 
 
