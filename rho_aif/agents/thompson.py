@@ -1,5 +1,12 @@
 """
-Thompson Sampling agent for observe-then-commit POMDPs.
+Posterior-vote agent for observe-then-commit POMDPs.
+
+NAMING NOTE. This class is named ThompsonSamplingAgent for artifact stability
+(the committed CSVs use that label), but it is NOT Thompson sampling. Thompson
+sampling matches probabilities: it draws ONE state from the posterior and acts
+optimally for it. This agent draws N states and takes a majority vote, which
+approaches the most-likely-state rule as N grows. The manuscript reports it as
+"Posterior-vote" and makes no Thompson-sampling claim.
 
 At each step, samples N hidden states from the current belief distribution,
 determines the optimal action for each sample, and selects the majority-vote

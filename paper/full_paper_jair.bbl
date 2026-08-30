@@ -1357,43 +1357,6 @@
       \field{pages}{22\bibrangedash 26}
       \range{pages}{5}
     \endentry
-    \entry{itti2009}{article}{}{}
-      \name{author}{2}{}{%
-        {{un=0,uniquepart=base,hash=c94f3d7c89a07ba1ae31ff19e972d673}{%
-           family={Itti},
-           familyi={I\bibinitperiod},
-           given={L.},
-           giveni={L\bibinitperiod},
-           givenun=0}}%
-        {{un=0,uniquepart=base,hash=823553d4024b825bc9474468d5ad8421}{%
-           family={Baldi},
-           familyi={B\bibinitperiod},
-           given={P.},
-           giveni={P\bibinitperiod},
-           givenun=0}}%
-      }
-      \strng{namehash}{fac3a6244724734d1d8052e116b337e6}
-      \strng{fullhash}{fac3a6244724734d1d8052e116b337e6}
-      \strng{fullhashraw}{fac3a6244724734d1d8052e116b337e6}
-      \strng{bibnamehash}{fac3a6244724734d1d8052e116b337e6}
-      \strng{authorbibnamehash}{fac3a6244724734d1d8052e116b337e6}
-      \strng{authornamehash}{fac3a6244724734d1d8052e116b337e6}
-      \strng{authorfullhash}{fac3a6244724734d1d8052e116b337e6}
-      \strng{authorfullhashraw}{fac3a6244724734d1d8052e116b337e6}
-      \field{sortinit}{I}
-      \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
-      \field{extradatescope}{labelyear}
-      \field{labeldatesource}{}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{journaltitle}{Vision Research}
-      \field{number}{10}
-      \field{title}{{B}ayesian surprise attracts human attention}
-      \field{volume}{49}
-      \field{year}{2009}
-      \field{pages}{1295\bibrangedash 1306}
-      \range{pages}{12}
-    \endentry
     \entry{kaelbling1998}{article}{}{}
       \name{author}{3}{}{%
         {{un=0,uniquepart=base,hash=0bf25a24f49af5c83d08966e17941417}{%
