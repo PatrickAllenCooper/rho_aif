@@ -28,6 +28,7 @@ from rho_aif.agents.epistemic_only import EpistemicOnlyAgent
 from run_experiment import (
     make_agent, run_episode, run_experiment, summarize_results,
     tune_info_gain_weight, run_generic_experiment, SEEDS,
+    provenance_fields,
 )
 from rho_aif.render_tileworld import (
     run_recorded_episode, render_belief_evolution,
@@ -354,8 +355,7 @@ def run_partition_sensitivity(grid_size=6, num_episodes=200, seeds=None):
                 "se_reward_seed_level": s.get("se_reward_seed_level", float("nan")),
                 "se_success_seed_level": s.get("se_success_seed_level", float("nan")),
                 "n_seeds": s.get("n_seeds", len(seeds)),
-                "seed_list": "|".join(str(x) for x in seeds),
-                "episodes_per_seed": num_episodes,
+                **provenance_fields(seeds, num_episodes),
                 "se_reward": np.std([r.total_reward for r in results]) / np.sqrt(len(results)),
                 "obs": s["mean_observations"],
                 "time_s": dt,

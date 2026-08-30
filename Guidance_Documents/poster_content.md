@@ -530,11 +530,20 @@ reward-only Planning collapses to **2.5% success** while EFE maintains **66.5%**
 Planning+IG (w=100) reaches 98.0% success but at high reward cost. **This is the
 single best "scale matters" headline number for the poster.**
 
-**Observation-structure robustness:** replacing the structured bit-level scan
-partition with random or overlapping partitions preserves EFE's relative ranking
-over Planning under all three modes (bitwise −20.52/74.2%, random −29.15/56.1%,
-overlapping −46.73/9.8%), confirming the result isn't an artifact of the
-structured observation model.
+**Observation-structure robustness:** [Corrected 2026-08-30. The numbers below
+came from an unseeded battery. `run_tileworld.py` called `run_episode` without a
+seed, the only unseeded call in `experiments/`, and the seeded rerun reverses the
+bitwise ordering. Do not use these figures.] ~~replacing the structured bit-level
+scan partition with random or overlapping partitions preserves EFE's relative
+ranking over Planning under all three modes (bitwise −20.52/74.2%, random
+−29.15/56.1%, overlapping −46.73/9.8%), confirming the result isn't an artifact
+of the structured observation model.~~ Under the seeded rerun
+(`results_partition_sensitivity_6x6.csv`) no partition mode separates EFE and
+Planning on reward at the seed level (bitwise −21.62 vs −21.41, random −29.31 vs
+−30.32, overlapping −47.53 vs −47.66). EFE stays ahead on scan count under all
+three modes (14.76 vs 15.57, 12.97 vs 13.38, 2.63 vs 2.70), which is the metric
+the main 6×6 result rests on. The usable poster claim is the large effect of
+observation structure on every agent, not a ranking between agents.
 
 ### 10.4 RockSample (interleaved observe-act; validates Proposition 3)
 
