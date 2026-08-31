@@ -44,16 +44,27 @@ polish and a writing-style pass, have not started.
   with all round-15 fixes independently verified correct against code and
   the Smith & Simmons primary source (ledger 9.17.21). Statistics is clean
   across three consecutive runs and two model families.
-- **Round 17 is complete and the loop's goal is met (2026-08-31, ledger
-  9.17.22).** Four unqualified accepts (statistics/GPT fourth consecutive
-  zero-finding run; editor/Grok calling the bar met; decision theory/Fable;
-  POMDP planning/Opus, which reproduced the CPOMDP frontier interpolation to
-  six decimals and re-derived the analytic w* table from scratch) and one
-  accept-with-minor-revisions (active inference/Gemini) that resolved to a
-  single notation-disclosure sentence at Definition 1. No finding survived
-  beyond cosmetic. Remaining pre-submission work: figure polish pass
+- **Round 17 complete (2026-08-31, ledger 9.17.22).** Four unqualified
+  accepts and one accept-with-minor-revisions (active inference/Gemini) that
+  resolved to a single notation-disclosure sentence at Definition 1.
+- **Round 18, the confirmation round, is complete: FIVE UNQUALIFIED ACCEPTS
+  OUT OF FIVE (2026-08-31, ledger 9.17.23). The commissioned goal —
+  unequivocal accept across all model families — is met.** The round-17
+  holdout verified its own finding resolved and accepted with zero findings.
+  Opus recomputed the entire core battery, MCTS-EFE, Pareto sweep, dual
+  control, and Testbed appendix with zero numeric discrepancies. Six
+  non-blocking suggestions adopted (crossing_bracket fallback flagging with
+  regression test, IDS appendix pointer, appendix SE-type disclosure,
+  Tileworld SE columns in all three tables, CPOMDP caption grammar,
+  timing-range attribution). 451/451 tests.
+- **OPEN DECISION FOR PAT (do not act autonomously):** 135 of 231 commits
+  carry Co-Authored-By trailers naming AI models. The repo is public and the
+  JAIR checklist directs referees to it. Rewriting history is destructive
+  and would orphan every git_sha provenance stamp in the results CSVs;
+  alternatives include a fresh-history public mirror. Pat's call.
+- Remaining pre-submission work: figure polish pass
   (figure_audit_2026-08-30.json), writing-clarity pass, credential-gated
-  PyPI upload.
+  PyPI upload, and the git-trailer decision above.
 
 ## The methodology, distilled
 
