@@ -259,6 +259,20 @@ class TestCrossingBracket:
         with pytest.raises(ValueError):
             crossing_bracket([], budget=1.0)
 
+    def test_non_monotone_fallback_is_flagged(self):
+        # Curve rises above the budget then falls back below it at the final
+        # grid point, so no straddling pair exists after the last below-budget
+        # point. The fallback must be flagged, not returned as a bracket.
+        curve = [
+            UsageCurvePoint(0.0, 1.0, 0.1, 3, [1.0, 1.0, 1.0]),
+            UsageCurvePoint(1.0, 5.0, 0.2, 3, [5.0, 5.0, 5.0]),
+            UsageCurvePoint(2.0, 2.0, 0.2, 3, [2.0, 2.0, 2.0]),
+        ]
+        br = crossing_bracket(curve, budget=3.0)
+        assert not br.bracketed
+        assert "non-monotone" in br.note
+        assert br.w_lo <= br.w_hi
+
 
 class TestHeterogeneousCosts:
     """Stage D: heterogeneous per-test costs and explicit cost accounting."""

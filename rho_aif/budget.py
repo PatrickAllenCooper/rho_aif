@@ -386,20 +386,36 @@ def crossing_bracket(
         above_after = above[above > lo_i]
         if len(above_after):
             hi_i = int(above_after[0])
-        else:
-            # Local non-monotonicity: take any above index
-            hi_i = int(above[0])
-            if hi_i < lo_i:
-                lo_i, hi_i = hi_i, lo_i
+            return CrossingBracket(
+                w_lo=float(ws[lo_i]),
+                w_hi=float(ws[hi_i]),
+                usage_lo=float(us[lo_i]),
+                usage_hi=float(us[hi_i]),
+                budget=float(budget),
+                bracketed=True,
+                achievable=True,
+                note="",
+                usage_se_lo=float(ses[lo_i]),
+                usage_se_hi=float(ses[hi_i]),
+                u_min=u_min,
+                u_max=u_max,
+            )
+        # Non-monotone curve whose final grid point falls back below B: no
+        # straddling pair (w_lo, w_hi] with U(w_lo) < B <= U(w_hi) exists to
+        # the right of lo_i. Match the shadow-price solver's convention and
+        # flag the fallback rather than returning an inverted bracket.
+        hi_i = int(above[0])
+        if hi_i < lo_i:
+            lo_i, hi_i = hi_i, lo_i
         return CrossingBracket(
             w_lo=float(ws[lo_i]),
             w_hi=float(ws[hi_i]),
             usage_lo=float(us[lo_i]),
             usage_hi=float(us[hi_i]),
             budget=float(budget),
-            bracketed=True,
+            bracketed=False,
             achievable=True,
-            note="",
+            note="non-monotone usage curve: no straddling pair after last below-budget point",
             usage_se_lo=float(ses[lo_i]),
             usage_se_hi=float(ses[hi_i]),
             u_min=u_min,
