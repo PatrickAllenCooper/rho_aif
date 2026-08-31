@@ -37,13 +37,14 @@ polish and a writing-style pass, have not started.
   13's own nat-conversion fix being inverted — reviewer rounds audit prior
   rounds' fixes, which is an argument for keeping the loop running. Full
   narratives in `full_paper_plan.md` sections 9.17.18-9.17.19.
-- **Round 15 is complete (2026-08-31).** Four unqualified accepts (statistics
-  twice, editor, decision theory) and one accept-with-minor-revisions whose
-  three sustained findings were all disclosure gaps in the RockSample/POMCP
-  appendix territory (six deviations not five, missing step caps and rock
-  maps, undisclosed POMCP departures) — fixed same day, ledger 9.17.20.
-  Round 16 is the active phase and tests whether that last territory is
-  clean.
+- **Rounds 15 and 16 are complete (2026-08-31).** Round 15: four accepts,
+  three sustained disclosure findings in the RockSample/POMCP appendix
+  (ledger 9.17.20). Round 16: three accepts, two sustained one-line findings
+  (duplicate definitional italics, Tileworld caption completeness overclaim),
+  with all round-15 fixes independently verified correct against code and
+  the Smith & Simmons primary source (ledger 9.17.21). Statistics is clean
+  across three consecutive runs and two model families. Round 17 is the
+  active phase and tests for the first all-five unqualified accept.
 
 ## The methodology, distilled
 
@@ -136,6 +137,7 @@ rediscovering:
 | 13 | 5x accept-with-minor-revisions | 9 (all survived hand-verification) | verify+AE phases died to spend limit mid-round, completed by hand 2026-08-31 (ledger 9.17.18) |
 | 14 | **1x accept (Grok), 4x accept-with-minor-revisions** | 8 sustained, 4 refuted by skeptics | first multi-model panel (GPT/Gemini/Grok/Fable/Opus) + adversarial-skeptic phase; caught round 13's own nat-conversion fix being inverted (ledger 9.17.19) |
 | 15 | **4x accept, 1x accept-with-minor-revisions (Opus)** | 3 sustained (all RockSample/POMCP disclosure), 3 refuted | statistics clean across two model families with zero findings; deepest theory verification yet (Prop 2 re-derived by hand); the RockSample deviation sentence produced its fourth-round finding (5, 9, 11, 15) — now six deviations (ledger 9.17.20) |
+| 16 | **3x accept, 2x accept-with-minor-revisions** | 2 sustained (both one-line: duplicate definitional italics, Tileworld caption overclaim), 2 refuted | round-15 fixes all verified correct against code and the Smith & Simmons primary source; statistics clean for the third straight run; round-15's own geometry wording caught as a borderline overclaim and made numerically precise (ledger 9.17.21) |
 
 ## Resuming round 13 (RESOLVED 2026-08-31 — kept for the record, do not redo)
 
