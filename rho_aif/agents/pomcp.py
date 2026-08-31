@@ -3,7 +3,8 @@ POMCP (Partially Observable Monte-Carlo Planning) agent for observe-then-commit 
 
 Implements Silver and Veness (2010) adapted to the observe-then-commit structure:
 - UCB1 tree policy for action selection during tree traversal
-- Random rollout policy for leaf evaluation
+- Semi-informed rollout policy for leaf evaluation (uniform-random over
+  observation actions, belief-optimal commit action at termination)
 - Particle-based belief representation at each tree node
 - No state transitions during observation phase (state is fixed)
 """
@@ -40,7 +41,8 @@ class POMCPAgent(BaseAgent):
     through a search tree. Each simulation:
     1. Samples a hidden state from the current belief (particle)
     2. Traverses the tree using UCB1
-    3. At a leaf, performs a random rollout
+    3. At a leaf, performs a semi-informed rollout (random observation
+       actions, belief-optimal commit)
     4. Backpropagates the return
 
     This is a standard POMDP solver that handles exploration through

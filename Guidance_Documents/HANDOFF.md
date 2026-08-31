@@ -18,8 +18,8 @@ polish and a writing-style pass, have not started.
 
 ## Where things stand right now
 
-- **HEAD**: `d6fb0f5` ("Round 12: the formal rho definition now matches
-  every downstream use"). Working tree is clean.
+- **HEAD**: the round-14 commit of 2026-08-31 (rounds 13 and 14 applied;
+  `git log` is authoritative). Working tree is clean.
 - Both manuscripts compile with **zero LaTeX errors, zero undefined
   references**, and **450/450 tests pass**. This has been true and verified
   after every round since round 3.
@@ -28,12 +28,16 @@ polish and a writing-style pass, have not started.
   Information framing of w as the shadow price of a sensing budget, are
   certified novel. Reviewers are told not to re-litigate this. They may still
   flag any specific claim a cited source contradicts.
-- **Round 13 is complete (resolved 2026-08-31, in-place update).** The 11 raw
-  findings were deduplicated to 9 claims, each hand-verified against its
-  artifact (all 9 survived), applied with `safe_apply.py` to both masters,
-  post-verified in context, rebuilt, and committed. Full narrative in
-  `full_paper_plan.md` section 9.17.18. The multi-model round-14+ loop is the
-  active phase.
+- **Rounds 13 and 14 are complete (2026-08-31, in-place update).** Round 13's
+  9 hand-verified claims and round 14's 8 skeptic-sustained findings (of 12
+  raw; 4 refuted) are applied to both masters, rebuilt, tested, and
+  committed. Round 14 was the first multi-model panel (GPT 5.6 Sol, Gemini
+  3.1 Pro, Grok 4.6, Claude Fable 5, Claude Opus 5) and produced the first
+  unqualified accept since round 8 (Grok, editor lens). It also caught round
+  13's own nat-conversion fix being inverted — reviewer rounds audit prior
+  rounds' fixes, which is an argument for keeping the loop running. Full
+  narratives in `full_paper_plan.md` sections 9.17.18-9.17.19. Round 15 is
+  the active phase.
 
 ## The methodology, distilled
 
@@ -123,9 +127,10 @@ rediscovering:
 | 11 | 5x accept-with-minor-revisions | 7 | found a **third** error in the same RockSample-deviation sentence (rounds 5, 9, 11), plus two real citation misattributions (Araya-Lopez PWLC claim, Boutilier belief-dependent-reward claim) |
 | — | (cited-work sweep) | 77 checked, 15 wrong | found the manuscript falsely claiming to generalize Araya-Lopez et al.'s formulation, which already covers it; also found a leaked reviewer suggested_fix in the manuscript body and a mislabeled "Thompson sampling" baseline (it's actually majority-vote, renamed "Posterior-vote") |
 | 12 | 5x accept-with-minor-revisions | 7 | the biggest single fix: Section 3.1's formal rho-POMDP definition was action-independent while every downstream use (including Prop 1 itself) needed the action-dependent form — this was collateral damage from withdrawing the false generalization claim in the cited-work sweep |
-| **13** | **5x accept-with-minor-revisions (reviewer phase only)** | **11 raw, UNVERIFIED** | **verify+AE phases died to spend limit. See below.** |
+| 13 | 5x accept-with-minor-revisions | 9 (all survived hand-verification) | verify+AE phases died to spend limit mid-round, completed by hand 2026-08-31 (ledger 9.17.18) |
+| 14 | **1x accept (Grok), 4x accept-with-minor-revisions** | 8 sustained, 4 refuted by skeptics | first multi-model panel (GPT/Gemini/Grok/Fable/Opus) + adversarial-skeptic phase; caught round 13's own nat-conversion fix being inverted (ledger 9.17.19) |
 
-## Resuming round 13 (do this first)
+## Resuming round 13 (RESOLVED 2026-08-31 — kept for the record, do not redo)
 
 The reviewer phase finished; only skeptic-verification and AE-adjudication
 failed. The five raw reviewer JSON payloads (unverified, undeduped) are

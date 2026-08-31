@@ -91,7 +91,7 @@ def build_main_table() -> str:
         " Appendix~\\ref{app:rocksample}).}",
         "\\label{tab:rocksample}",
         "\\begin{small}",
-        "\\begin{tabular}{llcccc}",
+        "\\begin{tabular}{llccc}",
         "\\toprule",
         "Instance & Agent & Good & Bad & Reward \\\\",
         "\\midrule",
