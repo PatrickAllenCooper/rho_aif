@@ -72,7 +72,48 @@ AGENT_MARKERS = {
 }
 
 # Environments, for figures whose series are environments rather than agents.
+# ENV_COLORS is the stable name-keyed mapping ("one environment, one color,
+# everywhere"); ENV_CYCLE is the documented fallback for unlisted names.
+ENV_COLORS = {
+    "Tiger": BLUE,
+    "Diagnosis": ORANGE,
+    "Bandit": GREEN,
+    "Testbed": YELLOW,
+    "Tileworld-6x6": VERMILLION,
+    "Tileworld-8x8": VERMILLION,
+    "Inspection-N8": PINK,
+    "Inspection-N16": SKY,
+    "RS[5,3]": GRAY,
+    "RS[7,4]": BLACK,
+    "Navigation": SKY,
+}
 ENV_CYCLE = [BLUE, ORANGE, GREEN, VERMILLION, PINK, SKY, GRAY, YELLOW]
+
+# Shared error-bar cap size so uncertainty renders identically across figures.
+CAPSIZE = 2
+
+# Belief colormap shared by every belief-probability heatmap (light ground,
+# low ink, matches the light-ground line-figure aesthetic).
+BELIEF_CMAP = "YlOrRd"
+
+# JAIR text block is ~6.5in wide; LNCS ~4.8in. Figures must be authored at
+# the width they are printed at so rcParams point sizes are the printed sizes.
+TEXT_WIDTH_IN = 6.5
+
+
+def env_color(name: str) -> str:
+    """Stable color for an environment name, with a deterministic fallback."""
+    if name in ENV_COLORS:
+        return ENV_COLORS[name]
+    # str.__hash__ is salted per process, so use a content hash.
+    return ENV_CYCLE[sum(name.encode()) % len(ENV_CYCLE)]
+
+
+def figsize(width_frac: float = 1.0, aspect: float = 0.45) -> tuple:
+    """Figure size in inches for a figure printed at width_frac of the JAIR
+    text block. Authoring at the printed width keeps type at rcParams size."""
+    w = TEXT_WIDTH_IN * width_frac
+    return (w, w * aspect)
 
 
 def agent_color(label: str) -> str:
