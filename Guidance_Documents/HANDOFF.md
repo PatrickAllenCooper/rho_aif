@@ -18,7 +18,7 @@ polish and a writing-style pass, have not started.
 
 ## Where things stand right now
 
-- **HEAD**: the round-14 commit of 2026-08-31 (rounds 13 and 14 applied;
+- **HEAD**: the round-17 commit of 2026-08-31 (rounds 13 through 17 applied;
   `git log` is authoritative). Working tree is clean.
 - Both manuscripts compile with **zero LaTeX errors, zero undefined
   references**, and **450/450 tests pass**. This has been true and verified
@@ -43,8 +43,17 @@ polish and a writing-style pass, have not started.
   (duplicate definitional italics, Tileworld caption completeness overclaim),
   with all round-15 fixes independently verified correct against code and
   the Smith & Simmons primary source (ledger 9.17.21). Statistics is clean
-  across three consecutive runs and two model families. Round 17 is the
-  active phase and tests for the first all-five unqualified accept.
+  across three consecutive runs and two model families.
+- **Round 17 is complete and the loop's goal is met (2026-08-31, ledger
+  9.17.22).** Four unqualified accepts (statistics/GPT fourth consecutive
+  zero-finding run; editor/Grok calling the bar met; decision theory/Fable;
+  POMDP planning/Opus, which reproduced the CPOMDP frontier interpolation to
+  six decimals and re-derived the analytic w* table from scratch) and one
+  accept-with-minor-revisions (active inference/Gemini) that resolved to a
+  single notation-disclosure sentence at Definition 1. No finding survived
+  beyond cosmetic. Remaining pre-submission work: figure polish pass
+  (figure_audit_2026-08-30.json), writing-clarity pass, credential-gated
+  PyPI upload.
 
 ## The methodology, distilled
 
