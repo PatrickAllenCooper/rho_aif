@@ -65,8 +65,11 @@ polish and a writing-style pass, have not started.
 - **Figure polish pass complete (2026-08-31)**: all 23 blocking audit
   issues closed, sixteen figures regenerated at printed width, captions and
   Description blocks rewritten against the new renders (ledger 9.17.24).
-- Remaining pre-submission work: writing-clarity pass, credential-gated
-  PyPI upload, and the git-trailer decision above.
+- **Writing-clarity pass complete (2026-08-31)**: 73 verified edits under
+  Pat's style rules via six section-scoped report-only readers plus four
+  adjudicated flags, applied symmetrically to both masters (ledger 9.17.25).
+- Remaining pre-submission work: credential-gated PyPI upload and the
+  git-trailer decision above.
 
 ## The methodology, distilled
 
@@ -241,7 +244,15 @@ onset bracket, the entire point of the figure, is sub-pixel wide (0.74% of
 the axis). Full list and fixes-in-progress-notes are in the JSON's
 `blocking` array.
 
-## Phase 3: writing-clarity pass (not started)
+## Phase 3: writing-clarity pass (COMPLETE, 2026-08-31)
+
+Done — see ledger entry 9.17.25 in `full_paper_plan.md`. The mechanical
+sweep found nothing left to fix (zero em dashes, semicolons only in
+math/checklist boilerplate, colons only before equations/lists/case
+labels). The holistic pass ran as six section-scoped report-only readers
+whose 68 proposals plus 4 adjudicated flags became 73 verified edits
+applied symmetrically to both masters via safe_apply.py. The original
+instructions below are retained for reference.
 
 Pat's exact instructions, worth quoting verbatim since they're precise:
 keep language academic and technical where required but otherwise as simple
