@@ -28,6 +28,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib.lines import Line2D
 
 from rho_aif import figstyle
 from rho_aif.agents.planning_infogain import PlanningInfoGainAgent
@@ -104,34 +105,52 @@ def best_w_ret(rows: List[dict]) -> float:
 
 
 def plot_scaling(df: pd.DataFrame, out_path: Path) -> None:
-    """One panel per environment. Each curve is one reward scale k, the star
-    marks that curve's reward-maximizing weight w*_ret, and the dashed
-    vertical line sits at w=1 (the EFE weight)."""
+    """One panel per environment, plotting scale-normalised reward/k so the
+    three reward scales share one visible curve family (scale equivariance
+    made literal). The open circle marks each curve's reward-maximizing
+    weight w*_ret (the argmax is unchanged by the positive rescaling), and
+    the dashed vertical rule sits at w=1 (the EFE weight). One figure-level
+    legend covers all panels. No SE band is drawn: the committed CSV carries
+    only per-(k, w) means, so seed-level uncertainty would require a rerun.
+    """
     figstyle.apply()
     envs = sorted(df["environment"].unique())
     panel_letters = "abcdefgh"
-    fig, axes = plt.subplots(1, len(envs), figsize=(4.2 * len(envs), 3.6), squeeze=False)
-    legend_locs = {"Bandit": "center right", "Diagnosis": "lower right"}
+    fig, axes = plt.subplots(1, len(envs), figsize=figstyle.figsize(1.0, 0.45),
+                             squeeze=False)
+    curve_handles: Dict[str, object] = {}
     for panel_i, (ax, env_name) in enumerate(zip(axes[0], envs)):
         sub = df[df["environment"] == env_name]
         for (k, grp), color in zip(sub.groupby("scale_k"), figstyle.ENV_CYCLE):
             grp = grp.sort_values("w")
-            ax.plot(grp["w"], grp["reward"], marker="o", color=color,
-                    label=f"$k={k:g}$")
-            w_star = grp.loc[grp["reward"].idxmax(), "w"]
-            r_star = grp["reward"].max()
-            ax.scatter([w_star], [r_star], marker="*", s=140, zorder=5,
-                       color=color, edgecolors="white", linewidths=0.6)
+            (line,) = ax.plot(grp["w"], grp["reward"] / k, marker="o",
+                              color=color)
+            curve_handles.setdefault(f"$k={k:g}$", line)
+            star_idx = grp["reward"].idxmax()
+            w_star = grp.loc[star_idx, "w"]
+            r_star = grp.loc[star_idx, "reward"] / k
+            ax.scatter([w_star], [r_star], marker="o", s=90, zorder=5,
+                       facecolors="none", edgecolors=color, linewidths=1.4)
         ax.axvline(1.0, color=figstyle.GRAY, ls="--", lw=0.8, alpha=0.7,
                    zorder=1)
         ax.set_xscale("log")
         figstyle.style_axis(ax)
         ax.set_xlabel("Planning+IG weight $w$")
         if panel_i == 0:
-            ax.set_ylabel("Mean reward")
+            ax.set_ylabel("Mean reward / $k$")
         ax.set_title(f"({panel_letters[panel_i]}) {env_name}")
-        ax.legend(loc=legend_locs.get(env_name, "best"))
-    fig.tight_layout()
+    proxy_handles = [
+        Line2D([], [], marker="o", markerfacecolor="none",
+               markeredgecolor="0.3", markeredgewidth=1.4, markersize=7,
+               linestyle="none", label=r"$w^*_{\mathrm{ret}}$"),
+        Line2D([], [], linestyle="--", color=figstyle.GRAY, lw=0.8,
+               label=r"$w{=}1$ (EFE)"),
+    ]
+    handles = list(curve_handles.values()) + proxy_handles
+    labels = list(curve_handles.keys()) + [h.get_label() for h in proxy_handles]
+    fig.legend(handles, labels, loc="upper center",
+               bbox_to_anchor=(0.5, 1.04), ncol=5, frameon=False)
+    fig.tight_layout(rect=[0, 0, 1, 0.93])
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path)
     fig.savefig(out_path.with_suffix(".png"))

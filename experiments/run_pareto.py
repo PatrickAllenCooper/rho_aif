@@ -88,9 +88,17 @@ W1_LABEL_OFFSETS = {
     "Tileworld": (-16, -16, "right"),
 }
 # Targeted nudges for non-w=1 labels that would otherwise sit on the sweep
-# polyline, keyed by (env, first weight of the tied bracket).
+# polyline or on a point's seed-level error bar, keyed by (env, first weight
+# of the tied bracket). Each offset points into empty plot area; the
+# Tileworld bracket leader departs away from the w=1 diamond so the two
+# leaders do not converge on the same neighborhood.
 MANUAL_LABEL_OFFSETS = {
-    ("Tileworld", 0.01): (9, -12, "left"),
+    ("Tiger", 50.0): (-8, 9, "right"),
+    ("Testbed", 0.01): (10, 10, "left"),
+    ("Diagnosis", 0.01): (8, -14, "left"),
+    ("Bandit", 0.01): (8, -14, "left"),
+    ("Tileworld", 0.01): (0, 18, "left"),
+    ("Tileworld", 10.0): (8, -10, "left"),
 }
 
 
@@ -121,7 +129,7 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
     n = len(envs)
     if n >= 5:
         nrows, ncols = 2, 3
-        fig, axes = plt.subplots(nrows, ncols, figsize=(9.6, 6.2))
+        fig, axes = plt.subplots(nrows, ncols, figsize=(9.6, 5.4))
         axes = axes.ravel()
     else:
         nrows, ncols = 1, n
@@ -143,6 +151,14 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
         # w-ordered sweep polyline, kept light so markers and labels dominate.
         ax.plot(succ, rew, color=pig["color"], linestyle=pig["linestyle"],
                 lw=1.4, alpha=0.5, zorder=1)
+        # Seed-level SE on both axes, from the committed sweep CSV, so the
+        # frontier is read against its sampling uncertainty rather than as
+        # exactly resolved.
+        ax.errorbar(succ, rew,
+                    xerr=[se * 100 for se in sw["se_success_seed_level"]],
+                    yerr=sw["se_reward_seed_level"],
+                    fmt="none", ecolor=pig["color"], elinewidth=0.8,
+                    capsize=figstyle.CAPSIZE, alpha=0.6, zorder=1)
         ax.scatter(succ, rew, c=pig["color"], s=32, zorder=2,
                    edgecolors="white", linewidths=0.6)
 
@@ -161,6 +177,13 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
         lo_y = min(rew + [efe["reward"]])
         hi_y = max(rew + [efe["reward"]])
         xr = (hi_x - lo_x) or 1.0
+        # Floor the fitted x-span at 2pp so a degenerate success range (all
+        # points within sampling error of each other, as on Tiger) is not
+        # magnified to full panel width. Pad downward, since success caps
+        # at 100%.
+        if xr < 2.0:
+            lo_x = hi_x - 2.0
+            xr = 2.0
         yr = (hi_y - lo_y) or 1.0
         ax.set_xlim(lo_x - 0.22 * xr, hi_x + 0.22 * xr)
         ax.set_ylim(lo_y - 0.14 * yr, hi_y + 0.16 * yr)
@@ -186,13 +209,17 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
                 manual = MANUAL_LABEL_OFFSETS[(env_name, g["ws"][0])]
             if manual is not None:
                 dx, dy, ha = manual
+                # The w=1 leader stops short of the large diamond+star
+                # markers (shrinkB=10); other manual leaders touch their
+                # small dot (shrinkB=3) so the target is unambiguous.
+                shrink_b = 10 if 1.0 in g["ws"] else 3
                 ax.annotate(label, xy=(g["succ"], g["rew"]),
                             xytext=(dx, dy), textcoords="offset points",
                             fontsize=7.5, color=figstyle.GRAY,
                             ha=ha, va="center",
                             arrowprops=dict(arrowstyle="-", lw=0.5,
                                             color=figstyle.GRAY,
-                                            shrinkA=2, shrinkB=10))
+                                            shrinkA=2, shrinkB=shrink_b))
                 continue
             side = -1 if g["succ"] > x_mid else 1
             points.append((g["succ"], g["rew"], label, side))
@@ -216,15 +243,14 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
                markersize=12, ls="none", markeredgecolor="black",
                label="EFE agent ($w{=}1$)"),
     ]
+    # Legend below the panels, matching fig_tileworld_scaling and
+    # fig_asymmetry_sweep, rather than parked inside an empty grid cell.
     if n >= 5 and len(axes) > n:
         for extra_ax in axes[n:]:
             extra_ax.axis("off")
-        axes[n].legend(handles=legend_elements, loc="center")
-        plt.tight_layout()
-    else:
-        fig.legend(handles=legend_elements, loc="lower center", ncol=3,
-                   bbox_to_anchor=(0.5, -0.08))
-        plt.tight_layout()
+    fig.legend(handles=legend_elements, loc="lower center", ncol=3,
+               bbox_to_anchor=(0.5, -0.05))
+    plt.tight_layout()
 
     base, _ = os.path.splitext(save_path)
     plt.savefig(base + ".pdf")
@@ -318,22 +344,36 @@ def run_accuracy_sensitivity(
             results[env_name]["best_reward"].append(best_w_score)
             print(f"    w=1 reward={w1_reward:+.2f}  best_w={best_w}  best_reward={best_w_score:+.2f}")
 
-    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+    # Shared figure style: EFE's canonical vermillion for the w=1 series and
+    # Planning+IG's pink for the tuned-weight series (both series are
+    # PlanningInfoGainAgent, matching fig_pareto's vocabulary). Authored at
+    # the printed width so rcParams point sizes are the on-page sizes.
+    figstyle.apply()
+    efe_style = figstyle.agent_style("EFE")
+    pig_style = figstyle.agent_style("Planning+IG")
+
+    fig, axes = plt.subplots(1, 2, figsize=figstyle.figsize(1.0, 0.4))
+    panel_labels = ["(a)", "(b)"]
     for idx, (env_name, data) in enumerate(results.items()):
         ax = axes[idx]
-        ax.plot(data["accuracy"], data["w1_reward"], "o-", color="#D32F2F", lw=2, label="$w=1$ (EFE)")
-        ax.plot(data["accuracy"], data["best_reward"], "s--", color="#2196F3", lw=2, label="Best $w$ (tuned)")
+        ax.plot(data["accuracy"], data["w1_reward"],
+                label="$w{=}1$ (EFE)", **efe_style)
+        ax.plot(data["accuracy"], data["best_reward"],
+                label="Best $w$ (tuned)", **pig_style)
         ax.set_xlabel("Observation accuracy")
-        ax.set_ylabel("Mean reward")
-        ax.set_title(env_name)
-        ax.legend(fontsize=8)
-        ax.grid(True, alpha=0.2)
+        if idx == 0:
+            ax.set_ylabel("Mean reward")
+        ax.set_title(f"{panel_labels[idx]} {env_name}")
+        ax.legend()
+        figstyle.style_axis(ax)
 
     plt.tight_layout()
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
+    base, _ = os.path.splitext(save_path)
+    plt.savefig(base + ".pdf")
+    plt.savefig(base + ".png")
     plt.close()
-    print(f"  Saved {save_path}")
+    print(f"  Saved {base}.pdf and {base}.png")
     return results
 
 

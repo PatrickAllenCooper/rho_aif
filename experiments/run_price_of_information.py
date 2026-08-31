@@ -27,6 +27,7 @@ sys.path.insert(0, str(_ROOT / "experiments"))
 import matplotlib
 
 matplotlib.use("Agg")
+import matplotlib.patches as mpl_patches
 import matplotlib.pyplot as plt
 import matplotlib.ticker
 import numpy as np
@@ -252,44 +253,129 @@ def _log_x_with_zero(ax, min_pos: float, max_pos: float) -> float:
     return zero_pos
 
 
+# Display names for environment series, matching the manuscripts' math
+# typesetting (Tileworld-$6{\times}6$, Inspection-$N{=}8$, ...).
+ENV_DISPLAY = {
+    "Tileworld-6x6": "Tileworld-$6{\\times}6$",
+    "Tileworld-8x8": "Tileworld-$8{\\times}8$",
+    "Inspection-N8": "Inspection-$N{=}8$",
+    "Inspection-N16": "Inspection-$N{=}16$",
+}
+
+# Ceiling of the tested log-w grid (make_log_w_grid(0, 100, .)). Brackets with
+# w_hi at this value are open above the grid, not resolved.
+W_GRID_TOP = 100.0
+
+
 def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
-    """Staircase of w*(B) per environment with crossing-bracket bars."""
+    """Staircase of w*(B) per environment with crossing-bracket bars.
+
+    Encoding conventions:
+    - brackets are drawn in the series color with end ticks (same treatment
+      as plot_scale_collapse), so they cannot be read as SE error bars;
+    - slack budgets (w* = 0, or w* below its own recorded bracket) draw an
+      open marker and a dotted bracket for the first binding crossing;
+    - brackets whose upper edge sits at the top of the tested w grid are
+      open above the grid and terminate in an upward arrowhead instead of a
+      capped bar, above a dotted rule marking the grid ceiling.
+    """
     figstyle.apply()
-    fig, ax = plt.subplots(figsize=(6.6, 4.0))
+    fig, ax = plt.subplots(figsize=figstyle.figsize(1.0, 0.58))
     envs = sorted(price_df["env"].unique())
-    colors = {
-        e: figstyle.ENV_CYCLE[i % len(figstyle.ENV_CYCLE)] for i, e in enumerate(envs)
-    }
+    # Linear symlog band sized to the smallest positive plotted value so the
+    # w* = 0 leg does not inflate to a full decade of dead space.
+    pos_vals = pd.concat(
+        [price_df.loc[price_df["w_star"] > 0, "w_star"],
+         price_df.loc[price_df["w_lo"] > 0, "w_lo"]]
+    )
+    linthresh = float(pos_vals.min()) if len(pos_vals) else 0.1
+    arrow_tip = 170.0
     for env_name in envs:
         sub = price_df[price_df["env"] == env_name].sort_values("budget")
-        c = colors[env_name]
-        ax.step(sub["budget"], sub["w_star"], where="mid", color=c, label=env_name)
-        ax.scatter(sub["budget"], sub["w_star"], s=20, color=c, zorder=3)
+        c = figstyle.env_color(env_name)
+        ax.step(
+            sub["budget"], sub["w_star"], where="mid", color=c,
+            label=ENV_DISPLAY.get(env_name, env_name), zorder=2,
+        )
+        slack = (sub["w_star"] <= 0) | (sub["w_star"] < sub["w_lo"])
+        bind = sub[~slack]
+        ax.scatter(bind["budget"], bind["w_star"], s=20, color=c, zorder=4)
+        sl = sub[slack]
+        ax.scatter(
+            sl["budget"], sl["w_star"], s=20, facecolors="none",
+            edgecolors=c, linewidths=1.1, zorder=4,
+        )
         # Vertical bars: the set-valued crossing bracket (w_lo, w_hi] at each B.
         for _, row in sub.iterrows():
-            ax.plot(
-                [row["budget"], row["budget"]],
-                [row["w_lo"], row["w_hi"]],
-                color=figstyle.GRAY,
-                alpha=0.55,
-                lw=1.4,
-                zorder=1,
-            )
-    ax.set_xlabel("Sensing budget $B$ (mean observations)")
+            B = float(row["budget"])
+            lo, hi = float(row["w_lo"]), float(row["w_hi"])
+            is_slack = row["w_star"] <= 0 or row["w_star"] < lo
+            bar_alpha = 0.35 if is_slack else 0.5
+            bar_ls = ":" if is_slack else "-"
+            if hi >= W_GRID_TOP - 1e-9:
+                # Open above the tested grid: arrowhead, not a capped bar.
+                ax.annotate(
+                    "", xy=(B, arrow_tip), xytext=(B, lo),
+                    arrowprops=dict(
+                        arrowstyle="-|>", color=c, alpha=bar_alpha,
+                        lw=1.3, linestyle=bar_ls, mutation_scale=8,
+                    ),
+                    zorder=1,
+                )
+                ax.plot([B / 1.025, B * 1.025], [lo, lo], color=c,
+                        alpha=bar_alpha, lw=1.2, zorder=1)
+            else:
+                ax.plot([B, B], [lo, hi], color=c, alpha=bar_alpha,
+                        lw=1.4, ls=bar_ls, zorder=1)
+                for v in (lo, hi):
+                    ax.plot([B / 1.025, B * 1.025], [v, v], color=c,
+                            alpha=bar_alpha, lw=1.2, zorder=1)
+    # Log budget axis: keeps the small-budget staircases readable when one
+    # series (e.g. Inspection-N16) spans much larger budgets.
+    ax.set_xscale("log")
+    bmin = float(price_df["budget"].min())
+    bmax = float(price_df["budget"].max())
+    xticks = [t for t in (2, 3, 5, 7, 10, 15, 20, 30, 50, 70)
+              if bmin / 1.15 <= t <= bmax * 1.15]
+    ax.set_xticks(xticks)
+    ax.set_xticklabels([f"{t:g}" for t in xticks])
+    ax.xaxis.set_minor_locator(matplotlib.ticker.NullLocator())
+    ax.set_xlabel("Sensing budget $B$ (mean observations, log scale)")
     ax.set_ylabel("Shadow price $w^*(B)$")
     # symlog: w* is 0 at slack budgets, so the "0" tick is a real data value.
-    ax.set_yscale("symlog", linthresh=0.1)
-    ax.set_yticks([0.0, 0.1, 1.0, 10.0, 100.0])
-    ax.set_yticklabels(["$0$", "$10^{-1}$", "$10^{0}$", "$10^{1}$", "$10^{2}$"])
+    ax.set_yscale("symlog", linthresh=linthresh)
+    yticks = [0.0] + [d for d in (0.1, 1.0, 10.0, 100.0) if d >= linthresh - 1e-12]
+    ax.set_yticks(yticks)
+    ax.set_yticklabels(
+        ["$0$"] + [f"$10^{{{int(round(math.log10(d)))}}}$" for d in yticks[1:]]
+    )
+    ax.set_ylim(-0.35 * linthresh, 300.0)
+    # Dotted rule at the grid ceiling: everything above it is unresolved.
+    ax.axhline(W_GRID_TOP, color=figstyle.GRAY, ls=":", lw=0.8, zorder=0)
+    ax.annotate(
+        "top of tested $w$ grid", xy=(0.01, W_GRID_TOP * 1.12),
+        xycoords=("axes fraction", "data"), fontsize=7.5,
+        color=figstyle.GRAY, ha="left", va="bottom",
+    )
     figstyle.style_axis(ax)
-    handles, labels = ax.get_legend_handles_labels()
+    handles, _ = ax.get_legend_handles_labels()
     handles.append(
         Line2D(
-            [], [], color=figstyle.GRAY, alpha=0.55, lw=1.4,
-            label="crossing bracket $(w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$",
+            [], [], color=figstyle.GRAY, alpha=0.6, lw=1.4,
+            label="bracket $(w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$ (series color)",
         )
     )
-    ax.legend(handles=handles, loc="center left", bbox_to_anchor=(1.01, 0.5))
+    handles.append(
+        Line2D(
+            [], [], color=figstyle.GRAY, alpha=0.6, lw=1.4, ls=":",
+            marker="o", markerfacecolor="none", markersize=4.5,
+            label="slack budget: $w^*$ below first binding bracket",
+        )
+    )
+    ax.legend(
+        handles=handles, ncol=3, loc="upper center",
+        bbox_to_anchor=(0.5, -0.22), frameon=False,
+    )
     fig.tight_layout()
     _savefig(fig, path)
     plt.close(fig)
@@ -531,10 +617,16 @@ def run_cost_budget(
     return pd.DataFrame(curve_rows), pd.DataFrame(price_rows), metrics
 
 
-def plot_cost_budget(curve_df: pd.DataFrame, path: Path) -> None:
-    """Left: count and cost usage curves. Right: mean cost per test vs w."""
+def plot_cost_budget(
+    curve_df: pd.DataFrame,
+    path: Path,
+    price_df: Optional[pd.DataFrame] = None,
+) -> None:
+    """(a) count and cost usage curves with the tested budgets and their
+    shared crossing brackets. (b) mean cost per test vs w, zoomed to the
+    range the ratio actually occupies."""
     figstyle.apply()
-    fig, axes = plt.subplots(1, 2, figsize=(9.2, 3.9))
+    fig, axes = plt.subplots(1, 2, figsize=figstyle.figsize(1.0, 0.45))
     ax = axes[0]
     pos_w = curve_df.loc[curve_df["w"] > 0, "w"]
     zero_pos = _log_x_with_zero(ax, float(pos_w.min()), float(pos_w.max()))
@@ -551,36 +643,70 @@ def plot_cost_budget(curve_df: pd.DataFrame, path: Path) -> None:
             yerr=sub["se_usage"],
             marker=marker,
             ms=4,
-            capsize=3,
+            capsize=figstyle.CAPSIZE,
             color=color,
             label=label,
         )
+    # Tested operating points: budget rules per usage kind, plus the shared
+    # crossing brackets (the caption's coincidence claim, drawn not asserted).
+    if price_df is not None and not price_df.empty:
+        kind_color = {"count": figstyle.BLUE, "cost": figstyle.ORANGE}
+        x_right = float(pos_w.max()) * 1.55
+        spans: Dict[Tuple[float, float], None] = {}
+        for _, row in price_df.sort_values("budget").iterrows():
+            c = kind_color.get(str(row["usage_kind"]), figstyle.GRAY)
+            b = float(row["budget"])
+            ax.axhline(b, ls="--", lw=0.9, alpha=0.55, color=c, zorder=1)
+            ax.annotate(
+                f"$B{{=}}{b:.2f}$", (x_right, b), fontsize=7,
+                color=c, ha="right", va="bottom",
+            )
+            spans[(round(float(row["w_lo"]), 6), round(float(row["w_hi"]), 6))] = None
+        for i, (lo, hi) in enumerate(sorted(spans)):
+            ax.axvspan(lo, hi, color=figstyle.GRAY, alpha=0.10 + 0.08 * i, zorder=0)
+            ax.annotate(
+                f"$w^*\\!\\in\\!({lo:.3g}, {hi:.3g}]$",
+                (math.sqrt(lo * hi), 0.99 - 0.08 * i),
+                xycoords=("data", "axes fraction"),
+                fontsize=7, color="0.35", ha="center", va="top",
+            )
     ax.set_xlabel("Info-gain weight $w$")
-    ax.set_ylabel("Expected usage per episode")
+    ax.set_ylabel(
+        "Usage per episode\n($U_{\\mathrm{count}}$: observations, "
+        "$U_{\\mathrm{cost}}$: cost units)"
+    )
+    ax.set_title("(a) Usage curves")
     figstyle.style_axis(ax)
-    ax.legend(loc="upper left")
+    # Anchored below the B=19.20 rule so no budget rule runs through the text.
+    ax.legend(loc="upper left", bbox_to_anchor=(0.02, 0.86))
 
     ax2 = axes[1]
     zero_pos2 = _log_x_with_zero(ax2, float(pos_w.min()), float(pos_w.max()))
     piv = curve_df.pivot_table(index="w", columns="usage_kind", values="mean_usage")
+    piv_se = curve_df.pivot_table(index="w", columns="usage_kind", values="se_usage")
+    piv_se = piv_se.loc[piv["count"] > 0]
     piv = piv[piv["count"] > 0]
     ratio = piv["cost"] / piv["count"]
+    # Delta-method SE of the ratio from the two usage SEs.
+    ratio_se = ratio * np.sqrt(
+        (piv_se["cost"] / piv["cost"]) ** 2 + (piv_se["count"] / piv["count"]) ** 2
+    )
     xs2 = np.where(piv.index.to_numpy() > 0, piv.index.to_numpy(), zero_pos2)
-    ax2.plot(xs2, ratio, marker="o", ms=4, color=figstyle.GREEN)
-    # Reference costs, labeled at the left edge where the ratio curve is flat
-    # at ~1.26 and cannot collide with any of the three labels.
-    for c, label in ((0.5, "cheap test"), (2.5, "expensive test"), (1.5, "uniform mix")):
-        ax2.axhline(c, ls="--", lw=1, alpha=0.5, color=figstyle.GRAY)
-        ax2.annotate(
-            label,
-            (zero_pos2, c),
-            fontsize=7.5,
-            color=figstyle.GRAY,
-            va="bottom",
-            ha="left",
-        )
+    ax2.errorbar(
+        xs2, ratio, yerr=ratio_se, marker="o", ms=4,
+        capsize=figstyle.CAPSIZE, color=figstyle.GREEN,
+    )
+    # Zoom to the range the ratio occupies; the reference per-test costs are
+    # far outside it and are reported as a corner note instead of rules.
+    ax2.set_ylim(1.20, 1.45)
+    ax2.text(
+        0.02, 0.97,
+        "reference costs: cheap 0.5,\nuniform mix 1.5, expensive 2.5",
+        transform=ax2.transAxes, fontsize=7.5, color=figstyle.GRAY, va="top",
+    )
     ax2.set_xlabel("Info-gain weight $w$")
     ax2.set_ylabel("Mean cost per test $U_{\\mathrm{cost}}/U_{\\mathrm{count}}$")
+    ax2.set_title("(b) Mean cost per test")
     figstyle.style_axis(ax2)
     fig.tight_layout()
     _savefig(fig, path)
@@ -778,14 +904,20 @@ def plot_scale_collapse(
     budget: float,
 ) -> None:
     figstyle.apply()
-    fig, axes = plt.subplots(1, 2, figsize=(9.2, 3.9))
+    fig, axes = plt.subplots(
+        1, 2, figsize=figstyle.figsize(1.0, 0.45),
+        gridspec_kw={"width_ratios": [3, 1]},
+    )
     ax = axes[0]
     alphas = sorted(curve_df["scale_k"].unique())
-    colors = {
-        a: figstyle.ENV_CYCLE[i % len(figstyle.ENV_CYCLE)] for i, a in enumerate(alphas)
-    }
+    # Fixed per-alpha colors (deliberately not the env mapping: these series
+    # are reward scales within one environment, not environments).
+    alpha_palette = [figstyle.BLUE, figstyle.ORANGE, figstyle.GREEN, figstyle.PINK]
+    colors = {a: alpha_palette[i % len(alpha_palette)] for i, a in enumerate(alphas)}
     markers = ["o", "s", "^", "D"]
-    msizes = [9.5, 6.5, 3.8, 2.4]
+    # Nested open markers of decreasing size; the innermost stays legible at
+    # print scale (a 3.8 pt marker did not survive reduction).
+    msizes = [11.0, 7.5, 4.6, 2.8]
     pos = curve_df.loc[curve_df["w_over_alpha"] > 0, "w_over_alpha"]
     zero_pos = _log_x_with_zero(ax, float(pos.min()), float(pos.max()))
     # The three alpha curves coincide bit-exactly (that IS the result), so the
@@ -801,7 +933,7 @@ def plot_scale_collapse(
         yerr=base["se_usage"],
         color="0.4",
         lw=1.4,
-        capsize=2,
+        capsize=figstyle.CAPSIZE,
         marker="",
         zorder=2,
     )
@@ -815,17 +947,17 @@ def plot_scale_collapse(
             marker=markers[i % len(markers)],
             ms=msizes[i % len(msizes)],
             markerfacecolor="none",
-            markeredgewidth=1.3,
+            markeredgewidth=1.1,
             color=colors[a],
             label=f"$\\alpha={a:g}$",
             zorder=3 + i,
         )
     ax.axhline(budget, color=figstyle.GRAY, ls="--", lw=1.2, label=f"$B={budget:g}$")
     ax.set_xlabel("$w/\\alpha$")
-    ax.set_ylabel("Mean observations $U$")
+    ax.set_ylabel("Mean observations per episode $U$")
+    ax.set_title("(a) Usage curves across reward scales")
     figstyle.style_axis(ax)
-    leg = ax.legend(loc="upper left", title="curves coincide exactly")
-    leg.get_title().set_fontsize(8.5)
+    ax.legend(loc="upper left")
 
     ax2 = axes[1]
     if not cross_df.empty and "w_lo_over_alpha" in cross_df.columns:
@@ -836,45 +968,36 @@ def plot_scale_collapse(
         labels = [f"$\\alpha={a:g}$" for a in sub["scale_k"]]
         lo = sub["w_lo_over_alpha"].to_numpy(dtype=float)
         hi = sub["w_hi_over_alpha"].to_numpy(dtype=float)
-        # Reference band from α=1 if present
-        a1 = sub[np.isclose(sub["scale_k"], 1.0)]
-        if not a1.empty:
-            ax2.axhspan(
-                float(a1["w_lo_over_alpha"].iloc[0]),
-                float(a1["w_hi_over_alpha"].iloc[0]),
-                color=figstyle.ORANGE,
-                alpha=0.12,
-                label="$\\alpha=1$ bracket",
-                zorder=0,
-            )
+        # Shared bracket edges: dashed rules labeled with their values (the
+        # quantitative content of the panel), no legend needed.
+        lo_shared = float(np.min(lo))
+        hi_shared = float(np.max(hi))
+        for v in (lo_shared, hi_shared):
+            ax2.axhline(v, color=figstyle.GRAY, ls="--", lw=0.9, zorder=1)
         for i, (l, h, a) in enumerate(zip(lo, hi, sub["scale_k"])):
             c = colors.get(float(a), figstyle.BLUE)
             ax2.plot([i, i], [l, h], color=c, lw=3.5, solid_capstyle="butt", zorder=3)
             ax2.plot([i - 0.07, i + 0.07], [l, l], color=c, lw=1.6, zorder=3)
             ax2.plot([i - 0.07, i + 0.07], [h, h], color=c, lw=1.6, zorder=3)
-        # Annotate the shared bracket edges once, right of the last bar.
         if len(xs):
-            for v in (float(np.max(hi)), float(np.min(lo))):
+            for v, va in ((hi_shared, "bottom"), (lo_shared, "top")):
                 ax2.annotate(
                     f"{v:.3f}",
-                    (xs[-1] + 0.22, v),
-                    fontsize=7.5,
-                    color=figstyle.GRAY,
-                    va="center",
+                    (xs[-1] + 0.35, v),
+                    fontsize=8.5,
+                    color=figstyle.BLACK,
+                    va=va,
                     ha="left",
                 )
         ax2.set_xticks(xs)
         ax2.set_xticklabels(labels)
-        ax2.set_xlim(-0.6, len(xs) - 1 + 0.9)
-        span = float(np.max(hi)) - float(np.min(lo))
-        ax2.set_ylim(
-            float(np.min(lo)) - 0.25 * span, float(np.max(hi)) + 0.55 * span
-        )
+        ax2.set_xlim(-0.6, len(xs) - 1 + 1.1)
+        span = hi_shared - lo_shared
+        ax2.set_ylim(lo_shared - 0.3 * span, hi_shared + 0.3 * span)
         ax2.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=6))
         ax2.set_ylabel(f"Crossing bracket $w^*(B{{=}}{budget:g})/\\alpha$")
+        ax2.set_title("(b) Brackets")
         figstyle.style_axis(ax2)
-        if not a1.empty:
-            ax2.legend(loc="upper left")
     fig.tight_layout()
     _savefig(fig, path)
     plt.close(fig)
@@ -1055,11 +1178,25 @@ def run_prop2_duality(
 
 
 def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) -> None:
+    """Usage onset vs the closed-form threshold, with a zoom inset.
+
+    The onset bracket spans under 1% of the full axis, so each panel gets an
+    inset zoomed to the threshold neighborhood where the containment claim
+    (threshold inside the measured onset bracket) is actually visible.
+    Colors are deliberately non-agent: the usage curve is neutral gray, the
+    hatched gray band is the measured onset bracket, and vermillion is
+    reserved for the theory line.
+    """
     figstyle.apply()
     envs = list(curve_df["env"].unique()) if not curve_df.empty else []
     n = max(1, len(envs))
-    fig, axes = plt.subplots(1, n, figsize=(4.2 * n, 3.6), squeeze=False)
+    fig, axes = plt.subplots(
+        1, n, figsize=(figstyle.TEXT_WIDTH_IN / 2 * n, 2.9), squeeze=False
+    )
     panel = "abcdefgh"
+    band_kw = dict(
+        facecolor="0.82", alpha=0.6, hatch="/////", edgecolor="0.55", linewidth=0
+    )
     for i, name in enumerate(envs):
         ax = axes[0, i]
         sub = curve_df[curve_df["env"] == name].sort_values("w")
@@ -1068,9 +1205,11 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
             sub["mean_usage"],
             yerr=sub["se_usage"],
             fmt="o-",
-            capsize=2,
-            ms=4,
-            color=figstyle.BLUE,
+            capsize=figstyle.CAPSIZE,
+            ms=3.5,
+            lw=1.4,
+            color="0.4",
+            label="$U(w)$",
         )
         w_th = float(sub["w_thresh"].iloc[0])
         ax.axvline(
@@ -1081,27 +1220,53 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
             label=f"$w_{{\\mathrm{{thresh}}}}={w_th:.3g}$",
         )
         jrow = jump_df[jump_df["env"] == name]
+        lo = hi = float("nan")
         if not jrow.empty:
             lo = float(jrow["onset_lo"].iloc[0]) if "onset_lo" in jrow.columns else float("nan")
             hi = float(jrow["onset_hi"].iloc[0]) if "onset_hi" in jrow.columns else float("nan")
             if np.isfinite(lo) and np.isfinite(hi) and hi > lo:
-                ax.axvspan(
-                    lo,
-                    hi,
-                    color=figstyle.GREEN,
-                    alpha=0.25,
-                    label=f"onset $({lo:.3g}, {hi:.3g}]$",
-                )
+                ax.axvspan(lo, hi, label="onset bracket", **band_kw)
             elif np.isfinite(hi):
                 ax.axvline(
-                    hi, color=figstyle.GREEN, ls=":", label=f"onset $={hi:.3g}$"
+                    hi, color="0.4", ls=":", label=f"onset $={hi:.3g}$"
                 )
-        ax.set_xlabel("Info-gain weight $w$")
-        ax.set_ylabel("Mean observations $U(w)$")
-        ax.set_title(f"({panel[i]}) {name}")
+        ymax = float(sub["mean_usage"].max())
+        ax.set_ylim(bottom=-0.04 * ymax)
+        ax.set_xlabel("Info-gain weight $w$ (linear scale)")
+        ax.set_ylabel("Mean observations per episode $U(w)$")
+        cfg = POSITIVE_THRESH_CONFIGS.get(name)
+        if cfg is not None:
+            ax.set_title(
+                f"({panel[i]}) Testbed, $p{{=}}{cfg['p']:.2f}$, $c{{=}}{cfg['c']:g}$"
+            )
+        else:
+            ax.set_title(f"({panel[i]}) {name}")
         figstyle.style_axis(ax)
         # The curve hugs zero left of the threshold, so upper left is empty.
-        ax.legend(loc="upper left", fontsize=8)
+        # Compact spacing keeps the legend clear of the threshold rule.
+        ax.legend(loc="upper left", fontsize=8, handlelength=1.6,
+                  handletextpad=0.6, borderaxespad=0.2)
+        # Zoom inset on the onset neighborhood: the bracket and the threshold
+        # rule are sub-pixel on the full axis.
+        if np.isfinite(lo) and np.isfinite(hi) and hi > lo:
+            # Upper-middle placement: right of the legend, above the flat
+            # pre-onset run, left of the final steep segment in both panels.
+            axin = ax.inset_axes([0.40, 0.62, 0.31, 0.33])
+            axin.errorbar(
+                sub["w"], sub["mean_usage"], yerr=sub["se_usage"],
+                fmt="o-", capsize=figstyle.CAPSIZE, ms=3.5, lw=1.2, color="0.4",
+            )
+            axin.axvline(w_th, color=figstyle.VERMILLION, ls="--", lw=1.2)
+            axin.axvspan(lo, hi, **band_kw)
+            pad = max(0.1, 0.6 * (hi - lo))
+            axin.set_xlim(w_th - pad, hi + pad)
+            in_view = sub[(sub["w"] >= w_th - pad) & (sub["w"] <= hi + pad)]
+            in_max = float(in_view["mean_usage"].max()) if not in_view.empty else 1.0
+            axin.set_ylim(-0.08 * max(in_max, 0.5), 1.25 * max(in_max, 0.5))
+            axin.set_xticks([w_th, hi])
+            axin.set_xticklabels([f"{w_th:.2f}", f"{hi:.2f}"], fontsize=7)
+            axin.tick_params(axis="y", labelsize=7)
+            ax.indicate_inset_zoom(axin, edgecolor="0.6", alpha=0.8)
     fig.tight_layout()
     _savefig(fig, path)
     plt.close(fig)
@@ -1556,11 +1721,21 @@ def run_dual_multiseed(
 
 
 def plot_dual_multiseed(df: pd.DataFrame, path: Path, roll: int = 20) -> None:
-    """Median trajectory with interquartile band per variant."""
+    """Median trajectory with interquartile band per variant.
+
+    One figure-level legend below the panels (nothing inside the data area,
+    where a legend swatch at the post-reset plateau height once read as the
+    trace continuing left of the rescale rule). All four panels are labeled
+    (a)-(d). The rolling usage mean uses a full window (min_periods=roll) so
+    no warm-up sliver hugs the y-axis.
+    """
     figstyle.apply()
-    fig, axes = plt.subplots(2, 2, figsize=(9.6, 5.6), sharex="col", sharey="row")
-    variants = [("decay", "(a) Decay only"), ("reset", "(b) Reset on shift")]
+    fig, axes = plt.subplots(
+        2, 2, figsize=figstyle.figsize(1.0, 0.65), sharex="col", sharey="row"
+    )
+    variants = [("decay", "Decay only"), ("reset", "Reset on shift")]
     budget = float(df["budget"].iloc[0])
+    n_seeds = int(df["controller_seed"].nunique())
     for col, (variant, title) in enumerate(variants):
         sub = df[df["variant"] == variant]
         if sub.empty:
@@ -1568,53 +1743,55 @@ def plot_dual_multiseed(df: pd.DataFrame, path: Path, roll: int = 20) -> None:
         ax_w, ax_u = axes[0, col], axes[1, col]
         w_piv = sub.pivot_table(index="episode", columns="controller_seed", values="weight")
         u_piv = sub.pivot_table(index="episode", columns="controller_seed", values="usage")
-        u_roll = u_piv.rolling(roll, min_periods=1).mean()
+        u_roll = u_piv.rolling(roll, min_periods=roll).mean()
         eps = w_piv.index.to_numpy()
 
-        ax_w.plot(eps, w_piv.median(axis=1), color=figstyle.BLUE, lw=1.8, label="median $w$")
+        band_kw = dict(
+            color=figstyle.BLUE, alpha=0.30, linewidth=0.4, edgecolor=figstyle.BLUE
+        )
+        ax_w.plot(eps, w_piv.median(axis=1), color=figstyle.BLUE, lw=1.8)
         ax_w.fill_between(
             eps,
             w_piv.quantile(0.25, axis=1),
             w_piv.quantile(0.75, axis=1),
-            color=figstyle.BLUE,
-            alpha=0.25,
-            linewidth=0,
-            label="IQR",
+            **band_kw,
         )
-        ax_u.plot(
-            eps,
-            u_roll.median(axis=1),
-            color=figstyle.BLUE,
-            lw=1.8,
-            label=f"median usage (roll-{roll})",
-        )
+        ax_u.plot(eps, u_roll.median(axis=1), color=figstyle.BLUE, lw=1.8)
         ax_u.fill_between(
             eps,
             u_roll.quantile(0.25, axis=1),
             u_roll.quantile(0.75, axis=1),
-            color=figstyle.BLUE,
-            alpha=0.25,
-            linewidth=0,
-            label="IQR",
+            **band_kw,
         )
-        ax_u.axhline(budget, color=figstyle.VERMILLION, ls="--", lw=1.4, label="budget $B$")
+        ax_u.axhline(budget, color=figstyle.VERMILLION, ls="--", lw=1.4)
         if sub["rescaled"].any():
             t0 = int(sub.loc[sub["rescaled"], "episode"].iloc[0])
-            ax_w.axvline(t0, color=figstyle.GRAY, ls=":", label="rescale")
+            ax_w.axvline(t0, color=figstyle.GRAY, ls=":")
             ax_u.axvline(t0, color=figstyle.GRAY, ls=":")
-        ax_w.set_title(title)
+        ax_w.set_title(f"({'ab'[col]}) {title}")
+        ax_u.set_title(f"({'cd'[col]}) {title}, usage")
         figstyle.style_axis(ax_w)
         figstyle.style_axis(ax_u)
+        ax_u.set_xlim(left=0)
         if col == 0:
             ax_w.set_ylabel("Weight $w$")
-            ax_u.set_ylabel("Usage")
-        if col == 1:
-            # One legend per row, on the right column where the curves leave
-            # the corners free: weights sit low pre-rescale (upper left free),
-            # usage settles at B after ~ep 250 (upper right free).
-            ax_w.legend(loc="upper left", fontsize=8)
-            ax_u.legend(loc="upper right", fontsize=8)
+            ax_u.set_ylabel(
+                f"Sensing actions per episode\n(rolling mean, {roll} ep)"
+            )
         ax_u.set_xlabel("Episode")
+    legend_handles = [
+        Line2D([], [], color=figstyle.BLUE, lw=1.8,
+               label=f"median ({n_seeds} seeds)"),
+        mpl_patches.Patch(facecolor=figstyle.BLUE, alpha=0.30,
+                          edgecolor=figstyle.BLUE, linewidth=0.4, label="IQR"),
+        Line2D([], [], color=figstyle.VERMILLION, ls="--", lw=1.4,
+               label=f"budget $B={budget:g}$"),
+        Line2D([], [], color=figstyle.GRAY, ls=":", lw=1.4, label="rescale"),
+    ]
+    fig.legend(
+        handles=legend_handles, loc="upper center", ncol=4,
+        bbox_to_anchor=(0.5, 0.02), frameon=False,
+    )
     fig.tight_layout()
     _savefig(fig, path)
     plt.close(fig)
@@ -1701,8 +1878,14 @@ def replot_all_figures() -> None:
     )
 
     cost_curves = pd.read_csv(RESULTS / "results_price_cost_curves.csv")
-    plot_cost_budget(cost_curves, FIGURES / "price_cost_budget.png")
-    print("  price_cost_budget: rebuilt from results_price_cost_curves.csv", flush=True)
+    cost_prices_path = RESULTS / "results_price_cost_prices.csv"
+    cost_prices = pd.read_csv(cost_prices_path) if cost_prices_path.exists() else None
+    plot_cost_budget(cost_curves, FIGURES / "price_cost_budget.png", price_df=cost_prices)
+    print(
+        "  price_cost_budget: rebuilt from results_price_cost_curves.csv "
+        "+ results_price_cost_prices.csv",
+        flush=True,
+    )
 
     ms_df = pd.read_csv(RESULTS / "results_price_dual_multiseed.csv")
     plot_dual_multiseed(ms_df, FIGURES / "price_dual_multiseed.png")
@@ -1891,9 +2074,13 @@ def main() -> None:
 
     if "cost" in only:
         saved = RESULTS / "results_price_cost_curves.csv"
+        saved_prices = RESULTS / "results_price_cost_prices.csv"
         if args.replot and saved.exists():
             cost_curve_df = pd.read_csv(saved)
-            plot_cost_budget(cost_curve_df, FIGURES / "price_cost_budget.png")
+            cost_price_df = pd.read_csv(saved_prices) if saved_prices.exists() else None
+            plot_cost_budget(
+                cost_curve_df, FIGURES / "price_cost_budget.png", price_df=cost_price_df
+            )
         else:
             cost_curve_df, cost_price_df, cost_metrics = run_cost_budget(
                 seeds,
@@ -1902,7 +2089,9 @@ def main() -> None:
                 n_budgets=2,
             )
             cost_price_df.to_csv(RESULTS / "results_price_cost_prices.csv", index=False)
-            plot_cost_budget(cost_curve_df, FIGURES / "price_cost_budget.png")
+            plot_cost_budget(
+                cost_curve_df, FIGURES / "price_cost_budget.png", price_df=cost_price_df
+            )
             summary.update(cost_metrics)
             summary["cost_rows"] = len(cost_price_df)
 

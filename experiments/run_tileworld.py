@@ -223,33 +223,47 @@ def fig_scaling_replot(csv_path=SCALING_CSV,
     df = pd.read_csv(csv_path)
     grid_sizes = sorted(df["grid_size"].unique())
 
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(11.5, 3.4))
+    # Authored at the printed width (JAIR text block, width=\linewidth) so
+    # rcParams point sizes are the on-page point sizes.
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=figstyle.figsize(1.0, 0.34))
+
+    # Categorical x-dodge so tied series sit side by side instead of
+    # occluding each other. The ties are pairwise (Planning+IG with
+    # InfoGain-Tuned at every grid, EFE with Planning at 4x4), so each tied
+    # pair gets symmetric offsets wide enough to separate 5pt markers at the
+    # authored 6.5in width. The x-axis is categorical (ticks are pinned to
+    # grid_sizes below), so the dodge is purely cosmetic.
+    dodge = {"Myopic": 0.0, "Planning": -0.12, "EFE": 0.12,
+             "InfoGain-Tuned": -0.12, "Planning+IG": 0.12}
 
     for name in SCALING_AGENT_ORDER:
         sub = df[df["agent"] == name].sort_values("grid_size")
         if sub.empty:
             continue
         style = figstyle.agent_style(name)
-        ax1.errorbar(sub["grid_size"], sub["success_rate"] * 100,
+        x = sub["grid_size"] + dodge[name]
+        ax1.errorbar(x, sub["success_rate"] * 100,
                      yerr=sub["se_success_seed_level"] * 100,
-                     capsize=2, elinewidth=0.8, label=name, **style)
-        ax2.errorbar(sub["grid_size"], sub["mean_reward"],
+                     capsize=figstyle.CAPSIZE, elinewidth=0.8,
+                     label=name, **style)
+        ax2.errorbar(x, sub["mean_reward"],
                      yerr=sub["se_reward_seed_level"],
-                     capsize=2, elinewidth=0.8, label=name, **style)
+                     capsize=figstyle.CAPSIZE, elinewidth=0.8,
+                     label=name, **style)
         ax3.plot(sub["grid_size"], sub["sec_per_episode"] * 1000,
                  label=name, **style)
 
-    ax1.set_xlabel("Grid size")
     ax1.set_ylabel("Success rate (%)")
-    ax1.set_title("(a) Success rate vs grid size")
+    ax1.set_title("(a) Success rate vs. grid size")
 
-    ax2.set_xlabel("Grid size")
     ax2.set_ylabel("Mean reward")
-    ax2.set_title("(b) Reward vs grid size")
+    ax2.set_title("(b) Reward vs. grid size")
+    # One shared x-label for the row; the three panels share an identical
+    # categorical axis, so repeating it per panel wasted vertical space.
+    ax2.set_xlabel("Grid size")
 
-    ax3.set_xlabel("Grid size")
     ax3.set_ylabel("Time per episode (ms)")
-    ax3.set_title("(c) Computation cost")
+    ax3.set_title("(c) Computation cost vs. grid size")
     ax3.set_yscale("log")
 
     for ax in (ax1, ax2, ax3):
@@ -259,8 +273,8 @@ def fig_scaling_replot(csv_path=SCALING_CSV,
 
     handles, labels = ax1.get_legend_handles_labels()
     fig.legend(handles, labels, ncol=len(labels), loc="lower center",
-               bbox_to_anchor=(0.5, -0.06), frameon=False)
-    fig.tight_layout(rect=[0, 0.03, 1, 1])
+               bbox_to_anchor=(0.5, -0.10), frameon=False)
+    fig.tight_layout()
 
     save_fig(fig, save_path)
     plt.close(fig)

@@ -14,9 +14,12 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-from matplotlib.colors import Normalize
-from typing import List, Tuple, Optional, Dict
-from dataclasses import dataclass, field
+import matplotlib.patheffects as mpatheffects
+from matplotlib.collections import LineCollection
+from matplotlib.colors import ListedColormap, PowerNorm
+from matplotlib.lines import Line2D
+from typing import List, Optional
+from dataclasses import dataclass
 
 from rho_aif.environments.tileworld import TileworldEnv
 from rho_aif.agents.base import BaseAgent
@@ -113,6 +116,29 @@ def run_recorded_episode(
     )
 
 
+def _mask_boundary_segments(mask: np.ndarray) -> list:
+    """Cell-edge segments on the boundary of a boolean mask.
+
+    Drawing only the outer boundary renders each connected scanned band as
+    one contiguous outline instead of a chain of per-cell boxes.
+    """
+    segs = []
+    n_rows, n_cols = mask.shape
+    for r in range(n_rows):
+        for c in range(n_cols):
+            if not mask[r, c]:
+                continue
+            if r == 0 or not mask[r - 1, c]:
+                segs.append([(c - 0.5, r - 0.5), (c + 0.5, r - 0.5)])
+            if r == n_rows - 1 or not mask[r + 1, c]:
+                segs.append([(c - 0.5, r + 0.5), (c + 0.5, r + 0.5)])
+            if c == 0 or not mask[r, c - 1]:
+                segs.append([(c - 0.5, r - 0.5), (c - 0.5, r + 0.5)])
+            if c == n_cols - 1 or not mask[r, c + 1]:
+                segs.append([(c + 0.5, r - 0.5), (c + 0.5, r + 0.5)])
+    return segs
+
+
 def _draw_grid(
     ax: plt.Axes,
     belief: np.ndarray,
@@ -122,59 +148,58 @@ def _draw_grid(
     commit_cell: Optional[int] = None,
     title: str = "",
     show_target: bool = False,
-    vmin: float = 0.0,
-    vmax: float = 1.0,
+    norm=None,
+    title_fontsize: float = 7.0,
 ):
-    """Render a single grid frame with belief heatmap and annotations."""
+    """Render a single grid frame with belief heatmap and annotations.
+
+    The heat carries the belief values (a shared colorbar decodes them, so
+    no per-cell numbers are drawn). Overlay marks stay off the agent palette:
+    the scanned region is a black contiguous outline, the true tile a
+    black-edged white star, and the committed cell a white ring with a black
+    stroke, all legible on both ends of the belief colormap.
+    """
     belief_grid = belief.reshape(grid_size, grid_size)
 
-    ax.imshow(
-        belief_grid, cmap="YlOrRd", vmin=vmin, vmax=vmax,
+    im = ax.imshow(
+        belief_grid, cmap=figstyle.BELIEF_CMAP, norm=norm,
         interpolation="nearest", aspect="equal",
     )
 
-    for r in range(grid_size):
-        for c in range(grid_size):
-            val = belief_grid[r, c]
-            color = "white" if val > 0.5 * vmax else "black"
-            ax.text(
-                c, r, f"{val:.2f}", ha="center", va="center",
-                fontsize=max(4, 8 - grid_size), color=color, fontweight="bold",
-            )
-
     if scan_mask is not None:
-        for r in range(grid_size):
-            for c in range(grid_size):
-                if scan_mask[r, c]:
-                    rect = mpatches.FancyBboxPatch(
-                        (c - 0.48, r - 0.48), 0.96, 0.96,
-                        boxstyle="round,pad=0.02",
-                        linewidth=2.0, edgecolor=figstyle.BLUE,
-                        facecolor="none", zorder=3,
-                    )
-                    ax.add_patch(rect)
+        segs = _mask_boundary_segments(scan_mask)
+        outline = LineCollection(segs, colors="black", linewidths=1.4,
+                                 capstyle="projecting", zorder=4)
+        outline.set_path_effects([
+            mpatheffects.withStroke(linewidth=2.8, foreground="white"),
+        ])
+        ax.add_collection(outline)
 
     if show_target and target_cell is not None:
         tr, tc = target_cell // grid_size, target_cell % grid_size
-        ax.plot(tc, tr, marker="*", markersize=14, color=figstyle.GREEN,
-                markeredgecolor="black", markeredgewidth=0.8, zorder=5)
+        ax.plot(tc, tr, marker="*", markersize=9, color="white",
+                markeredgecolor="black", markeredgewidth=0.9, zorder=6)
 
     if commit_cell is not None:
         cr, cc = commit_cell // grid_size, commit_cell % grid_size
-        circle = plt.Circle((cc, cr), 0.4, fill=False,
-                            edgecolor=figstyle.VERMILLION, linewidth=2.5, zorder=5)
+        circle = plt.Circle((cc, cr), 0.42, fill=False,
+                            edgecolor="white", linewidth=1.4, zorder=5)
+        circle.set_path_effects([
+            mpatheffects.withStroke(linewidth=3.0, foreground="black"),
+        ])
         ax.add_patch(circle)
 
     for r in range(grid_size + 1):
-        ax.axhline(r - 0.5, color="#666666", linewidth=0.5, zorder=2)
+        ax.axhline(r - 0.5, color="#666666", linewidth=0.4, zorder=2)
     for c in range(grid_size + 1):
-        ax.axvline(c - 0.5, color="#666666", linewidth=0.5, zorder=2)
+        ax.axvline(c - 0.5, color="#666666", linewidth=0.4, zorder=2)
 
     ax.set_xlim(-0.5, grid_size - 0.5)
     ax.set_ylim(grid_size - 0.5, -0.5)
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.set_title(title, fontsize=8, pad=4)
+    ax.set_title(title, fontsize=title_fontsize, pad=3)
+    return im
 
 
 def render_belief_evolution(
@@ -183,11 +208,13 @@ def render_belief_evolution(
     save_path: str,
     max_panels: int = 7,
     show_target: bool = True,
-    figsize_per_panel: Tuple[float, float] = (2.5, 2.8),
 ):
     """
-    Render a horizontal strip of grid panels showing belief evolution.
-    Includes the initial state, selected scan steps, and the final commit.
+    Render a two-row grid of panels showing belief evolution: the initial
+    state, selected scan steps, and the final commit. Authored at the width
+    it is printed at (0.78 of the JAIR text block) so type prints at size.
+    A shared colorbar decodes the belief colormap; a square-root color
+    normalization keeps the low-probability early-episode structure visible.
     """
     scan_steps = [s for s in episode.steps if s.action_type == "scan"]
     commit_step = next((s for s in episode.steps if s.action_type == "commit"), None)
@@ -205,42 +232,63 @@ def render_belief_evolution(
         panels.append(commit_step)
     n = len(panels)
 
-    fig, axes = plt.subplots(1, n, figsize=(figsize_per_panel[0] * n, figsize_per_panel[1]))
-    if n == 1:
-        axes = [axes]
+    # One spare slot is always reserved for the colorbar.
+    n_cols = 4
+    n_rows = max(1, (n + 1 + n_cols - 1) // n_cols)
+    fig_w = figstyle.TEXT_WIDTH_IN * 0.78
+    panel_w = fig_w / n_cols
+    fig, axes = plt.subplots(
+        n_rows, n_cols,
+        figsize=(fig_w, n_rows * (panel_w + 0.38)),
+        squeeze=False,
+    )
 
     vmax = max(s.belief.max() for s in panels)
     vmax = max(vmax, 1.0 / episode.grid_size ** 2 * 2)
+    norm = PowerNorm(gamma=0.5, vmin=0.0, vmax=vmax)
 
+    im = None
     for i, step_rec in enumerate(panels):
-        ax = axes[i]
+        ax = axes[divmod(i, n_cols)]
         scan_mask = None
         commit_cell = None
+        letter = chr(ord("a") + i)
 
         if step_rec.action_type == "initial":
-            title = "t=0 (uniform)"
+            title = f"({letter}) $t{{=}}0$\nuniform prior"
         elif step_rec.action_type == "scan":
             scan_desc = env.get_scan_description(step_rec.scan_idx)
+            scan_label = scan_desc.split(":")[0].lower()
             obs_label = "A" if step_rec.observation == 0 else "B"
-            title = f"t={step_rec.step}: {scan_desc.split(':')[0]}\nobs={obs_label}"
+            title = (f"({letter}) $t{{=}}{step_rec.step}$: {scan_label}\n"
+                     f"obs $=$ {obs_label}")
             scan_mask = env.get_scan_mask(step_rec.scan_idx)
         elif step_rec.action_type == "commit":
-            collected = step_rec.action - env.num_scans
-            commit_cell = collected
+            commit_cell = step_rec.action - env.num_scans
             result_str = "correct" if episode.success else "wrong"
-            title = f"t={step_rec.step}: collect ({result_str})\nR={episode.total_reward:+.1f}"
+            title = (f"({letter}) $t{{=}}{step_rec.step}$: collect\n"
+                     f"{result_str}, $R{{=}}{episode.total_reward:+.1f}$")
 
-        show = show_target and (i == len(panels) - 1)
-
-        _draw_grid(
+        im = _draw_grid(
             ax, step_rec.belief, episode.grid_size,
             target_cell=episode.target_cell,
             scan_mask=scan_mask,
             commit_cell=commit_cell,
             title=title,
-            show_target=show,
-            vmax=vmax,
+            show_target=show_target,
+            norm=norm,
         )
+
+    for i in range(n, n_rows * n_cols):
+        axes[divmod(i, n_cols)].axis("off")
+
+    # Colorbar in the spare slot.
+    spare = axes[divmod(n_rows * n_cols - 1, n_cols)]
+    cax = spare.inset_axes([0.10, 0.52, 0.80, 0.10])
+    cbar = fig.colorbar(im, cax=cax, orientation="horizontal")
+    cbar.set_label("Belief probability", fontsize=7)
+    cbar.set_ticks([t for t in (0.0, 0.05, 0.2, 0.5) if t <= vmax])
+    cbar.ax.tick_params(labelsize=6.5)
 
     # No suptitle: the LaTeX caption carries the description.
     plt.tight_layout()
@@ -253,29 +301,35 @@ def render_agent_comparison(
     env: TileworldEnv,
     save_path: str,
     max_panels_per_row: int = 7,
-    figsize_per_panel: Tuple[float, float] = (2.2, 2.5),
 ):
     """
     Multi-row figure: one row per agent, same episode seed, showing
     different exploration strategies side by side.
+
+    Authored at the JAIR text-block width (printed at width=linewidth) so
+    type prints at rcParams size. The identical uniform prior is stated in
+    the caption rather than drawn once per row, a shared colorbar decodes
+    the belief colormap, and a legend explains the overlay marks. Scan
+    panels are subsampled evenly per row (rows are not time-aligned), which
+    an in-figure note states.
     """
     n_agents = len(episodes)
-    max_steps_shown = max_panels_per_row
 
     all_panel_data = []
     for ep in episodes:
         scan_steps = [s for s in ep.steps if s.action_type == "scan"]
         commit_step = next((s for s in ep.steps if s.action_type == "commit"), None)
-        initial = ep.steps[0]
 
-        if len(scan_steps) + 2 <= max_steps_shown:
+        # The uniform t=0 prior is identical across rows and is stated in
+        # the caption, so the panel budget goes to scans plus the commit.
+        n_show = max_panels_per_row - 2
+        if len(scan_steps) <= n_show:
             selected = scan_steps
         else:
-            n_show = max_steps_shown - 2
             indices = np.linspace(0, len(scan_steps) - 1, n_show, dtype=int)
             selected = [scan_steps[i] for i in indices]
 
-        row_panels = [initial] + selected
+        row_panels = list(selected)
         if commit_step:
             row_panels.append(commit_step)
         all_panel_data.append(row_panels)
@@ -284,7 +338,7 @@ def render_agent_comparison(
 
     fig, axes = plt.subplots(
         n_agents, n_cols,
-        figsize=(figsize_per_panel[0] * n_cols, figsize_per_panel[1] * n_agents),
+        figsize=(figstyle.TEXT_WIDTH_IN, n_agents * 1.22),
         squeeze=False,
     )
 
@@ -294,7 +348,9 @@ def render_agent_comparison(
         for s in panels
     )
     global_vmax = max(global_vmax, 0.1)
+    norm = PowerNorm(gamma=0.5, vmin=0.0, vmax=global_vmax)
 
+    im = None
     for row_idx, (ep, panels) in enumerate(zip(episodes, all_panel_data)):
         for col_idx in range(n_cols):
             ax = axes[row_idx, col_idx]
@@ -307,38 +363,59 @@ def render_agent_comparison(
             scan_mask = None
             commit_cell = None
 
-            if step_rec.action_type == "initial":
-                title = "t=0"
-            elif step_rec.action_type == "scan":
-                scan_label = env.get_scan_description(step_rec.scan_idx).split(":")[0]
+            if step_rec.action_type == "scan":
+                scan_label = (env.get_scan_description(step_rec.scan_idx)
+                              .split(":")[0].lower())
                 obs_label = "A" if step_rec.observation == 0 else "B"
-                title = f"t={step_rec.step}: {scan_label}\nobs={obs_label}"
+                title = f"$t{{=}}{step_rec.step}$: {scan_label}\nobs $=$ {obs_label}"
                 scan_mask = env.get_scan_mask(step_rec.scan_idx)
             elif step_rec.action_type == "commit":
                 commit_cell = step_rec.action - env.num_scans
                 result_str = "correct" if ep.success else "wrong"
-                title = f"Commit ({result_str})"
+                title = f"$t{{=}}{step_rec.step}$: commit\n{result_str}"
 
             show_target = (col_idx == len(panels) - 1)
 
-            _draw_grid(
+            im = _draw_grid(
                 ax, step_rec.belief, ep.grid_size,
                 target_cell=ep.target_cell,
                 scan_mask=scan_mask,
                 commit_cell=commit_cell,
                 title=title,
                 show_target=show_target,
-                vmax=global_vmax,
+                norm=norm,
+                title_fontsize=6.5,
             )
 
             if col_idx == 0:
                 n_scans = sum(1 for s in ep.steps if s.action_type == "scan")
                 ax.set_ylabel(
-                    f"{ep.agent_name}\n({n_scans} scans, R={ep.total_reward:+.1f})",
-                    fontsize=8, rotation=0, labelpad=60, va="center",
+                    f"{ep.agent_name}\n{n_scans} scans\n$R{{=}}{ep.total_reward:+.1f}$",
+                    fontsize=8.5, rotation=0, labelpad=8,
+                    va="center", ha="right",
                 )
 
-    plt.tight_layout()
+    cbar = fig.colorbar(im, ax=axes.ravel().tolist(),
+                        fraction=0.025, pad=0.015)
+    cbar.set_label("Belief P(tile)", fontsize=8)
+    cbar.ax.tick_params(labelsize=7)
+
+    legend_handles = [
+        mpatches.Patch(facecolor="none", edgecolor="black", linewidth=1.2,
+                       label="Scanned region"),
+        Line2D([], [], marker="*", linestyle="none", markersize=9,
+               markerfacecolor="white", markeredgecolor="black",
+               markeredgewidth=0.9, label="True tile"),
+        Line2D([], [], marker="o", linestyle="none", markersize=8,
+               markerfacecolor="none", markeredgecolor="black",
+               markeredgewidth=1.2, label="Committed cell"),
+    ]
+    fig.legend(handles=legend_handles, loc="lower center", ncol=3,
+               bbox_to_anchor=(0.5, -0.045), frameon=False, fontsize=8)
+    fig.text(0.5, -0.085,
+             "Scan panels are subsampled evenly per row; $t$ gives the true step.",
+             ha="center", fontsize=7, color=figstyle.GRAY)
+
     _save_fig(fig, save_path)
     plt.close()
 
@@ -347,34 +424,37 @@ def render_scan_atlas(
     env: TileworldEnv,
     save_path: str,
 ):
-    """Render all scan region masks in a single figure."""
-    n = env.num_scans
-    cols = min(n, 4)
-    rows = (n + cols - 1) // cols
-    fig, axes = plt.subplots(rows, cols, figsize=(3 * cols, 3 * rows))
-    if rows == 1 and cols == 1:
-        axes = np.array([[axes]])
-    elif rows == 1:
-        axes = axes[np.newaxis, :]
-    elif cols == 1:
-        axes = axes[:, np.newaxis]
+    """Render all scan region masks in a single figure.
 
+    Three columns fill a 2x3 grid with no empty cells for the six scans of
+    the 6x6 grid. The mask uses a white/Okabe-Ito-blue two-color map, and
+    the LaTeX caption carries the description (no suptitle).
+    """
+    figstyle.apply()
+    n = env.num_scans
+    cols = min(n, 3)
+    rows = (n + cols - 1) // cols
+    fig, axes = plt.subplots(rows, cols, figsize=(2.1 * cols, 2.35 * rows),
+                             squeeze=False)
+
+    cmap = ListedColormap(["white", figstyle.BLUE])
     for k in range(n):
         r, c = divmod(k, cols)
         ax = axes[r, c]
         mask = env.get_scan_mask(k).astype(float)
-        ax.imshow(mask, cmap="Blues", vmin=0, vmax=1, interpolation="nearest")
+        ax.imshow(mask, cmap=cmap, vmin=0, vmax=1, interpolation="nearest")
         for ri in range(env.grid_size):
             for ci in range(env.grid_size):
                 label = "B" if mask[ri, ci] else "A"
                 color = "white" if mask[ri, ci] else "black"
                 ax.text(ci, ri, label, ha="center", va="center",
-                        fontsize=8, color=color, fontweight="bold")
+                        fontsize=8, color=color)
         for ri in range(env.grid_size + 1):
             ax.axhline(ri - 0.5, color="gray", lw=0.5)
         for ci in range(env.grid_size + 1):
             ax.axvline(ci - 0.5, color="gray", lw=0.5)
-        ax.set_title(env.get_scan_description(k), fontsize=7)
+        desc = env.get_scan_description(k)
+        ax.set_title(desc.replace(": ", "\n", 1), fontsize=8)
         ax.set_xticks([])
         ax.set_yticks([])
 
@@ -382,11 +462,6 @@ def render_scan_atlas(
         r, c = divmod(k, cols)
         axes[r, c].axis("off")
 
-    fig.suptitle(
-        f"Scan regions for {env.grid_size}x{env.grid_size} Tileworld "
-        f"({env.num_scans} scans)",
-        fontsize=11, fontweight="bold",
-    )
     plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
+    _save_fig(fig, save_path)
     plt.close()

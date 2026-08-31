@@ -47,13 +47,14 @@ AGENT_STYLES = {
     "EFE":            _style("EFE", 2.2),
 }
 
-# Observation-action (test) colors: not agents, so drawn from the shared
-# categorical cycle rather than the agent mapping.
-TEST_COLORS = [figstyle.BLUE, figstyle.ORANGE, figstyle.GREEN, figstyle.PINK]
+# Observation-action (test) colors: tests are not agents, so they must not
+# reuse hues from figstyle.AGENT_COLORS ("one agent, one color, everywhere").
+# A single-hue purple ramp keeps the tests ordered and off the agent palette.
+TEST_COLORS = ["#3F007D", "#6A51A3", "#9E9AC8", "#CBC9E2"]
 
-# One perceptually-uniform colormap for every belief heatmap. Magma keeps the
-# "brighter warm colors = higher belief" reading of the previous colormap.
-HEATMAP_CMAP = "magma"
+# The canonical belief colormap shared by every belief heatmap in the paper
+# (light ground, darker = higher probability), set in figstyle.
+HEATMAP_CMAP = figstyle.BELIEF_CMAP
 
 
 def _save_fig(fig, save_path):
@@ -259,17 +260,28 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
     if target_seed is None:
         target_seed = seed
 
-    fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
-    panel_labels = ["(a) EFE ($w{=}1$)", "(b) Planning ($\\rho{=}0$)", "(c) InfoGain-Tuned"]
-
-    for ax_idx, (label, agent_cls, kwargs) in enumerate(agents_config):
+    # Run the three episodes up front so every panel can share one time axis.
+    # Equal physical width per time step makes the episode-length differences
+    # (Planning commits early, InfoGain-Tuned over-explores) directly visible.
+    episode_results = []
+    for label, agent_cls, kwargs in agents_config:
         np.random.seed(target_seed)
         agent = make_agent(agent_cls, env, **kwargs)
-        result = run_simple_episode(agent, env, max_steps=50, seed=target_seed)
+        episode_results.append(
+            run_simple_episode(agent, env, max_steps=50, seed=target_seed))
+    max_len = max(len(r["belief_history"]) for r in episode_results)
+
+    # Authored at the width it is printed at (0.78 of the JAIR text block).
+    fig, axes = plt.subplots(1, 3, figsize=figstyle.figsize(0.78, 0.42),
+                             sharey=True)
+    panel_labels = ["(a) EFE ($w{=}1$)", "(b) Planning ($\\rho{=}0$)", "(c) InfoGain-Tuned"]
+
+    from matplotlib.ticker import MultipleLocator
+    for ax_idx, (label, agent_cls, kwargs) in enumerate(agents_config):
+        result = episode_results[ax_idx]
 
         beliefs = result["belief_history"]
         true_state = result["true_state"]
-        n_steps = len(beliefs)
         n_states = beliefs[0].shape[0]
 
         belief_matrix = np.array(beliefs).T
@@ -280,35 +292,39 @@ def fig_belief_heatmap(seed=42, save_path="figures/fig_belief_heatmap.pdf"):
             vmin=0, vmax=1.0, interpolation="nearest",
         )
         ax.grid(False)
+        ax.set_xlim(-0.5, max_len + 0.5)
 
         commit_step = result["num_observations"]
-        ax.axvline(commit_step, color="white", ls="--", lw=1.5, alpha=0.9)
+        ax.axvline(commit_step, color=figstyle.BLACK, ls="--", lw=1.0, alpha=0.85)
+        if ax_idx == 0:
+            ax.annotate("commit", xy=(commit_step + 0.7, n_states - 1.0),
+                        fontsize=7, color=figstyle.BLACK, rotation=90,
+                        ha="left", va="bottom")
 
-        ax.plot(
-            [-0.5, n_steps - 0.5],
-            [true_state, true_state],
-            color=figstyle.GREEN, ls="-", lw=1.2, alpha=0.9,
-        )
-        ax.annotate(
-            f"true={true_state}", xy=(0.2, true_state),
-            fontsize=7, color=figstyle.GREEN, va="bottom",
-        )
+        # The true-state row is marked in the margin (shared y-axis label plus
+        # a small tick per panel) rather than by a line bisecting the row.
+        ax.plot([-0.5], [true_state], marker=">", ms=4, color=figstyle.GREEN,
+                clip_on=False, zorder=6)
 
         ax.set_xlabel("Time step")
         if ax_idx == 0:
             ax.set_ylabel("State index")
+            ax.set_yticks(range(n_states))
+            ytick_labels = [str(i) for i in range(n_states)]
+            ytick_labels[true_state] = f"{true_state} (true)"
+            ax.set_yticklabels(ytick_labels)
+            for tick in ax.get_yticklabels():
+                if tick.get_text().endswith("(true)"):
+                    tick.set_color(figstyle.GREEN)
         ax.set_title(
             f"{panel_labels[ax_idx]}\n"
             f"obs={result['num_observations']}, "
             f"{'correct' if result['success'] else 'wrong'}, "
-            f"R={result['total_reward']:+.1f}",
-            fontsize=9,
+            f"R={result['total_reward']:+.0f}",
+            fontsize=8,
         )
 
-        if n_states <= 16:
-            ax.set_yticks(range(0, n_states, 2))
-        from matplotlib.ticker import MaxNLocator
-        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        ax.xaxis.set_major_locator(MultipleLocator(5))
 
     cbar_ax = fig.add_axes([0.92, 0.15, 0.015, 0.7])
     fig.colorbar(im, cax=cbar_ax, label="Belief probability")
@@ -373,7 +389,11 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
             "commit_steps": commit_steps,
         }
 
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 4))
+    # Stacked 3x1 with a shared time axis, authored at the printed width
+    # (0.78 of the JAIR text block), so commit times can be compared
+    # vertically across panels and rcParams type prints at rcParams size.
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=figstyle.figsize(0.78, 1.18),
+                                        sharex=True)
 
     for label, style in AGENT_STYLES.items():
         if label not in all_data:
@@ -398,10 +418,15 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
         ax1.plot(steps, means, color=style["color"], ls=style["ls"],
                  lw=style["lw"], label=label)
         ax1.fill_between(steps, lo_bounds, hi_bounds, color=style["color"], alpha=0.1)
+        # End-of-series marker so short-lived curves (Myopic commits by step
+        # ~3 under identical early entropy) remain visible.
+        ax1.plot(steps[-1], means[-1], marker=style["marker"], ms=5,
+                 color=style["color"], zorder=4)
 
-    ax1.set_xlabel("Time step")
     ax1.set_ylabel("Belief entropy (bits)")
     ax1.set_title("(a) Entropy decay")
+    # Entropy has a meaningful zero and a meaningful maximum (log2 8 = 3 bits).
+    ax1.set_ylim(0, 3.05)
     ax1.legend(loc="upper right")
 
     for label, style in AGENT_STYLES.items():
@@ -412,17 +437,24 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
         n = len(cs)
         steps_range = np.arange(0, max_step)
         survival = np.array([np.sum(cs > s) / n for s in steps_range])
+        # Binomial SE band, matching the SE convention of panels (a) and (c).
+        se = np.sqrt(survival * (1.0 - survival) / n)
         ax2.step(steps_range, survival * 100, where="post",
                  color=style["color"], ls=style["ls"], lw=style["lw"], label=label)
+        ax2.fill_between(steps_range, (survival - se) * 100, (survival + se) * 100,
+                         step="post", color=style["color"], alpha=0.1)
 
-    ax2.set_xlabel("Time step")
     ax2.set_ylabel("Episodes still observing (%)")
     ax2.set_title("(b) Observation survival")
     ax2.set_ylim([-2, 102])
 
-    for label, style in AGENT_STYLES.items():
+    # Draw Planning+IG last in panel (c): its dotted line stays legible on
+    # top of EFE's solid one where the two curves coincide.
+    order_c = [l for l in AGENT_STYLES if l != "Planning+IG"] + ["Planning+IG"]
+    for label in order_c:
         if label not in all_data:
             continue
+        style = AGENT_STYLES[label]
         data = all_data[label]
 
         steps = []
@@ -493,42 +525,78 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
 
     steps = [t.step for t in all_traces]
 
-    fig, axes = plt.subplots(4, 1, figsize=(10, 10), sharex=True,
-                             gridspec_kw={"height_ratios": [3, 2.5, 2, 1]})
+    # Authored at the printed width (0.78 of the JAIR text block). The test-
+    # selection strip gets a slim row since it carries no y quantity.
+    fig, axes = plt.subplots(4, 1, figsize=figstyle.figsize(0.78, 1.12), sharex=True,
+                             gridspec_kw={"height_ratios": [3, 2.5, 2, 0.6]})
 
     ax1 = axes[0]
     commit_vals = [t.best_commit_value for t in all_traces]
     observe_vals = [t.best_observe_value for t in all_traces]
-    ax1.plot(steps, commit_vals, color=figstyle.VERMILLION, lw=2.2,
+    # Neutral encoding: these are value curves, not agents, so they stay off
+    # the agent palette (vermillion/blue mean EFE/Planning elsewhere).
+    ax1.plot(steps, commit_vals, color=figstyle.BLACK, ls="-", lw=1.8,
              label="Value of committing", zorder=3)
-    ax1.plot(steps, observe_vals, color=figstyle.BLUE, lw=2.2,
+    ax1.plot(steps, observe_vals, color=figstyle.GRAY, ls="--", lw=1.8,
              label="Value of observing", zorder=3)
 
     if commit_trace:
-        ax1.axvline(commit_trace.step, color=figstyle.GRAY, ls=":", lw=1.5, alpha=0.8)
+        # One commit rule running down all four shared-x panels.
+        for ax in axes:
+            ax.axvline(commit_trace.step, color=figstyle.GRAY, ls=":",
+                       lw=1.2, alpha=0.8)
         y0, y1 = ax1.get_ylim()
-        ax1.annotate("commit", xy=(commit_trace.step - 0.15, y0 + 0.55 * (y1 - y0)),
+        ax1.annotate("commit", xy=(commit_trace.step - 0.3, y0 + 0.55 * (y1 - y0)),
                      fontsize=8, ha="right", va="center", color=figstyle.GRAY)
 
-    ax1.set_ylabel("$-\\mathcal{G}$ (value)")
+    # Keep the crossover inside the axes with margin instead of pinned to the
+    # right spine, and mark the crossing point itself.
+    if commit_trace:
+        ax1.set_xlim(-1, commit_trace.step + 2)
+    cross_x = cross_y = None
+    for i in range(len(steps) - 1, 0, -1):
+        d1 = commit_vals[i] - observe_vals[i]
+        d0 = commit_vals[i - 1] - observe_vals[i - 1]
+        if d0 < 0 <= d1:
+            frac = -d0 / (d1 - d0) if d1 != d0 else 0.0
+            cross_x = steps[i - 1] + frac * (steps[i] - steps[i - 1])
+            cross_y = commit_vals[i - 1] + frac * (commit_vals[i] - commit_vals[i - 1])
+            break
+    if cross_x is not None:
+        ax1.plot([cross_x], [cross_y], marker="o", ms=7, mfc="none",
+                 mec=figstyle.BLACK, mew=1.2, ls="none", zorder=4)
+        ax1.annotate("crossover", xy=(cross_x, cross_y),
+                     xytext=(cross_x - 1.2, cross_y - 9), fontsize=7.5,
+                     ha="right", va="top", color=figstyle.BLACK,
+                     arrowprops=dict(arrowstyle="-", lw=0.5,
+                                     color=figstyle.GRAY, shrinkA=1, shrinkB=4))
+
+    ax1.set_ylabel("$-\\mathcal{G}$ (reward units)")
     ax1.set_title("(a) Value of committing vs observing", fontsize=9)
     ax1.legend(loc="lower right")
 
     ax2 = axes[1]
     num_tests = len(all_traces[0].per_test_ig)
+    ig_max = 0.0
     for k in range(num_tests):
         ig_vals = [t.per_test_ig[k] for t in all_traces]
+        ig_max = max(ig_max, max(ig_vals))
         ax2.plot(steps, ig_vals, color=TEST_COLORS[k % len(TEST_COLORS)],
                  lw=1.8, label=f"Test {k}", marker=".", markersize=4)
 
     ax2.set_ylabel("Information gain (bits)")
-    ax2.legend(loc="center left", bbox_to_anchor=(1.005, 0.5), ncol=1)
+    # Single in-axes legend (panel (d) reuses the same colors directly below,
+    # so it carries no legend of its own).
+    ax2.set_ylim(top=ig_max * 1.30)
+    ax2.legend(loc="upper right", ncol=num_tests, columnspacing=1.0,
+               handlelength=1.4)
     ax2.set_title("(b) Per-test expected information gain", fontsize=9)
 
     ax3 = axes[2]
     entropies = [t.belief_entropy for t in all_traces]
-    ax3.fill_between(steps, entropies, alpha=0.2, color=figstyle.GREEN)
-    ax3.plot(steps, entropies, color=figstyle.GREEN, lw=2)
+    # Same belief-entropy styling as fig_efe_trajectory (green dashed + fill).
+    ax3.fill_between(steps, entropies, alpha=0.12, color=figstyle.GREEN)
+    ax3.plot(steps, entropies, color=figstyle.GREEN, lw=1.4, ls="--")
     ax3.set_ylabel("Entropy (bits)")
     ax3.set_title("(c) Belief entropy", fontsize=9)
 
@@ -539,15 +607,12 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
         ax4.barh(0, 1, left=s - 0.5, height=0.6,
                  color=TEST_COLORS[a % len(TEST_COLORS)], edgecolor="white", linewidth=0.5)
 
-    legend_patches = [plt.Rectangle((0, 0), 1, 1, fc=TEST_COLORS[k])
-                      for k in range(num_tests)]
-    ax4.legend(legend_patches, [f"Test {k}" for k in range(num_tests)],
-               loc="center left", bbox_to_anchor=(1.005, 0.5), ncol=1)
     ax4.set_yticks([])
     ax4.grid(False)
+    ax4.spines["left"].set_visible(False)
     ax4.set_xlabel("Time step")
     ax4.set_title("(d) Test selection sequence", fontsize=9)
-    ax4.set_ylim(-0.5, 0.5)
+    ax4.set_ylim(-0.35, 0.35)
 
     for ax in (ax1, ax2, ax3, ax4):
         figstyle.style_axis(ax)
@@ -565,6 +630,7 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
 def fig_stopping_times(seed=42, num_episodes=300, save_path="figures/fig_stopping_times.pdf"):
     """Violin plots of episode lengths across agents and environments."""
     print("  Generating stopping time distributions...")
+    figstyle.apply()
 
     env_configs = {
         "Diagnosis\nN=4, K=2": DiagnosisEnv(
@@ -582,9 +648,18 @@ def fig_stopping_times(seed=42, num_episodes=300, save_path="figures/fig_stoppin
     }
 
     agent_order = ["Myopic", "Planning", "Planning+IG", "EFE"]
-    agent_colors = {name: AGENT_STYLES[name]["color"] for name in agent_order}
+    agent_colors = {name: figstyle.agent_color(name) for name in agent_order}
 
-    fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
+    panel_titles = [
+        "(a) Diagnosis $N{=}4$, $K{=}2$",
+        "(b) Diagnosis $N{=}8$, $K{=}3$",
+        "(c) Bandit $K{=}4$",
+    ]
+
+    # Authored at the printed width (full JAIR text block). Shared y-axis
+    # anchored at zero so stopping times compare across panels by eye.
+    fig, axes = plt.subplots(1, 3, figsize=figstyle.figsize(1.0, 0.36),
+                             sharey=True)
 
     for ax_idx, (env_label, env) in enumerate(env_configs.items()):
         np.random.seed(seed)
@@ -640,14 +715,17 @@ def fig_stopping_times(seed=42, num_episodes=300, save_path="figures/fig_stoppin
 
         ax.set_xticks(positions)
         ax.set_xticklabels(agent_order, fontsize=8, rotation=15, ha="right")
-        ax.set_ylabel("Observations before commit" if ax_idx == 0 else "")
-        ax.set_title(env_label, fontsize=10)
-        ax.grid(True, alpha=0.2, axis="y")
+        if ax_idx == 0:
+            ax.set_ylabel("Observations before commit")
+        ax.set_title(panel_titles[ax_idx], fontsize=10)
+        figstyle.style_axis(ax)
+
+    axes[0].set_ylim(bottom=0)
 
     plt.tight_layout()
-    plt.savefig(save_path, bbox_inches="tight", dpi=300)
+    _save_fig(fig, save_path)
     plt.close()
-    print(f"  Saved {save_path}")
+    print(f"  Saved {save_path} (+ .png)")
 
 
 # ---------------------------------------------------------------------------

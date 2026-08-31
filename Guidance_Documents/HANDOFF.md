@@ -62,8 +62,10 @@ polish and a writing-style pass, have not started.
   JAIR checklist directs referees to it. Rewriting history is destructive
   and would orphan every git_sha provenance stamp in the results CSVs;
   alternatives include a fresh-history public mirror. Pat's call.
-- Remaining pre-submission work: figure polish pass
-  (figure_audit_2026-08-30.json), writing-clarity pass, credential-gated
+- **Figure polish pass complete (2026-08-31)**: all 23 blocking audit
+  issues closed, sixteen figures regenerated at printed width, captions and
+  Description blocks rewritten against the new renders (ledger 9.17.24).
+- Remaining pre-submission work: writing-clarity pass, credential-gated
   PyPI upload, and the git-trailer decision above.
 
 ## The methodology, distilled
@@ -201,13 +203,17 @@ findings file, verify each by hand against the named artifact, apply what
 survives with `safe_apply.py`, rebuild both PDFs, run `pytest tests/ -q`,
 then launch a fresh round 14 as verification.
 
-## Phase 2: figure polish pass (not started)
+## Phase 2: figure polish pass (COMPLETE, 2026-08-31)
 
-Pat asked for this after the accept-loop converges, but the audit was
-already run so it's here for whenever you get to it. A full visual/legibility
-audit (as-rendered, not correctness) of all 19 figures is saved at
-`tools/review_pipeline/figure_audit_2026-08-30.json`: **111 issues, 23
-blocking, 63 notable, 25 polish.**
+Done — see ledger entry 9.17.24 in `full_paper_plan.md`. All 23 blocking
+issues from `tools/review_pipeline/figure_audit_2026-08-30.json` (111
+issues, 23 blocking, 63 notable, 25 polish) are closed: sixteen figures
+regenerated across seven producer scripts, every affected caption and JAIR
+`\Description` rewritten against the new renders in both masters, and the
+systemic print-size problem fixed at the root with a
+`figstyle.figsize(width_frac, aspect)` helper pinned to the 6.5 in text
+block. JAIR grew from 77 to 79 pages from the full-width figures. The
+original audit notes below are retained for reference.
 
 The single highest-leverage fix is systemic and already diagnosed: most
 figures are authored at a matplotlib canvas width far larger than the box

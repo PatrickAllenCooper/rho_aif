@@ -3,8 +3,15 @@
 Monte Carlo study of near-optimality of w=1 across planning horizons.
 
 For randomly generated two-state observe-then-commit environments, compute
-the exact reward-optimal weight w* at H=1..5 and measure how often w=1
-achieves >= 95% of optimal reward.
+the grid-search reward-optimal weight w* at each horizon H in {1, 2, 3} and
+measure how often w=1 achieves >= 95% of optimal reward.
+
+[Corrected 2026-08-31] This docstring previously promised H=1..5. The
+committed battery (results/results_nearopt_horizon.csv) was run at
+H in {1, 2, 3}, matching both manuscripts. The figure draws the three
+measured horizons as unconnected markers over a light guide line so the
+reader is not invited to interpolate a continuous trend beyond the
+measured points.
 """
 
 import argparse
@@ -44,7 +51,7 @@ def evaluate_weight_fast(env, w, horizon, num_episodes=100, seed=42):
 
 def run_nearopt_study(
     num_envs=200,
-    horizons=(1, 2, 3, 5),
+    horizons=(1, 2, 3),
     weights=None,
     num_episodes=100,
     seed=42,
@@ -119,30 +126,52 @@ def plot_nearopt(df, output_path="figures/fig_nearopt_horizon.pdf"):
         (10, 51, "$\\alpha \\geq 10$"),
     ]
 
-    fig, ax = plt.subplots(1, 1, figsize=(5, 3.5))
+    # Authored at the printed width (0.7\linewidth of the JAIR text block)
+    # so the rcParams point sizes are the printed sizes.
+    fig, ax = plt.subplots(1, 1, figsize=figstyle.figsize(0.7, 0.63))
     horizons = sorted(df["horizon"].unique())
     markers = ["o", "^", "D"]
 
+    def _frac_and_se(frame):
+        """Proportion near-optimal (in %) and its binomial SE per horizon."""
+        fracs, ses = [], []
+        for h in horizons:
+            hm = frame[frame["horizon"] == h]
+            n = len(hm)
+            p = hm["near_optimal"].mean() if n > 0 else 0.0
+            fracs.append(p * 100)
+            ses.append(100 * np.sqrt(p * (1 - p) / n) if n > 0 else 0.0)
+        return fracs, ses
+
+    # Only H in {1, 2, 3} was measured: draw unconnected markers with a
+    # light guide line underneath so the points are not read as a trend.
     for (lo, hi, label), color, marker in zip(
             alpha_bins, figstyle.ENV_CYCLE, markers):
-        mask = (df["alpha"] >= lo) & (df["alpha"] < hi)
-        sub = df[mask]
-        fracs = []
-        for h in horizons:
-            hm = sub[sub["horizon"] == h]
-            fracs.append(hm["near_optimal"].mean() * 100 if len(hm) > 0 else 0)
-        ax.plot(horizons, fracs, marker=marker, label=label, color=color)
+        sub = df[(df["alpha"] >= lo) & (df["alpha"] < hi)]
+        n_envs = sub["env_id"].nunique()
+        fracs, ses = _frac_and_se(sub)
+        ax.plot(horizons, fracs, color=color, lw=1.0, alpha=0.3, zorder=1)
+        ax.errorbar(horizons, fracs, yerr=ses, marker=marker, color=color,
+                    linestyle="none", capsize=figstyle.CAPSIZE,
+                    elinewidth=0.8, label=f"{label} ($n{{=}}{n_envs}$)",
+                    zorder=3)
 
-    all_fracs = [df[df["horizon"] == h]["near_optimal"].mean() * 100 for h in horizons]
-    ax.plot(horizons, all_fracs, marker="s", label="All",
-            color=figstyle.BLACK, linestyle="--")
+    all_fracs, all_ses = _frac_and_se(df)
+    n_all = df["env_id"].nunique()
+    ax.plot(horizons, all_fracs, color=figstyle.BLACK, lw=1.0, alpha=0.3,
+            linestyle="--", zorder=1)
+    ax.errorbar(horizons, all_fracs, yerr=all_ses, marker="s",
+                color=figstyle.BLACK, linestyle="none",
+                markerfacecolor="none", capsize=figstyle.CAPSIZE,
+                elinewidth=0.8, label=f"All ($n{{=}}{n_all}$)", zorder=2)
 
     figstyle.style_axis(ax)
     ax.set_xlabel("Planning horizon $H$")
     ax.set_ylabel("$w{=}1$ near-optimal (% of environments)")
     ax.set_xticks(horizons)
+    ax.set_xlim(0.85, 3.15)
     ax.set_ylim(0, 102)
-    ax.legend(loc="upper left")
+    ax.legend(loc="lower right", title=r"Reward asymmetry $\alpha$")
     fig.tight_layout()
     fig.savefig(output_path)
     fig.savefig(output_path.with_suffix(".png"))

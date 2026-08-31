@@ -35,6 +35,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.lines import Line2D
+from matplotlib.ticker import MaxNLocator
 from scipy.stats import entropy as scipy_entropy
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
@@ -345,38 +346,68 @@ def load_obs_scaling_from_csv(csv_path: str = OBS_SCALING_CSV) -> Dict:
 # Figure generation
 # ---------------------------------------------------------------------------
 
-def _plot_agent_series(ax, x, y, yerr, name):
+def _plot_agent_series(ax, x, y, yerr, name, label=True):
     """One agent series in the shared style, with seed-level error bars."""
     style = figstyle.agent_style(name)
-    ax.errorbar(x, y, yerr=yerr, label=name, capsize=2, elinewidth=0.8,
-                markersize=4.5, **style)
+    ax.errorbar(x, y, yerr=yerr, label=name if label else None,
+                capsize=figstyle.CAPSIZE, elinewidth=0.8, **style)
 
 
 def plot_reward_asymmetry_sweep(results: Dict, save_path: str = "figures/fig_asymmetry_sweep.pdf"):
     """Two-panel figure: success rate and reward vs penalty magnitude."""
     figstyle.apply()
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9, 3.4))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figstyle.figsize(1.0, 0.37))
 
     order = ["Myopic", "Planning", "InfoGain-Tuned", "Planning+IG", "EFE"]
+    # Several series are exactly tied at many penalties (e.g. Planning and
+    # EFE, InfoGain-Tuned and Planning+IG), so dodge each series on the log
+    # x-axis by a small multiplicative factor to keep coincident markers and
+    # error bars side by side rather than stacked.
+    dodge = {name: f for name, f in zip(order, [0.82, 0.90, 1.0, 1.11, 1.22])}
+    penalties = None
     for name in order:
         if name not in results:
             continue
         d = results[name]
+        penalties = d["penalties"]
+        x = [p * dodge[name] for p in d["penalties"]]
         se_s = [s * 100 for s in d.get("se_success", [0] * len(d["penalties"]))]
-        _plot_agent_series(ax1, d["penalties"], [s * 100 for s in d["success"]],
-                           se_s, name)
-        _plot_agent_series(ax2, d["penalties"], d["reward"],
-                           d.get("se_reward"), name)
+        _plot_agent_series(ax1, x, [s * 100 for s in d["success"]], se_s, name)
+        _plot_agent_series(ax2, x, d["reward"], d.get("se_reward"), name)
 
+    from matplotlib.ticker import NullLocator
     for ax in (ax1, ax2):
         ax.set_xscale("log")
-        ax.set_xlabel("Penalty magnitude $|R^-|$")
+        ax.set_xlabel("Penalty magnitude $\\left|R^{-}\\right|$")
+        ax.set_xticks(penalties)
+        ax.set_xticklabels([f"{p:g}" for p in penalties])
+        ax.xaxis.set_minor_locator(NullLocator())
         figstyle.style_axis(ax)
 
     ax1.set_ylabel("Success rate (%)")
     ax1.set_title("(a) Success rate vs. reward asymmetry")
     ax2.set_ylabel("Mean reward")
     ax2.set_title("(b) Reward vs. reward asymmetry")
+
+    # Panel (b)'s range is set by Myopic's collapse to about -75, which
+    # crushes the other series into a narrow band near the top. An inset
+    # zoom resolves that band without hiding the collapse.
+    axin = ax2.inset_axes([0.12, 0.14, 0.52, 0.44])
+    for name in order:
+        if name == "Myopic" or name not in results:
+            continue
+        d = results[name]
+        x = [p * dodge[name] for p in d["penalties"]]
+        _plot_agent_series(axin, x, d["reward"], d.get("se_reward"), name,
+                           label=False)
+    axin.set_xscale("log")
+    axin.set_xlim(ax2.get_xlim())
+    axin.set_ylim(3.4, 7.9)
+    axin.set_xticks([])
+    axin.xaxis.set_minor_locator(NullLocator())
+    axin.tick_params(labelsize=6.5)
+    axin.grid(False)
+    ax2.indicate_inset_zoom(axin, edgecolor=figstyle.GRAY, alpha=0.6)
 
     handles, labels = ax1.get_legend_handles_labels()
     fig.legend(handles, labels, loc="lower center", ncol=5,
@@ -396,17 +427,32 @@ def plot_efe_trajectories(all_traces, save_path: str = "figures/fig_efe_trajecto
     if not successful:
         successful = all_traces[:3]
 
-    fig, axes = plt.subplots(1, 3, figsize=(10, 3.0))
-    titles = ["(a) Short episode", "(b) Medium episode", "(c) Long episode"]
-    successful.sort(key=lambda x: len(x[0]))
+    # One representative per distinct episode length, so the three panels
+    # genuinely show three different episodes (index-based selection from a
+    # length-sorted list once picked the same shortest-length trace twice).
+    by_len = {}
+    for item in sorted(successful, key=lambda x: len(x[0])):
+        by_len.setdefault(len(item[0]), item)
+    lengths = sorted(by_len)
+    if len(lengths) < 3:
+        raise RuntimeError(
+            "fig_efe_trajectory needs episodes of three distinct lengths, "
+            f"got lengths {lengths}")
+    chosen_lengths = [lengths[0], lengths[len(lengths) // 2], lengths[-1]]
+    assert len(set(chosen_lengths)) == 3
+    selected = [by_len[n] for n in chosen_lengths]
+
+    fig, axes = plt.subplots(1, 3, figsize=figstyle.figsize(1.0, 0.35),
+                             sharey=True)
+    titles = [f"({letter}) {n}-step episode"
+              for letter, n in zip("abc", chosen_lengths)]
 
     commit_color = figstyle.VERMILLION
     observe_color = figstyle.BLUE
     entropy_color = figstyle.GREEN
 
-    indices = [0, len(successful) // 2, -1]
     for ax_idx, (ax, title) in enumerate(zip(axes, titles)):
-        traces, success, reward = successful[min(indices[ax_idx], len(successful) - 1)]
+        traces, success, reward = selected[ax_idx]
         steps = [t.step for t in traces]
         commit_vals = [-t.best_commit_efe for t in traces]
         observe_vals = [-t.best_observe_efe for t in traces]
@@ -421,10 +467,12 @@ def plot_efe_trajectories(all_traces, save_path: str = "figures/fig_efe_trajecto
         ax_twin.set_ylim([0, 1.25])
         ax_twin.grid(False)
         ax_twin.spines["top"].set_visible(False)
+        # The entropy axis is shown on every panel, in the entropy series'
+        # green, so the dashed curve is never read against the left scale.
+        ax_twin.tick_params(axis="y", colors=entropy_color, labelsize=7.5)
+        ax_twin.spines["right"].set_color(entropy_color)
         if ax_idx == 2:
-            ax_twin.set_ylabel("Belief entropy (bits)")
-        else:
-            ax_twin.set_yticks([])
+            ax_twin.set_ylabel("Belief entropy (bits)", color=entropy_color)
 
         commit_step = None
         for t in traces:
@@ -438,12 +486,11 @@ def plot_efe_trajectories(all_traces, save_path: str = "figures/fig_efe_trajecto
             # and bottom of the panel, so mid-height is reliably empty.
             ax.annotate("commit", xy=(commit_step, y0 + 0.52 * (y1 - y0)),
                         xytext=(-4, 0), textcoords="offset points",
-                        fontsize=7.5, ha="right", va="center",
+                        fontsize=8, ha="right", va="center",
                         color=figstyle.GRAY, rotation=90)
 
         ax.set_xlabel("Step")
-        if len(steps) <= 6:
-            ax.set_xticks(steps)
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         if ax_idx == 0:
             ax.set_ylabel("Value ($-\\mathcal{G}$)")
         ax.set_title(title)
@@ -468,17 +515,21 @@ def plot_efe_trajectories(all_traces, save_path: str = "figures/fig_efe_trajecto
 def plot_obs_action_scaling(results: Dict, save_path: str = "figures/fig_obs_scaling.pdf"):
     """Plot success and reward vs number of observation actions K."""
     figstyle.apply()
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9, 3.4))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figstyle.figsize(1.0, 0.42))
 
     order = ["Myopic", "Planning", "Planning+IG", "EFE"]
+    # Planning and EFE are exactly tied at K=1 and near-tied at K=2, so dodge
+    # each series on x to keep coincident markers and error bars visible.
+    dodge = {name: off for name, off in zip(order, [-0.06, -0.02, 0.02, 0.06])}
     for name in order:
         if name not in results:
             continue
         d = results[name]
+        x = [k + dodge[name] for k in d["K"]]
         se_s = [s * 100 for s in d.get("se_success", [0] * len(d["K"]))]
-        _plot_agent_series(ax1, d["K"], [s * 100 for s in d["success"]],
+        _plot_agent_series(ax1, x, [s * 100 for s in d["success"]],
                            se_s, name)
-        _plot_agent_series(ax2, d["K"], d["reward"], d.get("se_reward"), name)
+        _plot_agent_series(ax2, x, d["reward"], d.get("se_reward"), name)
 
     for ax in (ax1, ax2):
         ax.set_xlabel("Number of observation actions $K$")
@@ -486,10 +537,10 @@ def plot_obs_action_scaling(results: Dict, save_path: str = "figures/fig_obs_sca
         figstyle.style_axis(ax)
 
     ax1.set_ylabel("Success rate (%)")
-    ax1.set_title("(a) Success vs. observation action complexity")
+    ax1.set_title("(a) Success rate")
     ax1.legend(loc="upper left")
     ax2.set_ylabel("Mean reward")
-    ax2.set_title("(b) Reward vs. observation action complexity")
+    ax2.set_title("(b) Mean reward")
 
     fig.tight_layout()
     fig.savefig(save_path)
