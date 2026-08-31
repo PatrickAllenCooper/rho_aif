@@ -1,0 +1,786 @@
+{
+ "blocking": [
+  {
+   "figure": "fig_tileworld_comparison",
+   "severity": "blocking",
+   "producer": "rho_aif/render_tileworld.py::_draw_grid (called from render_agent_comparison; driven by experiments/run_tileworld.py::fig_agent_comparison)",
+   "issue": "Every one of the 756 per-cell probability numbers is unreadable at print size. _draw_grid sets fontsize=max(4, 8-grid_size), which for grid_size=6 is 4 pt as authored. The figure is authored 15.4 in wide (figsize_per_panel=(2.2,2.5) x 7 cols) and included at \\includegraphics[width=\\linewidth] in full_paper_jair.tex:565, a reduction of roughly 0.4x, so the '0.03' labels land near 1.6 pt on the page. The numbers are the only quantitative content in the figure and none of them survive.",
+   "fix": "Either (a) drop the per-cell numbers entirely and add a colorbar (the heat already encodes the value), or (b) cut to 5 columns and author at the printed width (figsize_per_panel ~ (1.3, 1.45), 6.5 in total) with a fixed fontsize of 5.5-6 pt rather than the max(4, 8-grid_size) formula. Option (a) is the stronger fix and also resolves the missing-colorbar finding."
+  },
+  {
+   "figure": "fig_tileworld_comparison",
+   "severity": "blocking",
+   "producer": "rho_aif/render_tileworld.py::render_agent_comparison / _draw_grid",
+   "issue": "The figure has no key for any of its visual vocabulary. There is no colorbar for the YlOrRd belief scale (which uses a shared global_vmax computed at line 291 but never shown), and no legend for the blue rounded boxes (scanned region), the green star (true tile), or the vermillion ring (committed cell). With the in-cell numbers illegible at print size, the reader has no way to map colour to probability and no way to learn what the three overlay marks mean from the figure itself.",
+   "fix": "Add fig.colorbar on a slim axis at the right of the panel grid labelled 'Belief P(tile)' with the global_vmax range, plus a three-entry proxy legend (mpatches.Patch edgecolor=figstyle.BLUE facecolor='none' -> 'Scanned region'; Line2D marker='*' -> 'True tile'; Line2D marker='o' markerfacecolor='none' -> 'Committed cell') placed under the panel grid via fig.legend(loc='lower center', ncol=3)."
+  },
+  {
+   "figure": "fig_tileworld_comparison",
+   "severity": "blocking",
+   "producer": "rho_aif/render_tileworld.py::render_agent_comparison line 334-339",
+   "issue": "The row labels that identify which agent each row belongs to ('EFE (15 scans, R=-5.0)' etc.) are set at fontsize=8 with rotation=0, labelpad=60. At the figure's ~0.4x print reduction that is roughly 3.2 pt on the page - unreadable. The reader cannot tell which row is EFE, which is Planning, and which is InfoGain-Tuned, which is the entire point of a side-by-side comparison figure.",
+   "fix": "Raise the row-label fontsize to 9-10 pt and, more importantly, author the figure at its printed width (see the per-cell-text finding) so no reduction is applied. Also drop labelpad=60 to ~8 and instead reserve room with fig.subplots_adjust(left=...), so the label is not floating in a wide empty gutter."
+  },
+  {
+   "figure": "fig_efe_trajectory",
+   "severity": "blocking",
+   "producer": "experiments/run_showcase.py::plot_efe_trajectories, line ~404 (indices = [0, len(successful)//2, -1])",
+   "issue": "Panels (a) 'Short episode' and (b) 'Medium episode' show the same episode. Both are 4 steps (0-3), both commit at step 3, and the commit/observe/entropy curves are visually identical (pixel diff between the two panel crops is ~9.7/255, i.e. antialiasing only). The selection picks index 0 and index len//2 from a length-sorted list, and when most successful traces share the shortest length those two indices land on equivalent traces. Two thirds of the figure's width is spent showing one episode twice, and a referee reads the duplication as a production error.",
+   "fix": "Deduplicate before selecting: build a list of candidates with distinct len(trace), e.g. pick the min-length, median-length and max-length traces from the set of unique lengths, and assert the three chosen lengths differ. Then title the panels with the actual step counts ('(a) 3-step episode', '(b) 6-step episode', '(c) 9-step episode') so the labels are verifiable from the x-axis rather than asserted."
+  },
+  {
+   "figure": "fig_efe_trajectory",
+   "severity": "blocking",
+   "producer": "experiments/run_showcase.py::plot_efe_trajectories, ax_twin.set_yticks([]) for ax_idx != 2",
+   "issue": "In panels (a) and (b) the belief-entropy series is drawn on a twin axis whose ticks are stripped entirely, so the green dashed curve has no scale at all. The only visible y-axis in those panels is the left 'Value (-G)' axis, on which the entropy curve appears to run from 0 down to -45; its true value is 1.0 -> ~0.05 bits. The fill_between shading down to the panel floor reinforces the misread, because on the left axis that floor is -45. Only panel (c) carries the 'Belief entropy (bits)' label, so two of three panels invite a reader to read entropy off the wrong scale.",
+   "fix": "Replace ax_twin.set_yticks([]) with ticks-on/labels-off is not enough - either (a) keep the right-axis tick labels on all three panels (delete the set_yticks([]) branch and accept the repeated 0.0-1.2 column), or (b) colour the twin axis furniture green (ax_twin.tick_params(colors=entropy_color), ax_twin.spines['right'].set_color(entropy_color)) and show it on every panel so the binding of series to axis is unambiguous."
+  },
+  {
+   "figure": "fig_asymmetry_sweep",
+   "severity": "blocking",
+   "producer": "experiments/run_showcase.py::plot_reward_asymmetry_sweep (_plot_agent_series draw order from `order` list)",
+   "issue": "Panel (a) hides three of its five series behind others. Planning (blue) is drawn before EFE (vermillion) and takes exactly the same value from |R|=5 through 50 (97.2%) and again from 100 up, so the blue line and its triangle markers are completely covered by EFE's line and circles - only a sliver of triangle tip is visible at 5/10/20/50. Symmetrically, at |R|=1 and 2, Planning's blue triangles and blue error bars are drawn on top of Myopic's grey squares and grey error bars, so Myopic's markers vanish at those two x positions. A reader cannot recover Planning's curve from the figure at all.",
+   "fix": "Dodge coincident series on the log x-axis: multiply each series' x by a per-series factor (e.g. 0.96, 0.98, 1.00, 1.02, 1.04 for the five entries in `order`) inside _plot_agent_series, so exactly-tied series sit side by side rather than stacked. Alternatively keep x fixed and give the later-drawn series markerfacecolor='none' plus a reduced markersize so the underlying series shows through."
+  },
+  {
+   "figure": "fig_tileworld_scaling",
+   "severity": "blocking",
+   "producer": "experiments/run_tileworld.py::fig_scaling_replot (loop over SCALING_AGENT_ORDER)",
+   "issue": "In panel (a), Planning+IG (pink, ':') and InfoGain-Tuned (orange, '-.') sit at essentially the same success rate at all three grid sizes and are drawn one on top of the other. The result renders as a single line with alternating pink and orange dashes, and the pink triangle-down marker sits inside the orange diamond, so neither series can be traced. The same collision occurs at 4x4 between EFE (vermillion circle) and Planning (blue triangle) at 76.2 vs 76.4, where the circle occludes the triangle. Panel (a)'s five-series legend promises five distinguishable curves and delivers three.",
+   "fix": "Add a per-series x-dodge in the errorbar calls (sub['grid_size'] + offset, offset in {-0.12, -0.06, 0, 0.06, 0.12} indexed by position in SCALING_AGENT_ORDER) for panels (a) and (b); the x-axis is already replaced by categorical tick labels via set_xticks(grid_sizes)/set_xticklabels, so the dodge is purely cosmetic and does not disturb the tick placement."
+  },
+  {
+   "figure": "fig_tileworld_scaling",
+   "severity": "blocking",
+   "producer": "experiments/run_tileworld.py::fig_scaling_replot, plt.subplots(1, 3, figsize=(11.5, 3.4))",
+   "issue": "The figure is authored 11.5 in wide and included at \\includegraphics[width=\\linewidth] (full_paper_jair.tex:575) into an acmart/jair text block of roughly 5.5-6.5 in, a reduction of ~0.5-0.57x. figstyle sets xtick.labelsize/ytick.labelsize/legend.fontsize to 8.5 pt, so on the page the tick numbers and the five-entry legend print at roughly 4.8 pt. Three panels of axis numbers and the only legend that identifies the agent colours are all below the ~6 pt legibility floor.",
+   "fix": "Author at the printed width: change figsize to (6.5, 2.2) (or (7.0, 2.4) and include at width=\\linewidth) so the scale factor is ~1.0 and the 8.5 pt furniture prints at 8.5 pt. If three panels will not fit legibly at 6.5 in, move panel (c) to a separate one-panel figure rather than shrinking all three."
+  },
+  {
+   "figure": "fig_pareto",
+   "severity": "blocking",
+   "producer": "experiments/run_pareto.py::plot_pareto (per-panel limits, lines ~158-166; no errorbar call)",
+   "issue": "Panel (a) Tiger presents sampling noise as a resolved Pareto frontier. The panel's x-axis is auto-fitted to the data and therefore spans only 99.6-100.0% success (0.4 pp) across the full panel width, while results/results_pareto_sweep.csv gives se_success_seed_level = 0.00228 (0.228 pp) at w=0.01. The horizontal gap between the w=0.01-20 point and the w=50-100 point is 0.32 pp, i.e. ~1.4 SE, but is drawn spanning ~60% of the panel with no uncertainty shown at all. A referee reads a clean monotone frontier where the CSV supports none on the x-axis.",
+   "fix": "Draw the seed-level uncertainty that is already in the CSV: replace the ax.plot/ax.scatter pair with ax.errorbar(succ, rew, xerr=se_success*100, yerr=se_reward, fmt='none', ecolor=pig['color'], elinewidth=0.8, capsize=2, alpha=0.6, zorder=1) before the scatter, reading se_success_seed_level and se_reward_seed_level through load_pareto_results (they are already columns in results/results_pareto_sweep.csv but are dropped on the way to the plot). Additionally floor the fitted x-span, e.g. `if xr < 2.0: pad the limits to a 2 pp minimum`, so a degenerate range is not magnified to full panel width."
+  },
+  {
+   "figure": "price_shadow_curves",
+   "severity": "blocking",
+   "issue": "Six of the 25 plotted points are drawn detached from their own crossing bracket, with no visual cue explaining why. Rows with w*=0 (Tiger B=4.48/4.78/5.07, Tileworld-6x6 B=16.18/19.96) put a coloured dot on the y=0 baseline while their grey bracket bar floats one to three decades above it (Tiger's at 19.3-43.9); Diagnosis B=11.06 plots w*=0.316 with a bracket of (19.3, 43.9], i.e. the point sits two decades BELOW its own interval. As drawn the staircase and the bracket bars contradict each other and read as a plotting bug rather than as the slack-budget convention.",
+   "fix": "In the bracket loop (L269-277 of plot_shadow_price_curves), branch on the slack case: when row['w_star']==0 or w_star<w_lo, draw the bar dotted at alpha 0.35 and draw the point with markerfacecolor='none'; add one legend entry 'slack budget: w*=0 (bracket shown for first binding crossing)'. Verified against results/results_price_shadow_curves.csv.",
+   "producer": "experiments/run_price_of_information.py::plot_shadow_price_curves (L255-295)"
+  },
+  {
+   "figure": "price_shadow_curves",
+   "severity": "blocking",
+   "issue": "Brackets that are open above the tested weight grid are drawn as if resolved. w_hi=100 (the grid ceiling) for Bandit B=11.6, Tileworld B=27.5/31.3 and Inspection-N8 B=21.1/24.6/28.1, and w*=100 for the Tileworld and Inspection top steps. Those bars terminate flush at the axis top, so a reader concludes Tileworld's shadow price is 100 when the measurement only supports '>23.7, unresolved above the tested grid'. Four of five environments have their top step pinned this way.",
+   "fix": "Raise ylim to ~300, add ax.axhline(100, color=figstyle.GRAY, ls=':', lw=0.8) labelled 'top of tested w grid', and render any bar with w_hi>=100 as an upward open arrowhead (ax.annotate('', xy=(B,170), xytext=(B,w_lo), arrowprops=dict(arrowstyle='-|>', color=figstyle.GRAY))) instead of a capped segment.",
+   "producer": "experiments/run_price_of_information.py::plot_shadow_price_curves (L255-295)"
+  },
+  {
+   "figure": "price_staircase_interleaved",
+   "severity": "blocking",
+   "issue": "One series dictates the x-range and crushes the other two. RS[5,3] spans B in [3.0, 8.8] and RS[7,4] spans [2.0, 14.5], but the linear budget axis runs to 56 to accommodate Inspection-N16, so both RockSample staircases \u2014 multiple knots each, plus their grey brackets \u2014 collapse into the leftmost ~20% of the panel. At 0.85\\textwidth in LNCS (4.08in printed) that cluster is about 0.6in wide with overlapping steps, markers and bracket bars; the RockSample step structure the surrounding text walks through knot by knot cannot be read off the figure at all.",
+   "fix": "Either set ax.set_xscale('log') on the budget axis, or give plot_shadow_price_curves a panel-grouping argument and emit two panels sharing y ('(a) RockSample' with B in [1.5,16], '(b) Inspection-N=16' with B in [20,60]). The log-x option is the smaller change and also fixes the same (milder) crowding in price_shadow_curves.",
+   "producer": "experiments/run_price_of_information.py::plot_shadow_price_curves (L255-295), called at L1678"
+  },
+  {
+   "figure": "price_cost_budget",
+   "severity": "blocking",
+   "issue": "The right panel's y-scale hides the effect the whole subsection is about. The three grey reference rules at 0.5/1.5/2.5 force ylim to roughly [0.42, 2.6] while the plotted ratio lives entirely in [1.26, 1.42]; the 12% rise in cost-per-test that the text calls the core 'units story' occupies about 7% of the panel height and reads as a dead-flat line. The one visible feature of the panel is therefore the absence of the finding it exists to show.",
+   "fix": "Set ax2.set_ylim(1.20, 1.45), drop the three axhlines, and report the reference costs as a compact corner note or right-edge annotations ('cheap 0.5 / uniform mix 1.5 / expensive 2.5'). If the full range must stay, invert it: make the zoomed range the main axes and put the 0.5-2.5 context in a small inset.",
+   "producer": "experiments/run_price_of_information.py::plot_cost_budget (L534-587), reference lines L570-581"
+  },
+  {
+   "figure": "price_cost_budget",
+   "severity": "blocking",
+   "issue": "Text is unreadable at print size. The canvas is 9.12in wide (figsize=(9.2,3.9)) but the figure is included at 0.85\\textwidth, which is 4.08in in LNCS (full_paper.tex, \\textwidth=12.2cm) and 5.32in in JAIR (\\textwidth=452.3pt). That is a 0.45x / 0.58x downscale, so the 8.5pt tick labels print at 3.8pt / 4.9pt and the fontsize=7.5 reference-line annotations at 3.3pt / 4.4pt in light grey. Nothing in the right panel is legible on paper.",
+   "fix": "Author at the printed width: figsize=(6.2, 2.9) included at \\textwidth, or stack the two panels vertically (2,1) at figsize=(4.1, 5.4). Same fix applies to price_collapse (identical 9.12in canvas at 0.85\\textwidth).",
+   "producer": "experiments/run_price_of_information.py::plot_cost_budget (L537)"
+  },
+  {
+   "figure": "price_collapse",
+   "severity": "blocking",
+   "issue": "Same print-size failure as its sibling: 9.12in canvas at 0.85\\textwidth gives 0.45x (LNCS) / 0.58x (JAIR), so tick labels print at 3.8pt / 5.0pt. Worse here because the only numbers in the right panel \u2014 the shared bracket endpoints 0.141 and 0.323, which are the quantitative content of the panel \u2014 are drawn at fontsize=7.5 in figstyle.GRAY, printing at 3.3pt light grey. They are effectively invisible.",
+   "fix": "figsize=(6.2, 2.9) at \\textwidth (or a width_ratios=[3,1] two-panel layout, see the next item). Independently, raise the bracket-endpoint annotations (L861-868) to the tick size and darken to figstyle.BLACK.",
+   "producer": "experiments/run_price_of_information.py::plot_scale_collapse (L774-880); figure file is figures/price_scale_invariance.pdf, cited as fig:collapse"
+  },
+  {
+   "figure": "price_prop2_jumps",
+   "severity": "blocking",
+   "issue": "The onset bracket \u2014 the entire point of the figure \u2014 is sub-pixel. Panel (a)'s onset (3.442, 3.546] spans 0.103 units on a 0-14 axis (0.74% of the width) and panel (b)'s (7.549, 7.775] spans 0.226 on 0-30 (0.75%). The green axvspan renders as a ~2px stripe, and because onset_lo equals w_thresh exactly in both panels (confirmed in results/results_price_prop2_jumps.csv), the vermillion dashed threshold line sits flush on the band's left edge and the two merge into a single stripe. The claim the figure is meant to carry \u2014 that the measured onset interval contains the closed-form threshold \u2014 is not visible at any print size.",
+   "fix": "Add a zoomed inset per panel: axin = ax.inset_axes([0.42,0.30,0.34,0.34]); axin.set_xlim(w_th-0.15*(hi-lo)-0.1, hi+0.1) with the same errorbar/axvline/axvspan draws, then ax.indicate_inset_zoom(axin). Alternatively draw the bracket as a baseline horizontal bracket marker with its endpoints annotated via figstyle's leader-arrow convention, at a minimum rendered width.",
+   "producer": "experiments/run_price_of_information.py::plot_prop2_jumps (L1083-1098)"
+  },
+  {
+   "figure": "all five (systemic)",
+   "severity": "blocking",
+   "producer": "rho_aif/figstyle.py + experiments/run_visualizations.py, experiments/run_showcase.py, rho_aif/render_tileworld.py",
+   "issue": "Every one of these figures is authored at a canvas far wider than the box it is printed in, so figstyle's 9.5pt/8.5pt rcParams are silently shrunk on the page. Measured MediaBox widths vs. the 0.78\\linewidth (~5.07in on a 6.5in JAIR text block) they are included at: fig_obs_scaling 8.93in (scale 0.57, ticks render 4.8pt), fig_extended_efe 9.86in (0.51, 4.4pt), fig_belief_heatmap 13.58in (0.37, 3.2pt), fig_efficiency_curves 13.92in (0.36, 3.1pt), fig_tileworld_belief 17.42in (0.29, 2.5pt). Against 10pt body text these are unreadable at print size, and because the scale factor varies 2x across five figures on adjacent appendix pages, sibling figures also have visibly different type sizes.",
+   "fix": "Author each figure at its printed width. Either set figsize width to ~5.1in (and reduce panel counts/heights to match) and keep 0.78\\linewidth, or set figsize width to ~6.5in and change the five \\includegraphics to width=\\linewidth. A one-line helper in figstyle.py (e.g. figstyle.figsize(width_frac=0.78, aspect=...) returning inches for the JAIR text block) would make this enforceable across producers."
+  },
+  {
+   "figure": "fig_obs_scaling",
+   "severity": "blocking",
+   "producer": "experiments/run_showcase.py:468 plot_obs_action_scaling",
+   "issue": "In panel (a) the Planning series is drawn before EFE (order = [\"Myopic\",\"Planning\",\"Planning+IG\",\"EFE\"]) and is almost entirely hidden beneath it at K=1 and K=2. Only a sliver of the blue triangle tip and a hairline of blue line are visible in the full-resolution PNG, and at the 0.57 print scale they disappear. This is exactly the claim the figure exists to support - the caption says the gap is zero at K=1 (bit-identical policies) and within sampling error at K=2 - so the reader is asked to verify a coincidence between two curves, one of which is not visible.",
+   "fix": "Dodge the two coincident series on x (e.g. K-0.03 for Planning, K+0.03 for EFE, matching the error bars), or draw Planning at lw+1.2 underneath with EFE thinner on top, or give EFE markerfacecolor='none' so the blue marker shows through. A dodge is preferable since it also separates the error bars, which are currently stacked."
+  },
+  {
+   "figure": "fig_extended_efe",
+   "severity": "blocking",
+   "producer": "experiments/run_visualizations.py:464 fig_extended_efe, panel ax1",
+   "issue": "The crossover the caption points to ('the agent commits at the crossover') occurs in the final line segment, between steps 28 and 29, hard against the right spine - roughly the last 3% of a 10in-wide panel. Both curves also terminate exactly at the commit line, so there is no post-crossing context. At the 0.51 print scale the vermillion and blue lines are separated by about 1pt at the crossing, and the reader cannot confirm that a crossing happened at all.",
+   "fix": "Either add an inset axes zooming the last ~6 steps of panel (a) (with the crossing marked), or set ax1.set_xlim(right=commit_step + 2) so the crossing sits inside the axes with margin, and mark the crossing point with a small annotated marker rather than relying on line separation."
+  },
+  {
+   "figure": "fig_tw_belief",
+   "severity": "blocking",
+   "producer": "rho_aif/render_tileworld.py:180 render_belief_evolution (figsize_per_panel=(2.5, 2.8), 7 panels) and _draw_grid:136-142",
+   "issue": "The figure is 17.42in x 2.78in (aspect 6.26) included at 0.78\\linewidth, a scale factor of 0.29. Every one of the 252 per-cell numbers is set at fontsize=max(4, 8 - grid_size) = 4pt, so they print at about 1.2pt; the panel titles at fontsize=8 print at 2.3pt. The per-cell probabilities are the figure's primary information channel and none of it is readable on the page.",
+   "fix": "Reflow to two rows (e.g. subplots(2, 4) with the 7 panels plus one blank) so figsize is ~5.1in x 2.9in and the effective scale is ~1.0, and raise the cell font to 6-7pt with fontweight normal. If the numbers still do not fit, drop them and rely on the colormap plus a colorbar (see the companion finding), or cut to 4 panels."
+  },
+  {
+   "figure": "fig_belief_heatmap",
+   "severity": "blocking",
+   "producer": "experiments/run_visualizations.py:230 fig_belief_heatmap, line 261 plt.subplots(1, 3, figsize=(14, 4.5))",
+   "issue": "The three panels cover episodes of 30, 15 and 33 time steps but are drawn at identical physical width with aspect='auto', so one time step is 2.2x wider in panel (b) than in panel (c) and all three episodes look the same length. Episode length is the figure's whole comparison - the panel titles read obs=29, obs=14, obs=32 and the surrounding prose is about Planning committing early and InfoGain over-exploring - and the visual encoding actively contradicts it.",
+   "fix": "Pass gridspec_kw={'width_ratios': [n_a, n_b, n_c]} computed from the three episode lengths (requires running the three episodes before creating the figure), or give all three panels the same xlim (0 to max length) and let the shorter episodes end early with blank space to the right. Either makes the length difference the first thing the reader sees."
+  },
+  {
+   "figure": "fig_efficiency",
+   "severity": "blocking",
+   "producer": "experiments/run_visualizations.py:326 fig_efficiency_curves, line 376 plt.subplots(1, 3, figsize=(14, 4))",
+   "issue": "A 13.92in x 3.92in canvas included at 0.78\\linewidth scales to 0.36, printing tick labels at 3.1pt and axis labels at 3.5pt against 10pt body text. Three panels at that width also leave each panel about 1.6in wide on the page. This is the least legible of the four line figures.",
+   "fix": "figsize=(5.1, 1.9) is too flat for three panels - either drop to figsize=(6.5, 2.4) with width=\\linewidth, or stack the three panels 3x1 vertically at figsize=(5.1, 6.0) with a shared x-axis, which suits three curves over the same time axis and would let the commit-time comparison be read vertically."
+  },
+  {
+   "figure": "fig_reward_scaling",
+   "severity": "blocking",
+   "issue": "Each panel puts all three reward scales k on one shared linear y-axis, so the two smaller scales are drawn as flat lines. In (a) the k=0.1 curve is a straight line at y\u22480.4 across the whole 0\u201362 range and k=1 is a barely perceptible bump on a 0\u201362 range; in (b) k=0.1 and k=1 are two flat lines pressed against y=0 on a \u221240\u20130 range. The figure's entire point \u2014 that each scale has an interior reward-maximizing w* and that w* moves with k \u2014 is only recoverable from the star glyph's x-position, and for k=0.1 the star appears to sit on a featureless plateau. The axis scale hides the effect being discussed.",
+   "fix": "experiments/run_reward_scaling.py, plot_scaling (line 106): either (a) plot the scale-normalised curve grp[\"reward\"]/k with y-label \"Mean reward / k\", which collapses all three k onto one visible curve family and makes the equivariance claim literally visible, or (b) restructure to a len(ks)\u00d7len(envs) grid \u2014 fig, axes = plt.subplots(3, 2, sharex=True, figsize=(6.4,6.0)) \u2014 one row per k with its own y-limits, row-labelled k=0.1/1/10.",
+   "producer": "experiments/run_reward_scaling.py"
+  }
+ ],
+ "notable": [
+  {
+   "figure": "fig_pareto",
+   "severity": "notable",
+   "producer": "experiments/run_pareto.py::plot_pareto",
+   "issue": "fig_pareto is the only one of the five assigned figures that shows no uncertainty at all, while fig_tileworld_scaling and fig_asymmetry_sweep both draw seed-level SE error bars with capsize=2, elinewidth=0.8. The SEs exist in results/results_pareto_sweep.csv (se_reward_seed_level, se_success_seed_level) and are loaded nowhere. Inconsistent error-bar representation across the figure set is exactly what a statistics referee looks for.",
+   "fix": "Same errorbar change as the Tiger finding, applied to all five panels, with capsize=2 and elinewidth=0.8 to match the sibling figures' error-bar styling."
+  },
+  {
+   "figure": "fig_pareto",
+   "severity": "notable",
+   "producer": "experiments/run_pareto.py::plot_pareto, axes[n].legend(handles=legend_elements, loc='center')",
+   "issue": "The legend is parked inside the empty sixth cell of the 2x3 grid, so a full panel's worth of area (about 1/6 of the figure) carries three legend rows and is otherwise blank. Both sibling figures (fig_tileworld_scaling, fig_asymmetry_sweep) use a horizontal fig.legend below the panels, so fig_pareto's legend placement is also inconsistent with the rest of the set.",
+   "fix": "Drop the in-cell legend and use the branch already written for n<5: fig.legend(handles=legend_elements, loc='lower center', ncol=3, bbox_to_anchor=(0.5, -0.06)) to match fig_tileworld_scaling and fig_asymmetry_sweep, and shrink the figure to figsize=(9.6, 5.4) now that the sixth cell can be reclaimed - or move Tileworld into the freed slot as a 2x3 with the legend beneath."
+  },
+  {
+   "figure": "fig_pareto",
+   "severity": "notable",
+   "producer": "experiments/run_pareto.py::plot_pareto, W1_LABEL_OFFSETS / MANUAL_LABEL_OFFSETS with arrowprops shrinkB=10",
+   "issue": "In panel (e) Tileworld the 'w=0.01-0.5' leader terminates about 10 pt short of its target (shrinkB=10) in the gap between the w=1 diamond and the small unlabelled dot at ~74.8% success. The leader's endpoint is ambiguous: it reads as pointing at the diamond as readily as at the dot it actually annotates, and the diamond already carries its own 'w=1' leader from the other side. Two leaders converging on the same neighbourhood from opposite directions is the one collision the leader-arrow convention was meant to prevent.",
+   "fix": "Reduce shrinkB to 3 for the MANUAL_LABEL_OFFSETS path so the leader visibly touches its point, and change the ('Tileworld', 0.01) offset from (9, -12, 'left') to something that departs on the far side of the target from the diamond, e.g. (12, 10, 'left'), so the two leaders leave their points in opposite directions."
+  },
+  {
+   "figure": "fig_tileworld_comparison",
+   "severity": "notable",
+   "producer": "rho_aif/render_tileworld.py::render_agent_comparison, all_panel_data construction (lines 266-281)",
+   "issue": "Column position implies shared time but the rows are not time-aligned. Row 1 (EFE) shows t=1,4,8,11,15; row 2 (Planning) t=1,4,7,10,13; row 3 (InfoGain-Tuned) t=1,7,14,20,27. Each row's scan steps are independently subsampled with np.linspace, so column 4 means t=8 in one row and t=14 in another. A three-row grid of aligned panels is read as a shared time axis by default, and the per-panel 't=' titles are the only thing contradicting it - at 8 pt, reduced ~0.4x on the page, they are close to unreadable.",
+   "fix": "Either state the sampling in-figure (add a small row-level note such as 'scans evenly subsampled; see t= labels') or, better, place the panels on a common time axis: compute the union of shown timesteps across rows and leave blank cells where a row has no panel at that t, so column position is honest. If that is too sparse, keep the current subsampling but raise the panel-title fontsize from 8 to 9 and author at the printed width so the t= labels are actually readable."
+  },
+  {
+   "figure": "fig_tileworld_comparison",
+   "severity": "notable",
+   "producer": "rho_aif/render_tileworld.py::_draw_grid (commit circle edgecolor=figstyle.VERMILLION, star color=figstyle.GREEN, scan box edgecolor=figstyle.BLUE)",
+   "issue": "The overlay marks reuse the figstyle agent palette for non-agent semantics, in a module whose stated rule is one agent, one colour, everywhere. The committed cell is drawn in VERMILLION (EFE's colour), the true tile in GREEN (POMCP's colour), and the scan region in BLUE (Planning's colour) - inside a figure whose three rows are EFE, Planning and InfoGain-Tuned. Compounding it, the vermillion ring lands on the deep-red YlOrRd cell (belief 0.73) it is marking, giving orange-on-red contrast that will not survive the print reduction.",
+   "fix": "Move the overlay marks off the agent palette: draw the commit ring in BLACK (or white with a black outer stroke, which reads on both the pale and the saturated end of YlOrRd), keep the star but switch it to BLACK-outlined white, and switch the scan box to a neutral dark grey. Then add the key described in the missing-legend finding so the marks are self-explaining."
+  },
+  {
+   "figure": "fig_tileworld_comparison",
+   "severity": "notable",
+   "producer": "rho_aif/render_tileworld.py::render_agent_comparison, row_panels = [initial] + selected",
+   "issue": "Column 1 repeats the identical uniform prior (every cell 0.03) three times, once per agent row. All three agents start from the same belief by construction, so ~14% of the figure area conveys a single fact three times, in a figure that is already too dense to print legibly.",
+   "fix": "Emit the t=0 panel once - either as a single tall panel spanning the three rows via a GridSpec, or drop it from the grid entirely and state the uniform prior in the caption, freeing a column so the remaining panels can be drawn larger."
+  },
+  {
+   "figure": "fig_asymmetry_sweep",
+   "severity": "notable",
+   "producer": "experiments/run_showcase.py::plot_reward_asymmetry_sweep, ax2",
+   "issue": "Panel (b)'s y-range is set by Myopic's collapse to about -80 while the other five agents sit in a band between roughly +4 and +8. That band occupies ~3% of the panel height, so five of the six series are compressed into a single flat smear in which none of them can be distinguished from any other - the panel resolves exactly one fact (Myopic degrades) and discards the comparison among the agents the paper is actually about.",
+   "fix": "Add an inset zoom on the +3 to +8 band (ax2.inset_axes([0.12, 0.15, 0.45, 0.35]) replotting the same five non-Myopic series with the same styles, plus ax2.indicate_inset_zoom), or switch ax2 to symlog (ax2.set_yscale('symlog', linthresh=10)) so the near-zero band expands while Myopic's tail still fits."
+  },
+  {
+   "figure": "fig_asymmetry_sweep",
+   "severity": "notable",
+   "producer": "experiments/run_showcase.py::plot_reward_asymmetry_sweep",
+   "issue": "In panel (a) the top band at 99.9% is Planning+IG (pink ':') drawn directly over InfoGain-Tuned (orange '-.'), producing a single line of alternating pink and orange dashes with the pink triangle-down marker nested inside the orange diamond. It reads as one bicoloured series rather than two coincident ones, and a reader cannot tell which of the two is which at any x.",
+   "fix": "Same per-series x-dodge as the Planning/EFE occlusion fix, which separates this pair as well. If a dodge is unwanted, offset the two linestyles' dash phase and reduce the later series' markersize so both markers are visible."
+  },
+  {
+   "figure": "fig_asymmetry_sweep",
+   "severity": "notable",
+   "producer": "experiments/run_showcase.py::plot_reward_asymmetry_sweep, figsize=(9, 3.4) included at width=0.78\\linewidth (full_paper_jair.tex:1101)",
+   "issue": "Authored 9 in wide but included at 0.78\\linewidth, giving an effective ~0.56x reduction, so figstyle's 8.5 pt ticks and legend print at roughly 4.8 pt. Combined with the other figures' differing widths this means figstyle's identical rcParams do not produce identical on-page type sizes.",
+   "fix": "Author at the printed width: figsize=(5.1, 2.0) with width=0.78\\linewidth, or figsize=(6.5, 2.4) with width=\\linewidth. See the cross-figure font-size finding for the set-wide version of this."
+  },
+  {
+   "figure": "fig_efe_trajectory",
+   "severity": "notable",
+   "producer": "experiments/run_showcase.py::plot_efe_trajectories, figsize=(10, 3.0) included at width=0.78\\linewidth (full_paper_jair.tex:1067)",
+   "issue": "This is the most severely reduced of the four line figures: 10 in authored into ~5.1 in printed, a ~0.51x scale, so 8.5 pt ticks land near 4.3 pt and the 7.5 pt rotated 'commit' annotation near 3.8 pt. Against fig_pareto (9.6 in at \\linewidth) the same rcParams print about 25% smaller here, so the two figures do not look like they came from the same document.",
+   "fix": "figsize=(5.1, 1.9) at width=0.78\\linewidth, or figsize=(6.5, 2.3) at width=\\linewidth. Raise the 'commit' annotation from 7.5 to 8 pt once the reduction is removed."
+  },
+  {
+   "figure": "fig_tileworld_scaling",
+   "severity": "notable",
+   "producer": "experiments/run_tileworld.py::fig_scaling_replot, ax3.plot(...) vs ax1/ax2 ax.errorbar(...)",
+   "issue": "Within one figure the error-bar representation is inconsistent: panels (a) and (b) draw seed-level SE with capsize=2/elinewidth=0.8, while panel (c) uses a bare ax3.plot with no uncertainty. The results CSV carries se_success_seed_level and se_reward_seed_level but no timing SE, so the omission is structural rather than a plotting oversight - but as drawn it silently implies the timings are exact.",
+   "fix": "Either record per-seed timing in run_scaling_battery (time each seed's block separately, write se_sec_per_episode_seed_level) and draw the error bars in panel (c) to match, or state in the caption that panel (c) reports a single pooled wall-clock measurement with no replicate uncertainty. Do not leave the two conventions side by side unremarked."
+  },
+  {
+   "figure": "fig_tileworld_scaling",
+   "severity": "notable",
+   "producer": "experiments/run_tileworld.py::fig_scaling_replot, ax1/ax2/ax3.set_xlabel('Grid size')",
+   "issue": "'Grid size' is repeated under all three panels of a single row that share an identical categorical x-axis, and the three panels each carry their own 4x4/6x6/8x8 tick labels. In a figure already too small on the page, that is three redundant labels consuming vertical space that the tick labels need.",
+   "fix": "Set the x-label once via fig.supxlabel('Grid size') (or on the centre panel only) and drop it from ax1 and ax3, then reclaim the freed height by raising the figure's vertical extent relative to its width."
+  },
+  {
+   "figure": "price_staircase_interleaved",
+   "severity": "notable",
+   "issue": "The same environment changes colour between two adjacent figures in the same subsection. Colours are assigned by enumerate(sorted(unique envs)) over whatever envs happen to be in the frame, so Inspection is GREEN in price_shadow_curves (as Inspection-N8) and BLUE here (as Inspection-N16), while GREEN here means RS[7,4]. This defeats figstyle.py's own stated principle ('one agent, one color, everywhere') for the environment-keyed figures, and it is the single highest-value cross-figure fix in this set.",
+   "fix": "Add a stable ENV_COLORS dict to rho_aif/figstyle.py keyed by environment name (Tiger, Diagnosis, Bandit, Tileworld-6x6, Inspection-N8, Inspection-N16, RS[5,3], RS[7,4], ...) with a documented ENV_CYCLE fallback for unlisted names, plus an env_color(name) accessor. Replace the index-based dicts at plot_shadow_price_curves L260-262 and plot_scale_collapse L782-784 with lookups by name.",
+   "producer": "experiments/run_price_of_information.py L260-262 (and rho_aif/figstyle.py ENV_CYCLE, L73)"
+  },
+  {
+   "figure": "price_shadow_curves",
+   "severity": "notable",
+   "issue": "Where brackets cluster they cannot be attributed to a series. Between B=4 and B=7 six grey bars from Tiger, Bandit and Diagnosis overlap in a band about 0.3in wide (printed), all in the same figstyle.GRAY at alpha 0.55, so there is no way to tell which environment each interval belongs to. The same pile-up recurs at B=23-29 for Tileworld and Inspection.",
+   "fix": "Colour each bracket bar with its series colour at alpha 0.45 (keep one neutral grey swatch in the legend to explain the encoding), and jitter co-located bars by +/-0.08 in B. L269-277.",
+   "producer": "experiments/run_price_of_information.py::plot_shadow_price_curves (L269-277)"
+  },
+  {
+   "figure": "price_shadow_curves",
+   "severity": "notable",
+   "issue": "The crossing bracket is drawn two different ways in two adjacent figures. Here it is a flat, uncapped grey line, visually identical to a +/-SE error bar (and the paper does report SEs at these same points, so the ambiguity is live). In price_collapse's right panel the same object is drawn as a thick coloured bar with explicit horizontal end-ticks. One object, two encodings, four pages apart.",
+   "fix": "Give plot_shadow_price_curves the same end-tick treatment used at plot_scale_collapse L851-854 (two short horizontal ticks at w_lo and w_hi), so a bracket is never mistaken for an error bar anywhere in the family.",
+   "producer": "experiments/run_price_of_information.py::plot_shadow_price_curves (L269-277) vs plot_scale_collapse (L851-854)"
+  },
+  {
+   "figure": "price_shadow_curves",
+   "severity": "notable",
+   "issue": "The out-of-axes legend consumes about 24% of the canvas width. Six entries at bbox_to_anchor=(1.01,0.5) push the plotting area down to roughly 74% of a 6.52in canvas; after the 0.85\\textwidth reduction the actual data region prints about 3.0in wide in LNCS, which is what makes the B=4-7 crowding above so severe.",
+   "fix": "Move the legend below the axes as ax.legend(handles=handles, ncol=3, loc='upper center', bbox_to_anchor=(0.5,-0.20), frameon=False), or direct-label the five staircases at their right-hand ends using figstyle's leader-arrow convention and keep only the bracket swatch in a legend. L292.",
+   "producer": "experiments/run_price_of_information.py::plot_shadow_price_curves (L292)"
+  },
+  {
+   "figure": "price_shadow_curves",
+   "severity": "notable",
+   "issue": "The symlog linear band inflates the slack region. linthresh=0.1 gives the interval [0, 0.1] the same vertical extent as a full decade, and four of five environments have their w*=0 leg sitting in it, so the visually dominant flat run at the bottom of the panel is an artefact of the scale rather than of the data. There is also no visual cue that the axis changes character there.",
+   "fix": "Mark the symlog transition with the same axis-break glyph the family already owns for the w=0 abscissa (_log_x_with_zero, L218), applied to the y-axis here; or raise linthresh to the smallest nonzero w* (0.061) so the linear band is one grid step rather than a decade. L281-283.",
+   "producer": "experiments/run_price_of_information.py::plot_shadow_price_curves (L281-283)"
+  },
+  {
+   "figure": "price_staircase_interleaved",
+   "severity": "notable",
+   "issue": "About 45% of the panel height is dead space. The symlog region from 0 to 10^0 contains exactly one data point (RS[5,3] at w*=0, B=3.7), and the labelled 10^-1 decade contains none at all, yet together they take nearly half the vertical extent \u2014 compounding the horizontal crowding above.",
+   "fix": "Pass linthresh through as a parameter and set it to 1.0 for this call site (L1678), or set the y-limits from the data with a single tick reserved for the w*=0 row.",
+   "producer": "experiments/run_price_of_information.py::plot_shadow_price_curves (L281), call site L1678"
+  },
+  {
+   "figure": "price_staircase_interleaved",
+   "severity": "notable",
+   "issue": "Inherits the grid-ceiling problem: w_hi=100 and w*=100 appear for Inspection-N16 and RS[7,4] top steps, drawn flush at the axis top as though resolved rather than open above the tested grid.",
+   "fix": "Same fix as the price_shadow_curves ceiling item \u2014 a dotted 'top of tested w grid' rule plus arrowhead-terminated bars \u2014 applied inside plot_shadow_price_curves so both call sites get it.",
+   "producer": "experiments/run_price_of_information.py::plot_shadow_price_curves (L269-283)"
+  },
+  {
+   "figure": "price_cost_budget",
+   "severity": "notable",
+   "issue": "Two different units share one y-axis under one label. The left panel plots U_count (observations) and U_cost (cost units) against a single axis labelled 'Expected usage per episode', so the orange curve sitting at 9.8 above the blue at 7.8 invites the reading 'the cost curve senses more', when the two are simply not commensurable \u2014 which is precisely the confusion the subsection exists to dispel.",
+   "fix": "Either relabel as 'Expected usage per episode (U_count in observations, U_cost in cost units)', or use a twin y-axis with spine/tick colours matched to BLUE and ORANGE. L559.",
+   "producer": "experiments/run_price_of_information.py::plot_cost_budget (L559)"
+  },
+  {
+   "figure": "price_cost_budget",
+   "severity": "notable",
+   "issue": "Uncertainty is represented inconsistently inside a single figure: the left panel draws capsize=3 error bars from se_usage, the right panel uses a bare ax2.plot with no uncertainty at all on a ratio derived from those same two noisy quantities. A referee will read the flat ratio line as noiseless.",
+   "fix": "Propagate the ratio SE by the delta method from the count and cost se_usage columns and draw ax2.errorbar(..., capsize=2), or state explicitly in the caption that the ratio is plotted without uncertainty. L569.",
+   "producer": "experiments/run_price_of_information.py::plot_cost_budget (L569)"
+  },
+  {
+   "figure": "price_cost_budget",
+   "severity": "notable",
+   "issue": "The two operating points the caption turns on are absent from the figure. The text solves for B=8.86 count / B_cost=11.50 and B=13.71 / B_cost=19.20, both bracketing w* in (10, 31.6] and (31.6, 100] respectively, and the caption asserts 'their crossing brackets happen to coincide at both tested budget pairs' \u2014 none of which is drawn anywhere on the panels.",
+   "fix": "Add horizontal dashed rules at 8.86 and 13.71 in BLUE and 11.50, 19.20 in ORANGE on the left panel, plus a light axvspan over w in (10, 31.6] and (31.6, 100], so the coincidence is visible rather than asserted.",
+   "producer": "experiments/run_price_of_information.py::plot_cost_budget (L534-587)"
+  },
+  {
+   "figure": "price_cost_budget",
+   "severity": "notable",
+   "issue": "No panel labels, while its sibling price_prop2_jumps titles panels '(a)'/'(b)' from the same source file; the caption compensates with 'left panel'/'right panel'. figstyle.py's own docstring says panel labels (a), (b) stay. price_collapse has the same omission, so the family is split 2-2 on panel-label style.",
+   "fix": "ax.set_title('(a) Usage curves') and ax2.set_title('(b) Mean cost per test'), matching the f'({panel[i]}) {name}' idiom at L1101.",
+   "producer": "experiments/run_price_of_information.py::plot_cost_budget (L534-587)"
+  },
+  {
+   "figure": "price_collapse",
+   "severity": "notable",
+   "issue": "Half the figure is spent on three bars that are identical by construction. The right panel's whole content is 'the bracket is the same at every alpha' \u2014 one bit, drawn three times at 50% of the canvas \u2014 while the left panel never shows the crossing that produces the bracket at all (the B=8 rule crosses the curve between two grid points and nothing marks the interval).",
+   "fix": "Fold the right panel into the left as an axvspan over w/alpha in (0.141, 0.323] with the endpoints annotated where the B=8 rule crosses, dropping to a single-panel figure; or keep both with gridspec_kw={'width_ratios':[3,1]} so the informative panel gets the space.",
+   "producer": "experiments/run_price_of_information.py::plot_scale_collapse (L781, L829-870)"
+  },
+  {
+   "figure": "price_collapse",
+   "severity": "notable",
+   "issue": "The 'alpha=1 bracket' shaded band is exactly coincident with all three coloured bars, so it is only visible in the gaps between them and reads as decorative background shading. It nonetheless costs the panel its entire legend, which in turn eats the upper-left headroom created by the 0.55*span ylim padding.",
+   "fix": "Replace the axhspan (L840-848) with two dashed rules at w_lo and w_hi carrying the 0.141 / 0.323 labels directly on them, and drop the legend entirely.",
+   "producer": "experiments/run_price_of_information.py::plot_scale_collapse (L840-848, L873)"
+  },
+  {
+   "figure": "price_collapse",
+   "severity": "notable",
+   "issue": "One quantity, three axis labels across three adjacent figures: 'Mean observations $U$' here, 'Mean observations $U(w)$' in price_prop2_jumps, and 'Expected usage per episode' in price_cost_budget. The staircase figures then call the same quantity 'Sensing budget $B$ (mean observations)' on the abscissa.",
+   "fix": "Standardise on 'Mean observations per episode $U$' (and $U(w)$ only where w-dependence is the subject) across L559, L823, L1100.",
+   "producer": "experiments/run_price_of_information.py (L823 / L559 / L1100)"
+  },
+  {
+   "figure": "price_prop2_jumps",
+   "severity": "notable",
+   "issue": "The panel titles are opaque and near-identical: '(a) TestbedPos-p06' and '(b) TestbedPos-p058' differ by a single character and read as observation accuracies 0.6 and 0.058 rather than 0.60 and 0.58 (POSITIVE_THRESH_CONFIGS L887-912 confirms p=0.60 and p=0.58). A reader comparing the two panels cannot tell what varies between them, which is the comparison the figure exists to make.",
+   "fix": "Title from the config rather than the dict key: ax.set_title(f\"({panel[i]}) Testbed, $p{{=}}{cfg['p']:.2f}$, $c{{=}}{cfg['c']}$\"), giving '(a) Testbed, p=0.60, c=0.3' and '(b) Testbed, p=0.58, c=0.3'. L1101.",
+   "producer": "experiments/run_price_of_information.py::plot_prop2_jumps (L1101)"
+  },
+  {
+   "figure": "price_prop2_jumps",
+   "severity": "notable",
+   "issue": "Print-size shrinkage: 8.30in canvas included at \\textwidth prints at 0.58x in LNCS (4.80in) and 0.75x in JAIR (6.26in), so 8.5pt ticks land at 4.9pt / 6.4pt and the fontsize=8 legend at 4.6pt / 6.0pt. Combined with the sibling figures' 0.45x and 0.82x factors, effective type size across these five adjacent figures ranges from about 3.8pt to 6.9pt \u2014 the family looks like it was assembled from different documents, which is the exact failure figstyle.py was written to prevent.",
+   "fix": "Set every price-figure canvas to the width it is actually printed at, so the rcParams sizes are the printed sizes: figsize=(6.2, 2.7) at \\textwidth for two-panel figures, (6.2, 3.7) for single-panel, and drop the 0.85 scaling in both .tex files. L1061, L537, L781, L258.",
+   "producer": "experiments/run_price_of_information.py::plot_prop2_jumps (L1061); same class of defect at L537, L781, L258"
+  },
+  {
+   "figure": "price_prop2_jumps",
+   "severity": "notable",
+   "issue": "Agent-reserved colours are used for non-agent series. U(w) is drawn in figstyle.BLUE (reserved for Planning), the onset band in GREEN (POMCP) and the threshold rule in VERMILLION (EFE) \u2014 three agent colours in a figure containing no agents. A reader who has learned the mapping from the results figures reads Planning, POMCP and EFE into a duality check.",
+   "fix": "Draw U(w) in a neutral ('0.4' grey, exactly as plot_scale_collapse L797 does for its shared curve), keep VERMILLION for the theory line only, and pick a non-agent fill (e.g. a hatched neutral) for the onset band. L1073, L1091.",
+   "producer": "experiments/run_price_of_information.py::plot_prop2_jumps (L1073, L1091)"
+  },
+  {
+   "figure": "price_prop2_jumps",
+   "severity": "notable",
+   "issue": "The abscissa 'Info-gain weight $w$' is linear here but log-with-a-zero-break in both price_cost_budget and price_collapse, with no cue that the treatment differs. Two figures a page apart share an axis label and a variable but not a scale, so the shapes are not comparable by eye.",
+   "fix": "Either apply _log_x_with_zero (L218) here as well, or, if linear is deliberate because the threshold location is the subject, say so in the caption and mark the axis distinctly (e.g. 'Info-gain weight $w$ (linear)').",
+   "producer": "experiments/run_price_of_information.py::plot_prop2_jumps (L1099) vs _log_x_with_zero (L218)"
+  },
+  {
+   "figure": "fig_obs_scaling",
+   "severity": "notable",
+   "producer": "experiments/run_showcase.py:471",
+   "issue": "figsize=(9, 3.4) at 0.78\\linewidth prints tick labels at 4.8pt and axis labels at 5.4pt. This is the least-bad of the five but still roughly half the caption's type size.",
+   "fix": "figsize=(5.1, 2.6) for a 0.78\\linewidth inclusion, or (6.5, 3.2) with width=\\linewidth."
+  },
+  {
+   "figure": "fig_extended_efe",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:524 and :543",
+   "issue": "Panels (b) and (d) each carry an identical 'Test 0 / Test 1 / Test 2' legend, both placed outside the axes at bbox_to_anchor=(1.005, 0.5). With savefig bbox_inches='tight' the canvas expands to hold them, so ~9% of the figure width (measured: axes end at px 2685 of a 2958px canvas) is a duplicated legend, and the plotting area is effectively only 0.71\\linewidth.",
+   "fix": "Drop the ax4 legend entirely (panel (d) uses the same three colours as panel (b), directly above it) and move the ax2 legend inside the axes - the upper-right of panel (b) is empty from step 16 onward. That reclaims the full width for all four panels."
+  },
+  {
+   "figure": "fig_extended_efe",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:503-509",
+   "issue": "The dotted commit line is drawn only on ax1, even though the four panels share an x-axis (sharex=True). The reader is asked to relate the commit step to the per-test information gain (b), the entropy floor (c), and the test-selection strip (d), but has to eyeball the vertical position across panels.",
+   "fix": "Loop the axvline over all four axes (keep the 'commit' text annotation on ax1 only) so the commit step is a single rule running down the figure."
+  },
+  {
+   "figure": "fig_extended_efe",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:52 TEST_COLORS and :481-485",
+   "issue": "Colour semantics collide with the paper's own agent mapping. In panel (a) vermillion means 'value of committing' and blue means 'value of observing', but figstyle.AGENT_COLORS binds vermillion=EFE and blue=Planning in every other figure - including fig_obs_scaling and fig_efficiency_curves two pages away, where the same two colours are two competing agents. TEST_COLORS then reuses BLUE/ORANGE/GREEN, i.e. the Planning/InfoGain/POMCP colours, for Test 0/1/2. figstyle.py's own docstring promises 'one agent, one color, everywhere' as a mapping the reader carries between figures.",
+   "fix": "Use a non-agent encoding for the two value curves in panel (a) - e.g. black solid for commit value and gray dashed for observe value, or one hue with solid/dashed - and give TEST_COLORS a distinct sequential ramp (greys or a single-hue ramp) so no test is drawn in an agent colour. Note the choice in figstyle.py alongside AGENT_COLORS so it does not drift back."
+  },
+  {
+   "figure": "fig_extended_efe",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:497 gridspec height_ratios and :536-548",
+   "issue": "Panel (d) is a single categorical strip given a full gridspec row (height_ratio 1 of 8.5) with ylim (-0.5, 0.5) and a bar height of 0.6, leaving ~40% of the row as empty padding. It also retains a bare left y-spine with no ticks or label (visible in the render), which reads as a broken axis.",
+   "fix": "Reduce the height ratio to ~0.6, set ax4.set_ylim(-0.35, 0.35), and hide the left and bottom spines on the strip (ax4.spines['left'].set_visible(False)) since it carries no y quantity."
+  },
+  {
+   "figure": "fig_tw_belief",
+   "severity": "notable",
+   "producer": "rho_aif/render_tileworld.py:212-213 and _draw_grid:130-133",
+   "issue": "There is no colorbar anywhere in the figure, and the shared scale is linear over vmin=0 to vmax=max belief=0.73. Because 34 of 36 cells sit at or below ~0.05 in six of the seven panels, virtually the whole grid renders as the same pale YlOrRd yellow and only the final two panels carry any colour signal. Combined with the illegible numbers this leaves the early panels with no readable channel at all.",
+   "fix": "Add a shared horizontal colorbar under the strip labelled 'Belief probability', and use a compressive norm (matplotlib.colors.PowerNorm(gamma=0.5) or LogNorm with a floor) so the 0.00-0.10 range that carries the early-episode structure is actually distinguishable."
+  },
+  {
+   "figure": "fig_tw_belief",
+   "severity": "notable",
+   "producer": "rho_aif/render_tileworld.py:143-153 _draw_grid scan_mask block",
+   "issue": "The scanned region is drawn as one rounded FancyBboxPatch per masked cell (boxstyle='round,pad=0.02'), so a row or column scan reads as a chain of separate blue boxes with visible gaps rather than as one contiguous scanned band. The caption calls these 'blue outlines mark the scanned region', but at print size the per-cell boxes read as scattered highlights.",
+   "fix": "Compute the bounding extent of the mask and draw one Rectangle around the whole scanned band (or use a single patch per contiguous run), keeping the 2.0pt blue edge."
+  },
+  {
+   "figure": "fig_tw_belief",
+   "severity": "notable",
+   "producer": "rho_aif/render_tileworld.py:233 (show = show_target and i == len(panels)-1) and _draw_grid:156-166",
+   "issue": "The green target star appears only in the final panel, where it is drawn inside the vermillion commit circle on the darkest-red cell - three markers stacked on one 0.12in cell. Because the target is hidden in panels 1-6, the reader cannot judge whether belief is converging toward the right cell, which is what the caption claims the figure shows.",
+   "fix": "Set show_target=True for every panel (a small green star outline is enough), and in the final panel offset the commit circle to the cell border rather than concentric with the star, or drop the circle since the star already marks that cell."
+  },
+  {
+   "figure": "fig_tw_belief",
+   "severity": "notable",
+   "producer": "rho_aif/render_tileworld.py:220-231 title construction",
+   "issue": "The seven panels carry no (a)-(g) letters, while every sibling figure in this appendix (fig_obs_scaling, fig_extended_efe, fig_belief_heatmap, fig_efficiency_curves) uses '(a) ...' panel titles. The titles are also ragged: one line for panel 1, two for panels 2-6, two for panel 7 with a different second-line format.",
+   "fix": "Prefix each title with its panel letter and use a uniform two-line shape for all seven (line 1: '(a) $t=0$', line 2: the state - 'uniform', 'row scan 0, obs $=$ B', 'collect, correct, $R=-5.0$')."
+  },
+  {
+   "figure": "fig_belief_heatmap",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:286-296",
+   "issue": "The true-state marker is drawn as a horizontal line through the vertical centre of row 4 (ax.plot at y=true_state) with the 'true=4' label annotated at xy=(0.2, true_state) on top of the same row. The line bisects the one row the caption asks the reader to track, and the label covers its first four time steps. At 0.37 print scale the 1.2pt line becomes 0.45pt and the 7pt green-on-near-black label becomes 2.6pt.",
+   "fix": "Move the marker off the data: draw two short green ticks just outside the left spine at y=true_state-0.5 and +0.5 (clip_on=False), or a green bracket in the margin, and put 'true state' in the y-tick label rather than as an in-axes annotation."
+  },
+  {
+   "figure": "fig_belief_heatmap",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:284-285",
+   "issue": "The white dashed commit line is drawn at x=commit_step, which equals n_steps-1, i.e. the last column - so in all three panels it sits flush on the right spine and is half-clipped by the axes edge (clearly visible in panels (b) and (c)).",
+   "fix": "Extend the x-limit by one step (ax.set_xlim(-0.5, n_steps + 0.5)) so the commit rule sits inside the axes with a column of margin, and label it 'commit' in-figure the way fig_extended_efe labels its own commit line."
+  },
+  {
+   "figure": "fig_belief_heatmap",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:56 HEATMAP_CMAP = \"magma\"",
+   "issue": "This figure encodes belief probability as magma on a black ground, while fig_tw_belief - the figure directly above it in the same appendix subsection, encoding the identical quantity - uses YlOrRd on white with the opposite polarity (light = low there, dark = low here). Every other figure in the set is a light-ground Okabe-Ito line plot, so these three black panels are also by far the heaviest ink on the page.",
+   "fix": "Pick one belief colormap and set it in figstyle.py next to AGENT_COLORS, then use it in both producers. A light-ground sequential ramp (e.g. 'YlOrRd' or a white-to-VERMILLION LinearSegmentedColormap keyed to the EFE hue) matches the rest of the figure set and cuts the ink."
+  },
+  {
+   "figure": "fig_efficiency",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:432-445 (ax3 loop, AGENT_STYLES order)",
+   "issue": "In panel (c) EFE is drawn last (AGENT_STYLES order puts it after Planning+IG) at lw 2.2 and lies almost exactly on the Planning+IG curve from step ~5 to step ~29, hiding it. The caption's point is that Planning+IG over-explores, which the reader is supposed to see as pink continuing further right and lower - but over the shared range the two are one line, so the reader cannot tell whether the cumulative-reward trajectories differ before Planning+IG's tail.",
+   "fix": "Set alpha=0.85 on the EFE line in ax3, or draw Planning+IG last with its dotted style on top (dotted over solid stays legible), or add a direct end-of-line label for each series instead of relying on the shared legend."
+  },
+  {
+   "figure": "fig_efficiency",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:406-419 (ax2 step plot)",
+   "issue": "Panels (a) and (c) draw a fill_between SE band around every series; panel (b) draws bare step curves with no uncertainty at all. Three panels of the same figure, from the same 300 episodes, using two different error conventions.",
+   "fix": "Add a binomial SE band to the survival curves (se = sqrt(p(1-p)/n) per step, ax2.fill_between(..., step='post', alpha=0.1)) so all three panels carry the same uncertainty representation."
+  },
+  {
+   "figure": "fig_efficiency",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:400-404 (ax1)",
+   "issue": "Panel (a)'s y-axis is left to autoscale and bottoms out near 0.25 bits. Belief entropy has a meaningful zero (a fully concentrated belief), and the top of the axis is already the meaningful maximum log2(8)=3. Truncating the bottom visually exaggerates the EFE-to-Planning+IG separation that the caption is arguing about.",
+   "fix": "ax1.set_ylim(0, 3.05). The curves still fill the panel and the distances become readable as fractions of the full entropy range."
+  },
+  {
+   "figure": "fig_efficiency",
+   "severity": "notable",
+   "producer": "experiments/run_visualizations.py:392-398, 404",
+   "issue": "Myopic appears in panel (a)'s legend but is never visible in panel (a): it commits by step ~3, and over steps 0-3 all four agents share the same entropy trace with EFE drawn last on top, so the gray dashed line is fully occluded. A reader checking the legend against the plot finds a series that is not there.",
+   "fix": "Add an end-of-series marker (a filled point at the last plotted step for each agent) so short-lived curves are visible, or note in the caption that Myopic terminates at step 3."
+  },
+  {
+   "figure": "fig_reward_scaling",
+   "severity": "notable",
+   "issue": "Two glyphs carry meaning but appear in no legend: the large star marking each curve's w*_ret, and the gray dashed vertical rule at w=1 (the EFE weight). The legend lists only k=0.1/1/10. A referee scanning the figure before the caption cannot decode either mark. The star also collides with the palette's convention that a star marker means the Thompson agent.",
+   "fix": "experiments/run_reward_scaling.py:113-131 \u2014 build proxy handles (Line2D with marker='*', color='0.3', linestyle='none', label=r'$w^*_{\\mathrm{ret}}$' and Line2D(linestyle='--', color=figstyle.GRAY, label=r'$w=1$ (EFE)')) and append them to the legend handle list; or switch w* to a non-star glyph such as an open circle to avoid the Thompson clash.",
+   "producer": "experiments/run_reward_scaling.py"
+  },
+  {
+   "figure": "fig_reward_scaling",
+   "severity": "notable",
+   "issue": "The identical three-entry legend (k=0.1 / k=1 / k=10) is drawn twice, once inside each panel, consuming plot area in both and needing two hand-tuned locations (legend_locs dict) to dodge the data. In (b) it sits close under the k=10 trace.",
+   "fix": "experiments/run_reward_scaling.py:114,132 \u2014 drop the per-axes ax.legend and the legend_locs dict; emit one figure-level legend, fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.02), ncol=5, frameon=False), then fig.tight_layout(rect=[0,0,1,0.93]).",
+   "producer": "experiments/run_reward_scaling.py"
+  },
+  {
+   "figure": "fig_reward_scaling",
+   "severity": "notable",
+   "issue": "No uncertainty is drawn at all \u2014 plain mean-reward lines with no seed-level SE band \u2014 while sibling figures in the same paper (price_dual_multiseed, price_shadow_curves) show IQR/SE. A reader cannot tell whether the w* star sits on a real peak or on noise, which matters most exactly for the flattened small-k curves.",
+   "fix": "experiments/run_reward_scaling.py, sweep_weights (line 65) already runs per-seed episodes \u2014 carry the per-seed mean through and add ax.fill_between(w, mean-se, mean+se, color=color, alpha=0.2, linewidth=0) inside the plotting loop at line 117.",
+   "producer": "experiments/run_reward_scaling.py"
+  },
+  {
+   "figure": "fig_reward_scaling",
+   "severity": "notable",
+   "issue": "Effective print type size. The figure is authored 8.4 in wide and included at width=0.78\\linewidth, a ~0.58 reduction, so the 8.5 pt tick labels print at roughly 4.9 pt and the 9.5 pt axis labels at roughly 5.5 pt. fig_nearopt_horizon (5.0 in at 0.7\\linewidth) prints its text at roughly 8.6 pt. Figures that sit a few pages apart therefore differ by nearly 2x in apparent font size, and this one lands below the ~6 pt floor.",
+   "fix": "experiments/run_reward_scaling.py:113 \u2014 set figsize=(6.4, 2.9) (roughly the rendered width) and change paper/full_paper_jair.tex:1530 and paper/full_paper.tex:1819 to width=\\linewidth. Apply the same author-at-final-width rule across producers so effective type size is uniform.",
+   "producer": "experiments/run_reward_scaling.py"
+  },
+  {
+   "figure": "fig_nearopt_horizon",
+   "severity": "notable",
+   "issue": "The legend bins on alpha ($\\alpha<3$, $3\\le\\alpha<10$, $\\alpha\\ge10$) but alpha is never named in the figure \u2014 no legend title, no axis mentioning it. Standing alone the legend is three unlabelled inequalities. The bin populations are also unstated, and they are plainly unequal (the aggregate 'All' line tracks the $\\alpha\\ge10$ bin almost exactly, implying that bin dominates), which a reader cannot verify.",
+   "fix": "experiments/run_nearopt_horizon.py:144 \u2014 ax.legend(loc='upper left', title=r'Reward asymmetry $\\alpha$') and append the bin count to each label, e.g. f'$\\\\alpha<3$ (n={len(sub)//len(horizons)})'.",
+   "producer": "experiments/run_nearopt_horizon.py"
+  },
+  {
+   "figure": "fig_nearopt_horizon",
+   "severity": "notable",
+   "issue": "The plotted quantity is a proportion over a finite Monte Carlo sample of environments, drawn with no uncertainty of any kind. The visually interesting features \u2014 the $\\alpha<3$ line being flat from H=2 to H=3, the three bins converging at H=3 \u2014 are exactly the ones a binomial SE would qualify. Every other multi-seed figure in the paper carries SE or IQR.",
+   "fix": "experiments/run_nearopt_horizon.py:126-137 \u2014 compute se = 100*sqrt(p(1-p)/n) per bin per horizon and use ax.errorbar(horizons, fracs, yerr=se, capsize=2.5, ...) in place of ax.plot, or fill_between with the same band.",
+   "producer": "experiments/run_nearopt_horizon.py"
+  },
+  {
+   "figure": "fig_nearopt_horizon",
+   "severity": "notable",
+   "issue": "Only H=1,2,3 are drawn, though the module docstring states the study computes w* at H=1..5. Three points joined by long straight segments read as a continuous trend, and the most load-bearing visual claim (the bins converging near 80%) rests on the final point with nothing beyond it to show whether convergence holds.",
+   "fix": "experiments/run_nearopt_horizon.py \u2014 either extend the sweep to the documented H=1..5 and redraw, or, if H=4,5 are out of compute budget, say so in the docstring and drop the connecting lines (marker='o', linestyle='none' plus a light guide) so the three measured points are not visually interpolated.",
+   "producer": "experiments/run_nearopt_horizon.py"
+  },
+  {
+   "figure": "price_dual_multiseed",
+   "severity": "notable",
+   "issue": "Rolling-window warm-up artifact in both usage panels. The rolling mean uses min_periods=1, so at episodes 0-3 the IQR band is computed from one or two episodes per seed and renders as a tall pale vertical sliver hugging the y-axis, running from the top of the panel down past 6.5 and clipped by the axis limit. It reads as a plotting glitch pinned to the origin and is the first thing the eye lands on in the bottom-left panel.",
+   "fix": "experiments/run_price_of_information.py:1571 \u2014 change u_piv.rolling(roll, min_periods=1) to rolling(roll, min_periods=roll), and add ax_u.set_xlim(left=0) after; the band then simply starts at episode roll-1 instead of fanning out at 0.",
+   "producer": "experiments/run_price_of_information.py"
+  },
+  {
+   "figure": "price_dual_multiseed",
+   "severity": "notable",
+   "issue": "In the top-right panel the legend's 'median w' swatch is a blue line of the same colour and weight as the data, drawn at almost exactly the y-height of the post-reset plateau (w\u22482.72) and horizontally adjacent to it. At the 0.85\\textwidth reduction it reads as the trace continuing to the left of the rescale rule, i.e. as though w were already at 2.7 before the shift \u2014 the opposite of the panel's message.",
+   "fix": "experiments/run_price_of_information.py:1614-1615 \u2014 move the row legends out of the data area: ax_w.legend(loc='lower right', bbox_to_anchor=(1.0, 1.02), ncol=3, fontsize=8) so they sit as a strip above the axes, and give the usage row the same treatment for symmetry.",
+   "producer": "experiments/run_price_of_information.py"
+  },
+  {
+   "figure": "price_dual_multiseed",
+   "severity": "notable",
+   "issue": "Four panels carry only two panel labels. '(a) Decay only' and '(b) Reset on shift' are column titles on the top row, leaving the two usage panels unlabelled, so there is no way to cite the bottom-left panel. Sibling figures (fig_reward_scaling) label every panel.",
+   "fix": "experiments/run_price_of_information.py:1605 \u2014 title the top row '(a) Decay only' / '(b) Reset on shift' and add ax_u.set_title('(c) Decay only, usage') / '(d) Reset on shift, usage', or move the variant name to a column header via fig.text and label all four axes (a)-(d).",
+   "producer": "experiments/run_price_of_information.py"
+  },
+  {
+   "figure": "price_dual_multiseed",
+   "severity": "notable",
+   "issue": "The y-axis of the usage row is labelled bare 'Usage' with no unit, and the dashed budget line is annotated only 'budget B'. Read cold, the quantity on a 5-10 scale is unidentified. The weight row correctly uses math ($w$).",
+   "fix": "experiments/run_price_of_information.py:1611 \u2014 ax_u.set_ylabel('Sensing actions per episode') (or 'Usage (sensing actions / episode)'), and set the budget label to f'budget $B={budget:g}$' at line 1601.",
+   "producer": "experiments/run_price_of_information.py"
+  },
+  {
+   "figure": "price_dual_multiseed",
+   "severity": "notable",
+   "issue": "Same effective-type-size problem as fig_reward_scaling, more severe: authored 9.6 in wide, included at 0.85\\textwidth, a ~0.55 reduction, so 8.5 pt ticks print at roughly 4.7 pt. Across the figure set producer widths run 5.0-11.5 in against a page width near 6 in, so apparent font size is inconsistent figure to figure.",
+   "fix": "experiments/run_price_of_information.py:1561 \u2014 figsize=(6.5, 4.2) and include at width=\\linewidth (paper/full_paper_jair.tex:695, paper/full_paper.tex:648). Worth doing as one sweep over all producers rather than per figure.",
+   "producer": "experiments/run_price_of_information.py"
+  },
+  {
+   "figure": "fig_discount",
+   "severity": "notable",
+   "issue": "There is no fig_discount figure. figures/ contains no fig_discount.png or .pdf, neither manuscript includes one, and experiments/run_discount.py contains no plotting code at all (no matplotlib import, no savefig) \u2014 the discount sweep exists only as a table. Whatever assigned this figure for review is pointing at an artifact that was never produced.",
+   "fix": "Decide explicitly: either drop fig_discount from the figure list, or add a plot_discount() to experiments/run_discount.py that draws the reward gap vs gamma per environment under figstyle (one ENV_CYCLE colour per environment, seed-level SE bands, figsize\u2248(6.4,3.0)) and reference it from both manuscripts.",
+   "producer": "experiments/run_discount.py"
+  },
+  {
+   "figure": "price_dual_descent",
+   "severity": "notable",
+   "issue": "Drawn entirely outside the shared style, and it is one of only two plot functions in run_price_of_information.py that never calls figstyle.apply(). Result: sans-serif type, a bold in-figure suptitle (explicitly banned by figstyle's docstring), framed legends, default matplotlib C0/C1/C2 colours instead of the Okabe-Ito palette, top and right spines on, and both x- and y-gridlines. Series are labelled with raw ASCII 'w_t', 'w_avg', 'budget B' where every other figure uses math. It is also a single-seed predecessor of price_dual_multiseed and is referenced by neither manuscript.",
+   "fix": "experiments/run_price_of_information.py, plot_dual_descent (line 1262): add figstyle.apply() as the first statement, delete fig.suptitle at line 1294 (the caption carries it), set colours to figstyle.BLUE / figstyle.VERMILLION / figstyle.GREEN, run figstyle.style_axis on both axes, legend(frameon=False), and relabel to $w_t$, $\\bar{w}$, budget $B$. If it is genuinely superseded by price_dual_multiseed, delete figures/price_dual_descent.{pdf,png} instead.",
+   "producer": "experiments/run_price_of_information.py"
+  },
+  {
+   "figure": "price_dual_reset",
+   "severity": "notable",
+   "issue": "Same off-style problem as price_dual_descent (no figstyle.apply, bold sans suptitle at line 1426, default C0/C1 colours, full spines, xy grid, ASCII 'w_t'/'w_avg'), plus four separate framed legends in a four-panel figure. In both top panels the opaque white legend box is drawn over the pink 'x10 bracket' shaded band, punching a rectangular hole in it so the band reads as discontinuous. The figure is referenced by neither manuscript and is superseded by the 5-seed price_dual_multiseed.",
+   "fix": "experiments/run_price_of_information.py, plot_dual_reset (line 1368): add figstyle.apply(), delete the suptitle at line 1426, use figstyle colours, and collapse the four legends into two row-level frameless legends placed above the axes (bbox_to_anchor=(1.0,1.02)) so nothing overlays the bracket bands. Or delete the artifact pair if superseded.",
+   "producer": "experiments/run_price_of_information.py"
+  },
+  {
+   "figure": "fig_stopping_times",
+   "severity": "notable",
+   "issue": "The agent colours contradict the palette that figstyle exists to enforce: Planning is drawn light sky blue rather than #0072B2, Planning+IG is purple/magenta rather than pink #CC79A7, EFE is a salmon red rather than vermillion #D55E00 (only Myopic's gray is right). A reader who has learned the mapping elsewhere in the paper will mis-identify three of the four violins. The rest is pre-figstyle too: sans-serif, boxed axes with top/right spines, in-figure titles, rotated tick labels. Separately, the three panels use three different y-ranges (5-30, 5-40, 0-30) and two of them do not start at zero, so 'observations before commit' is not comparable across panels by eye. run_visualizations.py calls figstyle.apply() at lines 233/329/467 but not in this producer at line 565.",
+   "fix": "experiments/run_visualizations.py, fig_stopping_times (line 565): call figstyle.apply() first and colour each violin with figstyle.agent_color(name); drop the boxed spines via figstyle.style_axis; either share the y-axis across the three panels (sharey=True) or annotate each panel's scale, and anchor all three at 0.",
+   "producer": "experiments/run_visualizations.py"
+  },
+  {
+   "figure": "fig_accuracy_sensitivity",
+   "severity": "notable",
+   "issue": "Pre-figstyle style and off-palette agent colour: the w=1 (EFE) series is drawn in pure red, not vermillion #D55E00, and the tuned series in dodger blue dashed rather than a palette hue; framed legend, sans-serif type, top and right spines, x-gridlines. run_pareto.py calls figstyle.apply() at line 119 for the Pareto figure but run_accuracy_sensitivity (line 269) never does. Substantively the two curves are separated by well under one reward unit on a 45-unit axis, so at print size they are a single line with two marker shapes \u2014 the figure's own finding (w=1 tracks the tuned weight) is asserted rather than shown.",
+   "fix": "experiments/run_pareto.py, run_accuracy_sensitivity (line 269): call figstyle.apply(), use figstyle.agent_style('EFE') and a contrasting palette hue for the tuned curve, figstyle.style_axis, frameless legend. To make the finding visible, add a narrow second row plotting the difference (tuned minus w=1) with seed SE on its own scale.",
+   "producer": "experiments/run_pareto.py"
+  }
+ ],
+ "polish": [
+  {
+   "figure": "fig_pareto",
+   "severity": "polish",
+   "producer": "experiments/run_pareto.py::plot_pareto via rho_aif/figstyle.py::annotate_no_overlap",
+   "issue": "In panel (b) Testbed the 'w=0.01-0.5' label is placed at x + 0.02*xspan with no leader (needs_leader is False because the label sits at the point's own y), and the sweep polyline descends from that marker directly under the text, so the dotted line grazes the label baseline. Same pattern, less severely, for 'w=0.01-0.1' in panel (c) Diagnosis.",
+   "fix": "In annotate_no_overlap, always add a small y offset (e.g. ty = y + 0.03*yspan * side_y) rather than placing the label at exactly the point's y, or lower the collision threshold so a label sitting on the connecting polyline counts as a collision and gets the leader treatment."
+  },
+  {
+   "figure": "fig_tileworld_scaling",
+   "severity": "polish",
+   "producer": "experiments/run_tileworld.py::fig_scaling_replot ax3.set_title('(c) Computation cost') vs experiments/run_showcase.py::plot_reward_asymmetry_sweep titles",
+   "issue": "Panel-title phrasing is inconsistent within and across figures. Within fig_tileworld_scaling, (a) and (b) are 'X vs grid size' but (c) is the bare 'Computation cost', breaking the parallelism. Across figures, fig_tileworld_scaling writes 'vs' with no period while fig_asymmetry_sweep writes 'vs.' with one; fig_pareto uses bare environment names ('(a) Tiger') and fig_efe_trajectory uses bare descriptors ('(a) Short episode').",
+   "fix": "Settle on one form and apply it everywhere - recommend 'vs.' with the period, and retitle fig_tileworld_scaling panel (c) to '(c) Computation cost vs. grid size'. Update run_tileworld.py:246 and run_showcase.py:377-380 together so the two producers agree."
+  },
+  {
+   "figure": "fig_efe_trajectory",
+   "severity": "polish",
+   "producer": "experiments/run_showcase.py::plot_efe_trajectories, `if len(steps) <= 6: ax.set_xticks(steps)`",
+   "issue": "Sibling panels use different x-tick granularity: (a) and (b) tick every step (0,1,2,3) because their traces are short, while (c) falls through to matplotlib's locator and ticks 0,2,4,6,8. The three panels share an axis meaning ('Step') and a row, so the differing tick rules read as an inconsistency rather than a choice.",
+   "fix": "Use a MaxNLocator(integer=True) on all three panels instead of the len<=6 special case, or explicitly set every-step ticks up to a cap (ax.set_xticks(steps[::max(1, len(steps)//5)])) so all three panels follow one rule."
+  },
+  {
+   "figure": "fig_efe_trajectory",
+   "severity": "polish",
+   "producer": "experiments/run_showcase.py::plot_efe_trajectories, plt.subplots(1, 3, figsize=(10, 3.0))",
+   "issue": "All three panels share the same left-axis range (about -47 to +11) but each draws its own tick label column, so two full columns of identical '10 / 0 / -10 / -20 / -30 / -40' labels sit between the panels consuming horizontal space in an already over-reduced figure.",
+   "fix": "Pass sharey=True to plt.subplots and let matplotlib suppress the inner tick labels; the twin entropy axes are created per-panel and are unaffected."
+  },
+  {
+   "figure": "fig_asymmetry_sweep",
+   "severity": "polish",
+   "producer": "experiments/run_showcase.py::plot_reward_asymmetry_sweep, ax.set_xscale('log')",
+   "issue": "The log x-axis labels only the three decades (10^0, 10^1, 10^2) while the nine data points sit at 1, 2, 5, 10, 20, 50, 100, 200, 500. The reader cannot name the x value of any marker except the three that land on a decade, which matters because the panel's headline feature is the Planning transition between |R|=2 and |R|=5.",
+   "fix": "Set explicit ticks at the sampled penalties: ax.set_xticks(d['penalties']); ax.set_xticklabels([f'{p:g}' for p in d['penalties']]); ax.xaxis.set_minor_locator(NullLocator()), with a slightly reduced xtick.labelsize if the labels crowd."
+  },
+  {
+   "figure": "fig_asymmetry_sweep",
+   "severity": "polish",
+   "producer": "experiments/run_showcase.py::plot_reward_asymmetry_sweep, ax.set_xlabel('Penalty magnitude $|R^-|$')",
+   "issue": "The x-label renders as 'Penalty magnitude |R \u207b |' with a visible gap between the raised minus and the closing bar - the STIX mathtext superscript leaves italic-correction space before the delimiter, so the notation looks like a typesetting slip in every panel.",
+   "fix": "Write the delimiter with explicit sizing so the correction is absorbed: '$\\\\left|R^{-}\\\\right|$', or sidestep it with 'Penalty magnitude $|R^{-}|$' typeset via \\\\lvert/\\\\rvert."
+  },
+  {
+   "figure": "fig_asymmetry_sweep",
+   "severity": "polish",
+   "producer": "experiments/run_showcase.py::_plot_agent_series (markersize=4.5) vs experiments/run_tileworld.py::fig_scaling_replot (rcParams lines.markersize=5)",
+   "issue": "Marker sizes differ across figures that share the same five-agent legend: fig_asymmetry_sweep hardcodes markersize=4.5 in _plot_agent_series, while fig_tileworld_scaling's errorbar calls inherit figstyle's lines.markersize=5. The same EFE circle is drawn 10% larger in one figure than the other, undercutting the 'one agent looks the same everywhere' rule figstyle exists to enforce.",
+   "fix": "Delete the markersize=4.5 override in _plot_agent_series and let figstyle's lines.markersize govern, or move the value into figstyle.apply() so a single number controls both producers."
+  },
+  {
+   "figure": "price_collapse",
+   "severity": "polish",
+   "issue": "The nested open-marker idiom depends on markers staying distinguishable, but the smallest (alpha=10, ms=3.8, edge 1.3) becomes a ~1.7pt blob at the 0.45x LNCS reduction, so the code comment's claim that 'all three series are visibly present' fails in print. The green triangle is the one that disappears.",
+   "fix": "msizes = [11, 7.5, 4.6] with markeredgewidth=1.1, or give the innermost series a filled centre dot. L788, L811-822.",
+   "producer": "experiments/run_price_of_information.py::plot_scale_collapse (L788)"
+  },
+  {
+   "figure": "price_collapse",
+   "severity": "polish",
+   "issue": "The legend carries a result claim as its title ('curves coincide exactly'), which the caption already states; figstyle.py's conventions push in-figure assertions out to the caption.",
+   "fix": "Drop the legend title (L829-830) and keep the claim in the caption, which already says the curves collapse.",
+   "producer": "experiments/run_price_of_information.py::plot_scale_collapse (L829-830)"
+  },
+  {
+   "figure": "price_cost_budget",
+   "severity": "polish",
+   "issue": "The 'cheap test' reference label at 0.50 sits about 0.08 above the bottom spine with va='bottom' and is crowded by it, and all three reference labels are left-aligned at zero_pos2, which is exactly where the x-axis break glyph is drawn \u2014 three grey labels and a break marker stacked in the same column.",
+   "fix": "Annotate at the right edge (ha='right', x at the axis max) with va='center' and a small offset, clear of the break glyph. L574-581.",
+   "producer": "experiments/run_price_of_information.py::plot_cost_budget (L574-581)"
+  },
+  {
+   "figure": "price_prop2_jumps",
+   "severity": "polish",
+   "issue": "Data points at U=0 sit exactly on the bottom spine in both panels, so the lower half of each marker is occluded by the axis line \u2014 the pre-onset run reads as a thickened axis rather than as data.",
+   "fix": "ax.set_ylim(bottom=-0.04*ymax) after plotting. L1102.",
+   "producer": "experiments/run_price_of_information.py::plot_prop2_jumps (L1102)"
+  },
+  {
+   "figure": "price_prop2_jumps",
+   "severity": "polish",
+   "issue": "Error-bar cap sizes are inconsistent across the family: capsize=2 here and in plot_scale_collapse, capsize=3 in plot_cost_budget, and uncapped in the two staircase figures.",
+   "fix": "Add a CAPSIZE constant to rho_aif/figstyle.py (2 is the majority choice) and use it at L1072, L554, L802.",
+   "producer": "experiments/run_price_of_information.py (L1072 / L554 / L802)"
+  },
+  {
+   "figure": "price_shadow_curves",
+   "severity": "polish",
+   "issue": "Series labels use ASCII where the surrounding prose uses math: the legend reads 'Tileworld-6x6' and 'Inspection-N8' while the caption and text write Tileworld-$6{\\times}6$ and Inspection-$N{=}8$. Same in price_staircase_interleaved ('Inspection-N16').",
+   "fix": "Add a display-label map applied at the ax.step label (L266), e.g. {'Tileworld-6x6': 'Tileworld-$6{\\\\times}6$', 'Inspection-N8': 'Inspection-$N{=}8$', 'Inspection-N16': 'Inspection-$N{=}16$'}.",
+   "producer": "experiments/run_price_of_information.py::plot_shadow_price_curves (L266)"
+  },
+  {
+   "figure": "price_prop2_jumps",
+   "severity": "polish",
+   "issue": "In panel (a) the w_thresh=3.44 dashed rule grazes the right edge of the frameless upper-left legend, passing within a hair of the '$w_{thresh}=3.44$' text it labels; the panel-(b) equivalent has more clearance only because that axis is wider in data units.",
+   "fix": "Move the legend to loc='center left' or add borderpad/bbox_to_anchor=(0.02, 0.86) so the rule never crosses the legend column at either threshold value. L1104.",
+   "producer": "experiments/run_price_of_information.py::plot_prop2_jumps (L1104)"
+  },
+  {
+   "figure": "fig_obs_scaling",
+   "severity": "polish",
+   "producer": "experiments/run_showcase.py:473",
+   "issue": "Panel titles ((a) Success vs. observation action complexity / (b) Reward vs. observation action complexity) restate the y-axis label plus the shared x-axis label, consuming a line of vertical space in an already short figure.",
+   "fix": "Shorten to '(a) Success rate' and '(b) Mean reward', matching the terse panel titles used in fig_efficiency_curves ('(a) Entropy decay')."
+  },
+  {
+   "figure": "fig_obs_scaling",
+   "severity": "polish",
+   "producer": "experiments/run_showcase.py:473 vs :360",
+   "issue": "This figure legends four agents (Myopic, Planning, Planning+IG, EFE) while the immediately adjacent appendix figure fig_asymmetry_sweep legends five (adds InfoGain-Tuned). results/results_showcase_obs_scaling.csv only contains the four, so this is a battery-scope difference rather than a plotting bug, but two neighbouring sweep figures with different agent sets and no explanation invites the referee question 'why is the myopic tuned agent missing here?'.",
+   "fix": "Either extend the obs-scaling battery to InfoGain-Tuned, or state the omission in the caption."
+  },
+  {
+   "figure": "fig_extended_efe",
+   "severity": "polish",
+   "producer": "experiments/run_visualizations.py:512",
+   "issue": "The panel (a) y-label reads '$-\\mathcal{G}$ (value)'. '(value)' is not a unit and adds nothing; the quantity is in the environment's reward units, which is what the reader needs. Panel (c)'s entropy curve is also drawn solid-with-fill here while fig_efe_trajectory draws the same belief-entropy quantity as a green dashed line with fill.",
+   "fix": "Label it '$-\\mathcal{G}$ (reward units)' and match the entropy line style to fig_efe_trajectory (green dashed, same fill alpha) so belief entropy looks the same in both figures."
+  },
+  {
+   "figure": "fig_tw_belief",
+   "severity": "polish",
+   "producer": "rho_aif/render_tileworld.py:136-142 and :220-231",
+   "issue": "Cell values are set with fontweight='bold', which conflicts with the project's own no-bold convention (bold reserved for table best-metric). Titles use upright 't=', 'obs=', 'R=' where the manuscript sets these in math.",
+   "fix": "Drop fontweight='bold' and wrap the title tokens in math mode ($t=1$, obs $=$ B, $R=-5.0$)."
+  },
+  {
+   "figure": "fig_belief_heatmap",
+   "severity": "polish",
+   "producer": "experiments/run_visualizations.py:305-309",
+   "issue": "Cross-panel tick treatment is inconsistent: MaxNLocator(integer=True) picks a stride of 3 in panel (a), 2 in (b) and 4 in (c), so the same axis reads at three different granularities side by side. Only even state indices are labelled although there are just 8 rows.",
+   "fix": "Set a single explicit x stride for all three panels (MultipleLocator(5)) and label all 8 state indices (ax.set_yticks(range(n_states)))."
+  },
+  {
+   "figure": "fig_efficiency",
+   "severity": "polish",
+   "producer": "experiments/run_visualizations.py:403, 418, 447 vs paper/full_paper_jair.tex:1136",
+   "issue": "Panel titles and the LaTeX caption disagree in wording: figure says '(a) Entropy decay' / '(b) Observation survival', caption says '(a) Belief entropy decay' / '(b) Fraction of episodes still observing' while the y-axis is 'Episodes still observing (%)' - fraction vs percent.",
+   "fix": "Make the caption quote the panel titles verbatim and say 'percentage of episodes still observing' to match the axis units."
+  },
+  {
+   "figure": "fig_reward_scaling",
+   "severity": "polish",
+   "issue": "In panel (a) the k=0.1 series lies almost exactly on the y=0 horizontal gridline, so gridline and data line fight each other; the markers read as gridline decorations.",
+   "fix": "experiments/run_reward_scaling.py \u2014 after style_axis, either ax.set_ylim(bottom=-2) to lift the series off the zero rule, or suppress the zero gridline (ax.yaxis.get_gridlines() alpha 0 at 0). Moot if the normalised/per-row layout above is adopted.",
+   "producer": "experiments/run_reward_scaling.py"
+  },
+  {
+   "figure": "fig_nearopt_horizon",
+   "severity": "polish",
+   "issue": "At H=3 the black dashed 'All' square (79.5) is drawn on top of the green $\\alpha\\ge10$ diamond (79.0); the green marker is almost entirely occluded, so the aggregate appears to have swallowed a series at the right edge.",
+   "fix": "experiments/run_nearopt_horizon.py:137 \u2014 draw 'All' first (lower zorder) or use markerfacecolor='none' for the black aggregate so the green marker shows through.",
+   "producer": "experiments/run_nearopt_horizon.py"
+  },
+  {
+   "figure": "fig_nearopt_horizon",
+   "severity": "polish",
+   "issue": "Layout slack: with ylim (0,102) and data spanning 26-86, the bottom quarter of the panel is empty, and the default x-margins push the H=1 and H=3 points well inside the axes so the three-point series floats in a wide frame. Anchoring a percentage at 0 is defensible, but the combination wastes about a third of the panel.",
+   "fix": "experiments/run_nearopt_horizon.py:143-144 \u2014 add ax.set_xlim(0.85, 3.15) and reduce the figure height (figsize=(5, 2.9) at line 122); if the zero anchor is not needed for the argument, ax.set_ylim(20, 95).",
+   "producer": "experiments/run_nearopt_horizon.py"
+  },
+  {
+   "figure": "price_dual_multiseed",
+   "severity": "polish",
+   "issue": "The IQR bands are single-hue fills at alpha=0.25 with linewidth=0. In the weight row before the rescale they are only a few pixels tall, and at the print reduction they will very nearly disappear, leaving the median line looking like a deterministic trace rather than a 5-seed median.",
+   "fix": "experiments/run_price_of_information.py:1575-1598 \u2014 raise alpha to 0.30 and give each band a hairline boundary (linewidth=0.4, edgecolor same hue) so it survives downsampling.",
+   "producer": "experiments/run_price_of_information.py"
+  },
+  {
+   "figure": "fig_tileworld_scan_atlas",
+   "severity": "polish",
+   "issue": "Bold sans-serif fig.suptitle (banned by figstyle) with an ASCII '6x6' instead of 6x6 typeset as a product, and no figstyle.apply() in the renderer. The 4-column layout for 6 panels leaves two empty cells, so the entire right half of the second row is dead space and the two rows read as unrelated groups. The cell fill is a dark navy from the 'Blues' colormap rather than the Okabe-Ito blue used everywhere else.",
+   "fix": "rho_aif/render_tileworld.py, render_scan_atlas (line 346): set cols = 3 so 6 panels fill a 2x3 grid with no empty cells; call figstyle.apply() and delete the fig.suptitle at line 384 (the caption carries it); replace cmap='Blues' with a two-colour ListedColormap of white and figstyle.BLUE.",
+   "producer": "rho_aif/render_tileworld.py"
+  }
+ ],
+ "total": 111
+}
