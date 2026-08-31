@@ -28,12 +28,12 @@ polish and a writing-style pass, have not started.
   Information framing of w as the shadow price of a sensing budget, are
   certified novel. Reviewers are told not to re-litigate this. They may still
   flag any specific claim a cited source contradicts.
-- **Round 13 is incomplete.** Its five reviewers finished (all returned
-  accept-with-minor-revisions, 11 raw required findings before dedup), but
-  the adversarial-skeptic-verification and AE-adjudication phases died to a
-  Claude usage spend limit ("weekly limit resets Sep 2 at 12am America/Denver"
-  per the error text). **Nothing from round 13 has been applied or even
-  verified.** See "Resuming round 13" below.
+- **Round 13 is complete (resolved 2026-08-31, in-place update).** The 11 raw
+  findings were deduplicated to 9 claims, each hand-verified against its
+  artifact (all 9 survived), applied with `safe_apply.py` to both masters,
+  post-verified in context, rebuilt, and committed. Full narrative in
+  `full_paper_plan.md` section 9.17.18. The multi-model round-14+ loop is the
+  active phase.
 
 ## The methodology, distilled
 
