@@ -36,8 +36,14 @@ polish and a writing-style pass, have not started.
   unqualified accept since round 8 (Grok, editor lens). It also caught round
   13's own nat-conversion fix being inverted — reviewer rounds audit prior
   rounds' fixes, which is an argument for keeping the loop running. Full
-  narratives in `full_paper_plan.md` sections 9.17.18-9.17.19. Round 15 is
-  the active phase.
+  narratives in `full_paper_plan.md` sections 9.17.18-9.17.19.
+- **Round 15 is complete (2026-08-31).** Four unqualified accepts (statistics
+  twice, editor, decision theory) and one accept-with-minor-revisions whose
+  three sustained findings were all disclosure gaps in the RockSample/POMCP
+  appendix territory (six deviations not five, missing step caps and rock
+  maps, undisclosed POMCP departures) — fixed same day, ledger 9.17.20.
+  Round 16 is the active phase and tests whether that last territory is
+  clean.
 
 ## The methodology, distilled
 
@@ -129,6 +135,7 @@ rediscovering:
 | 12 | 5x accept-with-minor-revisions | 7 | the biggest single fix: Section 3.1's formal rho-POMDP definition was action-independent while every downstream use (including Prop 1 itself) needed the action-dependent form — this was collateral damage from withdrawing the false generalization claim in the cited-work sweep |
 | 13 | 5x accept-with-minor-revisions | 9 (all survived hand-verification) | verify+AE phases died to spend limit mid-round, completed by hand 2026-08-31 (ledger 9.17.18) |
 | 14 | **1x accept (Grok), 4x accept-with-minor-revisions** | 8 sustained, 4 refuted by skeptics | first multi-model panel (GPT/Gemini/Grok/Fable/Opus) + adversarial-skeptic phase; caught round 13's own nat-conversion fix being inverted (ledger 9.17.19) |
+| 15 | **4x accept, 1x accept-with-minor-revisions (Opus)** | 3 sustained (all RockSample/POMCP disclosure), 3 refuted | statistics clean across two model families with zero findings; deepest theory verification yet (Prop 2 re-derived by hand); the RockSample deviation sentence produced its fourth-round finding (5, 9, 11, 15) — now six deviations (ledger 9.17.20) |
 
 ## Resuming round 13 (RESOLVED 2026-08-31 — kept for the record, do not redo)
 
