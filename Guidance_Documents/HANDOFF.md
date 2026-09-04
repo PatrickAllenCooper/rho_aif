@@ -83,6 +83,14 @@ polish and a writing-style pass, have not started.
   footer), and the Tiger usage-matching sentence in the SARSOP section was
   re-derived from results_sarsop_baseline.json and the usage curve, so do not
   rewrite it from memory.
+- **Producer trap, do not repeat.** `run_price_of_information.py --replot`
+  is NOT figure-only. Its default mode is `quick` and `--replot` still
+  simulates any stage without a saved CSV, so it overwrote seven canonical
+  results CSVs during the final review (caught by `git status`, never
+  committed, restored from HEAD, and now guarded: the script refuses
+  `--replot` outside `--mode full`). Figure-only rebuilds are
+  `--replot-figures`. After running ANY producer, diff `results/` against
+  HEAD before staging.
 - **Left for Pat's hand-edit**: the 21 non-blocking suggestions in the final
   review output (scratchpad `final_result.json`, AE section 3; the most
   substantive is the RS[11,11] "deeper tree" attribution, which the horizon

@@ -1936,7 +1936,20 @@ def parse_args() -> argparse.Namespace:
         help="Rebuild all six committed figures from the results CSVs only "
         "(no episodes run at all), then exit",
     )
-    return p.parse_args()
+    args = p.parse_args()
+    # Guard against a silent artifact overwrite. ``--replot`` re-plots only the
+    # stages whose saved CSV exists and SIMULATES every other stage in whatever
+    # mode is set, and the default mode is ``quick`` (3 seeds, 40 episodes).
+    # Run that way it overwrote seven canonical 5-seed CSVs on 2026-09-04
+    # (caught before commit, restored from HEAD). Figure-only rebuilds are
+    # ``--replot-figures``; a genuine partial replot must say ``--mode full``.
+    if args.replot and not args.replot_figures and args.mode != "full":
+        p.error(
+            "--replot without --mode full would overwrite canonical results CSVs "
+            "with quick-mode data. Use --replot-figures to rebuild figures only, "
+            "or add --mode full."
+        )
+    return args
 
 
 def main() -> None:
