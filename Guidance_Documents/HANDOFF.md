@@ -68,8 +68,27 @@ polish and a writing-style pass, have not started.
 - **Writing-clarity pass complete (2026-08-31)**: 73 verified edits under
   Pat's style rules via six section-scoped report-only readers plus four
   adjudicated flags, applied symmetrically to both masters (ledger 9.17.25).
-- Remaining pre-submission work: credential-gated PyPI upload and the
-  git-trailer decision above.
+- **Final pre-submission review complete (2026-09-04, ledger 9.17.26).** Because
+  the figure pass and the writing pass landed AFTER round 18's five accepts,
+  they were audited adversarially (131 changes checked, 22 defects, all in
+  the figure pass: seven `\Description` blocks and two captions still
+  described the old renders) and then a fresh five-reviewer panel ran under
+  unqualified-accept semantics. Verdict: five accept-with-minor-revisions,
+  23 findings confirmed, zero refuted, consolidated by the AE to 17 required
+  changes. All 17 are applied, rebuilt, tested and committed. The AE's
+  judgement, recorded verbatim in 9.17.26, is that the residue was minor in
+  effort but not purely cosmetic, and that it is now clear. Two things a
+  future session must not undo: the two appendix floats are deliberately at
+  0.78\linewidth (at \linewidth they overflow the page and print over the
+  footer), and the Tiger usage-matching sentence in the SARSOP section was
+  re-derived from results_sarsop_baseline.json and the usage curve, so do not
+  rewrite it from memory.
+- **Left for Pat's hand-edit**: the 21 non-blocking suggestions in the final
+  review output (scratchpad `final_result.json`, AE section 3; the most
+  substantive is the RS[11,11] "deeper tree" attribution, which the horizon
+  CSV's tree-depth column argues belongs to the rollouts).
+- Remaining pre-submission work: Pat's hand-edit, the credential-gated PyPI
+  upload, and the git-trailer decision above.
 
 ## The methodology, distilled
 

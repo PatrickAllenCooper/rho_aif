@@ -651,15 +651,18 @@ def plot_cost_budget(
     # crossing brackets (the caption's coincidence claim, drawn not asserted).
     if price_df is not None and not price_df.empty:
         kind_color = {"count": figstyle.BLUE, "cost": figstyle.ORANGE}
-        x_right = float(pos_w.max()) * 1.55
+        # Budget labels sit at the LEFT edge, where every usage curve is flat
+        # and nothing else is drawn, so they cannot collide with the bracket
+        # labels anchored near the top right (audit: label overprint at B=19.20).
+        x_left = float(pos_w.min()) * 1.15
         spans: Dict[Tuple[float, float], None] = {}
         for _, row in price_df.sort_values("budget").iterrows():
             c = kind_color.get(str(row["usage_kind"]), figstyle.GRAY)
             b = float(row["budget"])
             ax.axhline(b, ls="--", lw=0.9, alpha=0.55, color=c, zorder=1)
             ax.annotate(
-                f"$B{{=}}{b:.2f}$", (x_right, b), fontsize=7,
-                color=c, ha="right", va="bottom",
+                f"$B{{=}}{b:.2f}$", (x_left, b), fontsize=7,
+                color=c, ha="left", va="bottom",
             )
             spans[(round(float(row["w_lo"]), 6), round(float(row["w_hi"]), 6))] = None
         for i, (lo, hi) in enumerate(sorted(spans)):
