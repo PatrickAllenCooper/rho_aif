@@ -262,8 +262,13 @@ ENV_DISPLAY = {
     "Inspection-N16": "Inspection-$N{=}16$",
 }
 
-# Ceiling of the tested log-w grid (make_log_w_grid(0, 100, .)). Brackets with
-# w_hi at this value are open above the grid, not resolved.
+# Ceiling of the tested log-w grid (make_log_w_grid(0, 100, .)). A bracketed
+# row whose w_hi sits here is closed at 100 under Definition PI-3, because
+# ``bracketed`` means U(w_hi) >= B was observed on the grid. Only an
+# unbracketed row (budget above the observed usage range, budget.py's
+# flagged fallback) is genuinely unresolved above the grid. Until 2026-09-05
+# every w_hi = 100 bar was drawn with an arrowhead, which overstated the
+# uncertainty of brackets the manuscript's own atlas prints as (w_lo, 100].
 W_GRID_TOP = 100.0
 
 
@@ -276,8 +281,11 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
     - slack budgets (w* = 0, or w* below its own recorded bracket) draw an
       open marker and a dotted bracket for the first binding crossing;
     - brackets whose upper edge sits at the top of the tested w grid are
-      open above the grid and terminate in an upward arrowhead instead of a
-      capped bar, above a dotted rule marking the grid ceiling.
+      capped there like any other bracket, since a bracketed row has
+      U(100) >= B and is closed at 100 under Definition PI-3, with a dotted
+      rule marking the grid ceiling. Only an unbracketed row (budget above
+      the observed usage range) terminates in an upward arrowhead, and the
+      legend names that glyph only when such a row is plotted.
     """
     figstyle.apply()
     fig, ax = plt.subplots(figsize=figstyle.figsize(1.0, 0.58))
@@ -290,6 +298,7 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
     )
     linthresh = float(pos_vals.min()) if len(pos_vals) else 0.1
     arrow_tip = 170.0
+    any_unresolved = False
     for env_name in envs:
         sub = price_df[price_df["env"] == env_name].sort_values("budget")
         c = figstyle.env_color(env_name)
@@ -312,8 +321,11 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
             is_slack = row["w_star"] <= 0 or row["w_star"] < lo
             bar_alpha = 0.35 if is_slack else 0.5
             bar_ls = ":" if is_slack else "-"
-            if hi >= W_GRID_TOP - 1e-9:
-                # Open above the tested grid: arrowhead, not a capped bar.
+            unresolved = ("bracketed" in row.index) and not bool(row["bracketed"])
+            if unresolved:
+                any_unresolved = True
+                # Budget above the observed usage range: the upper edge is
+                # not on the grid, so an arrowhead rather than a capped bar.
                 ax.annotate(
                     "", xy=(B, arrow_tip), xytext=(B, lo),
                     arrowprops=dict(
@@ -350,7 +362,7 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
         ["$0$"] + [f"$10^{{{int(round(math.log10(d)))}}}$" for d in yticks[1:]]
     )
     ax.set_ylim(-0.35 * linthresh, 300.0)
-    # Dotted rule at the grid ceiling: everything above it is unresolved.
+    # Dotted rule at the grid ceiling, the largest tested weight.
     ax.axhline(W_GRID_TOP, color=figstyle.GRAY, ls=":", lw=0.8, zorder=0)
     ax.annotate(
         "top of tested $w$ grid", xy=(0.01, W_GRID_TOP * 1.12),
@@ -372,6 +384,14 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
             label="slack budget: $w^*$ below first binding bracket",
         )
     )
+    if any_unresolved:
+        handles.append(
+            Line2D(
+                [], [], color=figstyle.GRAY, alpha=0.6, lw=1.4,
+                marker="^", markersize=5,
+                label="unbracketed: budget above observed usage range",
+            )
+        )
     ax.legend(
         handles=handles, ncol=3, loc="upper center",
         bbox_to_anchor=(0.5, -0.22), frameon=False,
