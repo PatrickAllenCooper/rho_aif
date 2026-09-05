@@ -1911,6 +1911,57 @@ def replot_all_figures() -> None:
 # Main
 # ---------------------------------------------------------------------------
 
+def staircase_verdict(curve_df: pd.DataFrame, tol: float = 1e-9) -> str:
+    """Derive the shadow-staircase verdict from the saved usage curves.
+
+    A usage curve is nondecreasing when ``mean_usage`` never drops by more
+    than ``tol`` between consecutive grid weights. The verdict is recomputed
+    from ``results_price_usage_curves.csv`` on every run because the summary
+    JSON merges prior verdict keys forward, and from 2026-08 to 2026-09-05 it
+    carried a fossil string saying Tiger and Diagnosis were non-monotone while
+    the CSV and Section 6.6 of the manuscript said the opposite.
+    """
+    monotone: List[str] = []
+    wobbly: List[str] = []
+    for env, g in curve_df.groupby("env", sort=False):
+        u = g.sort_values("w")["mean_usage"].to_numpy(dtype=float)
+        target = monotone if bool(np.all(np.diff(u) >= -tol)) else wobbly
+        target.append(str(env))
+    if not wobbly:
+        return (
+            "HOLD: every usage curve nondecreasing at every sampled grid point; "
+            "brackets with SEs reported"
+        )
+    return (
+        f"PARTIAL: {', '.join(monotone) or 'none'} nondecreasing at every sampled "
+        f"grid point; {', '.join(wobbly)} locally non-monotone from discrete policy "
+        "switches (count-usage gap, Proposition PI-2 scope note); brackets with SEs "
+        "reported, not singleton prices"
+    )
+
+
+def refresh_summary_verdicts() -> Dict[str, str]:
+    """Recompute the summary verdicts that derive from saved CSVs alone.
+
+    Runs no episodes and touches no CSV. Used by ``--refresh-summary`` and at
+    the end of every ``main()`` run.
+    """
+    summary_path = RESULTS / "results_price_of_information_summary.json"
+    summary: Dict = {}
+    if summary_path.exists():
+        with open(summary_path) as f:
+            summary = json.load(f)
+    verdict = dict(summary.get("verdict", {}))
+    curve_path = RESULTS / "results_price_usage_curves.csv"
+    if curve_path.exists():
+        verdict["shadow_staircases"] = staircase_verdict(pd.read_csv(curve_path))
+    summary["verdict"] = verdict
+    with open(summary_path, "w") as f:
+        json.dump(summary, f, indent=2)
+    print(json.dumps(verdict, indent=2), flush=True)
+    return verdict
+
+
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
@@ -1936,6 +1987,12 @@ def parse_args() -> argparse.Namespace:
         help="Rebuild all six committed figures from the results CSVs only "
         "(no episodes run at all), then exit",
     )
+    p.add_argument(
+        "--refresh-summary",
+        action="store_true",
+        help="Recompute the summary JSON verdicts that derive from saved CSVs "
+        "(no episodes run, no CSV touched), then exit",
+    )
     args = p.parse_args()
     # Guard against a silent artifact overwrite. ``--replot`` re-plots only the
     # stages whose saved CSV exists and SIMULATES every other stage in whatever
@@ -1957,6 +2014,9 @@ def main() -> None:
     _ensure_dirs()
     if args.replot_figures:
         replot_all_figures()
+        return
+    if args.refresh_summary:
+        refresh_summary_verdicts()
         return
     only = set(args.only) if args.only else {
         "curves", "interleaved", "cost", "scale", "prop2",
@@ -2340,6 +2400,15 @@ def main() -> None:
             )
         if verdict:
             summary["verdict"] = {**summary.get("verdict", {}), **verdict}
+
+    # The staircase verdict derives from a saved CSV alone, so it is refreshed
+    # on every run rather than merged forward from the prior summary.
+    curve_path = RESULTS / "results_price_usage_curves.csv"
+    if curve_path.exists():
+        summary["verdict"] = {
+            **summary.get("verdict", {}),
+            "shadow_staircases": staircase_verdict(pd.read_csv(curve_path)),
+        }
 
     with open(RESULTS / "results_price_of_information_summary.json", "w") as f:
         json.dump(summary, f, indent=2)

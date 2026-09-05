@@ -29,7 +29,7 @@
     "prop2_jump": "HOLD \u2014 onset brackets {'TestbedPos-p06': 0.030000000000000027, 'TestbedPos-p058': 0.030000000000000027}; U=0 below closed-form threshold",
     "curve_collapse": "HOLD \u2014 100% of matched w/\u03b1 points within 2\u00b7SE; max spread \u22640.00; crossing brackets coincide across \u03b1",
     "dual_rescale": "HOLD \u2014 usage pinned near B; windowed w ratio post/pre \u224811.54 after \u00d710 reward rescale; re-adaptation 176\u219250 episodes with lr reset-on-shift",
-    "shadow_staircases": "PARTIAL \u2014 Bandit/Inspection roughly monotone with SEs; Tiger/Diagnosis/Tileworld still show local non-monotonicity; report brackets+SEs"
+    "shadow_staircases": "PARTIAL: Tiger, Diagnosis, Inspection-N8 nondecreasing at every sampled grid point; Bandit, Tileworld-6x6 locally non-monotone from discrete policy switches (count-usage gap, Proposition PI-2 scope note); brackets with SEs reported, not singleton prices"
   },
   "curves_rows": 25,
   "collapse_frac_within_noise": 1.0,
