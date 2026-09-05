@@ -897,6 +897,12 @@ Under the north star set above, a four-way audit (package code, experiments/resu
 
 ---
 
+### Referee loop closed at the asymptote, confirmation round and audited batches (August 31 to September 5, 2026)
+
+The multi-model referee loop reached five unqualified accepts out of five at round 18 (2026-08-31). Two batches then landed unreviewed (a figure polish pass and a writing-clarity pass). A final pre-submission review (2026-09-04) audited them, found 22 defects in the figure pass, and its five-reviewer panel returned five accept-with-minor-revisions consolidated to 17 required changes, all applied. A confirmation round (2026-09-05) then audited that batch (four defects, fixed) and ran a fresh panel: four unqualified accepts and one accept-with-minor-revisions, five wording-level required changes, all re-derived from artifacts and applied, then audited (two more defects, fixed). One repo artifact fixed at the producer (a fossil verdict string in the price-of-information summary JSON contradicting Section 6.6) with a regression test. Full narratives in `full_paper_plan.md` 9.17.23 through 9.17.27. Verdict: **CLOSED at the asymptote**. Panels now find one wording-level residue per round and every applied batch carries defects at roughly one in four, so the stopping rule is an audited batch rather than another panel. 455/455 tests, both manuscripts compile clean. Remaining before submission: Pat's hand-edit against `Guidance_Documents/hand_edit_notes_2026-09-05.md`, the credential-gated PyPI upload, and the git-trailer decision.
+
+---
+
 ## Document Evolution
 
 This guidance document is updated continuously to reflect:

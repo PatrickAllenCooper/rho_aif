@@ -15,11 +15,16 @@ manuscript has improved substantially and the defect rate per round has
 fallen by roughly half, but round 13 did not finish (see below) and the loop
 has not yet reached the stop condition. Two more phases Pat asked for, figure
 polish and a writing-style pass, have not started.
+[Update 2026-09-05: this paragraph is the 2026-08-31 snapshot. Since then rounds 13 through 18, the figure and writing passes, a final review, and a confirmation round have all completed. See the bullets below and ledger 9.17.23 through 9.17.27.]
 
 ## Where things stand right now
 
 - **HEAD**: the round-17 commit of 2026-08-31 (rounds 13 through 17 applied;
   `git log` is authoritative). Working tree is clean.
+  [Update 2026-09-05: HEAD is 3a96064, the confirmation round's audited
+  batches plus the completeness critic's figure-convention repair and its
+  own audit's wording fix.
+  `git log` is authoritative. Working tree is clean.]
 - Both manuscripts compile with **zero LaTeX errors, zero undefined
   references**, and **450/450 tests pass**. This has been true and verified
   after every round since round 3.
@@ -91,10 +96,30 @@ polish and a writing-style pass, have not started.
   `--replot` outside `--mode full`). Figure-only rebuilds are
   `--replot-figures`. After running ANY producer, diff `results/` against
   HEAD before staging.
-- **Left for Pat's hand-edit**: the 21 non-blocking suggestions in the final
-  review output (scratchpad `final_result.json`, AE section 3; the most
-  substantive is the RS[11,11] "deeper tree" attribution, which the horizon
-  CSV's tree-depth column argues belongs to the rollouts).
+- **Confirmation round complete (2026-09-05, ledger 9.17.27).** The
+  seventeen-fix batch was audited (43 changes, 4 defects, fixed) and a fresh
+  five-reviewer panel ran on the result: four unqualified accepts (active
+  inference, decision theory, statistics, generalist) and one
+  accept-with-minor-revisions (POMDP planning). AE: accept with minor
+  revisions, five wording-level required changes (a dangling anaphor, a
+  clause contradicting its caption, a Holm non-rejection read as
+  equivalence, the MCTS-EFE attribution overclaiming a controlled comparison
+  and hiding a 110-versus-5.0 exploration constant, and a "trade runs the
+  other way" falsified by its own numbers). All five re-derived from
+  artifacts, applied, and audited; the audit found two more (a scope
+  hardening that was false for RS[11,11], and "Info Gain" where the plotted
+  agent is InfoGain-Tuned), both fixed. One repo artifact fixed at the
+  producer with a regression test (the summary JSON's fossil staircase
+  verdict). A completeness critic over the whole batch then found the
+  staircase figures drawing grid-top brackets as open when Definition PI-3
+  closes them at 100, fixed at the producer with both figures regenerated
+  (bff4155). The loop is at its asymptote: stop with an audited batch, not
+  another panel.
+- **Left for Pat's hand-edit**: `Guidance_Documents/hand_edit_notes_2026-09-05.md`,
+  the two AEs' 43 non-blocking suggestions deduplicated with status, the
+  merged hand-editing guidance, and the Pat-only items. The earlier pointer
+  to a scratchpad `final_result.json` is dead, that directory was
+  session-local.
 - Remaining pre-submission work: Pat's hand-edit, the credential-gated PyPI
   upload, and the git-trailer decision above.
 
