@@ -649,7 +649,7 @@ On Diagnosis and Bandit we estimate $U(w;\alpha)$ at reward scales $\alpha \in \
 \includegraphics[width=\textwidth]{figures/price_scale_invariance.pdf}
 \caption{Curve collapse on Diagnosis. The left panel plots $U$ against $w/\alpha$ at three reward scales. The right panel shows crossing brackets of $B{=}8$ in $w/\alpha$ units coinciding across scales, a set-valued shadow price.}
 \label{fig:collapse}
-\Description{Two panels. Left: mean observations against the ratio of w to alpha on a log-style axis, with one gray error-bar curve carrying nested open markers in blue, orange, and green (circles, squares, triangles) that coincide at every point that stay flat near 6, jump steeply to about 10 near a ratio of 0.2, and stay flat thereafter. A gray dashed horizontal line at 8 crosses inside the jump. Right: three identical vertical interval bars at alpha equals 0.1, 1, and 10, all spanning the same range of the ratio axis, with two gray dashed horizontal rules at the shared bracket edges, labeled 0.323 and 0.141.}
+\Description{Two panels. Left: mean observations against the ratio of w to alpha on a log-style axis, with one gray error-bar curve carrying nested open markers in blue, orange, and green (circles, squares, triangles) that coincide at every point. The curve stays flat near 6, jumps steeply to about 10 near a ratio of 0.2, and stays flat thereafter. A gray dashed horizontal line at 8 crosses inside the jump. Right: three identical vertical interval bars at alpha equals 0.1, 1, and 10, all spanning the same range of the ratio axis, with two gray dashed horizontal rules at the shared bracket edges, labeled 0.323 and 0.141.}
 \end{figure}
 
 \begin{table}[t]
@@ -1527,7 +1527,7 @@ To test the scale objection directly, we multiply all rewards and costs by $k \i
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_reward_scaling.pdf}
-\caption{Reward rescaling. Scale-normalized (mean reward divided by $k$) vs.\ Planning+IG weight $w$ under global scale factors $k$. Normalization places the three scales on one axis, so the equivariance is read directly. The three curves share one shape, and the reward-maximizing weight (open circles, $w^*_{\mathrm{ret}}$) shifts toward larger $w$ as $k$ grows, consistent with $w^*_{\mathrm{ret}}(k) \propto k$. The dashed rule marks $w{=}1$, the EFE weight.}
+\caption{Reward rescaling. Scale-normalized mean reward (mean reward divided by $k$) vs.\ Planning+IG weight $w$ under global scale factors $k$. Normalization places the three scales on one axis, so the equivariance is read directly. The three curves share one shape, and the reward-maximizing weight (open circles, $w^*_{\mathrm{ret}}$) shifts toward larger $w$ as $k$ grows, consistent with $w^*_{\mathrm{ret}}(k) \propto k$. The dashed rule marks $w{=}1$, the EFE weight.}
 \label{fig:reward_scaling}
 \Description{Two panels of scale-normalized mean reward, reward divided by k, versus weight on a log axis, each with three curves for scale factors 0.1, 1, and 10, a dashed vertical rule at weight 1, and an open circle marking each curve's reward-maximizing weight. In the left Bandit panel all three curves peak at the same normalized height near 6.2, with the circle at weight 0.1 for k equal 0.1, weight 1 for k equal 1, and weight 10 for k equal 10, and each curve falls off past its peak. In the right Diagnosis panel all three curves plateau at the same normalized height near minus 1.8, with the circle at weight 0.1 for k equal 0.1, weight 0.5 for k equal 1, and weight 5 for k equal 10.}
 \end{figure}
