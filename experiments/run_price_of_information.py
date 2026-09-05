@@ -265,8 +265,12 @@ ENV_DISPLAY = {
 # Ceiling of the tested log-w grid (make_log_w_grid(0, 100, .)). A bracketed
 # row whose w_hi sits here is closed at 100 under Definition PI-3, because
 # ``bracketed`` means U(w_hi) >= B was observed on the grid. Only an
-# unbracketed row (budget above the observed usage range, budget.py's
-# flagged fallback) is genuinely unresolved above the grid. Until 2026-09-05
+# unbracketed row is unresolved on the grid. Budgets come from
+# identifiable_budgets, strictly inside the observed usage range, so the one
+# reachable unbracketed case is Definition PI-3's non-straddling fallback, a
+# curve whose final grid points fall back below B after an earlier crossing,
+# which solve_shadow_price_from_curve returns with bracketed False and its
+# note set. Until 2026-09-05
 # every w_hi = 100 bar was drawn with an arrowhead, which overstated the
 # uncertainty of brackets the manuscript's own atlas prints as (w_lo, 100].
 W_GRID_TOP = 100.0
@@ -283,9 +287,10 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
     - brackets whose upper edge sits at the top of the tested w grid are
       capped there like any other bracket, since a bracketed row has
       U(100) >= B and is closed at 100 under Definition PI-3, with a dotted
-      rule marking the grid ceiling. Only an unbracketed row (budget above
-      the observed usage range) terminates in an upward arrowhead, and the
-      legend names that glyph only when such a row is plotted.
+      rule marking the grid ceiling. Only an unbracketed row (no grid pair
+      straddles B, the flagged fallback of Definition PI-3) terminates in an
+      upward arrowhead, and the legend names that glyph only when such a row
+      is plotted.
     """
     figstyle.apply()
     fig, ax = plt.subplots(figsize=figstyle.figsize(1.0, 0.58))
@@ -324,8 +329,9 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
             unresolved = ("bracketed" in row.index) and not bool(row["bracketed"])
             if unresolved:
                 any_unresolved = True
-                # Budget above the observed usage range: the upper edge is
-                # not on the grid, so an arrowhead rather than a capped bar.
+                # No grid pair straddles B (bracketed False): the upper edge
+                # is not resolved on the grid, so an arrowhead rather than a
+                # capped bar.
                 ax.annotate(
                     "", xy=(B, arrow_tip), xytext=(B, lo),
                     arrowprops=dict(
@@ -389,7 +395,7 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
             Line2D(
                 [], [], color=figstyle.GRAY, alpha=0.6, lw=1.4,
                 marker="^", markersize=5,
-                label="unbracketed: budget above observed usage range",
+                label="unbracketed: no grid pair straddles $B$",
             )
         )
     ax.legend(
