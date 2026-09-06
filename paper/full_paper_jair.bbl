@@ -529,7 +529,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Neural Computation}
-      \field{number}{5--6}
+      \field{number}{5}
       \field{title}{Reward maximization through discrete active inference}
       \field{volume}{35}
       \field{year}{2023}
@@ -2133,6 +2133,7 @@
       \strng{authornamehash}{20ecfeef26678db3c8f7b501cce4870b}
       \strng{authorfullhash}{20ecfeef26678db3c8f7b501cce4870b}
       \strng{authorfullhashraw}{20ecfeef26678db3c8f7b501cce4870b}
+      \field{extraname}{1}
       \field{sortinit}{R}
       \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
       \field{extradatescope}{labelyear}
@@ -2142,6 +2143,47 @@
       \field{booktitle}{Advances in Neural Information Processing Systems}
       \field{title}{Learning to optimize via information-directed sampling}
       \field{year}{2014}
+    \endentry
+    \entry{russo2018ids}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=1d23327aacfd2296e8ee6e60ab2165b1}{%
+           family={Russo},
+           familyi={R\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c01851e6288e54e1f074408a2f77d077}{%
+           family={Van\bibnamedelima Roy},
+           familyi={V\bibinitperiod\bibinitdelim R\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{20ecfeef26678db3c8f7b501cce4870b}
+      \strng{fullhash}{20ecfeef26678db3c8f7b501cce4870b}
+      \strng{fullhashraw}{20ecfeef26678db3c8f7b501cce4870b}
+      \strng{bibnamehash}{20ecfeef26678db3c8f7b501cce4870b}
+      \strng{authorbibnamehash}{20ecfeef26678db3c8f7b501cce4870b}
+      \strng{authornamehash}{20ecfeef26678db3c8f7b501cce4870b}
+      \strng{authorfullhash}{20ecfeef26678db3c8f7b501cce4870b}
+      \strng{authorfullhashraw}{20ecfeef26678db3c8f7b501cce4870b}
+      \field{extraname}{2}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Operations Research}
+      \field{number}{1}
+      \field{title}{Learning to optimize via information-directed sampling}
+      \field{volume}{66}
+      \field{year}{2018}
+      \field{pages}{230\bibrangedash 252}
+      \range{pages}{23}
+      \verb{doi}
+      \verb 10.1287/opre.2017.1663
+      \endverb
     \endentry
     \entry{sajid2021}{article}{}{}
       \name{author}{4}{}{%
@@ -2438,7 +2480,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Operations Research}
-      \field{number}{5--6}
+      \field{number}{5}
       \field{title}{The optimal control of partially observable {M}arkov processes over a finite horizon}
       \field{volume}{21}
       \field{year}{1973}
