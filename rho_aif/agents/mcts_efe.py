@@ -70,11 +70,22 @@ class MCTSEFEAgent(BaseAgent):
         planning_horizon: int = 5,
         rollout_depth: int = 3,
         exploration_constant: Optional[float] = None,
+        backup: str = "max",
+        in_tree_info_gain: bool = True,
     ):
         super().__init__(observation_models, env_config)
         self.num_simulations = num_simulations
         self.planning_horizon = planning_horizon
         self.rollout_depth = rollout_depth
+        # Ablation switches (experiments/run_mcts_efe_ablation.py). The
+        # default configuration is the one the manuscript reports; "mean"
+        # backs up sampled returns as UCT does, and in_tree_info_gain=False
+        # drops the exact information-gain reward from observe edges so the
+        # epistemic term reaches the tree only through the EFE leaf rollout.
+        if backup not in ("max", "mean"):
+            raise ValueError(f"backup must be 'max' or 'mean', got {backup!r}")
+        self.backup = backup
+        self.in_tree_info_gain = bool(in_tree_info_gain)
         # UCB1's exploration term must be commensurate with the value scale
         # or high-magnitude penalties (Tiger's -100) freeze exploration.
         # Default follows POMCP (Silver and Veness 2010): c = reward range.
@@ -140,15 +151,27 @@ class MCTSEFEAgent(BaseAgent):
             # Commit children hold their exact value from expansion and need
             # no further sampling; only observe children are refined.
             k = chosen.action
-            info_gain = self._one_step_info_gain(k, node.belief)
+            info_gain = (
+                self._one_step_info_gain(k, node.belief)
+                if self.in_tree_info_gain else 0.0
+            )
             child = self._sample_obs_child(chosen)
             sampled = -self.obs_costs[k] + info_gain + self._simulate(child, depth + 1)
             chosen.visit_count += 1
             chosen.total_value += sampled
+        else:
+            sampled = chosen.mean_value
 
         node.visit_count += 1
-        value = max(c.mean_value for c in node.children.values())
-        node.total_value = value * node.visit_count
+        if self.backup == "max":
+            value = max(c.mean_value for c in node.children.values())
+            node.total_value = value * node.visit_count
+        else:
+            # Mean backup: the node's value is the average sampled return
+            # through it, UCT's convention, including the forced visits to
+            # dominated commit children.
+            value = sampled
+            node.total_value += value
         return value
 
     def _one_step_info_gain(self, obs_action: int, belief: np.ndarray) -> float:

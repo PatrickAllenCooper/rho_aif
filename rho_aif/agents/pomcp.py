@@ -11,8 +11,15 @@ Implements Silver and Veness (2010) adapted to the observe-then-commit structure
 
 import numpy as np
 import math
+
 from typing import List, Optional, Dict, Tuple
 from rho_aif.agents.base import BaseAgent
+
+
+def _entropy_bits(p: np.ndarray) -> float:
+    p = np.asarray(p, dtype=float)
+    p = p[p > 0]
+    return float(-(p * np.log2(p)).sum()) if p.size else 0.0
 
 
 class POMCPNode:
@@ -58,6 +65,7 @@ class POMCPAgent(BaseAgent):
         rollout_depth: int = 10,
         discount: float = 1.0,
         seed: int = 42,
+        rollout_policy: str = "uniform",
         **kwargs,
     ):
         super().__init__(observation_models, env_config, **kwargs)
@@ -65,6 +73,17 @@ class POMCPAgent(BaseAgent):
         self.exploration_constant = exploration_constant
         self.rollout_depth = rollout_depth
         self.discount = discount
+        # "uniform" is the semi-informed rollout the manuscript reports
+        # (uniform observation choice, Bayes-optimal commit). "info_gain"
+        # is the domain-informed rollout the Discussion names as the
+        # natural stronger baseline: each rollout step picks the observation
+        # action with the largest exact one-step expected information gain
+        # under the rollout belief, everything else unchanged.
+        if rollout_policy not in ("uniform", "info_gain"):
+            raise ValueError(
+                f"rollout_policy must be 'uniform' or 'info_gain', got {rollout_policy!r}"
+            )
+        self.rollout_policy = rollout_policy
         self.all_actions = list(range(self.num_observe_actions + self.num_commit_actions))
         # Default preserves prior behavior (fixed internal stream across
         # runs); pass a per-run seed to vary the planner's own randomness
@@ -157,7 +176,10 @@ class POMCPAgent(BaseAgent):
                 total += gamma_power * commit_r
                 return total
 
-            obs_action = self._rng.randint(0, self.num_observe_actions)
+            if self.rollout_policy == "info_gain":
+                obs_action = self._max_info_gain_action(b)
+            else:
+                obs_action = self._rng.randint(0, self.num_observe_actions)
             obs = self._sample_observation(state, obs_action)
 
             total += gamma_power * self.obs_costs[obs_action]
@@ -172,6 +194,30 @@ class POMCPAgent(BaseAgent):
         _, commit_r = self._best_commit_from_belief(b)
         total += gamma_power * commit_r
         return total
+
+    def _max_info_gain_action(self, belief: np.ndarray) -> int:
+        """Observation action with the largest exact one-step expected
+        information gain (bits) under ``belief``; ties go to the lowest
+        index, matching the tie-break of the EFE agents."""
+        best_k, best_v = 0, -float("inf")
+        for k in range(self.num_observe_actions):
+            v = self._one_step_info_gain(k, belief)
+            if v > best_v + 1e-12:
+                best_k, best_v = k, v
+        return best_k
+
+    def _one_step_info_gain(self, obs_action: int, belief: np.ndarray) -> float:
+        model = self.obs_models[obs_action]
+        prior_entropy = _entropy_bits(belief)
+        expected_posterior_entropy = 0.0
+        for obs_idx in range(model.shape[1]):
+            prob_obs = float(np.dot(belief, model[:, obs_idx]))
+            if prob_obs < 1e-10:
+                continue
+            posterior = model[:, obs_idx] * belief
+            posterior = posterior / posterior.sum()
+            expected_posterior_entropy += prob_obs * _entropy_bits(posterior)
+        return prior_entropy - expected_posterior_entropy
 
     def _sample_observation(self, state: int, obs_action_idx: int) -> int:
         obs_probs = self.obs_models[obs_action_idx][state, :]
