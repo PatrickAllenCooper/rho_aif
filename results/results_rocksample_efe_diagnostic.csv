@@ -1,0 +1,2 @@
+instance,agent,mean_reward,std_reward,se_reward_pooled,se_reward_seed_level,seed_reward_means,mean_good,mean_bad,se_bad_seed_level,mean_checks,mean_steps,truncation_rate,mean_planning_ms,time_s,n_seeds,tree_depth,max_steps,seed_list,episodes_per_seed,git_sha,generated_utc
+"RS[5,3]",EFE w=1 (d=3),16.895,8.56075201135975,0.38284846871836903,0.4462202371027113,16.6700|15.8350|16.3050|17.2400|18.4250,1.494,0.036,0.009273618495495704,4.84,15.37,0.0,1.712639092520037,13.001761198043823,5,3,55,42|123|456|789|1024,100,741d8a2,2026-09-06T03:40:53Z

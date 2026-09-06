@@ -140,6 +140,9 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | Supplementary battery (Testbed appendix table, bootstrap CIs, effect sizes, full pairwise stats) | `python experiments/run_supplementary.py` |
 | Pareto sweep + reward-maximizing weight brackets | `python experiments/run_pareto.py pareto` |
 | Bandit w=100 depth comparison (Discussion) | `python experiments/run_bandit_w100_depth_comparison.py` |
+| MCTS-EFE component ablation (Discussion, Appendix R) | `python experiments/run_mcts_efe_ablation.py` |
+| POMCP exploration-constant sweep and informed rollouts (Discussion, Appendix R) | `python experiments/run_pomcp_exploration_sweep.py` |
+| EFE on the RockSample POMCP diagnostic protocol (Appendix N) | `python experiments/run_rocksample_efe_diagnostic.py` |
 | Compute-matched POMCP check | `python experiments/run_pomcp_compute_matched.py` |
 | RockSample POMCP: configuration selection on tuning seeds | `python experiments/run_rocksample_pomcp.py tuning` |
 | RockSample POMCP: simulation-budget sweep | `python experiments/run_rocksample_pomcp.py budget` (reads the frozen config from the tuning CSV) |
