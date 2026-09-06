@@ -2,28 +2,28 @@
 
 \begin{table}[t]
 \centering
-\caption{MCTS-EFE component ablation under the MCTS battery's protocol (200 episodes per seed $\times$ 5 seeds, the same horizon and simulation budget as Table~\ref{tab:pomcp}'s MCTS rows). The first row of each block is the manuscript's MCTS-EFE. Uncertainty is seed-level SE. A dagger marks a variant whose success or reward differs from that row at seed-level Welch $p<0.05$ after Holm--Bonferroni within metric over the whole battery. No variant carries one, so neither component changes success or reward on any environment tested. See \texttt{results\_mcts\_efe\_ablation.csv} and its \texttt{\_stats} companion.}
+\caption{MCTS-EFE component ablation under the MCTS battery's protocol (200 episodes per seed $\times$ 5 seeds, at the same horizons and simulation budgets as the MCTS-EFE runs of \texttt{results\_mcts\_efe.csv}). The first row of each block, max-backup with the in-tree information gain, is the manuscript's MCTS-EFE. Uncertainty is seed-level SE. A dagger marks a variant whose success or reward differs from that row at seed-level Welch $p<0.05$ after Holm--Bonferroni within metric over the whole battery. No variant carries one, so no component shows a detectable effect on success or reward on any environment tested. See \texttt{results\_mcts\_efe\_ablation.csv} and its \texttt{\_stats} companion.}
 \label{tab:mcts-ablation}
 %% Numbers in this table are produced by experiments/run_mcts_efe_ablation.py
 \small
-\begin{tabular}{llccc}
+\begin{tabular}{lllccc}
 \toprule
-Environment & Variant & Success & Reward & Observations \\
+Environment & Backup & In-tree IG & Success & Reward & Obs. \\
 \midrule
-\multirow{4}{*}{Tiger} & MCTS-EFE (max-backup, in-tree IG) & $97.7 \pm 0.5\%$ & $+3.73 \pm 0.53$ & $3.73$ \\
-& mean-backup, in-tree IG & $97.9 \pm 0.3\%$ & $+4.01 \pm 0.33$ & $3.68$ \\
-& max-backup, no in-tree IG & $97.4 \pm 0.7\%$ & $+3.66 \pm 0.75$ & $3.48$ \\
-& mean-backup, no in-tree IG & $97.7 \pm 0.5\%$ & $+3.95 \pm 0.60$ & $3.52$ \\
+\multirow{4}{*}{Tiger} & max & yes & $97.7 \pm 0.5\%$ & $+3.73 \pm 0.53$ & $3.73$ \\
+& mean & yes & $97.9 \pm 0.3\%$ & $+4.01 \pm 0.33$ & $3.68$ \\
+& max & no & $97.4 \pm 0.7\%$ & $+3.66 \pm 0.75$ & $3.48$ \\
+& mean & no & $97.7 \pm 0.5\%$ & $+3.95 \pm 0.60$ & $3.52$ \\
 \midrule
-\multirow{4}{*}{Diagnosis ($N{=}4$)} & MCTS-EFE (max-backup, in-tree IG) & $94.2 \pm 0.5\%$ & $-3.26 \pm 0.30$ & $9.78$ \\
-& mean-backup, in-tree IG & $95.8 \pm 0.5\%$ & $-2.55 \pm 0.38$ & $10.03$ \\
-& max-backup, no in-tree IG & $96.3 \pm 0.6\%$ & $-2.49 \pm 0.53$ & $10.27$ \\
-& mean-backup, no in-tree IG & $95.7 \pm 0.8\%$ & $-2.97 \pm 0.40$ & $10.39$ \\
+\multirow{4}{*}{Diagnosis ($N{=}4$)} & max & yes & $94.2 \pm 0.5\%$ & $-3.26 \pm 0.30$ & $9.78$ \\
+& mean & yes & $95.8 \pm 0.5\%$ & $-2.55 \pm 0.38$ & $10.03$ \\
+& max & no & $96.3 \pm 0.6\%$ & $-2.49 \pm 0.53$ & $10.27$ \\
+& mean & no & $95.7 \pm 0.8\%$ & $-2.97 \pm 0.40$ & $10.39$ \\
 \midrule
-\multirow{4}{*}{Tileworld-$6{\times}6$} & MCTS-EFE (max-backup, in-tree IG) & $95.4 \pm 0.6\%$ & $-25.02 \pm 0.25$ & $32.26$ \\
-& mean-backup, in-tree IG & $96.2 \pm 0.5\%$ & $-24.35 \pm 0.39$ & $32.07$ \\
-& max-backup, no in-tree IG & $94.7 \pm 1.0\%$ & $-26.34 \pm 0.57$ & $33.16$ \\
-& mean-backup, no in-tree IG & $95.7 \pm 0.3\%$ & $-25.29 \pm 0.22$ & $32.71$ \\
+\multirow{4}{*}{Tileworld-$6{\times}6$} & max & yes & $95.4 \pm 0.6\%$ & $-25.02 \pm 0.25$ & $32.26$ \\
+& mean & yes & $96.2 \pm 0.5\%$ & $-24.35 \pm 0.39$ & $32.07$ \\
+& max & no & $94.7 \pm 1.0\%$ & $-26.34 \pm 0.57$ & $33.16$ \\
+& mean & no & $95.7 \pm 0.3\%$ & $-25.29 \pm 0.22$ & $32.71$ \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -29,9 +29,13 @@ row is the like-for-like reference within this file.
 Outputs
     results/results_pomcp_exploration_sweep.csv        one row per config
     results/results_pomcp_exploration_sweep_stats.csv  seed-level Welch tests
-        of every configuration against MCTS-EFE (default c) on success and
-        reward, plus each POMCP configuration against POMCP c = 5 uniform,
-        Holm-Bonferroni within metric and family over the whole battery.
+        in three families, Holm-Bonferroni within family and metric over the
+        whole battery: every configuration against MCTS-EFE at its default
+        constant; each POMCP configuration against POMCP c = 5 uniform; and
+        each solver at its own best swept configuration against the other's
+        ("best against best"), both arms selected post hoc on the evaluation
+        seeds, which is the only symmetric way to ask whether tuning the
+        constant closes the gap.
 
 Timing columns are wall clock on a shared machine and are not a compute
 comparison.
@@ -159,6 +163,26 @@ def run(envs, num_episodes, seeds, out_csv, stats_csv):
                         "diff": t["mean_of_seed_means_a"] - t["mean_of_seed_means_b"],
                         "t_stat": t["t_stat"], "p_seed_level": t["p_value"], "n_seeds": t["n_seeds_a"],
                     })
+
+        # Each solver at its own best swept configuration. Comparing tuned POMCP
+        # against MCTS-EFE at its default would be asymmetric, since the sweep
+        # shows MCTS-EFE's default is not its best either. Both arms are selected
+        # post hoc on the evaluation seeds, which is what "tuned" means here for
+        # both solvers, and the appendix says so.
+        env_rows = [r for r in rows if r["env"] == env_name]
+        best = {}
+        for agent in ("POMCP", "MCTS-EFE"):
+            cand = [r for r in env_rows if r["agent"] == agent]
+            best[agent] = max(cand, key=lambda r: r["success"])["label"]
+        for metric, fn in METRICS.items():
+            t = seed_level_ttest(raw[(env_name, best["MCTS-EFE"])], raw[(env_name, best["POMCP"])], fn)
+            stats.append({
+                "env": env_name, "family": "best against best", "metric": metric,
+                "label_a": best["MCTS-EFE"], "label_b": best["POMCP"],
+                "mean_a": t["mean_of_seed_means_a"], "mean_b": t["mean_of_seed_means_b"],
+                "diff": t["mean_of_seed_means_a"] - t["mean_of_seed_means_b"],
+                "t_stat": t["t_stat"], "p_seed_level": t["p_value"], "n_seeds": t["n_seeds_a"],
+            })
     df_stats = pd.DataFrame(stats)
     if len(df_stats):
         df_stats["significant_hb_seed_level"] = False

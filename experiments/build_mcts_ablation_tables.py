@@ -37,28 +37,28 @@ def build_ablation(csv, stats_csv, out):
     for _, r in st.iterrows():
         if bool(r["significant_hb_seed_level"]) and r["metric"] in ("success", "reward"):
             sig.setdefault((r["env"], r["variant_b"]), set()).add(r["metric"])
-    NO_DAGGER = ("No variant carries one, so neither component changes success or reward on any "
-                 "environment tested. ") if not sig else ""
-    names = {"full": "MCTS-EFE (max-backup, in-tree IG)", "mean-backup": "mean-backup, in-tree IG",
-             "no-tree-ig": "max-backup, no in-tree IG", "mean-no-ig": "mean-backup, no in-tree IG"}
+    NO_DAGGER = ("No variant carries one, so no component shows a detectable effect on success or "
+                 "reward on any environment tested. ") if not sig else ""
     lines = [HEADER, "\\begin{table}[t]", "\\centering",
              "\\caption{MCTS-EFE component ablation under the MCTS battery's protocol (200 episodes per seed "
-             "$\\times$ 5 seeds, the same horizon and simulation budget as Table~\\ref{tab:pomcp}'s MCTS rows). "
-             "The first row of each block is the manuscript's MCTS-EFE. Uncertainty is seed-level SE. "
+             "$\\times$ 5 seeds, at the same horizons and simulation budgets as the MCTS-EFE runs of "
+             "\\texttt{results\\_mcts\\_efe.csv}). The first row of each block, max-backup with the in-tree "
+             "information gain, is the manuscript's MCTS-EFE. Uncertainty is seed-level SE. "
              "A dagger marks a variant whose success or reward differs from that row at seed-level Welch "
              "$p<0.05$ after Holm--Bonferroni within metric over the whole battery. " + NO_DAGGER +
              "See \\texttt{results\\_mcts\\_efe\\_ablation.csv} and its \\texttt{\\_stats} companion.}",
              "\\label{tab:mcts-ablation}",
              "%% Numbers in this table are produced by experiments/run_mcts_efe_ablation.py",
-             "\\small", "\\begin{tabular}{llccc}", "\\toprule",
-             "Environment & Variant & Success & Reward & Observations \\\\", "\\midrule"]
+             "\\small", "\\begin{tabular}{lllccc}", "\\toprule",
+             "Environment & Backup & In-tree IG & Success & Reward & Obs. \\\\", "\\midrule"]
     envs = list(dict.fromkeys(df["env"]))
     for i, env in enumerate(envs):
         sub = df[df["env"] == env]
         rows = []
         for _, r in sub.iterrows():
             mark = "\\textsuperscript{\\dag}" if (env, r["variant"]) in sig else ""
-            rows.append(f"& {names[r['variant']]}{mark} & {_pct(r['success'], r['se_success_seed_level'])} & "
+            ig = "yes" if bool(r["in_tree_info_gain"]) else "no"
+            rows.append(f"& {r['backup']} & {ig}{mark} & {_pct(r['success'], r['se_success_seed_level'])} & "
                         f"{_num(r['reward'], r['se_reward_seed_level'])} & ${r['obs']:.2f}$ \\\\")
         label = env.replace("Tileworld-6x6", "Tileworld-$6{\\times}6$").replace("Diagnosis-N4", "Diagnosis ($N{=}4$)")
         lines.append(f"\\multirow{{{len(rows)}}}{{*}}{{{label}}} {rows[0]}")
@@ -78,18 +78,19 @@ def build_sweep(csv, stats_csv, out):
             sig.setdefault((r["env"], r["label_b"]), set()).add(r["metric"])
     lines = [HEADER, "\\begin{table}[t]", "\\centering",
              "\\caption{POMCP exploration-constant sweep and informed rollouts under the MCTS battery's protocol "
-             "(200 episodes per seed $\\times$ 5 seeds, the same horizon and simulation budget as "
-             "Table~\\ref{tab:pomcp}'s MCTS rows). $R$ is the commit reward range (110 on Tiger, 60 elsewhere), "
-             "MCTS-EFE's default constant. Information-gain rollouts take the observation with the largest exact "
-             "one-step information gain at every rollout step. POMCP's planner stream is seeded per run from the "
-             "outer seed, so its rows are not bit-identical to Table~\\ref{tab:pomcp}'s. Uncertainty is seed-level SE. "
-             "A dagger marks a row whose success or reward differs from MCTS-EFE at its default constant at "
-             "seed-level Welch $p<0.05$ after Holm--Bonferroni within metric over the whole battery. "
+             "(200 episodes per seed $\\times$ 5 seeds, at the same horizons and simulation budgets as "
+             "the MCTS-EFE runs of \\texttt{results\\_mcts\\_efe.csv}). $R$ is the commit reward range (110 on "
+             "Tiger, 60 elsewhere), MCTS-EFE's default constant. The info-gain rollout takes the observation with "
+             "the largest exact one-step information gain at every rollout step. POMCP's planner stream is seeded "
+             "per run from the outer seed here, which the MCTS battery left at a fixed constant, so these POMCP "
+             "rows are not bit-identical to that battery's. Uncertainty is seed-level SE. A dagger marks a row "
+             "whose success or reward differs from MCTS-EFE at its default constant at seed-level Welch $p<0.05$ "
+             "after Holm--Bonferroni within metric over the whole battery. "
              "See \\texttt{results\\_pomcp\\_exploration\\_sweep.csv} and its \\texttt{\\_stats} companion.}",
              "\\label{tab:pomcp-sweep}",
              "%% Numbers in this table are produced by experiments/run_pomcp_exploration_sweep.py",
-             "\\small", "\\begin{tabular}{llccc}", "\\toprule",
-             "Environment & Configuration & Success & Reward & Observations \\\\", "\\midrule"]
+             "\\small", "\\begin{tabular}{llllcc}", "\\toprule",
+             "Environment & Solver & $c$ & Rollout & Success & Reward \\\\", "\\midrule"]
     envs = list(dict.fromkeys(df["env"]))
     for i, env in enumerate(envs):
         sub = df[df["env"] == env]
@@ -97,15 +98,11 @@ def build_sweep(csv, stats_csv, out):
         rows = []
         for _, r in sub.iterrows():
             c = float(r["exploration_constant"])
-            cstr = "R" if abs(c - R) < 1e-9 else f"{c:g}"
-            if r["agent"] == "MCTS-EFE":
-                lab = f"MCTS-EFE $c{{=}}{cstr}$" + (" (default)" if cstr == "R" else "")
-            else:
-                roll = "info-gain rollouts" if r["rollout_policy"] == "info_gain" else "uniform"
-                lab = f"POMCP $c{{=}}{cstr}$, {roll}"
+            cstr = "$R$" if abs(c - R) < 1e-9 else f"${c:g}$"
+            roll = "info-gain" if r["rollout_policy"] == "info_gain" else ("EFE" if r["agent"] == "MCTS-EFE" else "uniform")
             mark = "\\textsuperscript{\\dag}" if (env, r["label"]) in sig else ""
-            rows.append(f"& {lab}{mark} & {_pct(r['success'], r['se_success_seed_level'])} & "
-                        f"{_num(r['reward'], r['se_reward_seed_level'])} & ${r['obs']:.2f}$ \\\\")
+            rows.append(f"& {r['agent']} & {cstr} & {roll}{mark} & {_pct(r['success'], r['se_success_seed_level'])} & "
+                        f"{_num(r['reward'], r['se_reward_seed_level'])} \\\\")
         label = env.replace("Tileworld-6x6", "Tileworld-$6{\\times}6$").replace("Diagnosis-N4", "Diagnosis ($N{=}4$)")
         lines.append(f"\\multirow{{{len(rows)}}}{{*}}{{{label}}} {rows[0]}")
         lines.extend(rows[1:])

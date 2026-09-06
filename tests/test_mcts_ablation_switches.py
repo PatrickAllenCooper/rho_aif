@@ -60,30 +60,36 @@ def test_every_variant_runs_an_episode(backup, ig):
         a.update_belief(obs, obs_action=act)
 
 
-def _one_simulation_root(a, seed=1):
+def _one_simulation_root(a, seed=1, sims=1):
     a.reset()
     root = MCTSNode(belief=a.belief.belief.copy())
     a._expand(root)
     np.random.seed(seed)
-    a._simulate(root, depth=0)
+    for _ in range(sims):
+        a._simulate(root, depth=0)
     return root
 
 
-def test_max_backup_takes_the_best_child_and_mean_backup_averages_the_sampled_return():
+def test_max_backup_takes_the_best_child_and_mean_backup_averages_sampled_returns():
+    """Max backup must report the best child's value; mean backup must not.
+
+    With enough simulations that a dominated child is visited, the two rules
+    give different node values, which is the property the ablation switches.
+    """
     env = _tiger()
-    a_max = _make(MCTSEFEAgent, env, num_simulations=1, planning_horizon=2, rollout_depth=1, backup="max")
-    a_mean = _make(MCTSEFEAgent, env, num_simulations=1, planning_horizon=2, rollout_depth=1, backup="mean")
-    root_max = _one_simulation_root(a_max)
-    assert root_max.mean_value == pytest.approx(max(c.mean_value for c in root_max.children.values()))
-    root_mean = _one_simulation_root(a_mean)
-    # One simulation visited exactly one child (the same one under both
-    # agents, same seed); with mean backup the root carries that child's
-    # sampled return, not the best child's value.
-    visited = [c for c in root_mean.children.values() if not c.is_terminal and c.visit_count > 0]
-    if visited:
-        assert root_mean.mean_value == pytest.approx(visited[0].mean_value)
-        assert root_mean.mean_value <= max(c.mean_value for c in root_mean.children.values()) + 1e-12
-    assert root_mean.visit_count == root_max.visit_count == 1
+    a_max = _make(MCTSEFEAgent, env, num_simulations=40, planning_horizon=2, rollout_depth=1, backup="max")
+    a_mean = _make(MCTSEFEAgent, env, num_simulations=40, planning_horizon=2, rollout_depth=1, backup="mean")
+    root_max = _one_simulation_root(a_max, sims=40)
+    best_max = max(c.mean_value for c in root_max.children.values())
+    assert root_max.mean_value == pytest.approx(best_max)
+
+    root_mean = _one_simulation_root(a_mean, sims=40)
+    best_mean = max(c.mean_value for c in root_mean.children.values())
+    # Tiger's commit children carry -100 for the wrong door, so once forced
+    # exploration visits one, the average over sampled returns is strictly
+    # below the best child. That gap is exactly what max backup removes.
+    assert root_mean.mean_value < best_mean - 1e-9
+    assert root_mean.visit_count == root_max.visit_count == 40
 
 
 def test_no_tree_ig_removes_the_epistemic_reward_from_observe_edges():
@@ -119,3 +125,45 @@ def test_info_gain_rollout_picks_the_informative_observation():
     assert p._max_info_gain_action(b) == 1
     assert p._one_step_info_gain(0, b) == pytest.approx(0.0, abs=1e-12)
     assert p._one_step_info_gain(1, b) > 0
+
+
+def test_info_gain_rollout_actually_routes_through_the_informative_action():
+    """The switch must change the rollout, not just the helper it calls.
+
+    With an uninformative model at index 0 and Tiger's real model at index 1,
+    the informed rollout must sample observations from index 1. Recording
+    which action _sample_observation receives proves the rollout used it.
+    """
+    env = _tiger()
+    seen = []
+
+    def build(policy):
+        p = _make(POMCPAgent, env, num_simulations=1, rollout_depth=4, rollout_policy=policy)
+        informative = p.obs_models[0]
+        flat = np.full_like(informative, 1.0 / informative.shape[1])
+        p.obs_models = [flat, informative]
+        p.num_observe_actions = 2
+        p.obs_costs = np.array([p.obs_costs[0], p.obs_costs[0]])
+        p.all_actions = list(range(p.num_observe_actions + p.num_commit_actions))
+        real = p._sample_observation
+
+        def spy(state, obs_action):
+            seen.append(obs_action)
+            return real(state, min(obs_action, 0)) if obs_action == 0 else real(state, 0)
+
+        p._sample_observation = spy
+        return p
+
+    p = build("info_gain")
+    p.reset()
+    np.random.seed(0)
+    p._rollout(state=0, depth=0)
+    assert seen and set(seen) == {1}, f"informed rollout chose {set(seen)}, expected only the informative action"
+
+    seen.clear()
+    p2 = build("uniform")
+    p2.reset()
+    np.random.seed(0)
+    p2._rollout(state=0, depth=0)
+    assert seen, "uniform rollout took no observation"
+    assert 0 in set(seen), "uniform rollout never sampled the uninformative action"
