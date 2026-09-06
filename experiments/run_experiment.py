@@ -366,21 +366,37 @@ def compute_full_statistics(
 TUNING_SEED = 7
 
 
+_PROVENANCE_SHA = None
+
+
+def _code_revision() -> str:
+    """The git revision of the code this process loaded, read once per
+    process. Stamping HEAD afresh per row let a commit made while a battery
+    was running split one file across two revisions (results_tiger.csv and
+    results_bandit.csv carried two stamps each until 2026-09-05). The code a
+    running process executes is the code it imported at start, so the
+    revision at first call is the truthful stamp for every row it writes."""
+    global _PROVENANCE_SHA
+    if _PROVENANCE_SHA is None:
+        import subprocess
+        try:
+            _PROVENANCE_SHA = subprocess.check_output(
+                ["git", "rev-parse", "--short", "HEAD"],
+                cwd=os.path.dirname(os.path.abspath(__file__)),
+                text=True,
+                stderr=subprocess.DEVNULL,
+            ).strip()
+        except Exception:
+            _PROVENANCE_SHA = "unknown"
+    return _PROVENANCE_SHA
+
+
 def provenance_fields(seeds, episodes_per_seed):
     """Provenance columns stamped into every results CSV so each committed
     artifact records the protocol and code state that produced it."""
-    import subprocess
     import datetime
 
-    try:
-        sha = subprocess.check_output(
-            ["git", "rev-parse", "--short", "HEAD"],
-            cwd=os.path.dirname(os.path.abspath(__file__)),
-            text=True,
-            stderr=subprocess.DEVNULL,
-        ).strip()
-    except Exception:
-        sha = "unknown"
+    sha = _code_revision()
     return {
         "seed_list": "|".join(str(s) for s in seeds),
         "episodes_per_seed": int(episodes_per_seed),
