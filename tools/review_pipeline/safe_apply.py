@@ -50,13 +50,28 @@ def apply(paths, reps, report=True):
                 dups.append(k[:80])
             seen[k] = i
         stutter = re.findall(r"\b(\w+ \w+), \1\b", body)
+        # Post-check: whitespace swallowed at a splice point. A cut whose span
+        # began with a space, or ended before an opening parenthesis, joins two
+        # sentences without one. Five of these reached the PDFs in the 2026-09-06
+        # concision pass and none of the other post-checks saw them.
+        nomath = re.sub(r"\$[^$]*\$", " ", body)
+        ABBREV = r"\b(vs|cf|Fig|Eq|Sec|App|al|i\.e|e\.g|Dr|Mr|St|No|pp|Ch)\.$"
+        glued = []
+        for m in re.finditer(r"(?<![A-Z0-9])\.(?=[A-Z][a-z])", nomath):
+            if re.search(ABBREV, nomath[:m.start() + 1]):
+                continue
+            glued.append(nomath[max(0, m.start() - 45):m.start() + 45])
+        for m in re.finditer(r"[a-z]\((?=[A-Z])", nomath):
+            glued.append(nomath[max(0, m.start() - 45):m.start() + 45])
         results[path] = dict(applied=applied, skipped=skipped, refused=refused,
-                             dup_sentences=dups, stutters=stutter)
+                             dup_sentences=dups, stutters=stutter, glued=glued)
         if report:
             print(f"{path}: applied {applied}, skipped {len(skipped)}, refused {len(refused)}, "
-                  f"dups {len(dups)}, stutters {len(stutter)}")
+                  f"dups {len(dups)}, stutters {len(stutter)}, glued {len(glued)}")
             for r in refused:
                 print("   REFUSED:", r)
             for dcheck in dups:
                 print("   DUP:", dcheck)
+            for g in glued:
+                print("   GLUED:", g)
     return results
