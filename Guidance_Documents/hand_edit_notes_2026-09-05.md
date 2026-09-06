@@ -336,3 +336,84 @@ All 68 entries resolve to real works and every attributed claim is supported. Th
 - `walraven2024` pages: bib "pages = {3}" | source "Article number 3 (Crossref 'article-number': 3, no page range); PDF header reads '(2025) 39:3'"
 - `ye2017` author: bib "Ye, N. and Somani, A. and Hsu, D. and Lee, W.~S." | source "Nan Ye, Adhiraj Somani, David Hsu, Wee Sun Lee (Crossref, DOI 10.1613/jair.5328)"
 - `ye2017` doi: bib "(absent)" | source "10.1613/jair.5328"
+
+## F. Length: what the norms say, what was done, and the one decision left to you
+
+Added 2026-09-06 after a measured length assessment (ledger 9.17.28).
+
+### The norm
+
+JAIR sets no page limit. Its author guidance says, verbatim, "We strongly
+encourage authors to be concise," and warns that "If an article is longer
+than usual" the review will take longer. The one structural lever it offers
+is the online appendix, and the guidance is explicit that "Online appendices
+are not included in the review process."
+
+A sample of 24 full-length JAIR research articles from 2023 to 2026, drawn
+from planning, RL, POMDP and decision theory and deliberately weighted
+toward long theory-plus-experiments papers, gives a median of 39.5 pages,
+an interquartile range of 31 to 52, and a full range of 17 to 85. Page
+counts are comparable to ours because JAIR articles use the same `jair.cls`
+text block. Only two of the 24 exceed 60 pages and only one exceeds 79.
+
+### Where the manuscript stands
+
+At commit `702c0ab` the JAIR master is **80 pages**: 45 pages of main text,
+2 of references, and 33 of bound appendices. That is roughly twice the
+sample median and near the top of the sample's range. The main text alone
+is longer than the median whole article.
+
+The concision pass already ran and is committed. Eight section readers
+proposed cuts of five verifiable kinds, an adversarial judge vetted each
+against both masters, and 48 of 50 were applied, removing about 1,130
+words. That bought **2 pages**. The readers' own assessments say why more
+is not available: the sections they read are dense but not repetitive, and
+what remains is statistics, qualifiers, proofs and protocol detail that the
+judges refused to let go. Prose cutting is finished.
+
+### The decision
+
+The remaining 33 appendix pages are mostly tables and figures, so the
+length question is no longer editorial, it is structural. Three options,
+with what each costs:
+
+1. **Leave it at 80 pages (recommended).** Nothing this paper claims is
+   unsupported, and the support is the contribution. Eighteen referee
+   rounds, six exhaustive class sweeps, and a full citation verification
+   all rest on artifacts that live in these appendices. JAIR has no limit,
+   the sample contains an 85-page article, and the cost is a slower review
+   rather than a desk reject. This is the option that keeps every number a
+   referee might check inside what the referee is given.
+
+2. **Move the heaviest supporting batteries to an online appendix**
+   (model misspecification, discount sensitivity, near-optimality across
+   horizons, proper-scoring calibration, the value-of-information audit
+   trail, and the reward-rescaling invariance battery). This would plausibly
+   reach the 55 to 60 page range. The cost is stated in JAIR's own guidance
+   and it is real: those batteries would no longer be reviewed. For a paper
+   whose central claim is that its empirical support is exhaustive, moving
+   the support out of review is the wrong trade unless an editor asks for
+   it.
+
+3. **Cut environments rather than pages.** Leading with four or five
+   headline environments and demoting the rest would shorten both the main
+   text and the appendices. This is the only option that reduces the paper's
+   scope rather than its packaging, and it would undo Proposition 3's
+   breadth argument, which the eleven-environment coverage is what
+   establishes. Not recommended.
+
+My recommendation is option 1, with option 2 held in reserve for a specific
+editorial request. If you take option 2, do it by moving whole appendices
+with their producers and CSVs intact, never by trimming batteries, and say
+in the cover letter which appendices are online and why.
+
+### If an editor does ask for a shorter paper
+
+The order I would move things, cheapest first in review risk: the
+reward-rescaling invariance battery (its result is stated in the main text
+and is a proposition check), the proper-scoring calibration table, the
+per-test value-of-information audit trail, then the discount-factor
+sensitivity battery. Keep bound: the RockSample and POMCP appendices (they
+carry the baseline-fairness disclosures a referee will look for), the
+supplementary statistics, the environment specifications, and the
+reproducibility checklist.

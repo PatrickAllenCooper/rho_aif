@@ -903,6 +903,12 @@ The multi-model referee loop reached five unqualified accepts out of five at rou
 
 ---
 
+### Citation verification, length assessment, and three reviewer-suggested experiments (September 5-6, 2026)
+
+At Pat's direction, three closing workstreams. **Citations**: all 68 bibliography entries verified against primary sources with 174 attributed claims checked, one agent per entry. No hallucinated references. Three corrections, the substantive one being an information-directed-sampling claim attributed to a paper that does not contain it, now attributed to the verified journal version. **Experiments**: the three the reviewer panels had suggested but never run. EFE under the RockSample diagnostic's own protocol turns a cross-battery comparison into a within-battery statistical tie at three hundred times the compute. A component ablation shows neither the max-backup nor the in-tree information gain is load-bearing, narrowing the attribution to the EFE leaf. A POMCP exploration sweep shows a tuned constant closes the Tiger gap entirely, which withdraws one of the paper's comparisons, while no constant closes the gap on the multi-observation environments, which is the distinction the paper is actually about. **Length**: measured against a 24-article JAIR sample (median 39.5 pages against this manuscript's 80), a 48-cut adversarially judged concision pass removed about 1,130 words for 2 pages, after which prose cutting is exhausted and the remainder is a bound-versus-online appendix decision left to Pat with a recommendation. Also fixed: per-row provenance stamping that had split four CSVs across two revisions, and two pre-seeding-fix artifacts (navigation rerun, an orphaned N=16 file removed). Full narrative in `full_paper_plan.md` 9.17.28. Verdict: **HOLD**. 464/464 tests, both manuscripts compile clean.
+
+---
+
 ## Document Evolution
 
 This guidance document is updated continuously to reflect:
