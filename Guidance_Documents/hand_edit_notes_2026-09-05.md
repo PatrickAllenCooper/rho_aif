@@ -214,6 +214,25 @@ Status as of 2026-09-05. Items marked closed need nothing.
 21. Optional. The mixed British/American residue in producer docstrings
     (`run_reward_scaling.py` "scale-normalised") is outside the manuscript.
 
+## G. A mechanical check to run before any hand edit that adds a number
+
+Added 2026-09-06 after the experiment-batch audit (9.17.28) found 24 defects
+in a page of prose written in one pass. `tools/review_pipeline/verify_claims.py`
+diffs the working tree against HEAD and checks every cited CSV file exists,
+every `\ref` target resolves, every "Table X's Y rows" claim matches what
+that table actually contains, and every decimal number matches its stated
+precision in the CSV named nearest it. Run it before committing any edit
+that touches a number:
+
+```bash
+python tools/review_pipeline/verify_claims.py
+```
+
+It cannot tell you a comparison is unfair, only that the numbers in it are
+on record. It caught, on replay against the commit that introduced it, the
+exact "Table 31's MCTS rows" bug the manual audit found (a real table with
+no MCTS rows). It is not a substitute for reading the sentence.
+
 ## C. How to hand-edit safely (both AEs, merged)
 
 - Work from the artifacts, not from memory of the figures or the numbers.

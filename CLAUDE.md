@@ -68,6 +68,18 @@ Every paper number must be regenerable via the README "Reproducing the Paper" ta
 
 Every new citation is verified against the publisher or arXiv record BEFORE entering the bibliography, with the check (date + source) recorded in `price_of_information.md`'s table or `full_paper_plan.md` §8.4. Specifics: SAC auto-temperature cites arXiv:1812.05905 (not the ICML paper); use published year not citation-key year.
 
+## Mechanical claim verification
+
+Before staging any prose batch that adds numbers, p-values, `\ref{tab:...}`/`\ref{fig:...}` targets, or `\texttt{results_*.csv}` citations, run:
+
+```bash
+python tools/review_pipeline/verify_claims.py
+```
+
+It diffs the working tree against HEAD (or `--base`/`--head` for a specific range) and checks: every cited CSV file exists, every `\ref` target has a matching `\label`, every `Table~\ref{X}'s <word> rows` claim matches what that table's own content contains, and every decimal number matches its precision exactly in the CSV named nearest it (percent-aware, no tolerance). It exits nonzero only on the first three, which have near-zero false-positive rates; unresolved or mismatched numbers print under REVIEW for a human or the audit workflow to triage, since resolving which CSV a number in dense prose came from is not always mechanical. Built and validated 2026-09-06 (ledger 9.17.28) against the exact defect it exists to catch — see `tests/test_verify_claims.py`'s retroactive replay.
+
+This is a fast pre-check, not a substitute for the adversarial-audit workflow. It cannot judge whether a comparison is fair, only that the numbers in it exist somewhere on record. Run it, then still audit.
+
 ## Statistics protocol
 
 - 5 seeds `{42,123,456,789,1024}`; deviations enumerated in the reproducibility checklist. Agents with internal RNG (POMCP) get per-run seeds (`vary_agent_seed`).
