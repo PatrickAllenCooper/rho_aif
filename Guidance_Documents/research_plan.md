@@ -909,6 +909,12 @@ At Pat's direction, three closing workstreams. **Citations**: all 68 bibliograph
 
 ---
 
+### Version 2.0.0 declared; git-trailer decision resolved; repository made presentable (September 7, 2026)
+
+Pat resolved the project's one remaining open decision (AI co-authorship trailers stay as they are) and began the hand-edit pass over `Guidance_Documents/hand_edit_notes_2026-09-05.md` himself. Package version bumped from the stale `1.0.0` (IWAI-era, July 2026) to `2.0.0`, justified by real breaking changes since (`MCTSEFEAgent` rewritten into a genuine UCB1 tree, `RockSamplePOMCPAgent` renamed to `RockSampleFlatMCAgent`) alongside the full empirical-rigor and referee-loop body of work. `CHANGELOG.md` added. Documentation (`CLAUDE.md`, `HANDOFF.md`, the hand-edit notes) brought current rather than left to drift, with dated resolution notes on superseded records rather than silent edits. `README.md` and `tools/review_pipeline/` gained presentability passes (badges, a status line, an explanatory README) verified against the actual repository state rather than assumed. Full narrative in `full_paper_plan.md` 9.17.29. Verdict: **HOLD**. Remaining: Pat's hand-edit pass (in progress), the credential-gated PyPI upload, and pushing to `origin`.
+
+---
+
 ## Document Evolution
 
 This guidance document is updated continuously to reflect:

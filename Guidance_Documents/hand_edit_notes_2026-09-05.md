@@ -263,16 +263,19 @@ no MCTS rows). It is not a substitute for reading the sentence.
 
 ## D. Pat-only items, credential-gated or destructive
 
-- `twine upload` to TestPyPI then PyPI (`rho-aif` verified unclaimed),
-  confirm or move the local `v1.0.0` tag, push tags. The
+- `twine upload` to TestPyPI then PyPI (`rho-aif` verified unclaimed). The
   `pip install rho-aif` claim in the README and the JAIR checklist is false
   until this lands.
-- Decide the git-trailer question. 135 of 231 public-repo commits carry
-  Co-Authored-By trailers naming AI models. Rewriting history is
-  destructive and orphans every `git_sha` provenance stamp in the results
-  CSVs. Alternatives are a fresh-history public mirror or leaving it.
-- Optional experiment A.22 (MCTS-EFE ablation) if you want a positive
-  attribution in the Discussion.
+- Push commits and the `v2.0.0` tag to `origin` (local `main` is well ahead
+  of `origin/main`; the tag is created locally, not yet pushed).
+- ~~Decide the git-trailer question.~~ **Resolved 2026-09-07, Pat confirms:
+  keep the AI co-authorship trailers as they stand.** No history rewrite,
+  no mirror.
+- ~~Optional experiment A.22 (MCTS-EFE ablation).~~ **Run 2026-09-06**
+  (`results/results_mcts_efe_ablation.csv`, Table~R in the appendix):
+  neither the backup rule nor the in-tree information gain is detectably
+  load-bearing at five seeds, so the attribution in the Discussion is
+  hedged rather than positive, which is what the data support.
 
 ## E. Optional bibliographic completions (from the 2026-09-05 primary-source verification)
 

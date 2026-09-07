@@ -25,6 +25,13 @@ polish and a writing-style pass, have not started.
   batches plus the completeness critic's figure-convention repair and its
   own audit's wording fix.
   `git log` is authoritative. Working tree is clean.]
+  [Update 2026-09-07: everything below this point through ledger 9.17.28 is
+  done: citation verification (68/68 sources checked, zero hallucinations),
+  length assessment and concision pass, the three reviewer-suggested
+  experiments, and `verify_claims.py`. The git-trailer decision below is
+  resolved (Pat: keep as-is). Package version bumped to `v2.0.0`
+  (`CHANGELOG.md`). Pat is now doing the hand-edit pass over
+  `hand_edit_notes_2026-09-05.md` directly. `git log` is authoritative.]
 - Both manuscripts compile with **zero LaTeX errors, zero undefined
   references**, and **450/450 tests pass**. This has been true and verified
   after every round since round 3.
@@ -67,6 +74,8 @@ polish and a writing-style pass, have not started.
   JAIR checklist directs referees to it. Rewriting history is destructive
   and would orphan every git_sha provenance stamp in the results CSVs;
   alternatives include a fresh-history public mirror. Pat's call.
+  [Resolved 2026-09-07, Pat confirms: keep the trailers as they stand. No
+  history rewrite, no mirror. This is closed, not an open item.]
 - **Figure polish pass complete (2026-08-31)**: all 23 blocking audit
   issues closed, sixteen figures regenerated at printed width, captions and
   Description blocks rewritten against the new renders (ledger 9.17.24).

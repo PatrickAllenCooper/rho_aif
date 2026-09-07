@@ -1,6 +1,12 @@
 # rho-aif: Information-Gathering Planning Benchmark
 
+[![Tests](https://github.com/PatrickAllenCooper/rho_aif/actions/workflows/tests.yml/badge.svg)](https://github.com/PatrickAllenCooper/rho_aif/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](pyproject.toml)
+
 A Gymnasium benchmark suite and agent library for observe-then-commit and factored-observation POMDPs, accompanying the paper *Expected Free Energy as Belief-Dependent Utility for rho-POMDPs* by Patrick Cooper and Alvaro Velasquez (University of Colorado Boulder).
+
+An abridged version was accepted at IWAI 2026 (poster and spotlight, Springer CCIS). The full manuscript in `paper/` is the extended version prepared for JAIR submission. See [CHANGELOG.md](CHANGELOG.md) for what changed between releases.
 
 The package provides:
 

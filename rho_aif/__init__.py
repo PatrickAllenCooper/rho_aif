@@ -9,7 +9,7 @@ from rho_aif.belief import BeliefState
 from rho_aif.scoring import log_score, brier_score
 from rho_aif.benchmark import BENCHMARKS, list_benchmarks, get_benchmark, run_benchmark
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 
 __all__ = [
     "BeliefState",
