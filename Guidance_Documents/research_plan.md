@@ -921,6 +921,12 @@ Pat flagged four figures as hard to read after reviewing the delivered submissio
 
 ---
 
+### Hero figure added to the Introduction (September 7, 2026)
+
+Pat asked for a hero figure explaining the paper's core idea near the beginning. Design ran as a three-concept judge panel rather than a single draft: three independent agents each proposed a full concept, three independent judges scored all three against the manuscript's actual proposition text and the project's calibration rules, and a synthesis agent combined the winner with one grafted improvement. All three judges converged on a price-curve-centric design (a schematic usage curve with a stated budget and shadow-price bracket, EFE's w=1 marked as one point on it, deliberately outside the drawn bracket) over a two-panel split and a borderless flow-diagram, for reasons that generalize past this figure: it reused plotting patterns the repo's own producers had already solved and visually audited, its language tracked the manuscript's own scoping phrases nearly verbatim, and it matched the legend-over-in-plot-text fix this paper's editing pass had just applied to another figure rather than repeating a clutter pattern already fixed twice elsewhere. Two real bugs caught on the first render and fixed before landing: a literal tilde character (a LaTeX idiom meaningless to matplotlib's plain-text renderer) and a bracket label colliding with the legend. A second accuracy pass after synthesis caught one more gap, an equivalence claim citing only one of the two propositions it actually needed. Inserted as the new Figure 1 in both manuscripts at the placement all three design concepts converged on independently. Full narrative in `full_paper_plan.md` 9.17.31. Verdict: **HOLD**. 471/471 tests, both manuscripts compile clean.
+
+---
+
 ## Document Evolution
 
 This guidance document is updated continuously to reflect:
