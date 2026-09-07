@@ -674,31 +674,33 @@ def plot_cost_budget(
             label=label,
         )
     # Tested operating points: budget rules per usage kind, plus the shared
-    # crossing brackets (the caption's coincidence claim, drawn not asserted).
+    # crossing brackets (the caption's coincidence claim, drawn not
+    # asserted). Four individually-labeled dashed lines plus two floating
+    # bracket annotations crowded the upper-right of this panel (an earlier
+    # audit already had to move the budget labels once to stop them
+    # overprinting the bracket text, and the crowding came back as soon as a
+    # reader tried to read the lines themselves against the labels). The
+    # exact numbers now live in the caption; the panel keeps only the visual
+    # marks a legend can explain, which is what a reader actually needs to
+    # parse the plot at a glance.
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    extra_handles, extra_labels = [], []
     if price_df is not None and not price_df.empty:
         kind_color = {"count": figstyle.BLUE, "cost": figstyle.ORANGE}
-        # Budget labels sit at the LEFT edge, where every usage curve is flat
-        # and nothing else is drawn, so they cannot collide with the bracket
-        # labels anchored near the top right (audit: label overprint at B=19.20).
-        x_left = float(pos_w.min()) * 1.15
         spans: Dict[Tuple[float, float], None] = {}
         for _, row in price_df.sort_values("budget").iterrows():
             c = kind_color.get(str(row["usage_kind"]), figstyle.GRAY)
             b = float(row["budget"])
             ax.axhline(b, ls="--", lw=0.9, alpha=0.55, color=c, zorder=1)
-            ax.annotate(
-                f"$B{{=}}{b:.2f}$", (x_left, b), fontsize=7,
-                color=c, ha="left", va="bottom",
-            )
             spans[(round(float(row["w_lo"]), 6), round(float(row["w_hi"]), 6))] = None
         for i, (lo, hi) in enumerate(sorted(spans)):
             ax.axvspan(lo, hi, color=figstyle.GRAY, alpha=0.10 + 0.08 * i, zorder=0)
-            ax.annotate(
-                f"$w^*\\!\\in\\!({lo:.3g}, {hi:.3g}]$",
-                (math.sqrt(lo * hi), 0.99 - 0.08 * i),
-                xycoords=("data", "axes fraction"),
-                fontsize=7, color="0.35", ha="center", va="top",
-            )
+        extra_handles = [
+            Line2D([], [], color="0.4", ls="--", lw=0.9, alpha=0.7),
+            Patch(facecolor=figstyle.GRAY, alpha=0.18),
+        ]
+        extra_labels = ["tested budget $B$ (color = usage kind)", "shared crossing bracket $w^*(B)$"]
     ax.set_xlabel("Info-gain weight $w$")
     ax.set_ylabel(
         "Usage per episode\n($U_{\\mathrm{count}}$: observations, "
@@ -706,8 +708,9 @@ def plot_cost_budget(
     )
     ax.set_title("(a) Usage curves")
     figstyle.style_axis(ax)
-    # Anchored below the B=19.20 rule so no budget rule runs through the text.
-    ax.legend(loc="upper left", bbox_to_anchor=(0.02, 0.86))
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles + extra_handles, labels + extra_labels,
+              loc="upper left", fontsize=7.5, handlelength=1.8)
 
     ax2 = axes[1]
     zero_pos2 = _log_x_with_zero(ax2, float(pos_w.min()), float(pos_w.max()))
@@ -944,15 +947,16 @@ def plot_scale_collapse(
     alpha_palette = [figstyle.BLUE, figstyle.ORANGE, figstyle.GREEN, figstyle.PINK]
     colors = {a: alpha_palette[i % len(alpha_palette)] for i, a in enumerate(alphas)}
     markers = ["o", "s", "^", "D"]
-    # Nested open markers of decreasing size; the innermost stays legible at
-    # print scale (a 3.8 pt marker did not survive reduction).
-    msizes = [11.0, 7.5, 4.6, 2.8]
     pos = curve_df.loc[curve_df["w_over_alpha"] > 0, "w_over_alpha"]
     zero_pos = _log_x_with_zero(ax, float(pos.min()), float(pos.max()))
-    # The three alpha curves coincide bit-exactly (that IS the result), so the
-    # connecting line and error bars are drawn once in neutral gray and each
-    # alpha contributes nested open markers of decreasing size: all three
-    # series are visibly present and lie exactly on one curve.
+    # The alpha curves coincide bit-exactly (that IS the result). Nested
+    # concentric markers of decreasing size read as a single blob rather than
+    # three agreeing series, so instead each alpha is dodged by a small fixed
+    # multiplicative factor on the shared log x-axis (the same technique used
+    # for tied series in plot_reward_asymmetry_sweep): markers sit side by
+    # side in a tight cluster at every grid point, legibly distinct, rather
+    # than stacked exactly on top of one another.
+    dodge = {a: f for a, f in zip(alphas, (0.94, 1.0, 1.065, 1.13))}
     base_alpha = 1.0 if 1.0 in alphas else alphas[0]
     base = curve_df[curve_df["scale_k"] == base_alpha].sort_values("w_over_alpha")
     xb = np.where(base["w_over_alpha"] > 0, base["w_over_alpha"], zero_pos)
@@ -968,21 +972,27 @@ def plot_scale_collapse(
     )
     for i, a in enumerate(alphas):
         sub = curve_df[curve_df["scale_k"] == a].sort_values("w_over_alpha")
-        xs = np.where(sub["w_over_alpha"] > 0, sub["w_over_alpha"], zero_pos)
+        true_x = np.where(sub["w_over_alpha"] > 0, sub["w_over_alpha"], zero_pos)
+        xs = true_x * dodge[a]
         ax.plot(
             xs,
             sub["mean_usage"],
             linestyle="none",
             marker=markers[i % len(markers)],
-            ms=msizes[i % len(msizes)],
+            ms=6.5,
             markerfacecolor="none",
-            markeredgewidth=1.1,
+            markeredgewidth=1.2,
             color=colors[a],
             label=f"$\\alpha={a:g}$",
             zorder=3 + i,
         )
     ax.axhline(budget, color=figstyle.GRAY, ls="--", lw=1.2, label=f"$B={budget:g}$")
-    ax.set_xlabel("$w/\\alpha$")
+    ax.annotate(
+        "coincide to floating-point\nprecision at every $\\alpha$",
+        xy=(0.98, 0.30), xycoords="axes fraction",
+        fontsize=7.5, color=figstyle.GRAY, ha="right", va="top",
+    )
+    ax.set_xlabel("$w/\\alpha$ (markers dodged horizontally for visibility)")
     ax.set_ylabel("Mean observations per episode $U$")
     ax.set_title("(a) Usage curves across reward scales")
     figstyle.style_axis(ax)
@@ -1207,14 +1217,20 @@ def run_prop2_duality(
 
 
 def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) -> None:
-    """Usage onset vs the closed-form threshold, with a zoom inset.
+    """Usage onset vs the closed-form threshold.
 
-    The onset bracket spans under 1% of the full axis, so each panel gets an
-    inset zoomed to the threshold neighborhood where the containment claim
-    (threshold inside the measured onset bracket) is actually visible.
-    Colors are deliberately non-agent: the usage curve is neutral gray, the
-    hatched gray band is the measured onset bracket, and vermillion is
-    reserved for the theory line.
+    U(w) is exactly 0 below threshold, exactly 1 immediately after it, and
+    only climbs into double digits well beyond the onset region (checked
+    against results_price_prop2_curves.csv: the smallest nonzero value on
+    both testbeds is exactly 1.0). A linear y-axis buries the entire 0-to-1
+    onset, the actual claim of this figure, in a sliver a few pixels tall at
+    the bottom of a 13-to-28-unit range, which an inset-plus-zoom-indicator
+    then tried to rescue: the indicator's connector lines ran diagonally
+    across the real curve at a similar gray tone and read as extra,
+    unlabeled trend lines rather than a zoom pointer. A symlog y-axis with
+    linthresh at that same 1.0 boundary needs no inset at all: everything
+    from 0 to 1 renders in the linear region with real pixel height, and the
+    climb beyond 1 compresses log-wise without ever being hidden.
     """
     figstyle.apply()
     envs = list(curve_df["env"].unique()) if not curve_df.empty else []
@@ -1226,6 +1242,7 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
     band_kw = dict(
         facecolor="0.82", alpha=0.6, hatch="/////", edgecolor="0.55", linewidth=0
     )
+    linthresh = 1.0
     for i, name in enumerate(envs):
         ax = axes[0, i]
         sub = curve_df[curve_df["env"] == name].sort_values("w")
@@ -1260,9 +1277,15 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
                     hi, color="0.4", ls=":", label=f"onset $={hi:.3g}$"
                 )
         ymax = float(sub["mean_usage"].max())
-        ax.set_ylim(bottom=-0.04 * ymax)
+        ax.set_yscale("symlog", linthresh=linthresh)
+        ax.set_ylim(-0.35 * linthresh, ymax * 1.15)
+        yticks = [0.0, linthresh] + [
+            10.0 ** k for k in range(1, int(math.floor(math.log10(max(ymax, 10.0)))) + 1)
+        ]
+        ax.set_yticks(yticks)
+        ax.set_yticklabels(["$0$"] + [f"${y:g}$" for y in yticks[1:]])
         ax.set_xlabel("Info-gain weight $w$ (linear scale)")
-        ax.set_ylabel("Mean observations per episode $U(w)$")
+        ax.set_ylabel("Mean observations per episode $U(w)$\n(symlog, linear below $1$)")
         cfg = POSITIVE_THRESH_CONFIGS.get(name)
         if cfg is not None:
             ax.set_title(
@@ -1271,16 +1294,24 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
         else:
             ax.set_title(f"({panel[i]}) {name}")
         figstyle.style_axis(ax)
-        # The curve hugs zero left of the threshold, so upper left is empty.
-        # Compact spacing keeps the legend clear of the threshold rule.
-        ax.legend(loc="upper left", fontsize=8, handlelength=1.6,
+        # Lower right: clear of the inset (upper left, above the flat-zero
+        # run) and of the curve itself, which is at y=1 or below until the
+        # climb starts well past the panel's midpoint on both testbeds.
+        ax.legend(loc="lower right", fontsize=8, handlelength=1.6,
                   handletextpad=0.6, borderaxespad=0.2)
-        # Zoom inset on the onset neighborhood: the bracket and the threshold
-        # rule are sub-pixel on the full axis.
+        # The symlog y-axis above fixes the vertical squish (0 to 1 now has
+        # real pixel height), but the onset bracket is under 1% of the x-axis
+        # width regardless of y-scale, so whether the threshold sits at the
+        # bracket's edge or its middle is still invisible on the main panel.
+        # A small inset zoomed to just the x-neighborhood restores that,
+        # with indicate_inset_zoom's connector lines suppressed (kept for
+        # fig:sweep's inset too): they ran through real data at a similar
+        # gray tone and read as extra trend lines, not a zoom pointer.
         if np.isfinite(lo) and np.isfinite(hi) and hi > lo:
-            # Upper-middle placement: right of the legend, above the flat
-            # pre-onset run, left of the final steep segment in both panels.
-            axin = ax.inset_axes([0.40, 0.62, 0.31, 0.33])
+            # Upper-left: empty on every panel, since the curve sits at
+            # zero for all w left of the threshold and the symlog y-axis
+            # gives that region real height to place a box in.
+            axin = ax.inset_axes([0.05, 0.56, 0.28, 0.36])
             axin.errorbar(
                 sub["w"], sub["mean_usage"], yerr=sub["se_usage"],
                 fmt="o-", capsize=figstyle.CAPSIZE, ms=3.5, lw=1.2, color="0.4",
@@ -1289,13 +1320,14 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
             axin.axvspan(lo, hi, **band_kw)
             pad = max(0.1, 0.6 * (hi - lo))
             axin.set_xlim(w_th - pad, hi + pad)
-            in_view = sub[(sub["w"] >= w_th - pad) & (sub["w"] <= hi + pad)]
-            in_max = float(in_view["mean_usage"].max()) if not in_view.empty else 1.0
-            axin.set_ylim(-0.08 * max(in_max, 0.5), 1.25 * max(in_max, 0.5))
+            axin.set_ylim(-0.15, 1.3)
             axin.set_xticks([w_th, hi])
             axin.set_xticklabels([f"{w_th:.2f}", f"{hi:.2f}"], fontsize=7)
+            axin.set_yticks([0, 1])
             axin.tick_params(axis="y", labelsize=7)
-            ax.indicate_inset_zoom(axin, edgecolor="0.6", alpha=0.8)
+            _, connectors = ax.indicate_inset_zoom(axin, edgecolor="0.6", alpha=0.8)
+            for c in connectors:
+                c.set_visible(False)
     fig.tight_layout()
     _savefig(fig, path)
     plt.close(fig)

@@ -407,7 +407,16 @@ def plot_reward_asymmetry_sweep(results: Dict, save_path: str = "figures/fig_asy
     axin.xaxis.set_minor_locator(NullLocator())
     axin.tick_params(labelsize=6.5)
     axin.grid(False)
-    ax2.indicate_inset_zoom(axin, edgecolor=figstyle.GRAY, alpha=0.6)
+    # indicate_inset_zoom's default connector lines ran diagonally across
+    # roughly 80% of the panel from the zoomed region to the inset box, at a
+    # gray tone close to the data itself, and read as two extra unlabeled
+    # trend lines rather than a zoom pointer. Keep the rectangle marking the
+    # zoomed region; drop the connectors, since the inset's position
+    # (directly below and overlapping the zoomed band) already makes the
+    # correspondence obvious without them.
+    _, connectors = ax2.indicate_inset_zoom(axin, edgecolor=figstyle.GRAY, alpha=0.6)
+    for c in connectors:
+        c.set_visible(False)
 
     handles, labels = ax1.get_legend_handles_labels()
     fig.legend(handles, labels, loc="lower center", ncol=5,

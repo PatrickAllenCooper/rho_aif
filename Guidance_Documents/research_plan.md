@@ -915,6 +915,12 @@ Pat resolved the project's one remaining open decision (AI co-authorship trailer
 
 ---
 
+### Four-figure readability redesign: Figures 4, 5, 7, 14 (September 7, 2026)
+
+Pat flagged four figures as hard to read after reviewing the delivered submission PDF. Figure 4 (`fig:collapse`) redrawn with dodged hollow markers instead of nested marker sizes, since its three series are bit-exact identical and were rendering as one indistinguishable blob. Figure 5 (`fig:prop2`) rebuilt on a `symlog` y-axis (linear below 1, log above) to natively carry both the exact-zero floor and the multi-order-of-magnitude climb on one panel, with a lean inset retained for the onset bracket, which is only 0.75% of the x-axis range and invisible without one, an overcorrection caught and reversed mid-pass. Figure 7 (`fig:costbudget`) had six in-plot text labels crossing the usage curves removed in favor of legend proxies, with the numbers they carried moved to the caption instead. Figure 14 (`fig:sweep`) had the same fix as Figure 5's inset: `indicate_inset_zoom`'s default connector lines suppressed, since they render as extra trend lines crossing real data. All four regenerated via CSV-safe paths with `results/` confirmed untouched; three unrelated figures the safe replot path incidentally touched were reverted (identical content, only a metadata timestamp differed). Every figure re-inspected at print resolution inside the compiled PDF, not just as a standalone file, which is what caught two inset/legend collisions on Figure 5 before they shipped. Full narrative in `full_paper_plan.md` 9.17.30. Verdict: **HOLD**. 471/471 tests, both manuscripts compile clean.
+
+---
+
 ## Document Evolution
 
 This guidance document is updated continuously to reflect:
