@@ -36,14 +36,18 @@ from matplotlib.patches import FancyBboxPatch
 from rho_aif import figstyle
 
 
-def _rainbow_text(ax, fig, x, y, fragments, fontsize=7.5, va="bottom"):
+def _rainbow_text(ax, fig, x, y, fragments, fontsize=7.5, va="bottom",
+                   right_limit=None, line_name=""):
     """Draw left-to-right text fragments [(text, color), ...] starting at
     (x, y) in axes-fraction coordinates, each fragment colored separately.
 
     Matplotlib cannot color a substring within one mathtext string, so each
     fragment is its own Text artist, placed by measuring the previous
     fragment's actual rendered width (the standard "rainbow text" recipe)
-    rather than by guessing pixel offsets.
+    rather than by guessing pixel offsets. If right_limit is given, raise
+    rather than silently ship a line that overflows it: a first version of
+    this figure placed an unmeasured line into a too-narrow box and the
+    text ran out past the box's own border into the plot next to it.
     """
     renderer = fig.canvas.get_renderer()
     for text, color in fragments:
@@ -53,6 +57,10 @@ def _rainbow_text(ax, fig, x, y, fragments, fontsize=7.5, va="bottom"):
         bbox_axes = t.get_window_extent(renderer=renderer).transformed(
             ax.transAxes.inverted())
         x = bbox_axes.x1
+    if right_limit is not None and x > right_limit:
+        raise RuntimeError(
+            f"hero figure callout line {line_name!r} overflows its box: "
+            f"ends at axes-fraction x={x:.4f}, limit is {right_limit:.4f}")
 
 
 def plot_hero(path: str = "figures/fig_hero_price_curve.pdf") -> None:
@@ -101,17 +109,21 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf") -> None:
     figstyle.style_axis(ax)
     ax.legend(loc="lower right", fontsize=7.8, handlelength=1.6)
 
-    # Leader line from the star into the empty upper-left quadrant (the
-    # curve sits flat and low there), landing on the boxed equivalence
-    # aside. No text yet: matplotlib's annotate bbox cannot mix colors
-    # within one string, so the box and its two-color text are drawn
-    # separately below.
-    # Right edge kept left of w_lo=3 (axes-fraction ~0.485 on this log axis)
-    # so the box never overlaps the shaded bracket.
-    box_xy = (0.05, 0.60)
-    box_wh = (0.40, 0.34)
+    # Leader line from the star up to the box's bottom-left corner (short,
+    # and never crosses the box's own text). No text yet: matplotlib's
+    # annotate bbox cannot mix colors within one string, so the box and its
+    # two-color text are drawn separately below.
+    # Right edge kept left of w_lo=3 (axes-fraction ~0.485 on this log axis,
+    # measured, not guessed) so the box never overlaps the shaded bracket,
+    # with a safety margin because a first version of this box was measured
+    # too narrow for its own longest line and the text ran out past the
+    # border (caught on inspection of the compiled PDF, not the standalone
+    # PNG, which happened to hide it at thumbnail scale).
+    box_xy = (0.04, 0.53)
+    box_wh = (0.42, 0.42)
+    box_right = box_xy[0] + box_wh[0]
     ax.annotate("", xy=(1, 3), xycoords="data",
-                xytext=(box_xy[0] + 0.03, box_xy[1] + box_wh[1] - 0.03),
+                xytext=(box_xy[0] + 0.03, box_xy[1] + 0.03),
                 textcoords="axes fraction",
                 arrowprops=dict(arrowstyle="-", lw=0.6,
                                 color=figstyle.AGENT_COLORS["EFE"],
@@ -122,19 +134,22 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf") -> None:
         boxstyle="round,pad=0.012", facecolor="#F7F6F2",
         edgecolor="0.75", linewidth=0.6, zorder=6))
 
-    pad_x, top_y = box_xy[0] + 0.025, box_xy[1] + box_wh[1] - 0.075
-    line_h = 0.115
+    pad_x, top_y = box_xy[0] + 0.02, box_xy[1] + box_wh[1] - 0.07
+    line_h = 0.10
+    fs = 7.3
     _rainbow_text(ax, fig, pad_x, top_y, [
-        ("Active inference: minimize $G(\\pi)=$ pragmatic $+$ epistemic",
-         "0.15"),
-    ], fontsize=7.3)
+        ("Active inference minimizes", "0.15"),
+    ], fontsize=fs, right_limit=box_right - 0.01, line_name="line 1")
     _rainbow_text(ax, fig, pad_x, top_y - line_h, [
+        ("$G(\\pi){=}$ pragmatic $+$ epistemic", "0.15"),
+    ], fontsize=fs, right_limit=box_right - 0.01, line_name="line 2")
+    _rainbow_text(ax, fig, pad_x, top_y - 2 * line_h, [
         ("is exactly maximizing $R(s,a){+}w{\\cdot}I(b,a)$ at ", "0.15"),
         ("$w{=}1$", figstyle.AGENT_COLORS["EFE"]),
-    ], fontsize=7.3)
-    _rainbow_text(ax, fig, pad_x, top_y - 2 * line_h, [
+    ], fontsize=fs, right_limit=box_right - 0.01, line_name="line 3")
+    _rainbow_text(ax, fig, pad_x, top_y - 3 * line_h, [
         ("(Prop. 1, exact under log scoring)", "0.15"),
-    ], fontsize=7.3)
+    ], fontsize=fs, right_limit=box_right - 0.01, line_name="line 4")
 
     fig.savefig(path)
     fig.savefig(path.replace(".pdf", ".png"))
