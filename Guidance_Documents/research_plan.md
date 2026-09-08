@@ -933,6 +933,12 @@ The hero figure's insertion renumbered every later figure by one, and Pat then f
 
 ---
 
+### Caption-completeness audit across all 20 figures (September 7, 2026)
+
+Pat asked for every figure caption to fully capture what its figure shows and define every term it uses. Every one of the 20 figures' rendered images was opened and checked against its caption, its accessibility Description, and the surrounding prose, looking for visual elements shown but not described and terms used but not defined. Eight defects survived, all in figures from before this session's other figure-quality passes: a 112-character caption that said almost nothing about a five-environment plot while its own Description covered it in full; a caption discussing only half of a two-quantity figure; a caption calling a color "red" when the figure's own code and its own Description both call it "vermillion"; two figures whose panel titles read "obs = A" or "obs = B" with the meaning traced to the Tileworld environment's source code and glossed for the first time; two figures silent about a visible "slack budget" marker and grid-top reference line already named in their own Descriptions; and one figure never naming which two environments its two panels showed. All were text-only fixes, propagated to both manuscripts, verified against the compiled PDF for new overfull-hbox issues (none). Both manuscripts rebuild clean, 471/471 tests.
+
+---
+
 ## Document Evolution
 
 This guidance document is updated continuously to reflect:

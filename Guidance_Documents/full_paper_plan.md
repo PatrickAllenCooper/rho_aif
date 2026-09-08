@@ -1128,6 +1128,22 @@ Both changes are producer-only (`plot_prop2_jumps` in `experiments/run_price_of_
 
 **State**: HEAD (this commit).
 
+### 9.17.33 Caption-completeness audit across all 20 figures (2026-09-07)
+
+Pat asked for every figure caption to fully capture what its figure shows and define every term it uses. Rather than skim captions in isolation, every one of the 20 figures' rendered PNGs was opened directly and read against its current caption, its `\Description`, and the prose immediately preceding it, checking specifically for visual elements present in the image but absent from both text fields, and for any symbol or in-figure label used without a gloss anywhere the caption could reasonably supply one. All 20 were reviewed. Eight defects survived, all in figures written before this session's other figure-quality passes (the four figures already redesigned this session, hero/collapse/prop2/costbudget/sweep, already carried thorough captions from that work):
+
+- **Figure 10** (`fig:stairs`): the worst offender, a 112-character caption ("Operational shadow-price staircases with vertical crossing brackets, observe-then-commit and inspection domains") that never named which five environments were plotted, never described the axes, and said nothing about the dotted "top of tested $w$ grid" rule or the open-circle "slack budget" marker convention, both plainly visible in the image and both explained in the Description that sat right next to this thin caption the whole time. Rewritten to state all of it.
+- **Figure 7** (`fig:dualmultiseed`): the caption discussed only the top row (the controlled weight's trajectory) and never mentioned that the bottom row plots a second quantity entirely (sensing usage against the budget line), even though the figure is a 2x2 grid and the Description already covered both rows.
+- **Figure 12** (`fig:traj`): called the commit-value curve's color "red" when it is drawn in `figstyle.VERMILLION` (confirmed against `experiments/run_showcase.py`'s `commit_color = figstyle.VERMILLION`), the same color every other figure in the paper calls "vermillion," including this same figure's own Description. A real, if small, self-contradiction within one figure's own paired text fields.
+- **Figures 3 and 16** (`fig:tw_comparison`, `fig:tw_belief`): both show per-panel titles reading "obs = A" or "obs = B" with no gloss anywhere in either caption or Description. Traced the meaning to `rho_aif/environments/tileworld.py`'s `observation_space` comment (`0=group_A, 1=group_B, 2=null`) and the "noisy binary signal" language in the main text's environment-specification paragraph, neither of which a reader looking only at the figure would find. Added a one-clause gloss to both captions and both Descriptions.
+- **Figure 9** (`fig:interleaved`): like Figure 10, silent about the same "top of tested $w$ grid" dotted rule and "slack budget" open-circle marker visible in its own plot and already named in its Description.
+- **Figure 20** (`fig:reward_scaling`): never named which two environments its two panels show (Bandit and Diagnosis), despite the panels being titled exactly that in the image and the Description already saying so.
+- **Figure 5** (`fig:collapse`): panel (b)'s three colored crossing-bracket bars were never explicitly tied to the three $\alpha$ values named in panel (a)'s legend, a correspondence a reader has to infer rather than being told.
+
+All eight fixes are caption/Description text only, no producer or data changes, propagated to `full_paper.tex` wherever the changed text is caption prose (all eight) rather than a JAIR-only Description block (the two Tileworld Description edits only). Both manuscripts rebuild clean with the new `Definition~\ref{def:pi3}` citation added to Figures 9 and 10's captions resolving correctly, no new overfull/underfull hbox warnings from the longer caption text (checked directly in the compiled log, not assumed), `verify_claims.py` clean, 471/471 tests.
+
+**State**: HEAD (this commit).
+
 ### 9.17.7 Bibliography hallucination audit for JAIR submission (2026-08-27)
 
 A dedicated audit of all 68 entries in `paper/full_paper_jair.bib`, with web verification of the 13 highest-risk entries (recent additions, key/year mismatches, and the authors' own IWAI entry). **Headline: no hallucinated references.** Every entry resolves to a real paper with the stated authors, title, and venue. All 68 are cited, no citation dangles.

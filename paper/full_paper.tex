@@ -527,7 +527,7 @@ EFE and reward-only Planning are not significantly different on either reward ($
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_tileworld_comparison.pdf}
-\caption{Agent comparison on the same $6{\times}6$ Tileworld episode. All agents start from the identical uniform prior, stated here rather than drawn once per row. Belief probability is encoded by the shared colorbar on a square-root color scale. Black outlines mark the cell group queried by each scan, the black-edged white star marks the true tile, and the black-stroked white ring marks the committed cell. Scan panels are subsampled evenly within each row, so columns are not time-aligned across rows and each panel's $t$ gives the true step. EFE (top) commits correctly with efficient scanning. Planning (middle) commits on the wrong cell after 13 scans. InfoGain-Tuned (bottom) over-scans well past the point of diminishing returns.}
+\caption{Agent comparison on the same $6{\times}6$ Tileworld episode. All agents start from the identical uniform prior, stated here rather than drawn once per row. Belief probability is encoded by the shared colorbar on a square-root color scale. Black outlines mark the cell group queried by each scan, each panel's title reports that scan's noisy binary readout as $\mathrm{obs}{=}\mathrm{A}$ or $\mathrm{obs}{=}\mathrm{B}$ naming which half of the queried group the signal favors, the black-edged white star marks the true tile, and the black-stroked white ring marks the committed cell. Scan panels are subsampled evenly within each row, so columns are not time-aligned across rows and each panel's $t$ gives the true step. EFE (top) commits correctly with efficient scanning. Planning (middle) commits on the wrong cell after 13 scans. InfoGain-Tuned (bottom) over-scans well past the point of diminishing returns.}
 \label{fig:tw_comparison}
 \end{figure}
 
@@ -609,7 +609,7 @@ On Diagnosis and Bandit we estimate $U(w;\alpha)$ at reward scales $\alpha \in \
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/price_scale_invariance.pdf}
-\caption{Curve collapse on Diagnosis. The left panel plots $U$ against $w/\alpha$ at three reward scales. The right panel shows crossing brackets of $B{=}8$ in $w/\alpha$ units coinciding across scales, a set-valued shadow price.}
+\caption{Curve collapse on Diagnosis. The left panel plots $U$ against $w/\alpha$ at three reward scales $\alpha \in \{0.1, 1, 10\}$ (legend). The right panel shows, in the same three colors, crossing brackets of $B{=}8$ in $w/\alpha$ units coinciding across scales, a set-valued shadow price.}
 \label{fig:collapse}
 \end{figure}
 
@@ -653,7 +653,7 @@ On Diagnosis with target $B{=}8$, learning rate $\eta_0{=}0.05$, decay $\delta{=
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/price_dual_multiseed.pdf}
-\caption{Multi-seed ($n{=}10$) dual control of $w$ on Diagnosis through a mid-run $\times 10$ reward rescale (vertical line). Median trajectory with interquartile band. Decay-only (left) vs.\ reset-on-shift (right). Reset-on-shift re-adapts in a mean of $57$ episodes vs.\ $151$ for decay alone (post-shift-only rolling window), with disjoint 95\% CIs.}
+\caption{Multi-seed ($n{=}10$) dual control of $w$ on Diagnosis through a mid-run $\times 10$ reward rescale (vertical line). Decay-only (left column) vs.\ reset-on-shift (right column). The top row plots the controlled weight $w$ itself, median trajectory with interquartile band, dropping after the rescale invalidates the pre-rescale weight and climbing back as the controller re-adapts. The bottom row plots the resulting sensing usage (rolling mean, 20 episodes) against the dashed budget line $B{=}8$ the controller tracks. Reset-on-shift re-adapts in a mean of $57$ episodes vs.\ $151$ for decay alone (post-shift-only rolling window), with disjoint 95\% CIs.}
 \label{fig:dualmultiseed}
 \end{figure}
 
@@ -679,7 +679,7 @@ The observe-then-commit environments above cannot exercise every structural feat
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/price_staircase_interleaved.pdf}
-\caption{Shadow-price staircases $w^*(B)$ on three interleaved (non-observe-then-commit) settings, RockSample[5,3], RockSample[7,4], and Inspection-$N{=}16$, with crossing brackets marked. The underlying usage curves $U(w)$ are monotone at every sampled grid point on RockSample[7,4] and Inspection-$N{=}16$, while RockSample[5,3] dips once near $w{=}0.316$ before rising (see text).}
+\caption{Shadow-price staircases $w^*(B)$ on three interleaved (non-observe-then-commit) settings, RockSample[5,3], RockSample[7,4], and Inspection-$N{=}16$, with crossing brackets marked as vertical bars, capped where they reach the dotted rule marking the top of the tested $w$ grid, and an open-circle marker where a budget is slack (already met by $w{=}0$'s usage, needing no positive weight). The underlying usage curves $U(w)$ are monotone at every sampled grid point on RockSample[7,4] and Inspection-$N{=}16$, while RockSample[5,3] dips once near $w{=}0.316$ before rising (see text).}
 \label{fig:interleaved}
 \end{figure}
 
@@ -691,7 +691,7 @@ Figure~\ref{fig:stairs} reports $w^*(B)$ over identifiable budgets inside $[U_{\
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/price_shadow_curves.pdf}
-\caption{Operational shadow-price staircases with vertical crossing brackets, observe-then-commit and inspection domains.}
+\caption{Operational shadow-price staircases $w^*(B)$ across five observe-then-commit and inspection domains (Tiger, Bandit, Diagnosis, Inspection-$N{=}8$, Tileworld-$6{\times}6$), each in its own color, log-log axes. Each staircase steps up as the sensing budget $B$ rises, and the vertical bar at each step marks that budget's crossing bracket $(w_{\mathrm{lo}}, w_{\mathrm{hi}}]$ (Definition~\ref{def:pi3}), capped where the bracket's upper edge coincides with the top of the tested $w$ grid (dotted horizontal rule at $100$). An open circle with a dotted bar marks a slack budget, one already below the usage the agent spends at $w{=}0$, where no positive weight is required. Tiger, Diagnosis, and Inspection step strictly upward at every sampled point, while Bandit and Tileworld show local non-monotonicity from discrete policy switches, reported here as brackets rather than as single prices.}
 \label{fig:stairs}
 \end{figure}
 
@@ -1369,7 +1369,7 @@ Under mild reward asymmetry ($+1 / {-}1$), EFE gathers more information than is 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_efe_trajectory.pdf}
-\caption{EFE decomposition within Tiger episodes ($H{=}6$). The agent commits at the crossover where commit value (red) exceeds observe value (blue). As belief entropy (green shading) decreases, the transition from exploration to exploitation occurs automatically.}
+\caption{EFE decomposition within Tiger episodes ($H{=}6$). The agent commits at the crossover where commit value (vermillion) exceeds observe value (blue). As belief entropy (green shading) decreases, the transition from exploration to exploitation occurs automatically.}
 \label{fig:traj}
 \end{figure}
 
@@ -1412,7 +1412,7 @@ To test whether EFE's Tiger parity holds across reward scales, we sweep the pena
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_tileworld_belief.pdf}
-\caption{Belief evolution within an EFE episode on the $6{\times}6$ Tileworld. Panels (a)--(g) show belief probability over the 36 grid cells on a shared square-root color scale (colorbar, darker = higher probability). Black outlines mark the cell group queried by each scan, and the black-edged white star marks the target tile in every panel. Belief concentrates toward the target, and in the final panel a black-stroked white ring marks the committed cell.}
+\caption{Belief evolution within an EFE episode on the $6{\times}6$ Tileworld. Panels (a)--(g) show belief probability over the 36 grid cells on a shared square-root color scale (colorbar, darker = higher probability). Black outlines mark the cell group queried by each scan, each panel's title reports that scan's noisy binary readout as $\mathrm{obs}{=}\mathrm{A}$ or $\mathrm{obs}{=}\mathrm{B}$ naming which half of the queried group the signal favors, and the black-edged white star marks the target tile in every panel. Belief concentrates toward the target, and in the final panel a black-stroked white ring marks the committed cell.}
 \label{fig:tw_belief}
 \end{figure}
 
@@ -1823,7 +1823,7 @@ To test the scale objection directly, we multiply all rewards and costs by $k \i
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/fig_reward_scaling.pdf}
-\caption{Reward rescaling. Scale-normalized mean reward (mean reward divided by $k$) vs.\ Planning+IG weight $w$ under global scale factors $k$. Normalization places the three scales on one axis, so the equivariance is read directly. The three curves share one shape, and the reward-maximizing weight (open circles, $w^*_{\mathrm{ret}}$) shifts toward larger $w$ as $k$ grows, consistent with $w^*_{\mathrm{ret}}(k) \propto k$. The dashed rule marks $w{=}1$, the EFE weight.}
+\caption{Reward rescaling on Bandit (a) and Diagnosis (b). Scale-normalized mean reward (mean reward divided by $k$) vs.\ Planning+IG weight $w$ under global scale factors $k$. Normalization places the three scales on one axis, so the equivariance is read directly. The three curves share one shape, and the reward-maximizing weight (open circles, $w^*_{\mathrm{ret}}$) shifts toward larger $w$ as $k$ grows, consistent with $w^*_{\mathrm{ret}}(k) \propto k$. The dashed rule marks $w{=}1$, the EFE weight.}
 \label{fig:reward_scaling}
 \end{figure}
 
