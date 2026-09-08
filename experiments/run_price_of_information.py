@@ -1231,12 +1231,25 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
     linthresh at that same 1.0 boundary needs no inset at all: everything
     from 0 to 1 renders in the linear region with real pixel height, and the
     climb beyond 1 compresses log-wise without ever being hidden.
+
+    The onset bracket is still under 1% of the x-axis width regardless of
+    y-scale, so a zoomed view of just that x-neighborhood is still needed.
+    A second overlapping-inset attempt (matching connector lines suppressed
+    the same way) still read as messy: the inset sat close enough to the
+    main y-axis that its own tick labels visually merged with the main
+    axis's, and its y-ticks carried no visible labels at all. Replaced with
+    a dedicated zoom row below each main panel instead of an inset on top
+    of it, so the zoom gets its own full-width axes with real tick labels
+    and never overlaps the main curve. A light shaded band on the main
+    panel, at the same x-limits as the zoom row beneath it, replaces the
+    diagonal connector lines as the pointer between the two.
     """
     figstyle.apply()
     envs = list(curve_df["env"].unique()) if not curve_df.empty else []
     n = max(1, len(envs))
     fig, axes = plt.subplots(
-        1, n, figsize=(figstyle.TEXT_WIDTH_IN / 2 * n, 2.9), squeeze=False
+        2, n, figsize=(figstyle.TEXT_WIDTH_IN / 2 * n + 0.6, 3.9), squeeze=False,
+        gridspec_kw={"height_ratios": [2.3, 1.0], "hspace": 0.62, "wspace": 0.4},
     )
     panel = "abcdefgh"
     band_kw = dict(
@@ -1245,6 +1258,7 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
     linthresh = 1.0
     for i, name in enumerate(envs):
         ax = axes[0, i]
+        axz = axes[1, i]
         sub = curve_df[curve_df["env"] == name].sort_values("w")
         ax.errorbar(
             sub["w"],
@@ -1294,40 +1308,43 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
         else:
             ax.set_title(f"({panel[i]}) {name}")
         figstyle.style_axis(ax)
-        # Lower right: clear of the inset (upper left, above the flat-zero
-        # run) and of the curve itself, which is at y=1 or below until the
-        # climb starts well past the panel's midpoint on both testbeds.
-        ax.legend(loc="lower right", fontsize=8, handlelength=1.6,
-                  handletextpad=0.6, borderaxespad=0.2)
-        # The symlog y-axis above fixes the vertical squish (0 to 1 now has
-        # real pixel height), but the onset bracket is under 1% of the x-axis
-        # width regardless of y-scale, so whether the threshold sits at the
-        # bracket's edge or its middle is still invisible on the main panel.
-        # A small inset zoomed to just the x-neighborhood restores that,
-        # with indicate_inset_zoom's connector lines suppressed (kept for
-        # fig:sweep's inset too): they ran through real data at a similar
-        # gray tone and read as extra trend lines, not a zoom pointer.
+
         if np.isfinite(lo) and np.isfinite(hi) and hi > lo:
-            # Upper-left: empty on every panel, since the curve sits at
-            # zero for all w left of the threshold and the symlog y-axis
-            # gives that region real height to place a box in.
-            axin = ax.inset_axes([0.05, 0.56, 0.28, 0.36])
-            axin.errorbar(
-                sub["w"], sub["mean_usage"], yerr=sub["se_usage"],
-                fmt="o-", capsize=figstyle.CAPSIZE, ms=3.5, lw=1.2, color="0.4",
-            )
-            axin.axvline(w_th, color=figstyle.VERMILLION, ls="--", lw=1.2)
-            axin.axvspan(lo, hi, **band_kw)
             pad = max(0.1, 0.6 * (hi - lo))
-            axin.set_xlim(w_th - pad, hi + pad)
-            axin.set_ylim(-0.15, 1.3)
-            axin.set_xticks([w_th, hi])
-            axin.set_xticklabels([f"{w_th:.2f}", f"{hi:.2f}"], fontsize=7)
-            axin.set_yticks([0, 1])
-            axin.tick_params(axis="y", labelsize=7)
-            _, connectors = ax.indicate_inset_zoom(axin, edgecolor="0.6", alpha=0.8)
-            for c in connectors:
-                c.set_visible(False)
+            zoom_lo, zoom_hi = w_th - pad, hi + pad
+            # Marker band on the main panel points at exactly what the zoom
+            # row below magnifies, replacing indicate_inset_zoom's connector
+            # lines (which ran through real data at a similar gray tone and
+            # read as extra trend lines rather than a zoom pointer). The
+            # true bracket is under 1% of the x-range here, too thin to
+            # read as a deliberate pointer even zoomed in, so this locator
+            # band is drawn at a fixed minimum width (a design device, not
+            # a data claim: the exact bracket stays exact in the zoom row).
+            x0, x1 = ax.get_xlim()
+            pointer_w = max(zoom_hi - zoom_lo, 0.035 * (x1 - x0))
+            pointer_mid = 0.5 * (zoom_lo + zoom_hi)
+            ax.axvspan(pointer_mid - pointer_w / 2, pointer_mid + pointer_w / 2,
+                       color=figstyle.GRAY, alpha=0.25, zorder=0)
+            ax.legend(loc="lower right", fontsize=8, handlelength=1.6,
+                      handletextpad=0.6, borderaxespad=0.2)
+
+            axz.errorbar(
+                sub["w"], sub["mean_usage"], yerr=sub["se_usage"],
+                fmt="o-", capsize=figstyle.CAPSIZE, ms=4, lw=1.4, color="0.4",
+            )
+            axz.axvline(w_th, color=figstyle.VERMILLION, ls="--", lw=1.4)
+            axz.axvspan(lo, hi, **band_kw)
+            axz.set_xlim(zoom_lo, zoom_hi)
+            axz.set_ylim(-0.15, 1.3)
+            axz.set_xticks(sorted({round(w_th, 2), round(hi, 2)}))
+            axz.set_xticklabels([f"{x:.2f}" for x in
+                                  sorted({round(w_th, 2), round(hi, 2)})])
+            axz.set_yticks([0, 1])
+            axz.set_yticklabels(["$0$", "$1$"])
+            axz.set_xlabel(f"$w$ near onset ({panel[i]}′)", fontsize=8.5)
+            figstyle.style_axis(axz)
+        else:
+            axz.axis("off")
     fig.tight_layout()
     _savefig(fig, path)
     plt.close(fig)

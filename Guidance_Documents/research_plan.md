@@ -927,6 +927,12 @@ Pat asked for a hero figure explaining the paper's core idea near the beginning.
 
 ---
 
+### Overlapping insets replaced with dedicated zoom panels (September 7, 2026)
+
+The hero figure's insertion renumbered every later figure by one, and Pat then flagged the figures now at positions 6 and 15 (the symlog onset figure and the Tiger reward-asymmetry sweep, both already touched in the earlier readability pass) as still visually incoherent. Diagnosis at full print resolution, not thumbnail scale, found a second defect neither figure's earlier fix had caught: Figure 6's inset sat close enough to the main axis that its own tick labels visually merged with the main axis's, and Figure 15's inset had no x-tick labels at all and packed four overlapping series into a box a quarter of the panel's size. Both fixed the same way, by promoting the zoom from an overlapping inset to a full, separate adjacent panel with its own complete tick labels, with a shaded strip on the main panel marking exactly the region the zoom panel shows in place of the connector lines. Both manuscripts rebuild clean, 471/471 tests.
+
+---
+
 ## Document Evolution
 
 This guidance document is updated continuously to reflect:

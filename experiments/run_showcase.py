@@ -354,9 +354,20 @@ def _plot_agent_series(ax, x, y, yerr, name, label=True):
 
 
 def plot_reward_asymmetry_sweep(results: Dict, save_path: str = "figures/fig_asymmetry_sweep.pdf"):
-    """Two-panel figure: success rate and reward vs penalty magnitude."""
+    """Three-panel figure: success rate, reward, and a reward zoom detail.
+
+    Panel (b)'s range is set by Myopic's collapse to about -75, which
+    crushes the other four series into a narrow band near the top. An
+    overlapping inset zoom, even with its connector lines suppressed, still
+    read as messy: cramming a second full set of axes into a quarter of
+    panel (b) left no room for x-tick labels at all and only two sparse
+    y-ticks, and the four dodged series tangled together in the small box.
+    Replaced with a third, full-size panel (c) dedicated to the zoom, with
+    its own complete tick labels, plus a shaded band on panel (b) at the
+    same y-range (c) magnifies, the same locator device used for fig:prop2.
+    """
     figstyle.apply()
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figstyle.figsize(1.0, 0.37))
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=figstyle.figsize(1.0, 0.37))
 
     order = ["Myopic", "Planning", "InfoGain-Tuned", "Planning+IG", "EFE"]
     # Several series are exactly tied at many penalties (e.g. Planning and
@@ -364,6 +375,7 @@ def plot_reward_asymmetry_sweep(results: Dict, save_path: str = "figures/fig_asy
     # x-axis by a small multiplicative factor to keep coincident markers and
     # error bars side by side rather than stacked.
     dodge = {name: f for name, f in zip(order, [0.82, 0.90, 1.0, 1.11, 1.22])}
+    zoom_lo, zoom_hi = 3.4, 7.9
     penalties = None
     for name in order:
         if name not in results:
@@ -374,13 +386,16 @@ def plot_reward_asymmetry_sweep(results: Dict, save_path: str = "figures/fig_asy
         se_s = [s * 100 for s in d.get("se_success", [0] * len(d["penalties"]))]
         _plot_agent_series(ax1, x, [s * 100 for s in d["success"]], se_s, name)
         _plot_agent_series(ax2, x, d["reward"], d.get("se_reward"), name)
+        if name != "Myopic":
+            _plot_agent_series(ax3, x, d["reward"], d.get("se_reward"), name,
+                               label=False)
 
     from matplotlib.ticker import NullLocator
-    for ax in (ax1, ax2):
+    for ax in (ax1, ax2, ax3):
         ax.set_xscale("log")
         ax.set_xlabel("Penalty magnitude $\\left|R^{-}\\right|$")
         ax.set_xticks(penalties)
-        ax.set_xticklabels([f"{p:g}" for p in penalties])
+        ax.set_xticklabels([f"{p:g}" for p in penalties], fontsize=7.5)
         ax.xaxis.set_minor_locator(NullLocator())
         figstyle.style_axis(ax)
 
@@ -388,39 +403,19 @@ def plot_reward_asymmetry_sweep(results: Dict, save_path: str = "figures/fig_asy
     ax1.set_title("(a) Success rate vs. reward asymmetry")
     ax2.set_ylabel("Mean reward")
     ax2.set_title("(b) Reward vs. reward asymmetry")
+    ax3.set_ylabel("Mean reward")
+    ax3.set_title("(c) Reward, zoom near the top")
+    ax3.set_ylim(zoom_lo, zoom_hi)
 
-    # Panel (b)'s range is set by Myopic's collapse to about -75, which
-    # crushes the other series into a narrow band near the top. An inset
-    # zoom resolves that band without hiding the collapse.
-    axin = ax2.inset_axes([0.12, 0.14, 0.52, 0.44])
-    for name in order:
-        if name == "Myopic" or name not in results:
-            continue
-        d = results[name]
-        x = [p * dodge[name] for p in d["penalties"]]
-        _plot_agent_series(axin, x, d["reward"], d.get("se_reward"), name,
-                           label=False)
-    axin.set_xscale("log")
-    axin.set_xlim(ax2.get_xlim())
-    axin.set_ylim(3.4, 7.9)
-    axin.set_xticks([])
-    axin.xaxis.set_minor_locator(NullLocator())
-    axin.tick_params(labelsize=6.5)
-    axin.grid(False)
-    # indicate_inset_zoom's default connector lines ran diagonally across
-    # roughly 80% of the panel from the zoomed region to the inset box, at a
-    # gray tone close to the data itself, and read as two extra unlabeled
-    # trend lines rather than a zoom pointer. Keep the rectangle marking the
-    # zoomed region; drop the connectors, since the inset's position
-    # (directly below and overlapping the zoomed band) already makes the
-    # correspondence obvious without them.
-    _, connectors = ax2.indicate_inset_zoom(axin, edgecolor=figstyle.GRAY, alpha=0.6)
-    for c in connectors:
-        c.set_visible(False)
+    # Shaded band on panel (b) marks exactly the y-range panel (c)
+    # magnifies, replacing indicate_inset_zoom's connector lines (which ran
+    # diagonally across real data at a similar gray tone and read as extra
+    # trend lines rather than a zoom pointer).
+    ax2.axhspan(zoom_lo, zoom_hi, color=figstyle.GRAY, alpha=0.15, zorder=0)
 
     handles, labels = ax1.get_legend_handles_labels()
     fig.legend(handles, labels, loc="lower center", ncol=5,
-               bbox_to_anchor=(0.5, -0.06))
+               bbox_to_anchor=(0.5, -0.08))
 
     fig.tight_layout()
     fig.savefig(save_path)
