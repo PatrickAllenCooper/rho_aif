@@ -69,8 +69,11 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf") -> None:
 
     # Schematic usage curve: flat, one clean rise, flat. Illustrative only,
     # not measured data, and not a claim that real usage curves are always
-    # monotone (several in this paper plateau, jump, or dip).
-    w = [0.1, 0.3, 1, 3, 10, 30, 100]
+    # monotone (several in this paper plateau, jump, or dip). The rise
+    # starts at w=4 rather than w=3 specifically to leave visible breathing
+    # room between the shaded bracket band and the callout box beside it
+    # (Pat flagged the two as reading too close together at w=3).
+    w = [0.1, 0.3, 1, 4, 10, 30, 100]
     u = [3, 3, 3, 3, 10, 10, 10]
     ax.plot(w, u, color=figstyle.BLUE, marker="o", ms=5, lw=1.8,
              zorder=3, label="$U(w)$: schematic usage curve")
@@ -87,7 +90,7 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf") -> None:
     # open-circle or dashed-edge cue at either boundary that would read as
     # excluded (the exact ambiguity a prior figure in this paper had to be
     # corrected for).
-    w_lo, w_hi = 3, 10
+    w_lo, w_hi = 4, 10
     ax.axvspan(w_lo, w_hi, color=figstyle.GRAY, alpha=0.15, zorder=0,
                label=r"shadow price $w^*(B)=(w_{\mathrm{lo}}, w_{\mathrm{hi}}]$")
     # Labeled near the top of the band, not the bottom: the bottom-right of
@@ -113,14 +116,14 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf") -> None:
     # and never crosses the box's own text). No text yet: matplotlib's
     # annotate bbox cannot mix colors within one string, so the box and its
     # two-color text are drawn separately below.
-    # Right edge kept left of w_lo=3 (axes-fraction ~0.485 on this log axis,
-    # measured, not guessed) so the box never overlaps the shaded bracket,
-    # with a safety margin because a first version of this box was measured
-    # too narrow for its own longest line and the text ran out past the
-    # border (caught on inspection of the compiled PDF, not the standalone
-    # PNG, which happened to hide it at thumbnail scale).
+    # Right edge kept well left of w_lo=4 (axes-fraction ~0.524 on this log
+    # axis, measured, not guessed), with a real visible gap rather than a
+    # bare-minimum one: an earlier version's right edge sat only ~0.025
+    # axes-fraction from the band's left edge and read as visually crowded
+    # (Pat flagged it directly). Narrowed here and paired with the smaller
+    # callout fontsize below, both measured against the box interior.
     box_xy = (0.04, 0.53)
-    box_wh = (0.42, 0.42)
+    box_wh = (0.40, 0.42)
     box_right = box_xy[0] + box_wh[0]
     ax.annotate("", xy=(1, 3), xycoords="data",
                 xytext=(box_xy[0] + 0.03, box_xy[1] + 0.03),
@@ -136,7 +139,7 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf") -> None:
 
     pad_x, top_y = box_xy[0] + 0.02, box_xy[1] + box_wh[1] - 0.07
     line_h = 0.10
-    fs = 7.3
+    fs = 6.6
     _rainbow_text(ax, fig, pad_x, top_y, [
         ("Active inference minimizes", "0.15"),
     ], fontsize=fs, right_limit=box_right - 0.01, line_name="line 1")

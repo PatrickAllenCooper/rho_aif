@@ -1144,6 +1144,12 @@ All eight fixes are caption/Description text only, no producer or data changes, 
 
 **State**: HEAD (this commit).
 
+### 9.17.34 Hero figure: box-to-band gap widened (2026-09-07)
+
+Pat reported the shaded bracket band in Figure 1 (`fig:hero`) reading too close to the tan callout box beside it, harming clarity. Measured the actual gap: the box's right edge sat at axes-fraction 0.46, the band's left edge (at the schematic $w_{\mathrm{lo}}{=}3$) at 0.485, a gap of only about 0.025, tight enough at print width to look crowded, with the "$w_{\mathrm{lo}}$" label sitting right at the seam. The band's left edge is not a free parameter on its own, it has to stay where the schematic curve's rise actually starts, so shifted both together rather than the label alone: the schematic rise (and the bracket that marks it) now starts at $w{=}4$ instead of $w{=}3$, legitimate since this figure's numbers are explicitly illustrative, not measured data, disclosed as such in its own caption. Paired with a narrower box (measured against the callout text's actual rendered width at a slightly smaller font, not guessed) so the box shrank alongside the band's new position rather than the gap absorbing all of the change. Also caught two claims in the Description that had gone stale since two earlier fixes in this session and were never updated: it still said the rise started at "w equals 3" (now 4) and that the callout box held "three lines" of text (it has held four since the box-overflow fix at ledger 9.17.31's correction) — both fixed, plus an explicit sentence noting the box-to-band gap is now clear. Producer-only change (`experiments/build_fig_hero.py`); `results/` untouched (this figure has none). Both manuscripts rebuild clean, no new overfull/underfull hbox warnings, `verify_claims.py` clean, 471/471 tests.
+
+**State**: HEAD (this commit).
+
 ### 9.17.7 Bibliography hallucination audit for JAIR submission (2026-08-27)
 
 A dedicated audit of all 68 entries in `paper/full_paper_jair.bib`, with web verification of the 13 highest-risk entries (recent additions, key/year mismatches, and the authors' own IWAI entry). **Headline: no hallucinated references.** Every entry resolves to a real paper with the stated authors, title, and venue. All 68 are cited, no citation dangles.

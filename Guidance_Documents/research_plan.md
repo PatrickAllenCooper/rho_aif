@@ -939,6 +939,12 @@ Pat asked for every figure caption to fully capture what its figure shows and de
 
 ---
 
+### Hero figure: box-to-band gap widened (September 7, 2026)
+
+Pat reported Figure 1's shaded bracket band reading too close to its callout box. Measured the actual gap (about 0.025 axes-fraction, tight at print width) and fixed it by shifting the schematic curve's rise, and the bracket marking it, from w=3 to w=4 together (legitimate since the figure's numbers are explicitly illustrative), paired with a narrower, remeasured callout box. Also caught two stale claims in the figure's accessibility Description left over from two earlier fixes this session (a superseded "w equals 3" boundary and a "three lines" count for a box that has held four lines since an earlier overflow fix) and corrected both. Producer-only change, both manuscripts rebuild clean, 471/471 tests.
+
+---
+
 ## Document Evolution
 
 This guidance document is updated continuously to reflect:
