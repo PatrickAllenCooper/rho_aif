@@ -945,6 +945,12 @@ Pat reported Figure 1's shaded bracket band reading too close to its callout box
 
 ---
 
+### The nat-canonical weight hedge closed by measurement (September 9, 2026)
+
+Pat asked what the paper meant by flagging "the exactly nat-canonical agent of Proposition 1" as untested, and on learning it was a single unswept grid point (the implementation computes information gain in bits, so its reported $w{=}1$ is $1.44$ nats, while the theorem's literally canonical agent sits at $w{=}\ln 2 \approx 0.693$ in bit units, never a point in the Pareto sweep), asked to run it. New producer `experiments/run_nat_canonical_check.py` runs it under the sweep's identical protocol. A first three-environment pass went to the standing adversarial audit, which correctly widened it: the sweep also reports observation count, and Tileworld's and Testbed's clauses in the same paragraph were interpolations across the same kind of grid gap. The full five-environment run found the nat-canonical agent bit-identical to $w{=}1$ in reward, success, and observation count on Tiger, Diagnosis, Bandit, and Testbed, with every fresh $w{=}1$ row reproducing the committed sweep exactly. Bandit, undetermined in advance, fell inside the tied bracket. Testbed, the paper's one closed-form "not innocuous" case, turned out to have no behavioral consequence at the sweep's horizon. Tileworld is the one environment where the base changes the policy (the nat point sits with the $w{=}0.5$ neighbour, significant only in scan count), with both conventions still Pareto-dominated by $w{=}20$, so its conclusion is unchanged and now measured. The hedge is replaced by the measurement in both masters, an 8-test protocol-parity guard pins the check to the sweep, and a search for sibling hedges found none of the same closeable kind (five remaining flagged gaps are all scope boundaries needing new theory or infrastructure). Full narrative in `full_paper_plan.md` 9.17.35. Verdict: **HOLD**. 479/479 tests, both manuscripts compile clean.
+
+---
+
 ## Document Evolution
 
 This guidance document is updated continuously to reflect:

@@ -145,6 +145,7 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | Distractor-robustness experiment (Stage G2) | `python experiments/run_distractor_diagnosis.py` |
 | Supplementary battery (Testbed appendix table, bootstrap CIs, effect sizes, full pairwise stats) | `python experiments/run_supplementary.py` |
 | Pareto sweep + reward-maximizing weight brackets | `python experiments/run_pareto.py pareto` |
+| Nat-canonical weight check, w=ln(2) vs. w=1 under the Pareto sweep protocol on all five swept environments (Section 3.3, reward-to-nats calibration paragraph) | `python experiments/run_nat_canonical_check.py` |
 | Bandit w=100 depth comparison (Discussion) | `python experiments/run_bandit_w100_depth_comparison.py` |
 | MCTS-EFE component ablation (Discussion, Appendix R) | `python experiments/run_mcts_efe_ablation.py` then `python experiments/build_mcts_ablation_tables.py` |
 | POMCP exploration-constant sweep and informed rollouts (Discussion, Appendix R) | `python experiments/run_pomcp_exploration_sweep.py` then `python experiments/build_mcts_ablation_tables.py` |
