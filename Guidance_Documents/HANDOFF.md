@@ -337,6 +337,11 @@ From `CLAUDE.md`, unchanged and still outstanding:
 1. `twine upload` to TestPyPI then PyPI (`rho-aif` name verified unclaimed).
    Confirm/move local `v1.0.0` tag, push tags. The `pip install rho-aif`
    claim in the README and JAIR checklist is false until this lands.
+   [Updated 2026-09-11: the release tag is now `v2.0.0` (ledger 9.17.29),
+   and it and `main` are already pushed to `origin`, so only the `twine
+   upload` itself remains here. Pushing was briefly listed as a second
+   Pat-only step on 2026-09-07; that was the assistant's own caution, not
+   Pat's policy, and was corrected the day Pat asked about it (9.17.36).]
 2. (IWAI camera-ready and JAIR template issues are both already resolved
    per `CLAUDE.md`'s Publication state block — only the PyPI step remains.)
 

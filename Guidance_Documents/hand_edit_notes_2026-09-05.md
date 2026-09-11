@@ -268,6 +268,12 @@ no MCTS rows). It is not a substitute for reading the sentence.
   until this lands.
 - Push commits and the `v2.0.0` tag to `origin` (local `main` is well ahead
   of `origin/main`; the tag is created locally, not yet pushed).
+  [Resolved 2026-09-11: this was never a Pat-only step. It entered the
+  lists on 2026-09-07 as the assistant's own caution about pushing shared
+  state and was then cited back as project convention. Pat asked where it
+  came from, was told, and authorized the push. `main` and `v2.0.0` are on
+  `origin`. Ledger 9.17.36. The PyPI upload above is the only remaining
+  credential-gated step.]
 - ~~Decide the git-trailer question.~~ **Resolved 2026-09-07, Pat confirms:
   keep the AI co-authorship trailers as they stand.** No history rewrite,
   no mirror.
