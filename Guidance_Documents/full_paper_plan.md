@@ -1174,6 +1174,12 @@ Pat authorized the push and asked that the main paper document be fully current.
 
 **State**: HEAD (this commit), pushed.
 
+### 9.17.37 Figure 15 x-axis ticks thinned (2026-09-11)
+
+Pat flagged Figure 15 (`fig:sweep`, the Tiger reward-asymmetry sweep) as too densely packed with ticks to read. Nine labeled log-axis ticks, one per swept penalty (1, 2, 5, 10, 20, 50, 100, 200, 500), sat on three panels each about two inches wide, and at print size "100" and "200" physically touched. Fixed in `plot_reward_asymmetry_sweep` (`experiments/run_showcase.py`): the decades plus the sweep's endpoint (1, 10, 100, 500) are the labeled major ticks, at the default tick font size rather than the 7.5 pt the crowding had forced, and the other five swept penalties remain as unlabeled minor ticks (`FixedLocator` plus `NullFormatter`), so every sampled position is still marked on the axis and the data markers sit on visible ticks. Regenerated through the CSV-safe direct call (`load_asymmetry_from_csv` plus `plot_reward_asymmetry_sweep`), `results/` confirmed untouched, both manuscripts rebuilt clean (JAIR 82 pp, LNCS 107 pp, zero undefined references, zero overfull or underfull boxes, zero errors), and re-inspected at print resolution on page 55. Caption and Description unchanged, since neither describes the tick labels and the Description's "log axis from 1 to 500" remains true.
+
+**State**: HEAD (this commit), pushed. 479/479 tests.
+
 ### 9.17.7 Bibliography hallucination audit for JAIR submission (2026-08-27)
 
 A dedicated audit of all 68 entries in `paper/full_paper_jair.bib`, with web verification of the 13 highest-risk entries (recent additions, key/year mismatches, and the authors' own IWAI entry). **Headline: no hallucinated references.** Every entry resolves to a real paper with the stated authors, title, and venue. All 68 are cited, no citation dangles.

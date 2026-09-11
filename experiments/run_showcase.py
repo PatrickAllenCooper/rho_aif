@@ -390,13 +390,21 @@ def plot_reward_asymmetry_sweep(results: Dict, save_path: str = "figures/fig_asy
             _plot_agent_series(ax3, x, d["reward"], d.get("se_reward"), name,
                                label=False)
 
-    from matplotlib.ticker import NullLocator
+    from matplotlib.ticker import FixedLocator, NullFormatter
+    # Nine labeled ticks (1, 2, 5, ..., 500) on a panel about two inches
+    # wide ran into each other at print size ("100200" touched). Label the
+    # decades plus the sweep's endpoint and keep every other swept penalty
+    # as an unlabeled minor tick, so each sampled position stays marked on
+    # the axis without the labels colliding.
+    major = [p for p in penalties if p in (1, 10, 100, 500)]
+    minor = [p for p in penalties if p not in major]
     for ax in (ax1, ax2, ax3):
         ax.set_xscale("log")
         ax.set_xlabel("Penalty magnitude $\\left|R^{-}\\right|$")
-        ax.set_xticks(penalties)
-        ax.set_xticklabels([f"{p:g}" for p in penalties], fontsize=7.5)
-        ax.xaxis.set_minor_locator(NullLocator())
+        ax.set_xticks(major)
+        ax.set_xticklabels([f"{p:g}" for p in major])
+        ax.xaxis.set_minor_locator(FixedLocator(minor))
+        ax.xaxis.set_minor_formatter(NullFormatter())
         figstyle.style_axis(ax)
 
     ax1.set_ylabel("Success rate (%)")
