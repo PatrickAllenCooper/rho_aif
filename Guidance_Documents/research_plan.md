@@ -965,6 +965,10 @@ Round 3: Opus critics scored the round-2 text at mean 6.89 (fifteen units at 7, 
 
 Round 4 on Opus over the 18 units still short of the target: critics scored the round-3 text at mean 7.11 with zero blocking, two verifier lenses per unit approved 95 of 126 proposals, one approved edit was refused by hand because its dropped token was the only definition of a term the paragraph then used, and the Opus audit reverted 4 of 94 (4.3 percent, the fourth consecutive decline) for a duplicated definition and three claim drifts checked against CSVs and a table. Net 90 replacements per master, JAIR 103 pp, LNCS 135 pp, both clean. The confirmation pass (one fresh Opus critic per unit, no edits) scored the final text at mean 7.58: eleven units at 8, eight at 7, none below, zero blocking, against round 1's 6.00 with none at 8 and ten blocking. Cumulative: 492 verified replacements after 41 audit reverts, JAIR text up 37 percent. The strict criterion (every unit at 8, no blocking) is met on eleven units; a targeted fifth round on the eight at 7 awaits Pat's decision. Full narrative in `full_paper_plan.md` 9.17.41. Verdict: **PARTIAL** against the strict criterion, paused at a clean committed state. No code changed.
 
+### Writing-clarity loop, targeted round 5 and close (September 16, 2026)
+
+Pat chose a targeted round 5 on the eight units the confirmation pass scored 7 and asked for the Proposition 3 fix. $H_{\text{post}}(p)$ is now defined in the proposition (the post-observation belief's binary entropy in nats, matching `run_thresholds.py`). Round 5 fed the confirmation findings straight to Opus editors, two verifier lenses approved 30 of 35, and the audit requested zero reverts. Re-scored: six of the eight rose to 8, U11 and U19 stayed at 7. Final text: mean 7.89, seventeen of nineteen units at 8, none below 7, zero blocking (round 1: 6.00, none at 8, ten blocking). Five rounds: 522 verified replacements after 41 reverts, JAIR 82 to 104 pp. Full narrative in `full_paper_plan.md` 9.17.42. Verdict: **HOLD**, two units at 7 recorded as the residual. No code changed.
+
 ---
 
 ## Document Evolution
