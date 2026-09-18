@@ -969,6 +969,10 @@ Round 4 on Opus over the 18 units still short of the target: critics scored the 
 
 Pat chose a targeted round 5 on the eight units the confirmation pass scored 7 and asked for the Proposition 3 fix. $H_{\text{post}}(p)$ is now defined in the proposition (the post-observation belief's binary entropy in nats, matching `run_thresholds.py`). Round 5 fed the confirmation findings straight to Opus editors, two verifier lenses approved 30 of 35, and the audit requested zero reverts. Re-scored: six of the eight rose to 8, U11 and U19 stayed at 7. Final text: mean 7.89, seventeen of nineteen units at 8, none below 7, zero blocking (round 1: 6.00, none at 8, ten blocking). Five rounds: 522 verified replacements after 41 reverts, JAIR 82 to 104 pp. Full narrative in `full_paper_plan.md` 9.17.42. Verdict: **HOLD**, two units at 7 recorded as the residual. No code changed.
 
+### Full citation-integrity re-verification (September 17, 2026)
+
+Pat asked that all citations be confirmed accurate and not hallucinated. A structural check found zero dangling and zero orphaned citations in both masters, and confirmed the bibliography is byte-for-byte unchanged since before the writing-clarity loop. A full re-verification, one independent agent per bibliography entry (69 total) checking existence, every bibliographic field, and in-text attribution accuracy against a primary source, found 68 of 69 clean on the first pass; the one flag, sent to independent adjudication against the arXiv API directly, turned out to be a false alarm (BibTeX title-casing convention and a standard "et al." truncation, both cosmetic). Zero hallucinated references, zero misattributed claims, across all 69 entries. Full narrative in `full_paper_plan.md` 9.17.43. Verdict: **HOLD**. No code or bibliography changed.
+
 ---
 
 ## Document Evolution
