@@ -143,6 +143,7 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | Price-of-information: full battery (curves, collapse, Prop 2, dual control, cost budgets, interleaved) | `python experiments/run_price_of_information.py --mode full` |
 | Price-of-information: one sub-battery | `python experiments/run_price_of_information.py --only {curves,interleaved,cost,scale,prop2,dual-multiseed,efe}` |
 | SARSOP near-optimal baseline (requires `tools/build_sarsop.sh`) | `python experiments/run_sarsop_baseline.py` |
+| Constrained-POMDP reference at the endogenous budget (Lagrangian SARSOP sweep, requires `tools/build_sarsop.sh`), or recompute the feasible-envelope reference from the saved frontier with no episodes | `python experiments/run_cpomdp_baseline.py` or `python experiments/run_cpomdp_baseline.py --recompute-reference` |
 | w* atlas appendix table | `python experiments/run_w_atlas.py` |
 | Distractor-robustness experiment (Stage G2) | `python experiments/run_distractor_diagnosis.py` |
 | Supplementary battery (Testbed appendix table, bootstrap CIs, effect sizes, full pairwise stats) | `python experiments/run_supplementary.py` |
@@ -154,7 +155,7 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | POMCP exploration-constant selection on disjoint tuning seeds {11, 22, 33}, then the frozen comparison on the canonical seeds (Discussion, Appendix R) | `python experiments/run_pomcp_exploration_sweep.py --tuning --episodes 100` then `python experiments/select_pomcp_constants.py` |
 | Budget-frontier study at externally chosen budgets, calibrated on the canonical seeds and evaluated on held-out seeds {7, 8, 9, 10, 11} (Section 6.9, Table `tab:budget_frontier`) | `python experiments/run_budget_frontier.py` then `python experiments/build_budget_frontier_table.py` |
 | SARSOP TOST equivalence, unpaired and paired, with per-seed means archived | `python experiments/run_tost_sarsop.py` |
-| Figure 1 (schematic hero figure, no data; one file per master because the equivalence proposition is numbered differently in each) | `python experiments/build_fig_hero.py --both` |
+| Figure 1 (schematic hero figure, no data; one file per master because the equivalence proposition is numbered differently in each) | `python experiments/build_fig_hero.py` (writes both files) |
 | EFE on the RockSample POMCP diagnostic protocol (Appendix N) | `python experiments/run_rocksample_efe_diagnostic.py` |
 | Compute-matched POMCP check | `python experiments/run_pomcp_compute_matched.py` |
 | RockSample POMCP: configuration selection on tuning seeds | `python experiments/run_rocksample_pomcp.py tuning` |

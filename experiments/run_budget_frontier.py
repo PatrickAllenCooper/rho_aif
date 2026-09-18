@@ -57,9 +57,12 @@ inspected and in response to a re-review, disclosed as such
         V(B) = max sum_i q_i R_i  s.t.  q_i >= 0, sum_i q_i = 1,
                                         sum_i q_i U_i <= B,
     a linear program over the sampled (U_i, R_i) reference points whose
-    solution mixes at most two of them. Above the largest sampled usage the
-    envelope is flat at the largest sampled reward, and it is defined at
-    every budget. The interpolation is kept as a separate diagnostic column
+    solution mixes at most two of them (rho_aif.budget.feasible_envelope,
+    shared with run_cpomdp_baseline.py and run_rocksample_cpomdp_reference.py
+    since 9.17.47). Above the largest sampled usage the envelope is flat at
+    the largest sampled reward, and it is defined at every budget at or above
+    the smallest sampled usage (zero on all three committed frontiers). The
+    interpolation is kept as a separate diagnostic column
     (frontier_interp_at_B) and is no longer the comparator.
 (b) Two further policies, both selected on the calibration data only and
     evaluated on the held-out seeds: (4) the best target mixture, the
@@ -85,7 +88,6 @@ from typing import Dict, List, Optional
 
 import numpy as np
 import pandas as pd
-from scipy.optimize import linprog
 
 _ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_ROOT))
@@ -97,6 +99,8 @@ from rho_aif.budget import (  # noqa: E402
     UsageCurvePoint,
     _obs_costs_from_env,
     episode_sensing_usage,
+    feasible_envelope,
+    lp_mixture,
     make_log_w_grid,
     solve_shadow_price_from_curve,
     usage_value,
@@ -171,24 +175,6 @@ def frontier_reward_at(env_name: str, budget: float, frontier: pd.DataFrame) -> 
     return float(np.interp(budget, f["usage"].to_numpy(), f["reward"].to_numpy()))
 
 
-def _lp_mixture(usages: np.ndarray, rewards: np.ndarray, budget: float, equality: bool):
-    """Reward-maximizing mixture over sampled (usage, reward) points with
-    expected usage equal to (equality) or at most (cap) the budget. Returns
-    (value, weights) or None when infeasible. The LP has two constraints, so
-    a basic optimal solution has at most two positive weights."""
-    n = len(usages)
-    kw = dict(c=-rewards, bounds=[(0, None)] * n, method="highs")
-    if equality:
-        res = linprog(A_eq=[usages, np.ones(n)], b_eq=[budget, 1.0], **kw)
-    else:
-        res = linprog(A_ub=[usages], b_ub=[budget], A_eq=[np.ones(n)], b_eq=[1.0], **kw)
-    if not res.success:
-        return None
-    q = np.where(res.x > 1e-9, res.x, 0.0)
-    q = q / q.sum()
-    return float(rewards @ q), q
-
-
 def reference_envelope_at(env_name: str, budget: float, frontier: pd.DataFrame):
     """Amendment (a): the estimated feasible envelope of the sampled reference
     policies at budget B, max sum q_i R_i s.t. sum q_i U_i <= B. Defined at
@@ -197,13 +183,13 @@ def reference_envelope_at(env_name: str, budget: float, frontier: pd.DataFrame):
     f = frontier[frontier["env"] == env_name]
     if f.empty:
         return None, ""
-    sol = _lp_mixture(f["usage"].to_numpy(dtype=float), f["reward"].to_numpy(dtype=float), budget, equality=False)
+    sol = feasible_envelope(f["usage"].to_numpy(dtype=float), f["reward"].to_numpy(dtype=float), budget)
     if sol is None:
         return None, ""
-    val, q = sol
+    q = sol["weights"]
     support = "|".join(f"lam={lam:.4g}:U={u:.3f}:R={r:.3f}:q={qq:.4f}"
                        for lam, u, r, qq in zip(f["lam"], f["usage"], f["reward"], q) if qq > 0)
-    return val, support
+    return sol["value"], support
 
 
 def grid_lp_mixture(curve: pd.DataFrame, budget: float, equality: bool):
@@ -212,14 +198,10 @@ def grid_lp_mixture(curve: pd.DataFrame, budget: float, equality: bool):
     mixture) the budget. Returns dict(w_a, w_b, q_b, cal_reward, cal_usage) with
     w_b == w_a and q_b == 0 when a single grid weight is optimal, or None."""
     W = curve["w"].to_numpy(dtype=float); U = curve["usage"].to_numpy(dtype=float); R = curve["reward"].to_numpy(dtype=float)
-    sol = _lp_mixture(U, R, budget, equality=equality)
+    sol = lp_mixture(U, R, budget, equality=equality)
     if sol is None:
         return None
-    val, q = sol
-    idx = [i for i in range(len(W)) if q[i] > 0]
-    if len(idx) > 2:  # degenerate LP vertex, keep the two largest weights and renormalize
-        idx = sorted(idx, key=lambda i: -q[i])[:2]
-        tot = q[idx].sum(); q = np.zeros_like(q); q[idx] = 1.0 / len(idx) if tot == 0 else q[idx] / tot
+    q = sol["weights"]; idx = sol["support"]  # at most two, asserted in lp_mixture
     if len(idx) == 1:
         return dict(w_a=float(W[idx[0]]), w_b=float(W[idx[0]]), q_b=0.0, cal_reward=float(R[idx[0]]), cal_usage=float(U[idx[0]]))
     a, b = sorted(idx, key=lambda i: W[i])

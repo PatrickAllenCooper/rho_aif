@@ -781,6 +781,85 @@ def solve_shadow_price(
     return result
 
 
+# ---------------------------------------------------------------------------
+# Reward-maximizing mixtures of sampled policies (ledger 9.17.46, 9.17.47)
+# ---------------------------------------------------------------------------
+
+
+def lp_mixture(
+    usages: Sequence[float],
+    rewards: Sequence[float],
+    budget: float,
+    equality: bool = False,
+) -> Optional[Dict[str, Any]]:
+    """Reward-maximizing per-episode mixture of sampled policies at a budget.
+
+    Solves ``max sum_i q_i R_i`` subject to ``q >= 0``, ``sum_i q_i = 1`` and
+    ``sum_i q_i U_i <= budget`` (``equality=False``, the feasible envelope of
+    a cap-constrained problem) or ``sum_i q_i U_i == budget``
+    (``equality=True``, the best mixture that meets a usage target exactly).
+    The LP has two constraints, so a basic optimal solution has at most two
+    positive weights, and the solver is run as a dual simplex so that the
+    returned vertex has that property. That invariant is asserted rather than
+    repaired: an earlier producer-local fallback that truncated a larger
+    support and renormalized could zero every weight or violate the usage
+    constraint, and it was never exercised by a reported result.
+
+    Returns ``None`` when the program is infeasible (for the cap version, a
+    budget below the smallest sampled usage; for the equality version, a
+    budget outside the sampled usage range), otherwise a dict with ``value``
+    (the optimal expected reward), ``weights`` (a probability vector over the
+    sampled policies with at most two positive entries), ``support`` (the
+    indices of those entries), and ``usage`` (the mixture's expected usage).
+    """
+    from scipy.optimize import linprog
+
+    U = np.asarray(usages, dtype=float)
+    R = np.asarray(rewards, dtype=float)
+    if U.ndim != 1 or U.shape != R.shape or U.size == 0:
+        raise ValueError("lp_mixture needs matching one-dimensional usage and reward arrays")
+    n = U.size
+    kw = dict(c=-R, bounds=[(0.0, None)] * n, method="highs-ds")
+    if equality:
+        res = linprog(A_eq=np.vstack([U, np.ones(n)]), b_eq=[float(budget), 1.0], **kw)
+    else:
+        res = linprog(A_ub=U[None, :], b_ub=[float(budget)], A_eq=np.ones((1, n)), b_eq=[1.0], **kw)
+    if res.status == 2:  # infeasible
+        return None
+    if not res.success:
+        raise RuntimeError(f"lp_mixture: linprog failed with status {res.status}: {res.message}")
+    q = np.where(res.x > 1e-9, res.x, 0.0)
+    q = q / q.sum()
+    support = [int(i) for i in np.flatnonzero(q)]
+    if len(support) > 2:
+        raise AssertionError(
+            f"lp_mixture: basic optimal solution has {len(support)} positive weights, expected at most 2"
+        )
+    return {
+        "value": float(R @ q),
+        "weights": q,
+        "support": support,
+        "usage": float(U @ q),
+    }
+
+
+def feasible_envelope(usages: Sequence[float], rewards: Sequence[float], budget: float) -> Optional[Dict[str, Any]]:
+    """Estimated feasible envelope of sampled reference policies at a budget.
+
+    The largest expected reward attainable by a per-episode mixture of the
+    sampled policies whose expected usage is at most ``budget``. Any sampled
+    policy using less than the budget stays feasible, so the envelope is
+    defined at every budget at or above the smallest sampled usage and is
+    flat at the largest sampled reward once the budget exceeds the largest
+    sampled usage (the constraint is then slack). This is the reference
+    definition used by every constrained reference in the paper (the CPOMDP
+    reference at the endogenous budget, the budget-frontier study at
+    externally chosen budgets, and the RockSample depth-3 Lagrangian
+    reference).
+    """
+    return lp_mixture(usages, rewards, budget, equality=False)
+
+
 def dual_update(
     w: float, usage: float, budget: float, lr: float, w_max: Optional[float] = None
 ) -> float:

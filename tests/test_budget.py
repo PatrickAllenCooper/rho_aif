@@ -383,3 +383,57 @@ class TestProp2OnsetExact:
         assert below == pytest.approx(0.0)
         # Above threshold every episode starts with at least one observation.
         assert above >= 1.0
+
+
+def test_feasible_envelope_and_lp_mixture_basic_properties():
+    """Shared reference routine (ledger 9.17.47): cap version is the upper
+    concave envelope evaluated at the budget, flat beyond the largest sampled
+    usage, undefined below the smallest, and never reads a clamped boundary."""
+    import numpy as np
+    import pytest
+
+    from rho_aif.budget import feasible_envelope, lp_mixture
+
+    usages = [0.0, 1.0, 2.0, 4.0]
+    rewards = [0.0, 3.0, 3.5, 2.0]  # the last point is dominated
+    # Slack cap above every usage: the largest sampled reward, not the largest-usage reward.
+    sol = feasible_envelope(usages, rewards, budget=10.0)
+    assert sol["value"] == pytest.approx(3.5) and sol["support"] == [2]
+    # Cap between two sampled usages on the concave part: the mixture of the two neighbours.
+    sol = feasible_envelope(usages, rewards, budget=1.5)
+    assert sol["value"] == pytest.approx(3.25) and sorted(sol["support"]) == [1, 2]
+    assert sol["usage"] == pytest.approx(1.5)
+    # Cap at a sampled usage where the sampled point is optimal: a single support.
+    sol = feasible_envelope(usages, rewards, budget=1.0)
+    assert sol["value"] == pytest.approx(3.0) and sol["support"] == [1]
+    # A budget below the smallest sampled usage is infeasible.
+    assert feasible_envelope([1.0, 2.0], [1.0, 2.0], budget=0.5) is None
+    # Equality version meets the target exactly and can beat the adjacent pair.
+    sol = lp_mixture([0.0, 1.0, 2.0, 3.0], [1.0, 0.0, 4.0, 3.0], budget=1.0, equality=True)
+    assert sol["usage"] == pytest.approx(1.0) and sol["value"] == pytest.approx(2.5)
+    assert sorted(sol["support"]) == [0, 2] and len(sol["support"]) <= 2
+    # Equality outside the sampled range is infeasible.
+    assert lp_mixture([1.0, 2.0], [1.0, 2.0], budget=3.0, equality=True) is None
+    # Weights are a probability vector.
+    sol = feasible_envelope(usages, rewards, budget=3.0)
+    assert np.isclose(sol["weights"].sum(), 1.0) and (sol["weights"] >= 0).all()
+
+
+def test_feasible_envelope_matches_committed_cpomdp_reference():
+    """The committed results_cpomdp_baseline.csv R_ref column is the envelope
+    of the committed frontier at the saved endogenous budgets."""
+    from pathlib import Path
+
+    import pandas as pd
+    import pytest
+
+    from rho_aif.budget import feasible_envelope
+
+    root = Path(__file__).resolve().parents[1]
+    frontier = pd.read_csv(root / "results" / "results_cpomdp_frontier.csv")
+    base = pd.read_csv(root / "results" / "results_cpomdp_baseline.csv")
+    for r in base.itertuples(index=False):
+        f = frontier[frontier["env"] == r.env]
+        sol = feasible_envelope(f["usage"], f["reward"], float(r.budget_B_EFE))
+        assert sol["value"] == pytest.approx(float(r.R_ref), abs=1e-9)
+        assert float(r.gap_EFE) == pytest.approx(float(r.R_ref) - float(r.R_EFE), abs=1e-9)

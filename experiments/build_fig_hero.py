@@ -211,16 +211,26 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf",
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--path", default="figures/fig_hero_price_curve.pdf")
-    ap.add_argument("--prop-label", default="Prop. 3.1",
-                    help="proposition label printed in the callout box: "
+    ap.add_argument("--path", default=None, help="output PDF, used only with --one")
+    ap.add_argument("--prop-label", default=None,
+                    help="proposition label printed in the callout box, used only with --one: "
                          "'Prop. 3.1' for the JAIR master, 'Prop. 1' for the LNCS master")
     ap.add_argument("--both", action="store_true",
-                    help="write figures/fig_hero_price_curve.pdf (LNCS, Prop. 1) and "
+                    help="(default) write figures/fig_hero_price_curve.pdf (LNCS, Prop. 1) and "
                          "figures/fig_hero_price_curve_jair.pdf (JAIR, Prop. 3.1)")
+    ap.add_argument("--one", action="store_true",
+                    help="write only --path with --prop-label (both must then be given together, "
+                         "since the LNCS file needs 'Prop. 1' and the JAIR file 'Prop. 3.1')")
     a = ap.parse_args()
-    if a.both:
+    if a.one:
+        # A no-argument run must never pair the LNCS path with the JAIR label
+        # (a re-review caught that the earlier defaults did exactly that), so the
+        # single-file mode requires both to be stated explicitly.
+        if a.path is None or a.prop_label is None:
+            ap.error("--one requires both --path and --prop-label")
+        plot_hero(a.path, a.prop_label)
+    else:
+        if a.path is not None or a.prop_label is not None:
+            ap.error("--path and --prop-label are only used with --one; a plain run writes both committed files")
         plot_hero("figures/fig_hero_price_curve.pdf", "Prop. 1")
         plot_hero("figures/fig_hero_price_curve_jair.pdf", "Prop. 3.1")
-    else:
-        plot_hero(a.path, a.prop_label)

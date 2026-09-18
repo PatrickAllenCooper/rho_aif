@@ -2108,8 +2108,12 @@ def staircase_verdict(curve_df: pd.DataFrame, tol: float = 1e-9) -> str:
 def refresh_summary_verdicts() -> Dict[str, str]:
     """Recompute the summary verdicts that derive from saved CSVs alone.
 
-    Runs no episodes and touches no CSV. Used by ``--refresh-summary`` and at
-    the end of every ``main()`` run.
+    Runs no episodes. Reads the saved usage-curve, multiseed trace, and
+    multiseed metrics CSVs, rewrites the summary JSON, and rewrites one
+    derived column of ``results_price_dual_multiseed_metrics.csv``
+    (``readapt_restricted``, the restricted recovery time, ledger 9.17.46)
+    from that file's own ``readapt`` column. No other CSV is touched. Used by
+    ``--refresh-summary`` and at the end of every ``main()`` run.
     """
     summary_path = RESULTS / "results_price_of_information_summary.json"
     summary: Dict = {}
@@ -2167,8 +2171,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--refresh-summary",
         action="store_true",
-        help="Recompute the summary JSON verdicts that derive from saved CSVs "
-        "(no episodes run, no CSV touched), then exit",
+        help="Recompute the summary JSON verdicts that derive from saved CSVs and the "
+        "readapt_restricted column of results_price_dual_multiseed_metrics.csv "
+        "(no episodes run, no other CSV touched), then exit",
     )
     args = p.parse_args()
     # Guard against a silent artifact overwrite. ``--replot`` re-plots only the

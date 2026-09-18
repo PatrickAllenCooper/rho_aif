@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Exact constrained-POMDP (CPOMDP) baseline for the observe-then-commit suite.
+Near-optimal constrained-POMDP (CPOMDP) reference for the observe-then-commit suite.
 
 Extends the SARSOP export of run_sarsop_baseline.py with a literal usage
 penalty in the reward model: R(obs_j, s, *, *) = -(cost_j + lambda * u_j),
 where u_j is the sensing-usage unit (1 for count usage). Solving this with
 the APPL SARSOP solver at a grid of lambda >= 0 gives, for each lambda, the
-EXACT optimal value of
+near-optimal (SARSOP, precision 1e-3) value of
 
     max_pi  E_pi[R] - lambda * E_pi[U]
 
@@ -14,8 +14,8 @@ over the full space of POMDP policies (not the restricted Planning+IG
 family). For a finite discounted CMDP this is a strong-duality Lagrangian
 relaxation of the budgeted problem max_pi E[R] s.t. E[U] <= B: the swept
 points trace the upper concave envelope of the achievable (E[U], E[R])
-region, and any budget between two adjacent swept usages is attained
-exactly by a per-episode mixture of the two bracketing policies (the same
+region, and any budget between two adjacent swept usages is attained by a
+per-episode mixture of the two bracketing policies (the same
 mixture argument used for the Planning+IG shadow price in
 Definition~\\ref{def:pi3} / rho_aif.budget.crossing_bracket).
 
@@ -25,10 +25,26 @@ both referees: it reports the optimality gap of the Planning+IG family
 at a matched sensing budget, for the three discrete OTC benchmarks that
 admit exact SARSOP solves (Tiger, Diagnosis, Bandit).
 
-Scope: exact for these three environments under the same discounted
+Scope: SARSOP-solved for these three environments under the same discounted
 infinite-horizon relaxation (discount 0.999) already used for the
 reward-only SARSOP baseline. Does not extend to RockSample or Structural
 Inspection's larger factored state spaces -- that remains future work.
+
+Reference definition (amended 2026-09-18, ledger 9.17.47). The reference
+reward at the endogenous budget B_EFE is the estimated feasible envelope of
+the sampled reference policies, max sum_i q_i R_i subject to q >= 0,
+sum q_i = 1, sum q_i U_i <= B_EFE (rho_aif.budget.feasible_envelope, the
+same routine run_budget_frontier.py uses), stored as R_ref. Under the stated
+reference problem every sampled policy using less than B_EFE stays feasible,
+so the envelope never reads a clamped boundary value. The earlier lookup,
+equal-usage interpolation between the two sampled points bracketing B_EFE
+and a clamp outside the sampled range (exact_reward_at_budget), is kept as
+the diagnostic column R_interp_legacy, together with its gap columns, and is
+no longer the comparator. `--recompute-reference` rewrites
+results_cpomdp_baseline.csv from the saved frontier and the saved EFE and
+Planning+IG rows with no episodes run, which is how the committed CSV was
+brought under the amended definition (Tiger unchanged at 5.016, Diagnosis
+-1.2973 to -1.2653, Bandit 6.3129 to 6.3143).
 """
 
 from __future__ import annotations
@@ -55,7 +71,7 @@ from rho_aif.benchmark import (
     make_otc_agent,
     run_otc_episode,
 )
-from rho_aif.budget import estimate_usage_curve, make_log_w_grid, solve_shadow_price_from_curve
+from rho_aif.budget import estimate_usage_curve, feasible_envelope, make_log_w_grid, solve_shadow_price_from_curve
 
 from run_sarsop_baseline import AlphaVectorAgent, evaluate_agent, parse_policy, solve_sarsop
 
@@ -168,7 +184,8 @@ def sweep_lambda(
 
 def exact_reward_at_budget(frontier: pd.DataFrame, budget: float) -> Tuple[float, float, float]:
     """
-    Interpolate the exact Lagrangian-sweep frontier at usage == budget.
+    LEGACY DIAGNOSTIC (no longer the comparator, see the module docstring):
+    interpolate the Lagrangian-sweep frontier at usage == budget.
 
     R at the budget is the usage-weighted mixture of the two bracketing
     points' rewards (exactly attained by randomizing per episode between
@@ -202,6 +219,65 @@ def exact_reward_at_budget(frontier: pd.DataFrame, budget: float) -> Tuple[float
     q = min(1.0, max(0.0, q))
     r_exact = (1.0 - q) * r_lo + q * r_hi
     return r_exact, float(lams[idx_lo]), float(lams[idx_hi])
+
+
+def reference_envelope_at_budget(frontier: pd.DataFrame, budget: float) -> Tuple[float, str]:
+    """Estimated feasible envelope of the sampled reference at the budget
+    (rho_aif.budget.feasible_envelope) and a description of its support."""
+    sol = feasible_envelope(frontier["usage"].to_numpy(dtype=float), frontier["reward"].to_numpy(dtype=float), budget)
+    if sol is None:
+        return float("nan"), "infeasible: budget below the smallest sampled usage"
+    q = sol["weights"]
+    support = "|".join(
+        f"lam={lam:.4g}:U={u:.3f}:R={r:.3f}:q={qq:.4f}"
+        for lam, u, r, qq in zip(frontier["lam"], frontier["usage"], frontier["reward"], q) if qq > 0
+    )
+    return float(sol["value"]), support
+
+
+def summary_row(name: str, frontier: pd.DataFrame, budget: float, r_efe: float, r_efe_se: float,
+                w_star: float, r_pig: float, r_pig_se: float, u_pig: float) -> dict:
+    """One results_cpomdp_baseline.csv row from saved or fresh ingredients."""
+    r_ref, support = reference_envelope_at_budget(frontier, budget)
+    r_interp, lam_lo, lam_hi = exact_reward_at_budget(frontier, budget)
+    pct = lambda gap, ref: 100.0 * gap / abs(ref) if ref != 0 and np.isfinite(ref) else float("nan")
+    gap_efe, gap_pig = r_ref - r_efe, r_ref - r_pig
+    return {
+        "env": name,
+        "budget_B_EFE": budget,
+        "R_ref": r_ref,
+        "ref_support": support,
+        "R_EFE": r_efe,
+        "R_EFE_se": r_efe_se,
+        "gap_EFE": gap_efe,
+        "gap_EFE_pct": pct(gap_efe, r_ref),
+        "w_star_PIG": w_star,
+        "R_PIG": r_pig,
+        "R_PIG_se": r_pig_se,
+        "U_PIG": u_pig,
+        "gap_PIG": gap_pig,
+        "gap_PIG_pct": pct(gap_pig, r_ref),
+        "R_interp_legacy": r_interp,
+        "lam_bracket_lo": lam_lo,
+        "lam_bracket_hi": lam_hi,
+        "gap_EFE_interp_legacy": r_interp - r_efe,
+        "gap_EFE_pct_interp_legacy": pct(r_interp - r_efe, r_interp),
+    }
+
+
+def recompute_reference() -> None:
+    """Rewrite results_cpomdp_baseline.csv under the envelope definition from
+    the saved frontier and the saved EFE and Planning+IG rows, no episodes run."""
+    frontier_all = pd.read_csv(RESULTS / "results_cpomdp_frontier.csv")
+    old = pd.read_csv(RESULTS / "results_cpomdp_baseline.csv")
+    rows = []
+    for r in old.itertuples(index=False):
+        frontier = frontier_all[frontier_all["env"] == r.env]
+        rows.append(summary_row(r.env, frontier, float(r.budget_B_EFE), float(r.R_EFE), float(r.R_EFE_se),
+                                float(r.w_star_PIG), float(r.R_PIG), float(r.R_PIG_se), float(r.U_PIG)))
+    out = pd.DataFrame(rows)
+    out.to_csv(RESULTS / "results_cpomdp_baseline.csv", index=False)
+    print(out.to_string(index=False))
 
 
 def planning_ig_at_budget(
@@ -240,7 +316,13 @@ def main() -> None:
     p.add_argument("--seeds", type=int, nargs="*", default=[42, 123, 456, 789, 1024])
     p.add_argument("--episodes", type=int, default=300)
     p.add_argument("--envs", nargs="*", default=ENVS)
+    p.add_argument("--recompute-reference", action="store_true",
+                   help="rewrite results_cpomdp_baseline.csv from the saved frontier and saved EFE and "
+                        "Planning+IG rows under the feasible-envelope reference, running no episodes")
     args = p.parse_args()
+    if args.recompute_reference:
+        recompute_reference()
+        return
 
     pomdpsol = Path(args.pomdpsol)
     if not pomdpsol.exists():
@@ -268,35 +350,17 @@ def main() -> None:
             args.episodes,
         )
         budget = float(efe_r["usage"])
-        r_exact, lam_lo, lam_hi = exact_reward_at_budget(frontier, budget)
         pig_r = planning_ig_at_budget(
             name, budget, args.seeds, args.episodes, cfg.planning_horizon
         )
-
-        gap_efe = r_exact - efe_r["reward"]
-        gap_pig = r_exact - pig_r["reward"]
-        row = {
-            "env": name,
-            "budget_B_EFE": budget,
-            "R_exact": r_exact,
-            "lam_bracket_lo": lam_lo,
-            "lam_bracket_hi": lam_hi,
-            "R_EFE": efe_r["reward"],
-            "R_EFE_se": efe_r["reward_se"],
-            "gap_EFE": gap_efe,
-            "gap_EFE_pct": 100.0 * gap_efe / abs(r_exact) if r_exact != 0 else float("nan"),
-            "w_star_PIG": pig_r["w_star"],
-            "R_PIG": pig_r["reward"],
-            "R_PIG_se": pig_r["reward_se"],
-            "U_PIG": pig_r["usage"],
-            "gap_PIG": gap_pig,
-            "gap_PIG_pct": 100.0 * gap_pig / abs(r_exact) if r_exact != 0 else float("nan"),
-        }
+        row = summary_row(name, frontier, budget, float(efe_r["reward"]), float(efe_r["reward_se"]),
+                          float(pig_r["w_star"]), float(pig_r["reward"]), float(pig_r["reward_se"]),
+                          float(pig_r["usage"]))
         summary_rows.append(row)
         print(
-            f"\n  {name}: B_EFE={budget:.3f}  R_exact={r_exact:.4f}  "
-            f"R_EFE={efe_r['reward']:.4f} (gap {gap_efe:+.4f}, {row['gap_EFE_pct']:+.2f}%)  "
-            f"R_PIG(w={pig_r['w_star']:.3g})={pig_r['reward']:.4f} (gap {gap_pig:+.4f}, "
+            f"\n  {name}: B_EFE={budget:.3f}  R_ref={row['R_ref']:.4f}  "
+            f"R_EFE={efe_r['reward']:.4f} (gap {row['gap_EFE']:+.4f}, {row['gap_EFE_pct']:+.2f}%)  "
+            f"R_PIG(w={pig_r['w_star']:.3g})={pig_r['reward']:.4f} (gap {row['gap_PIG']:+.4f}, "
             f"{row['gap_PIG_pct']:+.2f}%)",
             flush=True,
         )

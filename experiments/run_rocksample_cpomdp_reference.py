@@ -67,29 +67,25 @@ def evaluate_lambda(env, lam, seeds, num_episodes, max_depth, max_steps):
 
 
 def frontier_reward_at_budget(frontier: pd.DataFrame, budget: float):
-    """Mirrors run_cpomdp_baseline.exact_reward_at_budget: usage-weighted
-    mixture interpolation on the swept (usage, reward) frontier, sorted by
-    realized usage (usage is not monotone in lambda)."""
-    df = frontier.sort_values("usage").reset_index(drop=True)
-    usages = df["usage"].to_numpy(dtype=float)
-    rewards = df["reward"].to_numpy(dtype=float)
-    lams = df["lam"].to_numpy(dtype=float)
+    """Estimated feasible envelope of the swept (usage, reward) points at the
+    budget (rho_aif.budget.feasible_envelope, the reference definition shared
+    with run_cpomdp_baseline.py and run_budget_frontier.py since ledger
+    9.17.47). Returns the envelope value and the lambda range of its support.
+    On the committed RS[7,8] sweep every swept usage lies below B_EFE, so the
+    envelope is the largest swept reward, 12.306, the same value the earlier
+    interpolation-with-clamp lookup stored, so the committed R_ref value is
+    unchanged. The committed row's lam_bracket_lo and lam_bracket_hi still
+    hold the earlier clamp's endpoint (0.489, 0.489). A rerun under the shared
+    routine stores the support's lambda range instead, (0, 0) here because
+    the five swept points at usage 1 tie and the solver returns the first,
+    and neither column is cited in the manuscript."""
+    from rho_aif.budget import feasible_envelope
 
-    if budget <= usages[0]:
-        return float(rewards[0]), float(lams[0]), float(lams[0])
-    if budget >= usages[-1]:
-        return float(rewards[-1]), float(lams[-1]), float(lams[-1])
-
-    lo_mask = usages <= budget
-    hi_mask = usages >= budget
-    idx_lo = int(np.where(lo_mask)[0][-1])
-    idx_hi = int(np.where(hi_mask)[0][0])
-    u_lo, u_hi = float(usages[idx_lo]), float(usages[idx_hi])
-    r_lo, r_hi = float(rewards[idx_lo]), float(rewards[idx_hi])
-    if u_hi == u_lo:
-        return r_lo, float(lams[idx_lo]), float(lams[idx_hi])
-    q = min(1.0, max(0.0, (budget - u_lo) / (u_hi - u_lo)))
-    return (1.0 - q) * r_lo + q * r_hi, float(lams[idx_lo]), float(lams[idx_hi])
+    sol = feasible_envelope(frontier["usage"].to_numpy(dtype=float), frontier["reward"].to_numpy(dtype=float), budget)
+    if sol is None:
+        return float("nan"), float("nan"), float("nan")
+    lams = frontier["lam"].to_numpy(dtype=float)[sol["support"]]
+    return float(sol["value"]), float(lams.min()), float(lams.max())
 
 
 def main():
