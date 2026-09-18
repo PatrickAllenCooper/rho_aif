@@ -201,8 +201,19 @@ def main():
     p.add_argument("--episodes", type=int, default=200)
     p.add_argument("--quick", action="store_true", help="smoke test: 4 episodes, 2 seeds, scratch output")
     p.add_argument("--out", default="results/results_pomcp_exploration_sweep.csv")
+    p.add_argument(
+        "--tuning", action="store_true",
+        help="Selection run on the disjoint tuning seeds the RockSample POMCP uses "
+             "(11, 22, 33). Writes results_pomcp_exploration_tuning.csv. The best "
+             "constant per solver and environment is then read from this file and "
+             "evaluated on the canonical seeds already in the sweep CSV, so no "
+             "configuration is selected on the seeds that report it (ledger 9.17.45).",
+    )
     args = p.parse_args()
     seeds, episodes, out = list(SEEDS), args.episodes, args.out
+    if args.tuning:
+        seeds = [11, 22, 33]
+        out = "results/results_pomcp_exploration_tuning.csv"
     if args.quick:
         seeds, episodes = seeds[:2], 4
         out = os.path.join(os.environ.get("TMPDIR", "/tmp"), "results_pomcp_exploration_sweep_quick.csv")

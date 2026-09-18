@@ -35,7 +35,7 @@ sys.path.insert(0, str(_ROOT))
 sys.path.insert(0, str(_ROOT / "experiments"))
 
 from rho_aif.benchmark import get_benchmark, get_obs_models, make_env_config, make_otc_agent
-from rho_aif.stats import tost_equivalence
+from rho_aif.stats import tost_equivalence, tost_equivalence_paired
 
 from run_sarsop_baseline import (
     AlphaVectorAgent,
@@ -84,6 +84,7 @@ def main() -> None:
     POMDP_DIR.mkdir(parents=True, exist_ok=True)
 
     rows = []
+    per_seed_rows = []
     for name in args.envs:
         cfg = get_benchmark(name)
         env = cfg.env_factory()
@@ -109,6 +110,11 @@ def main() -> None:
 
         margin = ENV_MARGINS[name]
         result = tost_equivalence(np.array(efe_means), np.array(sarsop_means), margin=margin, alpha=args.alpha)
+        paired = tost_equivalence_paired(np.array(efe_means), np.array(sarsop_means), margin=margin, alpha=args.alpha)
+        per_seed_rows.extend(
+            {"env": name, "seed": int(sd), "mean_EFE": float(e), "mean_SARSOP": float(sv), "diff": float(e - sv)}
+            for sd, e, sv in zip(args.seeds, efe_means, sarsop_means)
+        )
         rows.append(
             {
                 "env": name,
@@ -128,6 +134,11 @@ def main() -> None:
                 "ci_conf": result["ci_conf"],
                 "ci_lo": result["ci"][0],
                 "ci_hi": result["ci"][1],
+                "p_tost_paired": paired["p_tost"],
+                "diff_paired": paired["diff"],
+                "se_paired": paired["se"],
+                "equivalent_paired": paired["equivalent"],
+                "paired_degenerate": paired["degenerate"],
             }
         )
         verdict = "EQUIVALENT" if result["equivalent"] else "NOT EQUIVALENT (or underpowered)"
@@ -143,6 +154,10 @@ def main() -> None:
     out = Path(args.out) if args.out else RESULTS / "results_tost_sarsop.csv"
     df.to_csv(out, index=False)
     print(f"\nSaved {out}")
+    ps = pd.DataFrame(per_seed_rows)
+    ps_out = out.with_name(out.stem + "_per_seed.csv")
+    ps.to_csv(ps_out, index=False)
+    print(f"Saved {ps_out}")
     print(df.to_string(index=False))
 
 

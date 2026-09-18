@@ -28,7 +28,7 @@
   "verdict": {
     "prop2_jump": "HOLD \u2014 onset brackets {'TestbedPos-p06': 0.030000000000000027, 'TestbedPos-p058': 0.030000000000000027}; U=0 below closed-form threshold",
     "curve_collapse": "HOLD \u2014 100% of matched w/\u03b1 points within 2\u00b7SE; max spread \u22640.00; crossing brackets coincide across \u03b1",
-    "dual_rescale": "HOLD \u2014 usage pinned near B; windowed w ratio post/pre \u224811.54 after \u00d710 reward rescale; re-adaptation 176\u219250 episodes with lr reset-on-shift",
+    "dual_rescale": "HOLD \u2014 usage pinned near B; windowed w ratio post/pre \u22489.40 after \u00d710 reward rescale; re-adaptation 157\u219246 episodes with lr reset-on-shift",
     "shadow_staircases": "PARTIAL: Tiger, Diagnosis, Inspection-N8 nondecreasing at every sampled grid point; Bandit, Tileworld-6x6 locally non-monotone from discrete policy switches (count-usage gap, Proposition PI-2 scope note); brackets with SEs reported, not singleton prices"
   },
   "curves_rows": 25,
@@ -58,10 +58,10 @@
   },
   "brackets_coincide": true,
   "scale_rows": 12,
-  "dual_w_ratio_post_pre": 11.543353903205652,
-  "dual_pre_w": 0.23389998709750745,
-  "dual_post_w": 2.699990329021764,
-  "dual_pre_usage": 8.0,
+  "dual_w_ratio_post_pre": 9.399130891549548,
+  "dual_pre_w": 0.28850080841077974,
+  "dual_post_w": 2.711656860570778,
+  "dual_pre_usage": 8.1,
   "dual_post_usage": 8.0,
   "dual_crossing_bracket": {
     "w_lo": 0.1414213562373095,
@@ -70,10 +70,10 @@
   "dual_rows": 400,
   "efe_rows": 5,
   "usage_curve_rows": 66,
-  "dual_readapt_decay": 176,
-  "dual_readapt_reset": 50,
+  "dual_readapt_decay": 157,
+  "dual_readapt_reset": 46,
   "dual_reset_events": [
-    215
+    213
   ],
   "dual_reset_rows": 800,
   "interleaved_rows": 12,
@@ -85,38 +85,38 @@
   ],
   "dual_ms_n_seeds": 10,
   "dual_ms_readapt_decay": {
-    "mean": 150.9,
-    "ci_lo": 142.89060229757845,
-    "ci_hi": 158.90939770242156,
-    "n_recovered": 10,
+    "mean": 154.77777777777777,
+    "ci_lo": 142.6876781652032,
+    "ci_hi": 166.86787739035233,
+    "n_recovered": 9,
     "n_total": 10
   },
   "dual_ms_pre_err_decay": {
-    "mean": 0.1519999999999996,
-    "ci_lo": 0.0949837980141702,
-    "ci_hi": 0.20901620198582901
+    "mean": 0.09999999999999964,
+    "ci_lo": 0.051459487710435355,
+    "ci_hi": 0.14854051228956394
   },
   "dual_ms_post_err_decay": {
-    "mean": 0.1919999999999999,
-    "ci_lo": 0.06143790851348402,
-    "ci_hi": 0.32256209148651577
+    "mean": 0.39199999999999974,
+    "ci_lo": 0.11796112652074708,
+    "ci_hi": 0.6660388734792524
   },
   "dual_ms_readapt_reset": {
-    "mean": 57.0,
-    "ci_lo": 51.96466882916327,
-    "ci_hi": 62.03533117083673,
+    "mean": 51.2,
+    "ci_lo": 46.132558655714135,
+    "ci_hi": 56.26744134428587,
     "n_recovered": 10,
     "n_total": 10
   },
   "dual_ms_pre_err_reset": {
-    "mean": 0.1519999999999996,
-    "ci_lo": 0.0949837980141702,
-    "ci_hi": 0.20901620198582901
+    "mean": 0.09999999999999964,
+    "ci_lo": 0.051459487710435355,
+    "ci_hi": 0.14854051228956394
   },
   "dual_ms_post_err_reset": {
-    "mean": 0.09999999999999964,
-    "ci_lo": 0.05588185558450243,
-    "ci_hi": 0.14411814441549686
+    "mean": 0.05999999999999961,
+    "ci_lo": 0.02445482373717102,
+    "ci_hi": 0.0955451762628282
   },
   "dual_ms_cis_disjoint": true,
   "dual_multiseed_rows": 8000,

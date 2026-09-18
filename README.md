@@ -128,6 +128,8 @@ Guidance_Documents/      Research plan and project guidance
 
 ## Reproducing the Paper
 
+The execution environment of record (machine, OS, Python, and the exact package versions that produced every committed result) is documented in `ENVIRONMENT.md`, with the pinned versions in `requirements-lock.txt`. Per-seed metrics for the claim-bearing batteries are committed next to their aggregates, so every reported test can be recomputed from the CSVs without rerunning an episode.
+
 Run from the repository root after `pip install -e ".[dev]"`.
 
 | Paper content | Command |
@@ -149,6 +151,9 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | Bandit w=100 depth comparison (Discussion) | `python experiments/run_bandit_w100_depth_comparison.py` |
 | MCTS-EFE component ablation (Discussion, Appendix R) | `python experiments/run_mcts_efe_ablation.py` then `python experiments/build_mcts_ablation_tables.py` |
 | POMCP exploration-constant sweep and informed rollouts (Discussion, Appendix R) | `python experiments/run_pomcp_exploration_sweep.py` then `python experiments/build_mcts_ablation_tables.py` |
+| POMCP exploration-constant selection on disjoint tuning seeds {11, 22, 33}, then the frozen comparison on the canonical seeds (Discussion, Appendix R) | `python experiments/run_pomcp_exploration_sweep.py --tuning` then `python experiments/select_pomcp_constants.py` |
+| Budget-frontier study at externally chosen budgets, calibrated on the canonical seeds and evaluated on held-out seeds {7, 8, 9, 10, 11} (Section 6.9, Table `tab:budget_frontier`) | `python experiments/run_budget_frontier.py` then `python experiments/build_budget_frontier_table.py` |
+| SARSOP TOST equivalence, unpaired and paired, with per-seed means archived | `python experiments/run_tost_sarsop.py` |
 | EFE on the RockSample POMCP diagnostic protocol (Appendix N) | `python experiments/run_rocksample_efe_diagnostic.py` |
 | Compute-matched POMCP check | `python experiments/run_pomcp_compute_matched.py` |
 | RockSample POMCP: configuration selection on tuning seeds | `python experiments/run_rocksample_pomcp.py tuning` |

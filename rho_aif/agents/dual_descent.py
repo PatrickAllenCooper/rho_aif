@@ -142,11 +142,9 @@ class DualWeightAgent(PlanningInfoGainAgent):
         self._maybe_reset_on_shift()
         lr_t = self.current_lr()
         self.lr_history.append(lr_t)
-        new_w = dual_update(self.info_gain_weight, u, self.budget, lr_t)
+        new_w = dual_update(self.info_gain_weight, u, self.budget, lr_t, w_max=self.max_weight)
         if new_w < self.min_weight:
             new_w = self.min_weight
-        if self.max_weight is not None and new_w > self.max_weight:
-            new_w = self.max_weight
         self.info_gain_weight = new_w
         self._n_updates += 1
         self.weight_history.append(new_w)

@@ -781,6 +781,15 @@ def solve_shadow_price(
     return result
 
 
-def dual_update(w: float, usage: float, budget: float, lr: float) -> float:
-    """Projected dual step driving usage to budget when U increases with w."""
-    return max(0.0, float(w) + float(lr) * (float(budget) - float(usage)))
+def dual_update(
+    w: float, usage: float, budget: float, lr: float, w_max: Optional[float] = None
+) -> float:
+    """Dual step driving usage toward the budget when U increases with w,
+    projected onto [0, w_max]. With w_max=None only the lower clip applies,
+    which is the unprojected recursion the paper's Proposition PI-5 does not
+    cover. The reported experiments pass the finite w_max the proposition
+    assumes (ledger 9.17.45)."""
+    new_w = max(0.0, float(w) + float(lr) * (float(budget) - float(usage)))
+    if w_max is not None:
+        new_w = min(new_w, float(w_max))
+    return new_w

@@ -1380,6 +1380,14 @@ def plot_prop2_jumps(curve_df: pd.DataFrame, jump_df: pd.DataFrame, path: Path) 
 # 4. Dual descent online
 # ---------------------------------------------------------------------------
 
+# Upper projection of the dual controller, the top of the swept weight grid.
+# Proposition PI-5 assumes a finite projection interval [0, w_max]; every
+# reported run uses this value, so the deployed controller is the projected
+# variant the proposition covers (ledger 9.17.45). No reported iterate has
+# come within two orders of magnitude of it.
+DUAL_W_MAX = 100.0
+
+
 def run_dual_descent(
     n_episodes: int,
     budget: float,
@@ -1396,10 +1404,15 @@ def run_dual_descent(
 ) -> Tuple[pd.DataFrame, DualWeightAgent]:
     np.random.seed(seed)
     env = make_scaled_diagnosis(1.0)
-    # Seed the environment stream once; run_otc_episode with no seed then
-    # continues this generator deterministically (Gymnasium reset() without
-    # a seed does not re-seed np_random).
-    env.reset(seed=int(seed))
+    # Every episode is seeded explicitly by the rule the paper's checklist
+    # states (10^4 * outer seed + episode index). Seeding the stream once and
+    # letting reset(seed=None) continue it was not enough: the environment
+    # constructed at the rescale below started from OS entropy, so two runs
+    # with the same declared seed diverged after the rescale (found in the
+    # 2026-09-17 review, ledger 9.17.45). Per-episode seeding covers the
+    # replacement environment by construction.
+    def _episode_seed(t: int) -> int:
+        return 10_000 * int(seed) + int(t)
     agent = DualWeightAgent(
         get_obs_models(env),
         make_env_config(env),
@@ -1408,6 +1421,7 @@ def run_dual_descent(
         lr_decay=lr_decay,
         planning_horizon=3,
         initial_weight=1.0,
+        max_weight=DUAL_W_MAX,
         reset_window=reset_window,
         reset_k=reset_k,
     )
@@ -1448,6 +1462,7 @@ def run_dual_descent(
                 lr_decay=lr_decay,
                 planning_horizon=3,
                 initial_weight=cur_w,
+                max_weight=DUAL_W_MAX,
                 reset_window=reset_window,
                 reset_k=reset_k,
             )
@@ -1462,7 +1477,7 @@ def run_dual_descent(
             if verbose:
                 print(f"  t={t}: rescale rewards ×{rescale_factor}, keep w={cur_w:.4g}", flush=True)
 
-        result = run_otc_episode(agent, env)
+        result = run_otc_episode(agent, env, seed=_episode_seed(t))
         u = usage_value(episode_sensing_usage(result), "count")
         new_w = agent.end_episode(u)
         rows.append(

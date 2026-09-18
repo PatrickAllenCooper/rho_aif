@@ -1,3 +1,4 @@
+import math
 """
 EFE agent (rho-POMDP with rho = Expected Free Energy).
 
@@ -16,6 +17,26 @@ from typing import List, Tuple, Union
 from rho_aif.belief import BeliefState
 from rho_aif.agents.base import BaseAgent
 from rho_aif.audit import ActionAudit, DecisionAudit
+
+
+def _strictly_better(candidate: float, incumbent: float, rel: float = 1e-12) -> float:
+    """Tolerance for a strict comparison that is homogeneous of degree one.
+
+    A rescale of every reward and cost by alpha > 0 multiplies both values
+    by alpha, and this tolerance scales with them, so the decision is the
+    same at every scale (Proposition PI-1). An absolute epsilon is not
+    scale-independent: a fixed 1e-12 corresponds to 1e-12/alpha in the
+    unscaled units, so a small enough positive rescale could flip a
+    comparison whose exact ranking is unchanged (found in the 2026-09-17
+    review, ledger 9.17.45). Both values zero gives a zero tolerance and a
+    strict comparison.
+    """
+    c, i = float(candidate), float(incumbent)
+    if math.isinf(i) or math.isinf(c):
+        # Against the +/-inf sentinel that starts a search, any finite
+        # candidate is strictly better, so the tolerance is zero.
+        return 0.0
+    return rel * max(abs(c), abs(i))
 
 
 class EFEAgent(BaseAgent):
@@ -111,11 +132,11 @@ class EFEAgent(BaseAgent):
             g, _ = self._efe_observe(k, belief, depth)
             # Strict improvement only; ties keep the lower action index so
             # EFE and Planning+IG(w=1) share a deterministic tie-break.
-            if g < best_obs_g - 1e-12:
+            if g < best_obs_g - _strictly_better(g, best_obs_g):
                 best_obs_g = g
                 best_obs_action = k
 
-        if best_obs_action is not None and best_obs_g < best_commit_g - 1e-12:
+        if best_obs_action is not None and best_obs_g < best_commit_g - _strictly_better(best_obs_g, best_commit_g):
             return best_obs_action, best_obs_g
         return best_commit_action, best_commit_g
 

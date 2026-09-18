@@ -300,3 +300,43 @@ def hierarchical_bootstrap_ci(
         float(np.percentile(boot, 100 * alpha / 2)),
         float(np.percentile(boot, 100 * (1 - alpha / 2))),
     )
+
+def tost_equivalence_paired(
+    means_a: np.ndarray,
+    means_b: np.ndarray,
+    margin: float,
+    alpha: float = 0.05,
+) -> Dict:
+    """Paired TOST on per-seed differences d_i = a_i - b_i (one-sample t on d).
+
+    The sensitivity companion to tost_equivalence for designs that share a
+    seed list. When the two arms share randomness the paired analysis is the
+    sharper one; when they do not, the unpaired Welch form is the conservative
+    one. Reporting both shows which way the shared-seed covariance cuts
+    (ledger 9.17.45).
+    """
+    from scipy import stats as _st
+
+    a = np.asarray(means_a, dtype=float)
+    b = np.asarray(means_b, dtype=float)
+    if a.shape != b.shape:
+        raise ValueError("paired TOST needs equal-length per-seed arrays")
+    d = a - b
+    n = int(d.size)
+    diff = float(np.mean(d))
+    sd = float(np.std(d, ddof=1)) if n > 1 else float("nan")
+    se = sd / np.sqrt(n) if n > 1 else float("nan")
+    df = n - 1
+    if not np.isfinite(se) or se == 0.0:
+        # Identical trajectories (e.g. Tiger): a zero difference with zero
+        # spread is inside any positive margin, so both one-sided nulls are
+        # rejected trivially. Report p = 0 and flag the degenerate variance.
+        return dict(diff=diff, se=0.0, df=df, p_lower=0.0, p_upper=0.0,
+                    p_tost=0.0, equivalent=bool(abs(diff) < margin), degenerate=True)
+    t_lower = (diff + margin) / se   # H0: diff <= -margin
+    t_upper = (diff - margin) / se   # H0: diff >= +margin
+    p_lower = float(1.0 - _st.t.cdf(t_lower, df))
+    p_upper = float(_st.t.cdf(t_upper, df))
+    p_tost = max(p_lower, p_upper)
+    return dict(diff=diff, se=se, df=df, p_lower=p_lower, p_upper=p_upper,
+                p_tost=p_tost, equivalent=bool(p_tost < alpha), degenerate=False)
