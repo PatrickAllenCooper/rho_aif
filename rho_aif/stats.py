@@ -321,18 +321,30 @@ def tost_equivalence_paired(
     b = np.asarray(means_b, dtype=float)
     if a.shape != b.shape:
         raise ValueError("paired TOST needs equal-length per-seed arrays")
+    if a.ndim != 1 or a.size < 2:
+        raise ValueError("paired TOST needs at least two paired observations")
+    if not (np.all(np.isfinite(a)) and np.all(np.isfinite(b))):
+        raise ValueError("paired TOST needs finite per-seed means")
+    if not (np.isfinite(margin) and margin > 0):
+        raise ValueError("paired TOST needs a positive finite margin")
     d = a - b
     n = int(d.size)
     diff = float(np.mean(d))
-    sd = float(np.std(d, ddof=1)) if n > 1 else float("nan")
-    se = sd / np.sqrt(n) if n > 1 else float("nan")
+    sd = float(np.std(d, ddof=1))
+    se = sd / np.sqrt(n)
     df = n - 1
-    if not np.isfinite(se) or se == 0.0:
-        # Identical trajectories (e.g. Tiger): a zero difference with zero
-        # spread is inside any positive margin, so both one-sided nulls are
-        # rejected trivially. Report p = 0 and flag the degenerate variance.
-        return dict(diff=diff, se=0.0, df=df, p_lower=0.0, p_upper=0.0,
-                    p_tost=0.0, equivalent=bool(abs(diff) < margin), degenerate=True)
+    if se == 0.0:
+        # Constant differences (e.g. Tiger, where the two agents act
+        # identically): the one-sample t statistics are infinite, so each
+        # one-sided p-value is its limit, 0 when the constant difference lies
+        # strictly on the rejecting side of that margin and 1 otherwise.
+        # A constant difference at or beyond the margin therefore yields
+        # p_tost = 1 and equivalent = False, consistent with the finite case.
+        p_lower = 0.0 if diff > -margin else 1.0   # H0: diff <= -margin
+        p_upper = 0.0 if diff < margin else 1.0    # H0: diff >= +margin
+        p_tost = max(p_lower, p_upper)
+        return dict(diff=diff, se=0.0, df=df, p_lower=p_lower, p_upper=p_upper,
+                    p_tost=p_tost, equivalent=bool(p_tost < alpha), degenerate=True)
     t_lower = (diff + margin) / se   # H0: diff <= -margin
     t_upper = (diff - margin) / se   # H0: diff >= +margin
     p_lower = float(1.0 - _st.t.cdf(t_lower, df))

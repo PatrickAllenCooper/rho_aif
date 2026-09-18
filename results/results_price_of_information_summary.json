@@ -127,5 +127,24 @@
     0.5,
     2.5
   ],
-  "cost_rows": 4
+  "cost_rows": 4,
+  "dual_ms_readapt_restricted": {
+    "cap": 180,
+    "restricted_mean_decay": 157.3,
+    "restricted_ci_lo_decay": 145.40987180706432,
+    "restricted_ci_hi_decay": 169.1901281929357,
+    "n_at_cap_decay": 3,
+    "n_not_recovered_decay": 1,
+    "restricted_mean_reset": 51.2,
+    "restricted_ci_lo_reset": 46.132558655714135,
+    "restricted_ci_hi_reset": 56.26744134428587,
+    "n_at_cap_reset": 0,
+    "n_not_recovered_reset": 0,
+    "paired_diff_mean": 106.1,
+    "paired_diff_ci_lo": 96.77014421060109,
+    "paired_diff_ci_hi": 115.4298557893989,
+    "paired_diff_min": 89.0,
+    "n_pairs": 10,
+    "n_positive_pairs": 10
+  }
 }

@@ -198,22 +198,29 @@ def run(envs, num_episodes, seeds, out_csv, stats_csv):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--envs", nargs="*", default=list(ENVS))
-    p.add_argument("--episodes", type=int, default=200)
+    p.add_argument("--episodes", type=int, default=None,
+                   help="episodes per seed: 200 for the canonical sweep, 100 for --tuning (the committed protocols)")
     p.add_argument("--quick", action="store_true", help="smoke test: 4 episodes, 2 seeds, scratch output")
     p.add_argument("--out", default="results/results_pomcp_exploration_sweep.csv")
     p.add_argument(
         "--tuning", action="store_true",
         help="Selection run on the disjoint tuning seeds the RockSample POMCP uses "
              "(11, 22, 33). Writes results_pomcp_exploration_tuning.csv. The best "
-             "constant per solver and environment is then read from this file and "
+             "constant per solver and environment (highest success, ties by reward, "
+             "experiments/select_pomcp_constants.py) is then read from this file and "
              "evaluated on the canonical seeds already in the sweep CSV, so no "
-             "configuration is selected on the seeds that report it (ledger 9.17.45).",
+             "configuration is selected on the seeds that report it. Runs 100 "
+             "episodes per seed unless --episodes is given (ledger 9.17.45, 9.17.46).",
     )
     args = p.parse_args()
-    seeds, episodes, out = list(SEEDS), args.episodes, args.out
+    seeds, out = list(SEEDS), args.out
+    episodes = args.episodes if args.episodes is not None else 200
     if args.tuning:
         seeds = [11, 22, 33]
         out = "results/results_pomcp_exploration_tuning.csv"
+        # The committed tuning study ran 100 episodes per seed (ledger 9.17.45);
+        # a re-review found the README command would have run 200 (9.17.46).
+        episodes = args.episodes if args.episodes is not None else 100
     if args.quick:
         seeds, episodes = seeds[:2], 4
         out = os.path.join(os.environ.get("TMPDIR", "/tmp"), "results_pomcp_exploration_sweep_quick.csv")

@@ -1,9 +1,12 @@
 """Build paper/tables/budget_frontier.tex from results_budget_frontier.csv.
 
 One row per environment and attainable budget for the endpoint mixture, with
-the best budget-feasible single weight and the near-optimal constrained
-reference beside it. Unattainable budgets are listed as declared. This is
-the only producer of that table (ledger 9.17.45).
+the best budget-feasible single weight, the two LP-selected mixtures over the
+calibration grid (best target mixture at usage exactly B, best feasible
+mixture at usage at most B), and the near-optimal constrained reference's
+estimated feasible envelope beside it. Unattainable budgets are listed as
+declared. This is the only producer of that table (ledger 9.17.45, amended
+9.17.46 for the envelope reference and the two LP mixtures).
 """
 from __future__ import annotations
 
@@ -31,13 +34,14 @@ def main():
         "",
         "\\begin{table}[t]",
         "\\centering",
-        "\\caption{The calibrated family at externally chosen budgets, evaluated on five held-out seeds it was not calibrated on ($100$ episodes per seed, seed-level SE). Budgets are set from each calibration curve's attainable range $[U_{\\min}, U_{\\max}]$ at three fractions of the range, at the midpoint of the largest jump (gap), and below $U_{\\min}$ (declared unattainable, not run). The mixture plays the bracket's upper endpoint with probability $q$ and its lower endpoint otherwise, drawn afresh each episode. Best feasible is the calibration-grid weight with the highest calibration reward among those whose calibration usage is at or below $B$. The reference is the near-optimal constrained-POMDP frontier of Section~\\ref{sec:cpomdp} read at usage $B$ by linear interpolation, and is blank where $B$ lies outside that frontier's usage range. Usage is the observation count. See \\texttt{results\\_budget\\_frontier.csv}.}",
+        "\\caption{The calibrated family at externally chosen budgets, evaluated on five held-out seeds it was not calibrated on ($100$ episodes per seed, seed-level SE). Budgets are set from each calibration curve's attainable range $[U_{\\min}, U_{\\max}]$ at three fractions of the range, at the midpoint of the largest jump (gap), and below $U_{\\min}$ (declared unattainable, not run). The mixture plays the bracket's upper endpoint with probability $q$ and its lower endpoint otherwise, drawn afresh each episode. Best member is the calibration-grid weight with the highest calibration reward among those whose calibration usage is at or below $B$. Target mixture is the reward-maximizing mixture of calibration-grid weights whose calibration usage equals $B$, and feasible mixture the same with usage at most $B$, each a linear program with at most two support weights, selected on the calibration data and run on the held-out seeds. The reference is the estimated feasible envelope of the near-optimal constrained-POMDP reference of Section~\\ref{sec:cpomdp}, the largest reward attainable by mixing its sampled points subject to expected usage at most $B$, flat at the largest sampled reward where $B$ exceeds the largest sampled usage. Usage is the observation count. See \\texttt{results\\_budget\\_frontier.csv}.}",
         "\\label{tab:budget_frontier}",
         "%% Numbers in this table are produced by experiments/run_budget_frontier.py",
-        "\\small",
-        "\\begin{tabular}{llcccccc}",
+        "\\footnotesize",
+        "\\setlength{\\tabcolsep}{3pt}",
+        "\\begin{tabular}{llcccccccc}",
         "\\toprule",
-        "Env. & Budget & $B$ & $q$ & Mixture usage & Mixture reward & Best feasible reward & Reference reward \\\\",
+        "Env. & Budget & $B$ & $q$ & Mixture usage & Mixture reward & Best member & Target mix. & Feasible mix. & Reference \\\\",
         "\\midrule",
     ]
     for env in ["Tiger", "Diagnosis", "Bandit"]:
@@ -48,15 +52,19 @@ def main():
                 continue
             B = float(h.iloc[0]["budget"])
             if kind == "unattainable":
-                lines.append(f"{env} & {KIND[kind]} & ${B:.2f}$ & -- & \\multicolumn{{4}}{{l}}{{declared unattainable}} \\\\")
+                lines.append(f"{env} & {KIND[kind]} & ${B:.2f}$ & -- & \\multicolumn{{6}}{{l}}{{declared unattainable}} \\\\")
                 continue
             m = h[h.policy == "mixture"].iloc[0]
-            bf = h[h.policy == "best_feasible_member"]
-            bf_r = fmt(float(bf.iloc[0]["heldout_reward"]), float(bf.iloc[0]["heldout_reward_se"])) if not bf.empty else "--"
-            ref = m["frontier_reward_at_B"]
+            def pol(name):
+                r = h[h.policy == name]
+                if r.empty or np.isnan(float(r.iloc[0]["heldout_reward"])):
+                    return "--"
+                return fmt(float(r.iloc[0]["heldout_reward"]), float(r.iloc[0]["heldout_reward_se"]))
+            ref = float(m["reference_envelope_at_B"])
             lines.append(
                 f"{env} & {KIND[kind]} & ${B:.2f}$ & ${float(m['q']):.2f}$ & {fmt(float(m['heldout_usage']), float(m['heldout_usage_se']))} & "
-                f"{fmt(float(m['heldout_reward']), float(m['heldout_reward_se']))} & {bf_r} & {fmt(ref if not np.isnan(ref) else None)} \\\\"
+                f"{fmt(float(m['heldout_reward']), float(m['heldout_reward_se']))} & {pol('best_feasible_member')} & {pol('best_target_mixture')} & "
+                f"{pol('best_feasible_mixture')} & {fmt(ref if not np.isnan(ref) else None)} \\\\"
             )
         lines.append("\\midrule")
     lines[-1] = "\\bottomrule"

@@ -44,6 +44,37 @@ also the direct usage-penalty method for these domains.
 An expected budget is not a per-episode cap. The mixture attains B in
 expectation on the calibration seeds by construction and is tested here on
 seeds it never saw.
+
+Amendment, 2026-09-18 (ledger 9.17.46), made after the first results were
+inspected and in response to a re-review, disclosed as such
+-----------------------------------------------------------------------
+(a) Reference. The reference was read by linear interpolation between the
+    sampled frontier points at usage B and left blank when B lay outside
+    the sampled usage range. Under the stated reference problem, maximize
+    reward subject to expected usage at most B, any sampled reference
+    policy using less than B stays feasible, so the reference is now the
+    estimated feasible envelope
+        V(B) = max sum_i q_i R_i  s.t.  q_i >= 0, sum_i q_i = 1,
+                                        sum_i q_i U_i <= B,
+    a linear program over the sampled (U_i, R_i) reference points whose
+    solution mixes at most two of them. Above the largest sampled usage the
+    envelope is flat at the largest sampled reward, and it is defined at
+    every budget. The interpolation is kept as a separate diagnostic column
+    (frontier_interp_at_B) and is no longer the comparator.
+(b) Two further policies, both selected on the calibration data only and
+    evaluated on the held-out seeds: (4) the best target mixture, the
+    reward-maximizing mixture over the calibration grid whose calibration
+    usage equals B exactly (a linear program with an equality constraint,
+    at most two support weights), which asks whether the selected crossing
+    mixture is the best mixture that meets the target on the tested grid;
+    and (5) the best feasible mixture, the same program with usage at most
+    B, which is the family's estimated feasible envelope on the tested grid
+    and reduces to the best feasible single member whenever the cap is
+    slack. Neither policy is a claim about weights or mixtures the grid
+    does not sample.
+Existing policies and columns are unchanged, and the calibration stage is
+deterministic under per-episode seeding, so the amended run reproduces every
+previously reported number and adds rows and columns.
 """
 from __future__ import annotations
 
@@ -54,6 +85,7 @@ from typing import Dict, List, Optional
 
 import numpy as np
 import pandas as pd
+from scipy.optimize import linprog
 
 _ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_ROOT))
@@ -131,10 +163,68 @@ def choose_budgets(curve: pd.DataFrame) -> List[dict]:
 
 
 def frontier_reward_at(env_name: str, budget: float, frontier: pd.DataFrame) -> Optional[float]:
+    """Diagnostic only (amendment (a)): equal-usage linear interpolation between
+    sampled frontier points, undefined outside the sampled usage range."""
     f = frontier[frontier["env"] == env_name].sort_values("usage")
     if f.empty or budget < f["usage"].min() or budget > f["usage"].max():
         return None
     return float(np.interp(budget, f["usage"].to_numpy(), f["reward"].to_numpy()))
+
+
+def _lp_mixture(usages: np.ndarray, rewards: np.ndarray, budget: float, equality: bool):
+    """Reward-maximizing mixture over sampled (usage, reward) points with
+    expected usage equal to (equality) or at most (cap) the budget. Returns
+    (value, weights) or None when infeasible. The LP has two constraints, so
+    a basic optimal solution has at most two positive weights."""
+    n = len(usages)
+    kw = dict(c=-rewards, bounds=[(0, None)] * n, method="highs")
+    if equality:
+        res = linprog(A_eq=[usages, np.ones(n)], b_eq=[budget, 1.0], **kw)
+    else:
+        res = linprog(A_ub=[usages], b_ub=[budget], A_eq=[np.ones(n)], b_eq=[1.0], **kw)
+    if not res.success:
+        return None
+    q = np.where(res.x > 1e-9, res.x, 0.0)
+    q = q / q.sum()
+    return float(rewards @ q), q
+
+
+def reference_envelope_at(env_name: str, budget: float, frontier: pd.DataFrame):
+    """Amendment (a): the estimated feasible envelope of the sampled reference
+    policies at budget B, max sum q_i R_i s.t. sum q_i U_i <= B. Defined at
+    every budget at or above the smallest sampled usage, flat above the
+    largest sampled usage. Returns (value, support string) or (None, '')."""
+    f = frontier[frontier["env"] == env_name]
+    if f.empty:
+        return None, ""
+    sol = _lp_mixture(f["usage"].to_numpy(dtype=float), f["reward"].to_numpy(dtype=float), budget, equality=False)
+    if sol is None:
+        return None, ""
+    val, q = sol
+    support = "|".join(f"lam={lam:.4g}:U={u:.3f}:R={r:.3f}:q={qq:.4f}"
+                       for lam, u, r, qq in zip(f["lam"], f["usage"], f["reward"], q) if qq > 0)
+    return val, support
+
+
+def grid_lp_mixture(curve: pd.DataFrame, budget: float, equality: bool):
+    """Amendment (b): reward-maximizing mixture over the calibration grid with
+    calibration usage equal to (best target mixture) or at most (best feasible
+    mixture) the budget. Returns dict(w_a, w_b, q_b, cal_reward, cal_usage) with
+    w_b == w_a and q_b == 0 when a single grid weight is optimal, or None."""
+    W = curve["w"].to_numpy(dtype=float); U = curve["usage"].to_numpy(dtype=float); R = curve["reward"].to_numpy(dtype=float)
+    sol = _lp_mixture(U, R, budget, equality=equality)
+    if sol is None:
+        return None
+    val, q = sol
+    idx = [i for i in range(len(W)) if q[i] > 0]
+    if len(idx) > 2:  # degenerate LP vertex, keep the two largest weights and renormalize
+        idx = sorted(idx, key=lambda i: -q[i])[:2]
+        tot = q[idx].sum(); q = np.zeros_like(q); q[idx] = 1.0 / len(idx) if tot == 0 else q[idx] / tot
+    if len(idx) == 1:
+        return dict(w_a=float(W[idx[0]]), w_b=float(W[idx[0]]), q_b=0.0, cal_reward=float(R[idx[0]]), cal_usage=float(U[idx[0]]))
+    a, b = sorted(idx, key=lambda i: W[i])
+    return dict(w_a=float(W[a]), w_b=float(W[b]), q_b=float(q[b]), cal_reward=float(R[a] * q[a] + R[b] * q[b]),
+                cal_usage=float(U[a] * q[a] + U[b] * q[b]))
 
 
 def evaluate(env_name: str, curve: pd.DataFrame, n_ep: int, seeds: List[int], frontier: pd.DataFrame) -> List[dict]:
@@ -144,8 +234,12 @@ def evaluate(env_name: str, curve: pd.DataFrame, n_ep: int, seeds: List[int], fr
     monotone = bool(np.all(np.diff(curve["usage"].to_numpy()) >= -1e-12))
     rows = []
     for b in choose_budgets(curve):
-        B = float(b["budget"]); base = dict(env=env_name, budget_kind=b["kind"], budget=B, curve_monotone=monotone,
-                                            frontier_reward_at_B=frontier_reward_at(env_name, B, frontier))
+        B = float(b["budget"])
+        ref_val, ref_support = reference_envelope_at(env_name, B, frontier)
+        base = dict(env=env_name, budget_kind=b["kind"], budget=B, curve_monotone=monotone,
+                    reference_envelope_at_B=(ref_val if ref_val is not None else np.nan),
+                    reference_envelope_support=ref_support,
+                    frontier_interp_at_B=frontier_reward_at(env_name, B, frontier))
         if b["kind"] == "unattainable":
             rows.append(dict(base, policy="declared_unattainable", note=f"B below U_min={curve['usage'].min():.3f}, not evaluated"))
             print(f"  {env_name} B={B:.3f} ({b['kind']}): declared unattainable", flush=True); continue
@@ -156,18 +250,30 @@ def evaluate(env_name: str, curve: pd.DataFrame, n_ep: int, seeds: List[int], fr
         # best feasible single member on calibration data
         feas = curve[curve["usage"] <= B]
         best_w = float(feas.sort_values("reward", ascending=False).iloc[0]["w"]) if not feas.empty else None
-        policies = [("mixture", None, (sol.w_lo, sol.w_hi, q)), ("endpoint_lo", sol.w_lo, None), ("endpoint_hi", sol.w_hi, None)]
+        policies = [("mixture", None, (sol.w_lo, sol.w_hi, q), ""), ("endpoint_lo", sol.w_lo, None, ""), ("endpoint_hi", sol.w_hi, None, "")]
         if best_w is not None:
-            policies.append(("best_feasible_member", best_w, None))
-        for name, w, mix in policies:
+            policies.append(("best_feasible_member", best_w, None, ""))
+        # Amendment (b): LP-selected mixtures over the calibration grid.
+        for name, equality in (("best_target_mixture", True), ("best_feasible_mixture", False)):
+            lp = grid_lp_mixture(curve, B, equality=equality)
+            if lp is None:
+                rows.append(dict(base, policy=name, note="no calibration-grid mixture meets this budget")); continue
+            note = f"support w={lp['w_a']:.4g},{lp['w_b']:.4g} q_b={lp['q_b']:.4f} cal_reward={lp['cal_reward']:.4f} cal_usage={lp['cal_usage']:.4f}"
+            if lp["q_b"] == 0.0:
+                policies.append((name, lp["w_a"], None, note))
+            else:
+                policies.append((name, None, (lp["w_a"], lp["w_b"], lp["q_b"]), note))
+        for name, w, mix, note in policies:
             us, rs = run_weight(env, w if w is not None else 0.0, H, seeds, n_ep, mixture=mix)
             mu, mr = float(np.mean(us)), float(np.mean(rs))
-            fr = base["frontier_reward_at_B"]
-            rows.append(dict(base, policy=name, w_lo=sol.w_lo, w_hi=sol.w_hi, q=q if name == "mixture" else np.nan,
+            fr, fi = base["reference_envelope_at_B"], base["frontier_interp_at_B"]
+            rows.append(dict(base, policy=name, w_lo=(mix[0] if mix is not None else sol.w_lo), w_hi=(mix[1] if mix is not None else sol.w_hi),
+                             q=(mix[2] if mix is not None else np.nan),
                              w=(w if w is not None else np.nan), heldout_usage=mu, heldout_usage_se=se(us),
                              heldout_reward=mr, heldout_reward_se=se(rs), usage_error=abs(mu - B),
                              feasible_in_expectation=bool(mu <= B + 1e-9),
-                             gap_to_frontier=(mr - fr) if fr is not None else np.nan, note="",
+                             gap_to_reference=(mr - fr) if not np.isnan(fr) else np.nan,
+                             gap_to_frontier_interp=(mr - fi) if fi is not None else np.nan, note=note,
                              per_seed_usage="|".join(f"{u:.4f}" for u in us),
                              per_seed_reward="|".join(f"{r:.4f}" for r in rs)))
             print(f"  {env_name} B={B:.3f} ({b['kind']}) {name:22s} U={mu:.3f} R={mr:.3f}", flush=True)

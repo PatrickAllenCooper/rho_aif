@@ -1729,6 +1729,52 @@ def _mean_ci(values: Sequence[float]) -> Tuple[float, float, float]:
     return m, m - half, m + half
 
 
+def restricted_readaptation_metrics(seed_df: pd.DataFrame, cap: int) -> dict:
+    """Common recovery-time estimand across all controller seeds (ledger 9.17.46).
+
+    ``readaptation_episodes`` returns None for a seed that never completes the
+    hold inside the post-rescale window, and its largest reportable value is
+    ``cap`` (post-rescale length minus the hold). Comparing a conditional mean
+    over the recovering seeds of one variant with the mean over all seeds of
+    the other therefore compares different estimands. The restricted recovery
+    time min(T, cap), with a non-recovering seed scored at the cap, is defined
+    for every seed, and the two variants share controller seeds, so the paired
+    difference and its Student-t 95% interval are the comparison of record.
+    Descriptive only for the observed runs: the cap censors, so the restricted
+    decay-only mean is a lower bound on that variant's recovery time.
+    """
+    piv = seed_df.pivot(index="controller_seed", columns="variant", values="readapt")
+    out: dict = {"cap": int(cap)}
+    restricted = {}
+    for variant in ("decay", "reset"):
+        if variant not in piv.columns:
+            continue
+        r = piv[variant].astype(float).fillna(float(cap)).clip(upper=float(cap))
+        restricted[variant] = r
+        m, lo, hi = _mean_ci(r.tolist())
+        out[f"restricted_mean_{variant}"] = m
+        out[f"restricted_ci_lo_{variant}"] = lo
+        out[f"restricted_ci_hi_{variant}"] = hi
+        # Seeds whose restricted time equals the cap: not recovered inside the
+        # window (None) or recovered exactly at the last admissible index.
+        out[f"n_at_cap_{variant}"] = int((piv[variant].isna() | (piv[variant] >= cap)).sum())
+        out[f"n_not_recovered_{variant}"] = int(piv[variant].isna().sum())
+    if "decay" in restricted and "reset" in restricted:
+        diff = (restricted["decay"] - restricted["reset"]).to_numpy(dtype=float)
+        n = diff.size
+        out["paired_diff_mean"] = float(diff.mean())
+        if n >= 2:
+            from scipy import stats as _st
+            se = float(diff.std(ddof=1)) / math.sqrt(n)
+            t = float(_st.t.ppf(0.975, n - 1))
+            out["paired_diff_ci_lo"] = float(diff.mean() - t * se)
+            out["paired_diff_ci_hi"] = float(diff.mean() + t * se)
+        out["paired_diff_min"] = float(diff.min())
+        out["n_pairs"] = int(n)
+        out["n_positive_pairs"] = int((diff > 0).sum())
+    return out
+
+
 def run_dual_multiseed(
     n_episodes: int,
     budget: float,
@@ -1823,6 +1869,9 @@ def run_dual_multiseed(
                 "ci_lo": lo2,
                 "ci_hi": hi2,
             }
+    cap = int(n_episodes - rescale_at - 20)  # hold=20 in readaptation_episodes
+    seed_df["readapt_restricted"] = seed_df["readapt"].astype(float).fillna(float(cap)).clip(upper=float(cap))
+    metrics["dual_ms_readapt_restricted"] = restricted_readaptation_metrics(seed_df, cap)
     d = metrics["dual_ms_readapt_decay"]
     r = metrics["dual_ms_readapt_reset"]
     metrics["dual_ms_cis_disjoint"] = bool(
@@ -2071,6 +2120,18 @@ def refresh_summary_verdicts() -> Dict[str, str]:
     curve_path = RESULTS / "results_price_usage_curves.csv"
     if curve_path.exists():
         verdict["shadow_staircases"] = staircase_verdict(pd.read_csv(curve_path))
+    ms_metrics = RESULTS / "results_price_dual_multiseed_metrics.csv"
+    ms_traces = RESULTS / "results_price_dual_multiseed.csv"
+    if ms_metrics.exists() and ms_traces.exists():
+        seed_df = pd.read_csv(ms_metrics)
+        traces = pd.read_csv(ms_traces)
+        one = traces[(traces["variant"] == traces["variant"].iloc[0]) & (traces["controller_seed"] == traces["controller_seed"].iloc[0])]
+        n_ep = int(one["episode"].max()) + 1
+        rescale_at = int(one.loc[one["rescaled"].astype(bool), "episode"].min())
+        cap = n_ep - rescale_at - 20
+        seed_df["readapt_restricted"] = seed_df["readapt"].astype(float).fillna(float(cap)).clip(upper=float(cap))
+        seed_df.to_csv(ms_metrics, index=False)
+        summary["dual_ms_readapt_restricted"] = restricted_readaptation_metrics(seed_df, cap)
     summary["verdict"] = verdict
     with open(summary_path, "w") as f:
         json.dump(summary, f, indent=2)

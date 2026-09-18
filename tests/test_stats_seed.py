@@ -44,3 +44,48 @@ def test_hierarchical_bootstrap_ci_contains_mean():
         results, lambda r: r.total_reward, n_bootstrap=500
     )
     assert lo <= point <= hi
+
+
+def test_paired_tost_matches_one_sample_t_and_unpaired_sign():
+    """Paired TOST on shared-seed differences (ledger 9.17.45/46)."""
+    import pytest
+    from scipy import stats as st
+
+    from rho_aif.stats import tost_equivalence_paired
+
+    a = np.array([6.284, 6.496, 6.028, 5.982, 6.516])
+    b = np.array([6.379, 6.553, 5.965, 5.954, 6.548])
+    r = tost_equivalence_paired(a, b, margin=0.5)
+    d = a - b
+    se = d.std(ddof=1) / np.sqrt(d.size)
+    p_lower = 1 - st.t.cdf((d.mean() + 0.5) / se, d.size - 1)
+    p_upper = st.t.cdf((d.mean() - 0.5) / se, d.size - 1)
+    assert r["degenerate"] is False
+    assert r["p_tost"] == pytest.approx(max(p_lower, p_upper))
+    assert r["equivalent"] is True
+
+
+def test_paired_tost_degenerate_branch_uses_limiting_p_values():
+    import pytest
+
+    from rho_aif.stats import tost_equivalence_paired
+
+    # Zero differences inside the margin: both one-sided nulls rejected.
+    r = tost_equivalence_paired(np.array([1.0, 2.0, 3.0]), np.array([1.0, 2.0, 3.0]), margin=1.0)
+    assert r["degenerate"] is True and r["p_tost"] == 0.0 and r["equivalent"] is True
+    # Constant difference on the margin: not equivalent, p = 1, never p = 0 with equivalent = False.
+    r = tost_equivalence_paired(np.array([2.0, 2.0]), np.array([0.0, 0.0]), margin=2.0)
+    assert r["degenerate"] is True and r["p_tost"] == 1.0 and r["equivalent"] is False
+    # Constant difference outside the margin.
+    r = tost_equivalence_paired(np.array([2.0, 2.0]), np.array([0.0, 0.0]), margin=1.0)
+    assert r["p_tost"] == 1.0 and r["equivalent"] is False
+    # Constant difference strictly inside the margin.
+    r = tost_equivalence_paired(np.array([2.0, 2.0]), np.array([1.5, 1.5]), margin=1.0)
+    assert r["p_tost"] == 0.0 and r["equivalent"] is True
+    # Undersized or nonfinite inputs are rejected rather than scored.
+    with pytest.raises(ValueError):
+        tost_equivalence_paired(np.array([1.0]), np.array([0.0]), margin=1.0)
+    with pytest.raises(ValueError):
+        tost_equivalence_paired(np.array([1.0, np.nan]), np.array([0.0, 0.0]), margin=1.0)
+    with pytest.raises(ValueError):
+        tost_equivalence_paired(np.array([1.0, 2.0]), np.array([0.0, 0.0]), margin=0.0)
