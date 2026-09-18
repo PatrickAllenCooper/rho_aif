@@ -121,10 +121,13 @@ def plot_scaling(df: pd.DataFrame, out_path: Path) -> None:
     curve_handles: Dict[str, object] = {}
     for panel_i, (ax, env_name) in enumerate(zip(axes[0], envs)):
         sub = df[df["environment"] == env_name]
-        for (k, grp), color in zip(sub.groupby("scale_k"), figstyle.ENV_CYCLE):
+        # Each reward scale gets its own line style and marker as well as a
+        # colour, so the three curves stay distinguishable in grayscale.
+        scale_styles = [("-", "o"), ("--", "s"), ("-.", "^"), (":", "D")]
+        for (k, grp), color, (ls, mk) in zip(sub.groupby("scale_k"), figstyle.ENV_CYCLE, scale_styles):
             grp = grp.sort_values("w")
-            (line,) = ax.plot(grp["w"], grp["reward"] / k, marker="o",
-                              color=color)
+            (line,) = ax.plot(grp["w"], grp["reward"] / k, marker=mk, linestyle=ls,
+                              color=color, markersize=4)
             curve_handles.setdefault(f"$k={k:g}$", line)
             star_idx = grp["reward"].idxmax()
             w_star = grp.loc[star_idx, "w"]

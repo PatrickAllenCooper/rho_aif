@@ -973,6 +973,10 @@ Pat chose a targeted round 5 on the eight units the confirmation pass scored 7 a
 
 Pat asked that all citations be confirmed accurate and not hallucinated. A structural check found zero dangling and zero orphaned citations in both masters, and confirmed the bibliography is byte-for-byte unchanged since before the writing-clarity loop. A full re-verification, one independent agent per bibliography entry (69 total) checking existence, every bibliographic field, and in-text attribution accuracy against a primary source, found 68 of 69 clean on the first pass; the one flag, sent to independent adjudication against the arXiv API directly, turned out to be a false alarm (BibTeX title-casing convention and a standard "et al." truncation, both cosmetic). Zero hallucinated references, zero misattributed claims, across all 69 entries. Full narrative in `full_paper_plan.md` 9.17.43. Verdict: **HOLD**. No code or bibliography changed.
 
+### Submission-readiness canvass and final style sweep (September 17, 2026)
+
+Every requirement on jair.org's live submissions page was checked against the manuscript. Template identical to the current kit, CC BY notice rendering, structured abstract, checklist aligned to the current kit wording, PDF 1.54 MB. Two gaps closed: the required AI-tool-use disclosure (an acknowledgments block, wording for Pat to confirm) and four sections that opened directly on a subsection. Headings title-cased and de-coloned. Five of twenty figures relied on hue alone and were fixed at their producers and regenerated from committed CSVs, all now readable in grayscale. The style sweep (38 units, Opus editors, two verifier lenses, Opus audit with zero reverts) removed every prose colon and split 136 run-on sentences via 149 applied replacements, no numeric token changed. Stale "tracking guarantee" wording in the submission-form drafts corrected. JAIR 105 pp, LNCS 137 pp, both clean, 479/479 tests. Full narrative in `full_paper_plan.md` 9.17.44. Verdict: **HOLD**, ready to submit pending Pat's confirmation of the disclosure wording and contact email.
+
 ---
 
 ## Document Evolution

@@ -470,8 +470,10 @@ def plot_efe_trajectories(all_traces, save_path: str = "figures/fig_efe_trajecto
         observe_vals = [-t.best_observe_efe for t in traces]
         entropies = [t.belief_entropy for t in traces]
 
-        ax.plot(steps, commit_vals, color=commit_color, lw=1.8)
-        ax.plot(steps, observe_vals, color=observe_color, lw=1.8)
+        # Distinct markers on the two solid series keep them apart in
+        # grayscale, where their colours land at similar gray levels.
+        ax.plot(steps, commit_vals, color=commit_color, lw=1.8, marker="o", markersize=3.5)
+        ax.plot(steps, observe_vals, color=observe_color, lw=1.8, marker="s", markersize=3.2)
 
         ax_twin = ax.twinx()
         ax_twin.fill_between(steps, entropies, alpha=0.12, color=entropy_color)
@@ -508,9 +510,9 @@ def plot_efe_trajectories(all_traces, save_path: str = "figures/fig_efe_trajecto
         ax.set_title(title)
         figstyle.style_axis(ax)
 
-    handles = [Line2D([0], [0], color=commit_color, lw=1.8,
+    handles = [Line2D([0], [0], color=commit_color, lw=1.8, marker="o", markersize=3.5,
                       label="$-\\mathcal{G}$(commit)"),
-               Line2D([0], [0], color=observe_color, lw=1.8,
+               Line2D([0], [0], color=observe_color, lw=1.8, marker="s", markersize=3.2,
                       label="$-\\mathcal{G}$(observe)"),
                Line2D([0], [0], color=entropy_color, lw=1.4, ls="--",
                       label="Belief entropy $H(b)$")]

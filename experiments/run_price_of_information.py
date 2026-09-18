@@ -306,18 +306,23 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
     any_unresolved = False
     for env_name in envs:
         sub = price_df[price_df["env"] == env_name].sort_values("budget")
-        c = figstyle.env_color(env_name)
+        st = figstyle.env_style(env_name)
+        c, ls, mk = st["color"], st["linestyle"], st["marker"]
         ax.step(
-            sub["budget"], sub["w_star"], where="mid", color=c,
+            sub["budget"], sub["w_star"], where="mid", color=c, linestyle=ls,
             label=ENV_DISPLAY.get(env_name, env_name), zorder=2,
         )
         slack = (sub["w_star"] <= 0) | (sub["w_star"] < sub["w_lo"])
         bind = sub[~slack]
-        ax.scatter(bind["budget"], bind["w_star"], s=20, color=c, zorder=4)
+        # Marker shape is the second grayscale cue after line style (a legend
+        # proxy below carries both), so each series can be read without colour.
+        ax.scatter(bind["budget"], bind["w_star"], s=22, color=c, marker=mk, zorder=4)
         sl = sub[slack]
+        # Slack budgets keep the open-circle glyph the legend and caption
+        # describe, in the series colour, rather than the series marker.
         ax.scatter(
-            sl["budget"], sl["w_star"], s=20, facecolors="none",
-            edgecolors=c, linewidths=1.1, zorder=4,
+            sl["budget"], sl["w_star"], s=22, facecolors="none",
+            edgecolors=c, linewidths=1.1, marker="o", zorder=4,
         )
         # Vertical bars: the set-valued crossing bracket (w_lo, w_hi] at each B.
         for _, row in sub.iterrows():
@@ -376,11 +381,22 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
         color=figstyle.GRAY, ha="left", va="bottom",
     )
     figstyle.style_axis(ax)
-    handles, _ = ax.get_legend_handles_labels()
+    # Series legend entries carry line style and marker as well as colour, so
+    # the legend resolves in grayscale.
+    handles = []
+    for env_name in envs:
+        st = figstyle.env_style(env_name)
+        handles.append(
+            Line2D(
+                [], [], color=st["color"], linestyle=st["linestyle"],
+                marker=st["marker"], markersize=4.5, lw=1.4,
+                label=ENV_DISPLAY.get(env_name, env_name),
+            )
+        )
     handles.append(
         Line2D(
             [], [], color=figstyle.GRAY, alpha=0.6, lw=1.4,
-            label="bracket $(w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$ (series color)",
+            label="bracket $(w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$ (series style)",
         )
     )
     handles.append(
@@ -687,20 +703,30 @@ def plot_cost_budget(
     from matplotlib.patches import Patch
     extra_handles, extra_labels = [], []
     if price_df is not None and not price_df.empty:
+        # Budget lines carry the usage kind in their line style (dashed for
+        # count, dotted for cost) as well as colour, and each is labelled at
+        # its right end, so the pairing survives a grayscale print.
         kind_color = {"count": figstyle.BLUE, "cost": figstyle.ORANGE}
+        kind_ls = {"count": "--", "cost": ":"}
         spans: Dict[Tuple[float, float], None] = {}
         for _, row in price_df.sort_values("budget").iterrows():
-            c = kind_color.get(str(row["usage_kind"]), figstyle.GRAY)
+            kind = str(row["usage_kind"])
+            c = kind_color.get(kind, figstyle.GRAY)
             b = float(row["budget"])
-            ax.axhline(b, ls="--", lw=0.9, alpha=0.55, color=c, zorder=1)
+            ax.axhline(b, ls=kind_ls.get(kind, "--"), lw=0.9, alpha=0.6, color=c, zorder=1)
+            ax.text(
+                0.995, b, f"$B={b:.2f}$ {kind}", transform=ax.get_yaxis_transform(),
+                ha="right", va="bottom", fontsize=6.5, color=c, zorder=3,
+            )
             spans[(round(float(row["w_lo"]), 6), round(float(row["w_hi"]), 6))] = None
         for i, (lo, hi) in enumerate(sorted(spans)):
             ax.axvspan(lo, hi, color=figstyle.GRAY, alpha=0.10 + 0.08 * i, zorder=0)
         extra_handles = [
             Line2D([], [], color="0.4", ls="--", lw=0.9, alpha=0.7),
+            Line2D([], [], color="0.4", ls=":", lw=0.9, alpha=0.7),
             Patch(facecolor=figstyle.GRAY, alpha=0.18),
         ]
-        extra_labels = ["tested budget $B$ (color = usage kind)", "shared crossing bracket $w^*(B)$"]
+        extra_labels = ["tested count budget $B$", "tested cost budget $B$", "shared crossing bracket $w^*(B)$"]
     ax.set_xlabel("Info-gain weight $w$")
     ax.set_ylabel(
         "Usage per episode\n($U_{\\mathrm{count}}$: observations, "

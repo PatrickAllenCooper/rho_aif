@@ -89,6 +89,50 @@ ENV_COLORS = {
 }
 ENV_CYCLE = [BLUE, ORANGE, GREEN, VERMILLION, PINK, SKY, GRAY, YELLOW]
 
+# Line styles and markers per environment, so a figure that plots several
+# environments on one axis stays readable in grayscale (JAIR asks that colour
+# figures be understandable on monochrome devices). Colour is kept as a third
+# cue, never the only one.
+ENV_LINESTYLES = {
+    "Tiger": "-",
+    "Diagnosis": "--",
+    "Bandit": "-.",
+    "Testbed": ":",
+    "Tileworld-6x6": (0, (5, 1.5, 1, 1.5)),
+    "Tileworld-8x8": (0, (5, 1.5, 1, 1.5)),
+    "Inspection-N8": ":",
+    "Inspection-N16": "--",
+    "RS[5,3]": "-.",
+    "RS[7,4]": "-",
+    "Navigation": "--",
+}
+ENV_MARKERS = {
+    "Tiger": "o",
+    "Diagnosis": "s",
+    "Bandit": "^",
+    "Testbed": "D",
+    "Tileworld-6x6": "P",
+    "Tileworld-8x8": "P",
+    "Inspection-N8": "v",
+    "Inspection-N16": "D",
+    "RS[5,3]": "s",
+    "RS[7,4]": "^",
+    "Navigation": "*",
+}
+_LS_CYCLE = ["-", "--", "-.", ":"]
+_MK_CYCLE = ["o", "s", "^", "D", "v", "P", "*", "h"]
+
+
+def env_style(name: str) -> dict:
+    """Colour, line style, and marker for an environment name. The three cues
+    together keep multi-environment axes legible without colour."""
+    h = sum(name.encode())
+    return {
+        "color": env_color(name),
+        "linestyle": ENV_LINESTYLES.get(name, _LS_CYCLE[h % len(_LS_CYCLE)]),
+        "marker": ENV_MARKERS.get(name, _MK_CYCLE[h % len(_MK_CYCLE)]),
+    }
+
 # Shared error-bar cap size so uncertainty renders identically across figures.
 CAPSIZE = 2
 
