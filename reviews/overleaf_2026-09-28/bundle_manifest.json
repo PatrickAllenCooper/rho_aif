@@ -1,0 +1,177 @@
+{
+  "date": "2026-09-28",
+  "archive": "paper/rho_aif_jair_overleaf_2026-09-28.zip",
+  "sha256": "83c779e2fd63da62bea6f7efb1d7a4c6c4c7a7ad11f0b579e508a80d34c01c20",
+  "bytes": 495994,
+  "file_count": 34,
+  "files": {
+    "figures/distractor_composition.pdf": {
+      "repository_path": "figures/distractor_composition.pdf",
+      "sha256": "8a7645e14bc6861a03c54034723811068b699d2e76583c4ec24eb34758e49b86",
+      "bytes": 16211
+    },
+    "figures/fig_asymmetry_sweep.pdf": {
+      "repository_path": "figures/fig_asymmetry_sweep.pdf",
+      "sha256": "f77bf9f8ae0a8e111ce656ae1c7d2b5734702598814a6397594a4d3a2de35370",
+      "bytes": 27808
+    },
+    "figures/fig_belief_heatmap.pdf": {
+      "repository_path": "figures/fig_belief_heatmap.pdf",
+      "sha256": "86922613e45bb9c02646c2b72a116a77f8c2e6e88e4e7246a9a05eaac0df19c9",
+      "bytes": 19368
+    },
+    "figures/fig_efe_trajectory.pdf": {
+      "repository_path": "figures/fig_efe_trajectory.pdf",
+      "sha256": "a5f8650c9b899d04c4f5161fe62fb9c66338aec6d2389558ef0cdd20ce246093",
+      "bytes": 17631
+    },
+    "figures/fig_efficiency_curves.pdf": {
+      "repository_path": "figures/fig_efficiency_curves.pdf",
+      "sha256": "abc9adf7a7b119f7cdee67d15ca7bbe0c0d6514d2e8270b2be3db4965070cd51",
+      "bytes": 16287
+    },
+    "figures/fig_extended_efe.pdf": {
+      "repository_path": "figures/fig_extended_efe.pdf",
+      "sha256": "7e1ceee41662849e133fa2becf23e622d9592a06619746988b872944e7a012f3",
+      "bytes": 16182
+    },
+    "figures/fig_hero_price_curve_jair.pdf": {
+      "repository_path": "figures/fig_hero_price_curve_jair.pdf",
+      "sha256": "5cbda5b86a43675beceef438d902a7324cd1bc3201475c51d9eab5b5b1b5b756",
+      "bytes": 18514
+    },
+    "figures/fig_nearopt_horizon.pdf": {
+      "repository_path": "figures/fig_nearopt_horizon.pdf",
+      "sha256": "673d9d86fe04d66b6762761b0ed93637691799d18706752a4f692e0ae4131820",
+      "bytes": 14194
+    },
+    "figures/fig_obs_scaling.pdf": {
+      "repository_path": "figures/fig_obs_scaling.pdf",
+      "sha256": "76b2311216895f87f86b4dff7a29a816d3077caf4541e50d7678d6df4a7d4813",
+      "bytes": 15883
+    },
+    "figures/fig_pareto.pdf": {
+      "repository_path": "figures/fig_pareto.pdf",
+      "sha256": "9e6f419b751db15dadbcda8b650ee22626380efbec4cc026cb517b60f33654d2",
+      "bytes": 24480
+    },
+    "figures/fig_reward_scaling.pdf": {
+      "repository_path": "figures/fig_reward_scaling.pdf",
+      "sha256": "b58d1c466a29a5de2f945f8e1df3c0b9ccefe7116400683330fa42570a90a85e",
+      "bytes": 15618
+    },
+    "figures/fig_tileworld_belief.pdf": {
+      "repository_path": "figures/fig_tileworld_belief.pdf",
+      "sha256": "acb7b7d6b37708a904217fd82396767ad3269fa1bb14d5ee1f3a27a5cc9cc78b",
+      "bytes": 20987
+    },
+    "figures/fig_tileworld_comparison.pdf": {
+      "repository_path": "figures/fig_tileworld_comparison.pdf",
+      "sha256": "8017f88443826079db2c119bba3b4a9b59cd4d280971e8537c6739bba5a4d28d",
+      "bytes": 32764
+    },
+    "figures/fig_tileworld_scaling.pdf": {
+      "repository_path": "figures/fig_tileworld_scaling.pdf",
+      "sha256": "411c5ab51c2b9ed9b70c00d8ce95ecb26e689ce40fd4b6abb01478d3094c917f",
+      "bytes": 17381
+    },
+    "figures/price_cost_budget.pdf": {
+      "repository_path": "figures/price_cost_budget.pdf",
+      "sha256": "fc04925517135b04279cb6c56157ff0af5e630a77fb120d9d4b310f55235be7f",
+      "bytes": 17301
+    },
+    "figures/price_dual_multiseed.pdf": {
+      "repository_path": "figures/price_dual_multiseed.pdf",
+      "sha256": "75c621acc7c2d84faa5ef44a0d46a14f74064340cfd765ef36c18abc7ad2f167",
+      "bytes": 43747
+    },
+    "figures/price_prop2_jumps.pdf": {
+      "repository_path": "figures/price_prop2_jumps.pdf",
+      "sha256": "9650749333790fafa9fab361bf708e7ab986ec1e4568c2cdc3f4e1093a195157",
+      "bytes": 18703
+    },
+    "figures/price_scale_invariance.pdf": {
+      "repository_path": "figures/price_scale_invariance.pdf",
+      "sha256": "9625deac5f9299c9faeb73d882024a994383a1914be0453e5f0b1387c11f257f",
+      "bytes": 15510
+    },
+    "figures/price_shadow_curves.pdf": {
+      "repository_path": "figures/price_shadow_curves.pdf",
+      "sha256": "fd64e7c7cad4ae3596cfb254c586734f7fd35f2afe3d22ab152017536fbb6dbe",
+      "bytes": 18824
+    },
+    "figures/price_staircase_interleaved.pdf": {
+      "repository_path": "figures/price_staircase_interleaved.pdf",
+      "sha256": "151490205d3c52c476c84caa4b2400b7b496fa1647f6921060578b88bd408763",
+      "bytes": 15154
+    },
+    "full_paper_jair.bib": {
+      "repository_path": "paper/full_paper_jair.bib",
+      "sha256": "3b73ee000f5fbde7b69632d026fb9a9508d69f6c44b723dd2d95988d1e0b1235",
+      "bytes": 20237
+    },
+    "full_paper_jair.tex": {
+      "repository_path": "paper/full_paper_jair.tex",
+      "sha256": "bc7a055d5993d8c605fd1fc1d4559fc463968f689f2a8bc016386036f5cd4208",
+      "bytes": 495373
+    },
+    "jair.cls": {
+      "repository_path": "paper/jair.cls",
+      "sha256": "b203f8fe198a82afececa5fc5c2641fa529e3aa05b82b329bcf5891be339fc68",
+      "bytes": 15064
+    },
+    "tables/audit_case_study.tex": {
+      "repository_path": "paper/tables/audit_case_study.tex",
+      "sha256": "5b0bd862492518e6da6e4dd2d96076b821fffac9f046aaef79ef90fa1f761e35",
+      "bytes": 1010
+    },
+    "tables/budget_frontier.tex": {
+      "repository_path": "paper/tables/budget_frontier.tex",
+      "sha256": "27968b1666dbda2e9f8d9dbd79b5b749b52d3af1db8d958134c03944649f9b17",
+      "bytes": 4942
+    },
+    "tables/calibration_table.tex": {
+      "repository_path": "paper/tables/calibration_table.tex",
+      "sha256": "c4a3c5916dd5af27c2d37956f288cf12b66aca297d9fa6a3be47ebd81304de29",
+      "bytes": 1780
+    },
+    "tables/horizon_map.tex": {
+      "repository_path": "paper/tables/horizon_map.tex",
+      "sha256": "937ffbb0088794cb0767483c84a58265d692ca0b6758ef57c7008675f21e5913",
+      "bytes": 1376
+    },
+    "tables/mcts_ablation.tex": {
+      "repository_path": "paper/tables/mcts_ablation.tex",
+      "sha256": "22850c8d4511227e2ee7c1af13af98b0259a57a2ce0cda3a323de26af71f8c47",
+      "bytes": 1949
+    },
+    "tables/pomcp_exploration_sweep.tex": {
+      "repository_path": "paper/tables/pomcp_exploration_sweep.tex",
+      "sha256": "205a5e7e7ea2238095a7664ddae3c481d3848f55f6ae962749a772b1da1b32f5",
+      "bytes": 4183
+    },
+    "tables/rocksample_extended.tex": {
+      "repository_path": "paper/tables/rocksample_extended.tex",
+      "sha256": "97c5bc32d4e7a2e8ec2317dd1be52b1a7b11b3d503b7b43cba08d19cfea7577f",
+      "bytes": 3392
+    },
+    "tables/rocksample_main.tex": {
+      "repository_path": "paper/tables/rocksample_main.tex",
+      "sha256": "be9f8371907379ff48695de701b3c711625d2e65c23deab09e0538c7d0584593",
+      "bytes": 3049
+    },
+    "tables/w_atlas.tex": {
+      "repository_path": "paper/tables/w_atlas.tex",
+      "sha256": "3cea5538f528c947b126c5b97953391f1dc8a37879a7d8eae0190bcb210a4688",
+      "bytes": 1508
+    },
+    "README_OVERLEAF.md": {
+      "sha256": "77af96707dfa69596de3d946303f143c823fea6764d9ac97f6bc6a8572f74fcb",
+      "bytes": 1503
+    },
+    "latexmkrc": {
+      "sha256": "4364bfc2811cc6c8c7f10fb3a94d7f7fc1267c8b090766d26f5b08c082226252",
+      "bytes": 57
+    }
+  }
+}

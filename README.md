@@ -200,6 +200,8 @@ tectonic full_paper.tex
 
 The review PDFs are `paper/full_paper_jair.pdf` and `paper/full_paper.pdf`. They are generated locally and ignored by Git; the source, figures, tables, and bibliography are versioned.
 
+The [Overleaf source archive](paper/rho_aif_jair_overleaf_2026-09-28.zip) contains the JAIR manuscript and all project dependencies. Upload it as a new project, select `full_paper_jair.tex` as the main document, and use pdfLaTeX with Biber on a current TeX Live version. Its README includes the build instructions. A fresh local extraction was compiled independently; no hosted Overleaf test or journal submission was performed.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
