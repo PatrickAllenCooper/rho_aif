@@ -23,9 +23,16 @@ Protocol (predeclared 2026-09-28, ledger 9.17.50, before any output was seen):
    feasible envelope (rho_aif.budget.feasible_envelope) of the held-out
    reference means at that budget, the per-seed envelope reward under the
    same mixture weights, and the paired per-seed gap (family minus
-   reference), with its seed-level SE and a two-sided 95 percent t interval
-   on 4 degrees of freedom. The envelope is still a maximum over sampled
+   reference), with its seed-level SE and a nominal pointwise plug-in
+   two-sided 95 percent t interval on 4 degrees of freedom. The envelope is still a maximum over sampled
    points, so its selection bias is not removed, only the stream mismatch.
+
+Interpretation clarified 2026-09-28 (ledger 9.17.51; computation unchanged):
+The reference support and mixture weights are fitted on the same held-out
+seed means and held fixed when computing the SE. These descriptive intervals
+do not propagate support reselection, uncertainty in fitted weights or cap
+feasibility, or multiplicity across budgets. They do not establish coverage
+for the population constrained frontier.
 
 Outputs:
   results/results_cpomdp_frontier_heldout.csv

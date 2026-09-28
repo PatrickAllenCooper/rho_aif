@@ -1,0 +1,400 @@
+{
+  "seed": 43,
+  "environment": "Diagnosis N=8 K=3",
+  "horizon": 3,
+  "observations": 29,
+  "success": true,
+  "purpose": "Audit of Figure 14 illustrative trace; same deterministic episode as the producer, not a new aggregate experiment.",
+  "rows": [
+    {
+      "step": 0,
+      "action_type": "observe",
+      "action_taken": 0,
+      "per_test_ig": [
+        0.18872187554086706,
+        0.18872187554086706,
+        0.18872187554086706
+      ],
+      "best_commit_value": -42.5,
+      "best_observe_value": -27.121334373377397,
+      "belief_entropy": 3.0
+    },
+    {
+      "step": 1,
+      "action_type": "observe",
+      "action_taken": 1,
+      "per_test_ig": [
+        0.14315587846583222,
+        0.18872187554086706,
+        0.18872187554086706
+      ],
+      "best_commit_value": -38.75,
+      "best_observe_value": -26.310056248918265,
+      "belief_entropy": 2.811278124459133
+    },
+    {
+      "step": 2,
+      "action_type": "observe",
+      "action_taken": 0,
+      "per_test_ig": [
+        0.14315587846583178,
+        0.14315587846583178,
+        0.1887218755408666
+      ],
+      "best_commit_value": -33.125,
+      "best_observe_value": -23.49578904266547,
+      "belief_entropy": 2.622556248918266
+    },
+    {
+      "step": 3,
+      "action_type": "observe",
+      "action_taken": 0,
+      "per_test_ig": [
+        0.18872187554086706,
+        0.14315587846583222,
+        0.18872187554086706
+      ],
+      "best_commit_value": -38.75,
+      "best_observe_value": -26.310056248918265,
+      "belief_entropy": 2.811278124459133
+    },
+    {
+      "step": 4,
+      "action_type": "observe",
+      "action_taken": 0,
+      "per_test_ig": [
+        0.14315587846583178,
+        0.14315587846583178,
+        0.1887218755408666
+      ],
+      "best_commit_value": -33.125,
+      "best_observe_value": -23.49578904266547,
+      "belief_entropy": 2.622556248918266
+    },
+    {
+      "step": 5,
+      "action_type": "observe",
+      "action_taken": 1,
+      "per_test_ig": [
+        0.07001277477155954,
+        0.14315587846583222,
+        0.18872187554086706
+      ],
+      "best_commit_value": -29.75,
+      "best_observe_value": -17.800476542665475,
+      "belief_entropy": 2.2802737180484143
+    },
+    {
+      "step": 6,
+      "action_type": "observe",
+      "action_taken": 1,
+      "per_test_ig": [
+        0.07001277477155954,
+        0.18872187554086706,
+        0.18872187554086706
+      ],
+      "best_commit_value": -36.5,
+      "best_observe_value": -21.247556248918265,
+      "belief_entropy": 2.4689955935892813
+    },
+    {
+      "step": 7,
+      "action_type": "observe",
+      "action_taken": 1,
+      "per_test_ig": [
+        0.07001277477155954,
+        0.14315587846583222,
+        0.18872187554086706
+      ],
+      "best_commit_value": -29.75,
+      "best_observe_value": -17.800476542665475,
+      "belief_entropy": 2.2802737180484143
+    },
+    {
+      "step": 8,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.07001277477155932,
+        0.07001277477155976,
+        0.18872187554086706
+      ],
+      "best_commit_value": -25.699999999999996,
+      "best_observe_value": -10.966101542665472,
+      "belief_entropy": 1.9379911871785622
+    },
+    {
+      "step": 9,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.07001277477155954,
+        0.07001277477155998,
+        0.143155878465832
+      ],
+      "best_commit_value": -13.549999999999997,
+      "best_observe_value": -10.15482341820634,
+      "belief_entropy": 1.7492693116376952
+    },
+    {
+      "step": 10,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.07001277477155932,
+        0.07001277477155976,
+        0.18872187554086706
+      ],
+      "best_commit_value": -25.699999999999996,
+      "best_observe_value": -10.966101542665472,
+      "belief_entropy": 1.9379911871785622
+    },
+    {
+      "step": 11,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.07001277477155954,
+        0.07001277477155998,
+        0.143155878465832
+      ],
+      "best_commit_value": -13.549999999999997,
+      "best_observe_value": -10.15482341820634,
+      "belief_entropy": 1.7492693116376952
+    },
+    {
+      "step": 12,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.07001277477155932,
+        0.07001277477155976,
+        0.18872187554086706
+      ],
+      "best_commit_value": -25.699999999999996,
+      "best_observe_value": -10.966101542665472,
+      "belief_entropy": 1.9379911871785622
+    },
+    {
+      "step": 13,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.07001277477155954,
+        0.07001277477155998,
+        0.143155878465832
+      ],
+      "best_commit_value": -13.549999999999997,
+      "best_observe_value": -10.15482341820634,
+      "belief_entropy": 1.7492693116376952
+    },
+    {
+      "step": 14,
+      "action_type": "observe",
+      "action_taken": 0,
+      "per_test_ig": [
+        0.07001277477155998,
+        0.07001277477155998,
+        0.07001277477155998
+      ],
+      "best_commit_value": -6.259999999999997,
+      "best_observe_value": -6.171434250690339,
+      "belief_entropy": 1.4069867807678436
+    },
+    {
+      "step": 15,
+      "action_type": "observe",
+      "action_taken": 1,
+      "per_test_ig": [
+        0.02709481325080687,
+        0.07001277477155954,
+        0.07001277477155954
+      ],
+      "best_commit_value": -3.1357142857142852,
+      "best_observe_value": -2.9495146078332,
+      "belief_entropy": 1.1602760178642504
+    },
+    {
+      "step": 16,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080687,
+        0.02709481325080676,
+        0.07001277477155987
+      ],
+      "best_commit_value": 0.21173469387755084,
+      "best_observe_value": 0.5025421523708816,
+      "belief_entropy": 0.9135652549606574
+    },
+    {
+      "step": 17,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080665,
+        0.02709481325080665,
+        0.143155878465832
+      ],
+      "best_commit_value": -8.15688775510204,
+      "best_observe_value": -4.087572142696138,
+      "belief_entropy": 1.2558477858305088
+    },
+    {
+      "step": 18,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.027094813250807093,
+        0.027094813250807093,
+        0.1887218755408675
+      ],
+      "best_commit_value": -22.10459183673469,
+      "best_observe_value": -4.89885026715527,
+      "belief_entropy": 1.444569661371376
+    },
+    {
+      "step": 19,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080665,
+        0.02709481325080665,
+        0.143155878465832
+      ],
+      "best_commit_value": -8.15688775510204,
+      "best_observe_value": -4.087572142696138,
+      "belief_entropy": 1.2558477858305088
+    },
+    {
+      "step": 20,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080676,
+        0.02709481325080676,
+        0.07001277477155987
+      ],
+      "best_commit_value": 0.21173469387755128,
+      "best_observe_value": 0.5025421523708821,
+      "belief_entropy": 0.9135652549606572
+    },
+    {
+      "step": 21,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080665,
+        0.02709481325080665,
+        0.14315587846583178
+      ],
+      "best_commit_value": -8.15688775510204,
+      "best_observe_value": -4.087572142696138,
+      "belief_entropy": 1.2558477858305088
+    },
+    {
+      "step": 22,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080698,
+        0.02709481325080698,
+        0.0700127747715601
+      ],
+      "best_commit_value": 0.21173469387755128,
+      "best_observe_value": 0.5025421523708823,
+      "belief_entropy": 0.9135652549606574
+    },
+    {
+      "step": 23,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080665,
+        0.02709481325080665,
+        0.14315587846583178
+      ],
+      "best_commit_value": -8.15688775510204,
+      "best_observe_value": -4.087572142696138,
+      "belief_entropy": 1.2558477858305088
+    },
+    {
+      "step": 24,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.027094813250807093,
+        0.027094813250807093,
+        0.1887218755408675
+      ],
+      "best_commit_value": -22.10459183673469,
+      "best_observe_value": -4.89885026715527,
+      "belief_entropy": 1.444569661371376
+    },
+    {
+      "step": 25,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080665,
+        0.02709481325080665,
+        0.14315587846583178
+      ],
+      "best_commit_value": -8.15688775510204,
+      "best_observe_value": -4.087572142696138,
+      "belief_entropy": 1.2558477858305088
+    },
+    {
+      "step": 26,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080698,
+        0.02709481325080698,
+        0.0700127747715601
+      ],
+      "best_commit_value": 0.21173469387755128,
+      "best_observe_value": 0.5025421523708823,
+      "belief_entropy": 0.9135652549606574
+    },
+    {
+      "step": 27,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080665,
+        0.02709481325080665,
+        0.14315587846583178
+      ],
+      "best_commit_value": -8.15688775510204,
+      "best_observe_value": -4.087572142696138,
+      "belief_entropy": 1.2558477858305088
+    },
+    {
+      "step": 28,
+      "action_type": "observe",
+      "action_taken": 2,
+      "per_test_ig": [
+        0.02709481325080698,
+        0.02709481325080698,
+        0.0700127747715601
+      ],
+      "best_commit_value": 0.21173469387755128,
+      "best_observe_value": 0.5025421523708823,
+      "belief_entropy": 0.9135652549606574
+    },
+    {
+      "step": 29,
+      "action_type": "commit",
+      "action_taken": 7,
+      "per_test_ig": [
+        0.02709481325080676,
+        0.02709481325080676,
+        0.02709481325080676
+      ],
+      "best_commit_value": 3.7982871720116624,
+      "best_observe_value": 2.8253819852624686,
+      "belief_entropy": 0.6668544920570639
+    }
+  ]
+}

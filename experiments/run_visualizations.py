@@ -359,6 +359,10 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
         ("EFE", EFEAgent, {"planning_horizon": 3}),
     ]
 
+    # A second visual cue separates Planning and EFE without relying on hue.
+    series_styles = {name: dict(style) for name, style in AGENT_STYLES.items()}
+    series_styles["Planning"]["ls"] = "--"
+
     max_step = 40
     all_data = {}
 
@@ -395,7 +399,7 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
     fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=figstyle.figsize(0.78, 1.18),
                                         sharex=True)
 
-    for label, style in AGENT_STYLES.items():
+    for label, style in series_styles.items():
         if label not in all_data:
             continue
         data = all_data[label]
@@ -429,7 +433,7 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
     ax1.set_ylim(0, 3.05)
     ax1.legend(loc="upper right")
 
-    for label, style in AGENT_STYLES.items():
+    for label, style in series_styles.items():
         if label not in all_data:
             continue
         data = all_data[label]
@@ -450,11 +454,11 @@ def fig_efficiency_curves(seed=42, num_episodes=300, save_path="figures/fig_effi
 
     # Draw Planning+IG last in panel (c): its dotted line stays legible on
     # top of EFE's solid one where the two curves coincide.
-    order_c = [l for l in AGENT_STYLES if l != "Planning+IG"] + ["Planning+IG"]
+    order_c = [l for l in series_styles if l != "Planning+IG"] + ["Planning+IG"]
     for label in order_c:
         if label not in all_data:
             continue
-        style = AGENT_STYLES[label]
+        style = series_styles[label]
         data = all_data[label]
 
         steps = []
@@ -564,31 +568,30 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
             break
     if cross_x is not None:
         ax1.plot([cross_x], [cross_y], marker="o", ms=7, mfc="none",
-                 mec=figstyle.BLACK, mew=1.2, ls="none", zorder=4)
-        ax1.annotate("crossover", xy=(cross_x, cross_y),
-                     xytext=(cross_x - 1.2, cross_y - 9), fontsize=7.5,
-                     ha="right", va="top", color=figstyle.BLACK,
-                     arrowprops=dict(arrowstyle="-", lw=0.5,
-                                     color=figstyle.GRAY, shrinkA=1, shrinkB=4))
+                 mec=figstyle.BLACK, mew=1.2, ls="none", zorder=4,
+                 label="Interpolated crossover")
 
     ax1.set_ylabel("$-\\mathcal{G}$ (reward units)")
     ax1.set_title("(a) Value of committing vs observing", fontsize=9)
-    ax1.legend(loc="lower right")
+    ax1.legend(loc="lower right", bbox_to_anchor=(0.90, 0.02))
 
     ax2 = axes[1]
     num_tests = len(all_traces[0].per_test_ig)
     ig_max = 0.0
+    test_styles = [("-", "o"), ("--", "s"), (":", "^")]
     for k in range(num_tests):
         ig_vals = [t.per_test_ig[k] for t in all_traces]
         ig_max = max(ig_max, max(ig_vals))
         ax2.plot(steps, ig_vals, color=TEST_COLORS[k % len(TEST_COLORS)],
-                 lw=1.8, label=f"Test {k}", marker=".", markersize=4)
+                 lw=1.5, label=f"Test {k}", linestyle=test_styles[k % len(test_styles)][0],
+                 marker=test_styles[k % len(test_styles)][1], markersize=3, markevery=3)
 
     ax2.set_ylabel("Information gain (bits)")
-    # Single in-axes legend (panel (d) reuses the same colors directly below,
-    # so it carries no legend of its own).
+    # Line styles and markers distinguish tests in grayscale. The action
+    # strip below also prints each test index inside its colored cell.
     ax2.set_ylim(top=ig_max * 1.30)
-    ax2.legend(loc="upper right", ncol=num_tests, columnspacing=1.0,
+    ax2.legend(loc="upper left", bbox_to_anchor=(0.02, 1.0),
+               ncol=num_tests, columnspacing=1.0,
                handlelength=1.4)
     ax2.set_title("(b) Per-test expected information gain", fontsize=9)
 
@@ -606,6 +609,8 @@ def fig_extended_efe(seed=42, save_path="figures/fig_extended_efe.pdf"):
     for i, (s, a) in enumerate(zip(obs_steps_only, obs_actions)):
         ax4.barh(0, 1, left=s - 0.5, height=0.6,
                  color=TEST_COLORS[a % len(TEST_COLORS)], edgecolor="white", linewidth=0.5)
+        ax4.text(s, 0, str(a), ha="center", va="center", fontsize=6.5,
+                 color="white" if a % len(TEST_COLORS) < 2 else "black")
 
     ax4.set_yticks([])
     ax4.grid(False)

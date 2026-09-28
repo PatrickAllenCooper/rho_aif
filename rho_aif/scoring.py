@@ -1,8 +1,8 @@
 """Proper scoring rules for terminal beliefs against the true hidden state.
 
-Under log scoring, Expected Free Energy at w=1 is the theoretically correct
-belief reporter (Bernardo 1979). These metrics are the benchmark differentiator
-alongside cumulative reward.
+Log and Brier scores evaluate terminal-belief quality separately from
+cumulative reward. The log score uses natural logarithms and, by default,
+floors probabilities at 1e-12 for finite numerical output.
 """
 
 from __future__ import annotations

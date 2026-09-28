@@ -1,0 +1,89 @@
+{
+  "date": "2026-09-28",
+  "base_commit": "c211422e82f9bc70150473f1a1ca910f3c74a314",
+  "artifacts": {
+    "paper/full_paper_jair.tex": {
+      "sha256": "bc7a055d5993d8c605fd1fc1d4559fc463968f689f2a8bc016386036f5cd4208",
+      "bytes": 495373
+    },
+    "paper/full_paper.tex": {
+      "sha256": "eb088c99d298a790a02a15b7a83641d1f057c453c094b993796513ac5dba3f98",
+      "bytes": 470929
+    },
+    "paper/full_paper_jair.pdf": {
+      "sha256": "946d6da0d0ef07499028f77a03e8f200d94762e285430f0ea41d21220ded8af9",
+      "bytes": 1596228,
+      "pages": 115,
+      "horizontal_off_page_text_pages": []
+    },
+    "paper/full_paper.pdf": {
+      "sha256": "d2c5b717d06fbb5e6a3a649e6615f250f494ad2c3eb499088aa67fc3819e77fc",
+      "bytes": 1040365,
+      "pages": 149,
+      "horizontal_off_page_text_pages": []
+    },
+    "figures/distractor_composition.pdf": {
+      "sha256": "8a7645e14bc6861a03c54034723811068b699d2e76583c4ec24eb34758e49b86",
+      "bytes": 16211,
+      "pages": 1
+    },
+    "figures/fig_efficiency_curves.pdf": {
+      "sha256": "abc9adf7a7b119f7cdee67d15ca7bbe0c0d6514d2e8270b2be3db4965070cd51",
+      "bytes": 16287,
+      "pages": 1
+    },
+    "figures/fig_extended_efe.pdf": {
+      "sha256": "7e1ceee41662849e133fa2becf23e622d9592a06619746988b872944e7a012f3",
+      "bytes": 16182,
+      "pages": 1
+    },
+    "figures/fig_hero_price_curve.pdf": {
+      "sha256": "07bd3b243a09d1fb87a9c991a55d3f722f4c6fc8e55f472f05f21daecb80ea84",
+      "bytes": 18412,
+      "pages": 1
+    },
+    "figures/fig_hero_price_curve_jair.pdf": {
+      "sha256": "5cbda5b86a43675beceef438d902a7324cd1bc3201475c51d9eab5b5b1b5b756",
+      "bytes": 18514,
+      "pages": 1
+    },
+    "figures/fig_pareto.pdf": {
+      "sha256": "9e6f419b751db15dadbcda8b650ee22626380efbec4cc026cb517b60f33654d2",
+      "bytes": 24480,
+      "pages": 1
+    },
+    "figures/fig_tileworld_comparison.pdf": {
+      "sha256": "8017f88443826079db2c119bba3b4a9b59cd4d280971e8537c6739bba5a4d28d",
+      "bytes": 32764,
+      "pages": 1
+    },
+    "figures/price_cost_budget.pdf": {
+      "sha256": "fc04925517135b04279cb6c56157ff0af5e630a77fb120d9d4b310f55235be7f",
+      "bytes": 17301,
+      "pages": 1
+    },
+    "figures/price_scale_invariance.pdf": {
+      "sha256": "9625deac5f9299c9faeb73d882024a994383a1914be0453e5f0b1387c11f257f",
+      "bytes": 15510,
+      "pages": 1
+    },
+    "figures/price_shadow_curves.pdf": {
+      "sha256": "fd64e7c7cad4ae3596cfb254c586734f7fd35f2afe3d22ab152017536fbb6dbe",
+      "bytes": 18824,
+      "pages": 1
+    },
+    "figures/price_staircase_interleaved.pdf": {
+      "sha256": "151490205d3c52c476c84caa4b2400b7b496fa1647f6921060578b88bd408763",
+      "bytes": 15154,
+      "pages": 1
+    }
+  },
+  "checks": {
+    "pytest": "486 passed, 20 warnings in 173.59s",
+    "source_install": "fresh external Python 3.9 venv: upgraded pip, editable .[dev] install, pip check, environment list and three-episode Tiger smoke passed",
+    "claim_checker": "No hard failures; 256 proximity-based numeric review flags: 60 substantive/edit-context flags triaged in reviewer reports, 196 additional flags exposed by line-wrap or trailing-space-only changes",
+    "git_diff_check": "passed",
+    "results_and_bibliography": "no changes",
+    "pdf_scope": "Both master PDFs rebuilt; all 20 figures visually reviewed in each. Standard LaTeX class/box warnings remain; builds are not asserted warning-free."
+  }
+}

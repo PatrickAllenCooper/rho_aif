@@ -119,7 +119,7 @@ placing one wrong commit in each held-out seed in turn.
 
 ## What remains (all Pat's, none scientific)
 
-1. **Publish to PyPI.** Run `twine upload` to TestPyPI and then PyPI, which is credential-gated. Until then, the `pip install rho-aif` claim in the README and JAIR checklist is false.
+1. **Planned PyPI publication.** TestPyPI/PyPI upload remains credential-gated. **Correction, 2026-09-28:** the README and JAIR checklist already state that PyPI publication is planned; the earlier assertion here that they falsely advertised a live package was stale. The public source-install path is available and independently smoke-tested in ledger 9.17.51. Publication is separate from the scientific review.
 2. **Confirm the attestations.** Confirm the acknowledgments' AI-disclosure author attestation and the contact email (see CLAUDE.md, "Submission-readiness canvass").
 3. **Submit.** Paste the submission-form answers from `full_paper_plan.md` 8.9.1 and submit at **jair.org only**. `sub.ifspress.hk` is a hijacked clone.
 4. **Version bump (optional).** If a release tag is wanted for the submitted state, bump `pyproject.toml` and `rho_aif/__init__.py` together and record it in `CHANGELOG.md`. This pass changed only docstrings and a figure footer in the package, so no bump was made.
@@ -129,3 +129,7 @@ If anyone edits the manuscript again, the standing rules still apply:
 - Run `verify_claims.py`.
 - Put the batch through an adversarial audit before trusting it.
 - Rerun the citation check if the bibliography changes.
+
+## Follow-on closure, September 28, 2026
+
+The independent two-agent pass requested after this handoff is complete, including Pat's later request for restrained prose formatting and visual review of every figure. Both reviewers give unqualified ACCEPT on the exact final sources and PDFs. Seven local scientific correction groups and the presentation work are recorded in `full_paper_plan.md` 9.17.51. The later direct PI-5 proof and nominal plug-in interval interpretation supersede this handoff's earlier summaries on those points. All 20 figures were reviewed in both formats and ten improved. JAIR is 115 pages, LNCS 149 pages, and all 486 tests pass. Existing class/box warnings remain; the final PDFs have no off-page text in the complete glyph scan. The sources, figures, and review records are versioned; generated review PDFs remain locally available and Git-ignored as documented in README. Final reports and artifact hashes are in `reviews/final_two_agent_2026-09-28/`. Personal submission attestations and any PyPI publication remain author actions.

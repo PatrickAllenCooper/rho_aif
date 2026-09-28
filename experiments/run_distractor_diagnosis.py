@@ -342,8 +342,8 @@ def run_sweep(
 
 
 def plot_composition(df: pd.DataFrame, path: Path) -> None:
-    """Left: usage composition of ordinary Planning+IG as w grows.
-    Right: distractor fraction for ordinary and reward-relevance-weighted
+    """Upper panel: usage composition of ordinary Planning+IG as w grows.
+    Lower panel: distractor fraction for ordinary and reward-relevance-weighted
     Planning+IG on the same weight grid, which is the paired evidence that
     the relevance weighting removes reward-irrelevant sensing entirely."""
     plain = df[(df["w"].notna()) & (df["agent"] == "Planning+IG")].sort_values("w")
@@ -352,20 +352,20 @@ def plot_composition(df: pd.DataFrame, path: Path) -> None:
     ].sort_values("w")
 
     figstyle.apply()
-    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.2))
+    fig, axes = plt.subplots(2, 1, figsize=figstyle.figsize(1.0, aspect=0.92))
     ax = axes[0]
     ax.bar(range(len(plain)), plain["mean_task_tests"],
            label="task-relevant tests", color=figstyle.BLUE)
     ax.bar(range(len(plain)), plain["mean_distractor_tests"],
            bottom=plain["mean_task_tests"], label="distractor tests",
-           color=figstyle.VERMILLION)
+           color=figstyle.VERMILLION, hatch="///", edgecolor="white", linewidth=0.3)
     ax.set_xticks(range(len(plain)))
     ax.set_xticklabels([f"{w:.3g}" for w in plain["w"]],
-                       rotation=45, ha="right", fontsize=7.5)
+                       rotation=45, ha="right", fontsize=8.5)
     figstyle.style_axis(ax)
     ax.set_xlabel("Info-gain weight $w$")
     ax.set_ylabel("Mean tests per episode")
-    ax.set_title("(a) Usage composition, ordinary information gain")
+    ax.set_title("(a) Usage composition under ordinary information gain")
     ax.legend(loc="upper left")
 
     ax2 = axes[1]
@@ -376,17 +376,17 @@ def plot_composition(df: pd.DataFrame, path: Path) -> None:
     if not relevant.empty:
         ax2.errorbar(relevant["w"], relevant["mean_distractor_fraction"],
                      yerr=relevant["se_distractor_fraction_seed_level"],
-                     marker="s", ms=4, capsize=3, color=figstyle.GREEN,
+                     marker="s", ms=4, capsize=3, color=figstyle.GREEN, linestyle="--",
                      label="reward-relevance weighted")
     ax2.set_xscale("symlog", linthresh=0.1)
     figstyle.style_axis(ax2)
     ax2.set_xlabel("Info-gain weight $w$")
     ax2.set_ylabel("Distractor fraction of usage")
-    ax2.set_title("(b) Distractor fraction, ordinary vs. relevance-weighted")
+    ax2.set_title("(b) Distractor fraction under the two objectives")
     ax2.legend(loc="upper left")
     ax2.set_ylim(-0.02, max(0.3, float(plain["mean_distractor_fraction"].max()) * 1.2))
 
-    fig.tight_layout()
+    fig.tight_layout(h_pad=1.8)
     FIGURES.mkdir(exist_ok=True)
     fig.savefig(path.with_suffix(".png"), dpi=150)
     fig.savefig(path.with_suffix(".pdf"))

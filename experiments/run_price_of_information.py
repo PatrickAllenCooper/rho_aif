@@ -324,12 +324,12 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
             sl["budget"], sl["w_star"], s=22, facecolors="none",
             edgecolors=c, linewidths=1.1, marker="o", zorder=4,
         )
-        # Vertical bars: the set-valued crossing bracket (w_lo, w_hi] at each B.
+        # Vertical bars: the finite-grid crossing bracket (w_lo, w_hi] at each B.
         for _, row in sub.iterrows():
             B = float(row["budget"])
             lo, hi = float(row["w_lo"]), float(row["w_hi"])
             is_slack = row["w_star"] <= 0 or row["w_star"] < lo
-            bar_alpha = 0.35 if is_slack else 0.5
+            bar_alpha = 0.65 if is_slack else 0.8
             bar_ls = ":" if is_slack else "-"
             unresolved = ("bracketed" in row.index) and not bool(row["bracketed"])
             if unresolved:
@@ -716,7 +716,7 @@ def plot_cost_budget(
             ax.axhline(b, ls=kind_ls.get(kind, "--"), lw=0.9, alpha=0.6, color=c, zorder=1)
             ax.text(
                 0.995, b, f"$B={b:.2f}$ {kind}", transform=ax.get_yaxis_transform(),
-                ha="right", va="bottom", fontsize=6.5, color=c, zorder=3,
+                ha="right", va="bottom", fontsize=8.0, color=("#8C5700" if kind == "cost" else c), zorder=3,
             )
             spans[(round(float(row["w_lo"]), 6), round(float(row["w_hi"]), 6))] = None
         for i, (lo, hi) in enumerate(sorted(spans)):
@@ -760,7 +760,7 @@ def plot_cost_budget(
     ax2.text(
         0.02, 0.97,
         "reference costs: cheap 0.5,\nuniform mix 1.5, expensive 2.5",
-        transform=ax2.transAxes, fontsize=7.5, color=figstyle.GRAY, va="top",
+        transform=ax2.transAxes, fontsize=8.0, color="#333333", va="top",
     )
     ax2.set_xlabel("Info-gain weight $w$")
     ax2.set_ylabel("Mean cost per test $U_{\\mathrm{cost}}/U_{\\mathrm{count}}$")
@@ -1060,8 +1060,8 @@ def plot_scale_collapse(
         span = hi_shared - lo_shared
         ax2.set_ylim(lo_shared - 0.3 * span, hi_shared + 0.3 * span)
         ax2.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=6))
-        ax2.set_ylabel(f"Crossing bracket $w^*(B{{=}}{budget:g})/\\alpha$")
-        ax2.set_title("(b) Brackets")
+        ax2.set_ylabel("Normalized weight $w/\\alpha$")
+        ax2.set_title(f"(b) Crossing brackets at $B={budget:g}$")
         figstyle.style_axis(ax2)
     fig.tight_layout()
     _savefig(fig, path)

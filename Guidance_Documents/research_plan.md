@@ -1003,6 +1003,12 @@ Pat asked for one final polishing pass judged by the top reviewer model from eac
 
 ---
 
+### Independent two-agent final polish and complete figure review (September 28, 2026)
+
+Starting from `c211422`, two new independent reviewers examined theory/attribution and empirical/statistical/reproducibility claims. Both first requested local revisions. The corrected text uses a direct PI-5 supermartingale proof, properly qualifies constant-step convergence and positive rewards, separates proper-score quality from calibration and action-weight choice, limits the fitted-frontier intervals to nominal pointwise plug-in summaries, scopes the one-fifth shortfall to Bandit, and distinguishes population feasibility from measured reference estimates. The held-out reference replay, paired gaps, bootstrap bracket distributions, and n=5/n=20 TOST were independently reproduced. No result CSV or bibliography entry changed.
+
+Pat then requested restrained formatting and a review of every figure. Eight focused style groups were applied in both masters. All 20 figures were visually reviewed in both final formats; ten were improved at their producers. A replay of Figure 14 exposed an immediate-information-maximization overclaim, now corrected to the actual recursive objective, and its caption separates the interpolated crossing from the discrete commit. Final layout checks also fixed an oversized/deferred float, filename clipping, and unnecessary table shrinkage. Source installation was verified in a fresh external Python 3.9 environment, and README/build guidance was corrected. Both final reviewers gave an unqualified ACCEPT with no remaining condition. JAIR 115 pages, LNCS 149 pages, 486 tests passed. The claim checker has no hard failures; 60 edit-context numeric flags were independently triaged, and 196 further flags come from formatting-only changes touching old numerical paragraphs. Existing LaTeX class/box warnings remain. Exact artifact hashes and final reports are in `reviews/final_two_agent_2026-09-28/`; full narrative in `full_paper_plan.md` 9.17.51. Verdict: PASS. Personal author attestations and submission remain separate from the scientific acceptance.
+
 ## Document Evolution
 
 This guidance document is updated continuously to reflect:

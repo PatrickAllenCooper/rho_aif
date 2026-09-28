@@ -96,12 +96,12 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf",
     w_jump = 6.3
     # Underlying curve: low plateau to the jump, riser, high plateau.
     ax.plot([0.08, w_jump], [3, 3], color=figstyle.BLUE, lw=1.8, zorder=3,
-            label="$U(w)$: schematic usage curve")
+            label="usage curve $U(w)$")
     ax.plot([w_jump, w_jump], [3, 10], color=figstyle.BLUE, lw=1.0, ls=":",
             zorder=3)
     ax.plot([w_jump, 140], [10, 10], color=figstyle.BLUE, lw=1.8, zorder=3)
     ax.plot(w_grid, u_grid, color=figstyle.BLUE, marker="o", ms=5, lw=0,
-            linestyle="none", zorder=4, label="sampled grid weights")
+            linestyle="none", zorder=4, label="sampled weights")
     ax.set_xscale("log")
     ax.set_xlim(0.08, 140)
     ax.set_ylim(0, 13)
@@ -109,7 +109,7 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf",
     # Stated expected sensing budget B, a target for expected usage.
     B = 6.5
     ax.axhline(B, color=figstyle.GRAY, ls="--", lw=1.2, zorder=2,
-               label="expected sensing budget $B$ (target)")
+               label="usage target $B$")
 
     # Crossing bracket (w_lo, w_hi], the grid's estimate of where the curve
     # crosses B, half-open and closed at w_hi per Definition PI-3: the shaded
@@ -119,13 +119,13 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf",
     # interval, not a set of prices.
     w_lo, w_hi = 4, 10
     ax.axvspan(w_lo, w_hi, color=figstyle.GRAY, alpha=0.15, zorder=0,
-               label=r"crossing bracket $(w_{\mathrm{lo}}, w_{\mathrm{hi}}]$ (grid estimate)")
+               label=r"grid bracket $(w_{\mathrm{lo}}, w_{\mathrm{hi}}]$")
     # Labeled near the top of the band, not the bottom: the bottom-right of
     # the panel is where the legend sits, and a first pass collided the two.
-    ax.text(w_lo, 12.5, r"$w_{\mathrm{lo}}$", fontsize=7.5,
-            color=figstyle.GRAY, ha="center", va="top")
-    ax.text(w_hi, 12.5, r"$w_{\mathrm{hi}}$", fontsize=7.5,
-            color=figstyle.GRAY, ha="center", va="top")
+    ax.text(w_lo, 12.5, r"$w_{\mathrm{lo}}$", fontsize=8.5,
+            color="0.25", ha="center", va="top")
+    ax.text(w_hi, 12.5, r"$w_{\mathrm{hi}}$", fontsize=8.5,
+            color="0.25", ha="center", va="top")
 
     # Endpoint mixture: the randomized policy that attains B in expectation
     # by playing w_hi with probability q and w_lo otherwise. It is not a
@@ -139,8 +139,7 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf",
     ax.plot([w_jump], [B], marker="D", ms=7, markerfacecolor="white",
             markeredgecolor="black", markeredgewidth=0.9, linestyle="none",
             zorder=6,
-            label=(r"endpoint mixture: $w_{\mathrm{hi}}$ w.p. $q$, "
-                   r"$w_{\mathrm{lo}}$ otherwise, $\mathbb{E}[U]=B$"))
+            label=r"endpoint mixture, $\mathbb{E}[U]=B$")
     ax.text(w_jump * 1.12, B + 0.45, f"$q{{=}}{q:.1f}$", fontsize=7,
             color="0.15", ha="left", va="bottom", zorder=6)
 
@@ -156,10 +155,10 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf",
     figstyle.style_axis(ax)
     # Six legend entries no longer fit in the lower-right corner without
     # covering the low plateau or the band, so the legend sits below the
-    # axes in two columns (savefig.bbox is "tight" in figstyle, so it is
+    # axes in three columns (savefig.bbox is "tight" in figstyle, so it is
     # kept in the exported page).
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.19), ncol=3,
-              fontsize=6.9, handlelength=1.4, frameon=False,
+              fontsize=8.5, handlelength=1.4, frameon=False,
               columnspacing=1.0, handletextpad=0.5)
 
     # Leader line from the star up to the box's bottom-left corner (short,
@@ -189,7 +188,7 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf",
 
     pad_x, top_y = box_xy[0] + 0.02, box_xy[1] + box_wh[1] - 0.07
     line_h = 0.10
-    fs = 6.6
+    fs = 7.4
     _rainbow_text(ax, fig, pad_x, top_y, [
         ("Active inference minimizes", "0.15"),
     ], fontsize=fs, right_limit=box_right - 0.01, line_name="line 1")
@@ -197,7 +196,7 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf",
         ("$G(\\pi){=}$ pragmatic $-$ epistemic", "0.15"),
     ], fontsize=fs, right_limit=box_right - 0.01, line_name="line 2")
     _rainbow_text(ax, fig, pad_x, top_y - 2 * line_h, [
-        ("is exactly maximizing $R(s,a){+}w{\\cdot}I(b,a)$ at ", "0.15"),
+        ("maximizes $R(s,a){+}w{\\cdot}I(b,a)$ at ", "0.15"),
         ("$w{=}1$", figstyle.AGENT_COLORS["EFE"]),
     ], fontsize=fs, right_limit=box_right - 0.01, line_name="line 3")
     _rainbow_text(ax, fig, pad_x, top_y - 3 * line_h, [

@@ -126,3 +126,8 @@ worth checking, and what the source shows:
 ## Entries not located
 
 None. All 23 entries were found in a primary record.
+
+
+## Correction after the independent two-agent pass, 2026-09-28
+
+The blanket attribution verdict above for PI-5's sign/separation hypotheses was too strong. Inspection of Robbins and Monro (1951), pp. 404–405, shows that its first convergence theorem uses uniform separation and a specified step-size class, while its second uses monotonicity, equality at the root, and a positive derivative. Neither states the more general annulus-separation hypothesis used in PI-5. A cubic crossing satisfies PI-5 but not those original theorem hypotheses. The conclusion in PI-5 is valid; the revised manuscript supplies a direct projected squared-distance supermartingale proof for its bounded scalar setting, retaining Robbins–Monro, Blum, and Kushner as historical/background citations rather than an exact theorem mapping. See `reviews/final_two_agent_2026-09-28/reviewer_theory_round1.md`, R1, for the primary-source link and counterexample. Bibliographic metadata are unchanged.

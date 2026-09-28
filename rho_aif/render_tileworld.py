@@ -412,9 +412,6 @@ def render_agent_comparison(
     ]
     fig.legend(handles=legend_handles, loc="lower center", ncol=3,
                bbox_to_anchor=(0.5, -0.045), frameon=False, fontsize=8)
-    fig.text(0.5, -0.085,
-             "Scan panels are subsampled evenly per row, and $t$ gives the true step.",
-             ha="center", fontsize=7, color=figstyle.GRAY)
 
     _save_fig(fig, save_path)
     plt.close()

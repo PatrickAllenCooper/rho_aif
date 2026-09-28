@@ -117,8 +117,8 @@ def _tied_weight_groups(ws, succ, rew, rtol=1e-9):
 def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
     """Pareto frontier panels: success vs reward for each environment.
 
-    Layout is a 2x3 grid (five environment panels plus the legend in the
-    empty sixth cell). Styling comes from rho_aif.figstyle: the sweep series
+    Layout is a 3x2 grid at manuscript width (five environment panels plus
+    the legend in the empty sixth cell). Styling comes from rho_aif.figstyle: the sweep series
     is Planning+IG (pink, dotted), the w=1 diamond is Planning+IG's marker
     for the canonical weight, and the EFE agent is the vermillion star. The
     two markers coincide by Proposition 1, so the star is drawn smaller on
@@ -128,8 +128,8 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
     envs = list(all_results.keys())
     n = len(envs)
     if n >= 5:
-        nrows, ncols = 2, 3
-        fig, axes = plt.subplots(nrows, ncols, figsize=(9.6, 5.4))
+        nrows, ncols = 3, 2
+        fig, axes = plt.subplots(nrows, ncols, figsize=figstyle.figsize(1.0, aspect=1.0))
         axes = axes.ravel()
     else:
         nrows, ncols = 1, n
@@ -150,7 +150,7 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
 
         # w-ordered sweep polyline, kept light so markers and labels dominate.
         ax.plot(succ, rew, color=pig["color"], linestyle=pig["linestyle"],
-                lw=1.4, alpha=0.5, zorder=1)
+                lw=1.4, alpha=0.85, zorder=1)
         # Seed-level SE on both axes, from the committed sweep CSV, so the
         # frontier is read against its sampling uncertainty rather than as
         # exactly resolved.
@@ -215,7 +215,7 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
                 shrink_b = 10 if 1.0 in g["ws"] else 3
                 ax.annotate(label, xy=(g["succ"], g["rew"]),
                             xytext=(dx, dy), textcoords="offset points",
-                            fontsize=7.5, color=figstyle.GRAY,
+                            fontsize=8.5, color="#333333",
                             ha=ha, va="center",
                             arrowprops=dict(arrowstyle="-", lw=0.5,
                                             color=figstyle.GRAY,
@@ -223,7 +223,7 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
                 continue
             side = -1 if g["succ"] > x_mid else 1
             points.append((g["succ"], g["rew"], label, side))
-        figstyle.annotate_no_overlap(ax, points)
+        figstyle.annotate_no_overlap(ax, points, fontsize=8.5, color="#333333")
 
         ax.set_xlabel("Success rate (%)")
         if idx % ncols == 0:
@@ -243,14 +243,17 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
                markersize=12, ls="none", markeredgecolor="black",
                label="EFE agent ($w{=}1$)"),
     ]
-    # Legend below the panels, matching fig_tileworld_scaling and
-    # fig_asymmetry_sweep, rather than parked inside an empty grid cell.
+    # Keep the legend at the same readable type size as the data panels.
+    # The unused sixth cell leaves room for all three marker definitions.
     if n >= 5 and len(axes) > n:
         for extra_ax in axes[n:]:
             extra_ax.axis("off")
-    fig.legend(handles=legend_elements, loc="lower center", ncol=3,
-               bbox_to_anchor=(0.5, -0.05))
-    plt.tight_layout()
+        axes[n].legend(handles=legend_elements, loc="center", ncol=1,
+                       labelspacing=1.5)
+    else:
+        fig.legend(handles=legend_elements, loc="lower center", ncol=3,
+                   bbox_to_anchor=(0.5, -0.05))
+    plt.tight_layout(h_pad=2.0, w_pad=2.0)
 
     base, _ = os.path.splitext(save_path)
     plt.savefig(base + ".pdf")

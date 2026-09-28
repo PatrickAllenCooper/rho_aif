@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](pyproject.toml)
 
-A Gymnasium benchmark suite and agent library for observe-then-commit and factored-observation POMDPs, accompanying the paper *Expected Free Energy as Belief-Dependent Utility for rho-POMDPs* by Patrick Cooper and Alvaro Velasquez (University of Colorado Boulder).
+A Gymnasium benchmark suite and agent library for observe-then-commit and factored-observation POMDPs, accompanying the paper *Pricing the Sensing Budget in ρ-POMDPs, with Expected Free Energy as the Canonical Information Weight* by Patrick Cooper and Alvaro Velasquez (University of Colorado Boulder).
 
 An abridged version was accepted at IWAI 2026 (poster and spotlight, Springer CCIS). The full manuscript in `paper/` is the extended version prepared for JAIR submission. See [CHANGELOG.md](CHANGELOG.md) for what changed between releases.
 
@@ -25,7 +25,8 @@ PyPI publication is planned but not yet live, so `pip install rho-aif` does not 
 git clone https://github.com/PatrickAllenCooper/rho_aif.git
 cd rho_aif
 python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
 ```
 
 ## Quickstart
@@ -70,7 +71,7 @@ Canonical seeds are `{42, 123, 456, 789, 1024}`. Episode counts and planning hor
 | `mean_log_score` | Log score of terminal posterior vs true state (nats) | higher |
 | `mean_brier` | Brier score of terminal posterior | lower |
 
-Under log scoring, EFE at `w=1` is the theoretically correct belief reporter (Bernardo 1979). Scoring-rule columns are the benchmark differentiator alongside reward.
+Log and Brier scores evaluate terminal-belief quality separately from cumulative reward. The log score uses natural logarithms and, by default, floors probabilities at `1e-12` for finite numerical output.
 
 ## Agents
 
@@ -166,7 +167,7 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | Proper-scoring calibration table | `python experiments/run_calibration_table.py` |
 | Per-test value-of-information audit case study | `python experiments/run_audit_case_study.py` |
 | Destructive-sensing boundary example | `python -m pytest tests/test_destructive_boundary.py -v` |
-| Full-length integrated paper | `paper/full_paper.tex` (compile with `tectonic paper/full_paper.tex`) |
+| Full-length integrated paper | `paper/full_paper.tex` (see the build commands below) |
 
 ## Tests
 
@@ -183,6 +184,21 @@ python -m pytest tests/ -v
   year={2026}
 }
 ```
+
+## Building the manuscripts
+
+Run from the repository root with pdfLaTeX and Biber available on `PATH` for the JAIR manuscript, and Tectonic for the long LNCS master. Each build uses the shared figures and tables in this checkout; it does not rerun experiments.
+
+```bash
+cd paper
+pdflatex -interaction=nonstopmode -halt-on-error full_paper_jair.tex
+biber full_paper_jair
+pdflatex -interaction=nonstopmode -halt-on-error full_paper_jair.tex
+pdflatex -interaction=nonstopmode -halt-on-error full_paper_jair.tex
+tectonic full_paper.tex
+```
+
+The review PDFs are `paper/full_paper_jair.pdf` and `paper/full_paper.pdf`. They are generated locally and ignored by Git; the source, figures, tables, and bibliography are versioned.
 
 ## License
 
