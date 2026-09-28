@@ -90,7 +90,7 @@ def build_main_table() -> str:
         " and a Flat-MC(1000) reference on every instance, are in",
         " Appendix~\\ref{app:rocksample}).}",
         "\\label{tab:rocksample}",
-        "\\begin{small}",
+        "\\begin{tablebody}",
         "\\begin{tabular}{llccc}",
         "\\toprule",
         "Instance & Agent & Good & Bad & Reward \\\\",
@@ -121,7 +121,7 @@ def build_main_table() -> str:
         lines.append("\\midrule" if instance != INSTANCES[-1][0] else "\\bottomrule")
     if lines[-1] == "\\midrule":
         lines[-1] = "\\bottomrule"
-    lines += ["\\end{tabular}", "\\end{small}", "\\end{table}", ""]
+    lines += ["\\end{tabular}", "\\end{tablebody}", "\\end{table}", ""]
     return "\n".join(lines)
 
 
@@ -150,7 +150,7 @@ def build_extended_table() -> str:
         " RS[5,3]/RS[7,4]: 500 episodes $\\times$ 10 seeds. RS[7,8]/RS[11,11]:",
         " 100 episodes $\\times$ 5 seeds.}",
         "\\label{tab:rocksample_extended}",
-        "\\begin{small}",
+        "\\begin{tablebody}",
         "\\begin{tabular}{llccccc}",
         "\\toprule",
         "Instance & Agent & Steps & Checks & Good & Bad & Reward \\\\",
@@ -174,7 +174,7 @@ def build_extended_table() -> str:
         lines.append("\\midrule" if instance != INSTANCES[-1][0] else "\\bottomrule")
     if lines[-1] == "\\midrule":
         lines[-1] = "\\bottomrule"
-    lines += ["\\end{tabular}", "\\end{small}", "\\end{table}", ""]
+    lines += ["\\end{tabular}", "\\end{tablebody}", "\\end{table}", ""]
     return "\n".join(lines)
 
 

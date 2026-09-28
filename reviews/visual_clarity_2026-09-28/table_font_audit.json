@@ -1,0 +1,1100 @@
+[
+  {
+    "master": "jair",
+    "page": 19,
+    "bounds": [
+      150.7,
+      204.63300000000004,
+      459.0,
+      269.88300000000004
+    ],
+    "font_sizes": {
+      "8.97": 211,
+      "6.58": 16
+    },
+    "sample": "Environment\ud835\udefc\ud835\udf02\ud835\udc64\u2217lo\ud835\udc64\u2217hi\ud835\udc64=1in(\ud835\udc64\u2217lo,\ud835\udc64\u2217hi)?\ud835\udc64\u2217retTestbed1.01.31\u22123.061.01Natunitsonly(seetext)[0.01,0.5](tied)Tiger10.00.27\u2212138.666.89Yes[0.01,20](tied)Diagnosis5.00.1"
+  },
+  {
+    "master": "jair",
+    "page": 23,
+    "bounds": [
+      188.3,
+      441.366,
+      421.4,
+      550.299
+    ],
+    "font_sizes": {
+      "8.97": 339,
+      "6.58": 2
+    },
+    "sample": "Factored(\u0394\ud835\udc47=0)Non-factored(\u0394\ud835\udc47\u22600)Non-destructivetestingDestructivetesting(drilling)Medicalimaging(CT,MRI)Biopsy/tissuesamplingStructuralinspectionActiveintervent"
+  },
+  {
+    "master": "jair",
+    "page": 24,
+    "bounds": [
+      174.2,
+      198.44500000000005,
+      435.5,
+      285.46
+    ],
+    "font_sizes": {
+      "8.97": 250,
+      "6.58": 2
+    },
+    "sample": "Agent\ud835\udf0cfunctionHorizonControlsforMyopic\ud835\udf0c=0\ud835\udc3b=1WeakestbaselinePlanning\ud835\udf0c=0\ud835\udc3b>1PlanningdepthInfoGain\ud835\udc64\u00b7\ud835\udc3c(\ud835\udc4f)\ud835\udc3b=1Epistemicbonus(myopic)Planning+IG\ud835\udc64\u00b7\ud835\udc3c(\ud835\udc4f)\ud835\udc3b>1IG+planningdept"
+  },
+  {
+    "master": "jair",
+    "page": 41,
+    "bounds": [
+      176.0,
+      138.87900000000002,
+      436.0,
+      257.471
+    ],
+    "font_sizes": {
+      "8.97": 291
+    },
+    "sample": "EnvironmentWithin2\u00b7SEMaxspreadBracketat\ud835\udc35Diagnosis(\ud835\udc35=8)100%0.00obs.(bit-exact)(0.141,0.323]atevery\ud835\udefcBandit(\ud835\udc35=8)100%0.00obs.(bit-exact)(3.84,8.76]atevery\ud835\udefcTiger(\ud835\udc35=4"
+  },
+  {
+    "master": "jair",
+    "page": 50,
+    "bounds": [
+      159.6,
+      138.87900000000002,
+      452.4,
+      193.01800000000003
+    ],
+    "font_sizes": {
+      "8.97": 197
+    },
+    "sample": "EnvironmentSARSOPrewardEFErewardSARSOPusageEFEusageTiger5.061\u00b10.1585.061\u00b10.1584.323\u00b10.0454.323\u00b10.045Diagnosis\u22121.452\u00b10.336\u22121.217\u00b10.1849.68\u00b10.129.73\u00b10.13Bandit6.2"
+  },
+  {
+    "master": "jair",
+    "page": 52,
+    "bounds": [
+      205.8,
+      597.652,
+      406.2,
+      651.7909999999999
+    ],
+    "font_sizes": {
+      "8.97": 119,
+      "6.58": 9
+    },
+    "sample": "Environment\ud835\udc35EFE\ud835\udc45ref\ud835\udc45EFEGapGap%Tiger4.325.0165.0160.0000.00%Diagnosis9.82\u22121.265\u22121.224\u22120.041\u22123.27%Bandit5.106.3146.320\u22120.005\u22120.08%"
+  },
+  {
+    "master": "jair",
+    "page": 57,
+    "bounds": [
+      188.4,
+      182.71500000000003,
+      423.6,
+      385.827
+    ],
+    "font_sizes": {
+      "8.97": 657,
+      "6.58": 9
+    },
+    "sample": "Env.Budget\ud835\udc35\ud835\udc5eMixtureusageMixturerewardTiger0.25ofrange4.720.254.64\u00b10.105.36\u00b10.10Tiger0.50ofrange5.070.505.04\u00b10.144.96\u00b10.14Tiger0.75ofrange5.420.755.35\u00b10.144.65\u00b10"
+  },
+  {
+    "master": "jair",
+    "page": 58,
+    "bounds": [
+      185.1,
+      171.75599999999997,
+      426.9,
+      376.603
+    ],
+    "font_sizes": {
+      "8.97": 670,
+      "6.58": 9
+    },
+    "sample": "Env.BudgetBestmemberTargetmixtureFeasiblemixtureTiger0.25ofrange5.68\u00b10.085.36\u00b10.105.68\u00b10.08Tiger0.50ofrange5.68\u00b10.084.96\u00b10.145.68\u00b10.08Tiger0.75ofrange5.68\u00b10.084"
+  },
+  {
+    "master": "jair",
+    "page": 59,
+    "bounds": [
+      188.3,
+      204.63300000000004,
+      423.7,
+      407.745
+    ],
+    "font_sizes": {
+      "8.97": 557,
+      "6.58": 9
+    },
+    "sample": "Env.BudgetReferenceSame-streamreferencePairedgapTiger0.25ofrange5.025.68\u22120.33\u00b10.04Tiger0.50ofrange5.025.68\u22120.72\u00b10.06Tiger0.75ofrange5.025.68\u22121.03\u00b10.06Tigergap5."
+  },
+  {
+    "master": "jair",
+    "page": 62,
+    "bounds": [
+      194.6,
+      237.50900000000001,
+      415.2,
+      400.282
+    ],
+    "font_sizes": {
+      "8.97": 391,
+      "6.58": 3
+    },
+    "sample": "EnvironmentAgentObs.SuccessRewardTiger\ud835\udc3b=6,\ud835\udc64\u2217=50Myopic1.0085.3%\u22127.15\u00b10.41Planning4.2099.4%+5.19\u00b10.21Planning+IG5.6699.9%+4.21\u00b10.08EFE4.2099.4%+5.19\u00b10.21Diagnosis"
+  },
+  {
+    "master": "jair",
+    "page": 66,
+    "bounds": [
+      206.1,
+      149.83799999999997,
+      403.6,
+      214.93600000000004
+    ],
+    "font_sizes": {
+      "8.97": 149
+    },
+    "sample": "AgentScansSuccessRewardMyopic0.002.9%\u221248.25\u00b10.33Planning(\ud835\udc3b=2)15.6473.8%\u221221.39\u00b10.14Planning+IG(\ud835\udc64=50)32.2597.3%\u221223.85\u00b10.19EFE(\ud835\udc3b=2)14.7572.0%\u221221.53\u00b10.57"
+  },
+  {
+    "master": "jair",
+    "page": 70,
+    "bounds": [
+      186.6,
+      204.63300000000004,
+      423.1,
+      503.914
+    ],
+    "font_sizes": {
+      "8.97": 857
+    },
+    "sample": "InstanceAgentGoodBadRewardRS[5,3]Greedy1.491.51+3.71\u00b10.26Planning(\ud835\udc64=0,d=3)0.990.04+14.28\u00b10.13Plan+IG(\ud835\udc64=5,d=3)1.440.01+16.41\u00b10.13EFE(\ud835\udc64=1,d=3)1.440.03+16.47\u00b10.12P"
+  },
+  {
+    "master": "jair",
+    "page": 72,
+    "bounds": [
+      163.4,
+      446.466,
+      446.4,
+      560.4010000000001
+    ],
+    "font_sizes": {
+      "8.97": 372
+    },
+    "sample": "InstanceAgentAccuracyMissedTestsReward\ud835\udc41=8|\ud835\udc46|=256Greedy70.7\u00b10.5%2.340.0\u2212114.33\u00b11.96Planning(\ud835\udc64=0)73.0\u00b10.3%0.0712.7\u221217.85\u00b10.23Planning+IG(\ud835\udc64=5)96.3\u00b10.1%0.1019.7\u221227."
+  },
+  {
+    "master": "jair",
+    "page": 76,
+    "bounds": [
+      167.6,
+      171.75599999999997,
+      442.2,
+      298.681
+    ],
+    "font_sizes": {
+      "8.97": 321,
+      "6.58": 23
+    },
+    "sample": "WeightTigerDiagnosisBanditTestbed\ud835\udc64=0.5(\ud835\udc64\u2217ret)Diag./Testbed+5.33\u00b10.26\u22121.26\u00b10.34+6.05\u00b10.11+0.48\u00b10.02\ud835\udc64=1(EFE/\ud835\udc64\u2217ret)Tiger/Bandit+5.33\u00b10.26\u22121.26\u00b10.34+6.24\u00b10.09+0.37\u00b1"
+  },
+  {
+    "master": "jair",
+    "page": 84,
+    "bounds": [
+      204.3,
+      343.765,
+      405.5,
+      441.739
+    ],
+    "font_sizes": {
+      "8.97": 245
+    },
+    "sample": "AgentListensSuccessRewardMyopic1.0085.3%\u22127.15\u00b10.55Planning(\ud835\udc3b=6)4.2099.4%+5.19\u00b10.12InfoGain(\ud835\udc64=20)4.2099.4%+5.19\u00b10.12Planning+IG(\ud835\udc64=50)5.6699.9%+4.21\u00b10.06Epistemic"
+  },
+  {
+    "master": "jair",
+    "page": 84,
+    "bounds": [
+      207.8,
+      491.717,
+      402.0,
+      589.691
+    ],
+    "font_sizes": {
+      "8.97": 247
+    },
+    "sample": "AgentTestsSuccessRewardMyopic2.0064.7%\u221213.17\u00b10.41Planning(\ud835\udc3b=3)5.8688.8%\u22122.57\u00b10.27InfoGain(\ud835\udc64=100)13.1999.4%\u22123.58\u00b10.09Planning+IG(\ud835\udc64=50)13.1699.2%\u22123.66\u00b10.10Epistem"
+  },
+  {
+    "master": "jair",
+    "page": 85,
+    "bounds": [
+      197.7,
+      127.91999999999996,
+      412.0,
+      225.894
+    ],
+    "font_sizes": {
+      "8.97": 248
+    },
+    "sample": "AgentInspectionsSuccessRewardMyopic2.0662.2%+5.56\u00b10.06Planning(\ud835\udc3b=2)3.2971.0%+5.75\u00b10.06InfoGain(\ud835\udc64=20)9.5498.8%+5.12\u00b10.04Planning+IG(\ud835\udc64=20)9.5798.9%+5.11\u00b10.04Epist"
+  },
+  {
+    "master": "jair",
+    "page": 85,
+    "bounds": [
+      206.1,
+      323.329,
+      403.6,
+      421.303
+    ],
+    "font_sizes": {
+      "8.97": 251
+    },
+    "sample": "AgentScansSuccessRewardMyopic0.002.9%\u221248.25\u00b10.20Planning(\ud835\udc3b=2)15.6473.8%\u221221.39\u00b10.54InfoGain(\ud835\udc64=1)5.2031.7%\u221236.16\u00b10.56InfoGain(\ud835\udc64=100)32.3098.0%\u221223.50\u00b10.24Planning+"
+  },
+  {
+    "master": "jair",
+    "page": 85,
+    "bounds": [
+      206.1,
+      551.615,
+      403.6,
+      649.5889999999999
+    ],
+    "font_sizes": {
+      "8.97": 248
+    },
+    "sample": "AgentScansSuccessRewardMyopic0.001.8%\u221248.94\u00b10.16Planning(\ud835\udc3b=2)0.001.8%\u221248.94\u00b10.16InfoGain(\ud835\udc64=1)0.001.8%\u221248.94\u00b10.16InfoGain(\ud835\udc64=100)39.4597.2%\u221231.15\u00b10.25Planning+IG("
+  },
+  {
+    "master": "jair",
+    "page": 86,
+    "bounds": [
+      204.6,
+      182.71500000000003,
+      405.1,
+      269.73
+    ],
+    "font_sizes": {
+      "8.97": 208,
+      "6.58": 10
+    },
+    "sample": "AgentObs.SuccessRewardMyopic1.0076.3%+0.43\u00b10.01Planning(\ud835\udc3b=4)3.1589.8%+0.48\u00b10.01InfoGain(\ud835\udc64\u2217succ=20)9.7999.5%+0.01\u00b10.01Planning+IG(\ud835\udc64\u2217succ=10)9.7999.5%+0.01\u00b10.01Po"
+  },
+  {
+    "master": "jair",
+    "page": 93,
+    "bounds": [
+      192.0,
+      226.54999999999995,
+      420.0,
+      506.022
+    ],
+    "font_sizes": {
+      "8.97": 581,
+      "6.58": 8
+    },
+    "sample": "Environment|\ud835\udc46|Obs.actionsCommitactionsAccuracyTiger2120.85Testbed2120.75Diagnosis(\ud835\udc41=4)4240.80Bandit(\ud835\udc3e=4)4440.80Navigation94(move)0(implicit)var.Tileworld(6\u00d76)36"
+  },
+  {
+    "master": "jair",
+    "page": 94,
+    "bounds": [
+      202.3,
+      149.83799999999997,
+      409.7,
+      421.847
+    ],
+    "font_sizes": {
+      "8.97": 487
+    },
+    "sample": "EnvironmentObs.costCorrectIncorrect\ud835\udc3b/\ud835\udefeTiger\u22121.0+10\u22121006/1.0Testbed\u22120.1+1\u221214/1.0Diagnosis(\ud835\udc41=4)\u22121.0+10\u2212503/1.0Bandit(\ud835\udc3e=4)\u22120.5+10+12/1.0Navigation\u22120.5+20\u20132/1.0Tile"
+  },
+  {
+    "master": "jair",
+    "page": 94,
+    "bounds": [
+      205.5,
+      475.446,
+      404.3,
+      605.342
+    ],
+    "font_sizes": {
+      "8.97": 313
+    },
+    "sample": "Grid|\ud835\udc46|AgentSuccessMeanreward3\u00d739NavMyopic90.4\u00b11.3%+2.04\u00b11.51NavInfoGain86.4\u00b11.6%\u22121.37\u00b11.69NavEFE(\ud835\udc3b=2)87.2\u00b11.7%\u22121.29\u00b11.585\u00d7525NavMyopic80.7\u00b11.4%\u221216.64\u00b11.54NavIn"
+  },
+  {
+    "master": "jair",
+    "page": 95,
+    "bounds": [
+      229.1,
+      149.83799999999997,
+      380.7,
+      361.448
+    ],
+    "font_sizes": {
+      "8.97": 363
+    },
+    "sample": "\ud835\udc41AgentTestsSuccessReward2Myopic1.0080.3%\u22122.83Planning2.9194.1%+3.56InfoGain1.0080.3%\u22122.83EFE2.9194.1%+3.564Myopic2.0064.5%\u221213.29Planning5.8388.8%\u22122.58InfoGain2."
+  },
+  {
+    "master": "jair",
+    "page": 97,
+    "bounds": [
+      169.4,
+      149.83799999999997,
+      440.3,
+      470.083
+    ],
+    "font_sizes": {
+      "8.97": 952
+    },
+    "sample": "EnvironmentComparison\ud835\udc51(reward)InterpretationTigerEFEvs.Myopic+0.44smallTigerEFEvs.Planning0.00negligible(exacttie)TigerEFEvs.InfoGain-Tuned0.00negligible(exactt"
+  },
+  {
+    "master": "jair",
+    "page": 99,
+    "bounds": [
+      237.0,
+      149.83799999999997,
+      375.0,
+      302.607
+    ],
+    "font_sizes": {
+      "8.97": 220
+    },
+    "sample": "Regime\ud835\udc3b=1\ud835\udc3b=2\ud835\udc3b=3\ud835\udefc(rewardasymmetry)\ud835\udefc<371%86%86%3\u2264\ud835\udefc<1033%75%75%\ud835\udefc\u22651026%53%79%\ud835\udc5d(observationinformativeness)\ud835\udc5d<0.6580%84%80%0.65\u2264\ud835\udc5d<0.8511%40%71%\ud835\udc5d\u22650.8517%63%90%cost(obs"
+  },
+  {
+    "master": "jair",
+    "page": 100,
+    "bounds": [
+      168.2,
+      160.79700000000003,
+      441.6,
+      455.077
+    ],
+    "font_sizes": {
+      "8.97": 757,
+      "6.58": 15
+    },
+    "sample": "EnvironmentAgent\ud835\udefeObs.SuccessReward\u0394Succ.(\ud835\udc5d)TigerEFE0.904.2399.6%+5.33+2.7(\ud835\udc5d<10\u22123)\u2217Planning0.902.6596.9%+3.91EFE0.954.2399.6%+5.330.0(\ud835\udc5d=1.0)Planning0.954.2399.6%"
+  },
+  {
+    "master": "jair",
+    "page": 100,
+    "bounds": [
+      198.8,
+      519.635,
+      410.9,
+      644.528
+    ],
+    "font_sizes": {
+      "8.97": 324,
+      "6.58": 5
+    },
+    "sample": "Agent\ud835\udc5dagentMismatchObsSuccessRewardEFE0.70\u22120.154.2399.6%+5.33\u00b10.26EFE0.75\u22120.104.2399.6%+5.33\u00b10.26EFE0.80\u22120.054.2399.6%+5.33\u00b10.26EFE0.85\u00b10.004.2399.6%+5.33\u00b10.26E"
+  },
+  {
+    "master": "jair",
+    "page": 101,
+    "bounds": [
+      198.8,
+      138.87900000000002,
+      410.9,
+      296.65
+    ],
+    "font_sizes": {
+      "8.97": 432,
+      "6.58": 5
+    },
+    "sample": "Agent\ud835\udc5dagentMismatchObsSuccessRewardEFE0.65\u22120.155.8688.7%\u22122.62\u00b10.31EFE0.70\u22120.109.6897.4%\u22121.26\u00b10.34EFE0.75\u22120.059.6897.4%\u22121.26\u00b10.34EFE0.80\u00b10.009.6897.4%\u22121.26\u00b10.34E"
+  },
+  {
+    "master": "jair",
+    "page": 103,
+    "bounds": [
+      156.6,
+      160.79700000000003,
+      453.2,
+      547.75
+    ],
+    "font_sizes": {
+      "8.97": 1402
+    },
+    "sample": "InstanceAgentStepsChecksGoodBadRewardRS[5,3]Greedy12.000.001.491.51+3.71\u00b10.26Flat-MC(1000)51.0020.691.220.03\u22129.92\u00b10.20POMCP(2048sims)7.472.970.680.03+12.74\u00b10.11"
+  },
+  {
+    "master": "jair",
+    "page": 106,
+    "bounds": [
+      180.7,
+      171.75599999999997,
+      429.1,
+      367.405
+    ],
+    "font_sizes": {
+      "8.97": 453
+    },
+    "sample": "EnvironmentAgentObs.SuccessRewardTigerMyopic1.0084.6%\u22127.90\u00b10.67Planning4.2399.6%+5.33\u00b10.26Planning+IG(\ud835\udc64=50)5.6699.9%+4.25\u00b10.08EFE4.2399.6%+5.33\u00b10.26IDS4.2399.6%"
+  },
+  {
+    "master": "jair",
+    "page": 107,
+    "bounds": [
+      172.9,
+      160.79700000000003,
+      439.1,
+      366.451
+    ],
+    "font_sizes": {
+      "8.97": 716
+    },
+    "sample": "InstanceAgentLogscoreBrierscoreTigerPlanning(reward-only)\u22120.035\u00b10.0060.011\u00b10.002TigerEFE(w=1)\u22120.035\u00b10.0060.011\u00b10.002TigerSARSOP\u22120.035\u00b10.0060.011\u00b10.002DiagnosisP"
+  },
+  {
+    "master": "jair",
+    "page": 108,
+    "bounds": [
+      182.1,
+      160.79700000000003,
+      429.9,
+      225.894
+    ],
+    "font_sizes": {
+      "8.97": 188
+    },
+    "sample": "ActionCostIG(bits)\ud835\udc64\u00b7IGTaskvalueTotalscoretest00.500.0210.106-26.29-26.18test12.000.1060.528-26.87-26.34diagnose(nominal)0.000.0000.000-26.86-26.86diagnose(fault"
+  },
+  {
+    "master": "jair",
+    "page": 109,
+    "bounds": [
+      242.6,
+      171.75599999999997,
+      367.2,
+      258.77099999999996
+    ],
+    "font_sizes": {
+      "8.97": 118,
+      "6.58": 8
+    },
+    "sample": "Environment\ud835\udc58\ud835\udc64\u2217ret\ud835\udc64\u2217ret/\ud835\udc58Diagnosis0.10.11.0Diagnosis1.00.50.5Diagnosis10.05.00.5Bandit0.10.11.0Bandit1.01.01.0Bandit10.010.01.0"
+  },
+  {
+    "master": "jair",
+    "page": 111,
+    "bounds": [
+      189.9,
+      193.67399999999998,
+      419.8,
+      361.448
+    ],
+    "font_sizes": {
+      "8.97": 385
+    },
+    "sample": "EnvironmentAgentObs.SuccessRewardTigerPlanning4.2099.4%+5.19\u00b10.21POMCP(1000)1.8089.4%\u22123.48\u00b10.28EFE4.2099.4%+5.19\u00b10.21DiagnosisPlanning5.8688.8%\u22122.57\u00b10.20POMCP(1"
+  },
+  {
+    "master": "jair",
+    "page": 113,
+    "bounds": [
+      171.9,
+      182.71500000000003,
+      440.1,
+      345.488
+    ],
+    "font_sizes": {
+      "8.97": 434
+    },
+    "sample": "EnvironmentBackupIn-treeIGSuccessRewardObs.Tigermaxyes97.7\u00b10.5%+3.73\u00b10.533.73meanyes97.9\u00b10.3%+4.01\u00b10.333.68maxno97.4\u00b10.7%+3.66\u00b10.753.48meanno97.7\u00b10.5%+3.95\u00b10.60"
+  },
+  {
+    "master": "jair",
+    "page": 114,
+    "bounds": [
+      169.6,
+      204.63300000000004,
+      442.4,
+      599.822
+    ],
+    "font_sizes": {
+      "8.97": 1156,
+      "6.58": 27
+    },
+    "sample": "EnvironmentSolver\ud835\udc50RolloutSuccessRewardTigerPOMCP1uniform\u202086.5\u00b10.4%\u22126.49\u00b10.38POMCP2uniform\u202089.2\u00b10.5%\u22123.52\u00b10.57POMCP5uniform\u202089.0\u00b10.4%\u22123.76\u00b10.44POMCP10uniform\u202089."
+  },
+  {
+    "master": "jair",
+    "page": 116,
+    "bounds": [
+      154.0,
+      160.79700000000003,
+      458.0,
+      269.73
+    ],
+    "font_sizes": {
+      "8.97": 534,
+      "6.58": 13
+    },
+    "sample": "Instance[\ud835\udc48min,\ud835\udc48max]\ud835\udc35EFE\ud835\udc351:\ud835\udc64\u2217bracket\ud835\udc352:\ud835\udc64\u2217bracketBandit[3.23,12.34]5.11\u00b10.114.6:(0.0611,0.139]11.0:(19.3,43.9]Diagnosis[5.90,13.16]9.77\u00b10.147.0:(0.139,0.316]12.1:"
+  },
+  {
+    "master": "lncs",
+    "page": 25,
+    "bounds": [
+      136.9,
+      245.74846000000002,
+      475.4,
+      310.84581
+    ],
+    "font_sizes": {
+      "8.97": 211,
+      "5.98": 16
+    },
+    "sample": "Environment\u03b1\u03b7w\u2217low\u2217hiw=1in(w\u2217lo,w\u2217hi)?w\u2217retTestbed1.01.31\u22123.061.01Natunitsonly(seetext)[0.01,0.5](tied)Tiger10.00.27\u2212138.666.89Yes[0.01,20](tied)Diagnosis5.00.1"
+  },
+  {
+    "master": "lncs",
+    "page": 31,
+    "bounds": [
+      189.6,
+      157.1268,
+      422.7,
+      287.97757
+    ],
+    "font_sizes": {
+      "8.97": 340,
+      "5.98": 2
+    },
+    "sample": "Factored(\u2206T=0)Non-factored(\u2206T\u0338=0)Non-destructivetestingDestructivetesting(drilling)Medicalimaging(CT,MRI)Biopsy/tissuesamplingStructuralinspectionActiveinterven"
+  },
+  {
+    "master": "lncs",
+    "page": 31,
+    "bounds": [
+      162.3,
+      519.03349,
+      450.0,
+      606.04864
+    ],
+    "font_sizes": {
+      "8.97": 248,
+      "5.98": 2
+    },
+    "sample": "Agent\u03c1functionHorizonControlsforMyopic\u03c1=0H=1WeakestbaselinePlanning\u03c1=0H>1PlanningdepthInfoGainw\u00b7I(b)H=1Epistemicbonus(myopic)Planning+IGw\u00b7I(b)H>1IG+planningdept"
+  },
+  {
+    "master": "lncs",
+    "page": 53,
+    "bounds": [
+      168.5,
+      158.07723,
+      446.8,
+      278.94886999999994
+    ],
+    "font_sizes": {
+      "8.97": 290
+    },
+    "sample": "EnvironmentWithin2\u00b7SEMaxspreadBracketatBDiagnosis(B=8)100%0.00obs.(bit-exact)(0.141,0.323]atevery\u03b1Bandit(B=8)100%0.00obs.(bit-exact)(3.84,8.76]atevery\u03b1Tiger(B=4"
+  },
+  {
+    "master": "lncs",
+    "page": 66,
+    "bounds": [
+      144.7,
+      147.11833000000001,
+      470.7,
+      201.25676999999996
+    ],
+    "font_sizes": {
+      "8.97": 197
+    },
+    "sample": "EnvironmentSARSOPrewardEFErewardSARSOPusageEFEusageTiger5.061\u00b10.1585.061\u00b10.1584.323\u00b10.0454.323\u00b10.045Diagnosis\u22121.452\u00b10.336\u22121.217\u00b10.1849.68\u00b10.129.73\u00b10.13Bandit6.2"
+  },
+  {
+    "master": "lncs",
+    "page": 70,
+    "bounds": [
+      194.9,
+      359.01653,
+      420.5,
+      413.15497
+    ],
+    "font_sizes": {
+      "8.97": 119,
+      "5.98": 9
+    },
+    "sample": "EnvironmentBEFERrefREFEGapGap%Tiger4.325.0165.0160.0000.00%Diagnosis9.82\u22121.265\u22121.224\u22120.041\u22123.27%Bandit5.106.3146.320\u22120.005\u22120.08%"
+  },
+  {
+    "master": "lncs",
+    "page": 76,
+    "bounds": [
+      179.0,
+      223.12928999999997,
+      436.4,
+      426.4498
+    ],
+    "font_sizes": {
+      "8.97": 657,
+      "5.98": 9
+    },
+    "sample": "Env.BudgetBqMixtureusageMixturerewardTiger0.25ofrange4.720.254.64\u00b10.105.36\u00b10.10Tiger0.50ofrange5.070.505.04\u00b10.144.96\u00b10.14Tiger0.75ofrange5.420.755.35\u00b10.144.65\u00b10"
+  },
+  {
+    "master": "lncs",
+    "page": 77,
+    "bounds": [
+      173.7,
+      199.67125,
+      441.6,
+      404.23161999999996
+    ],
+    "font_sizes": {
+      "8.97": 670,
+      "5.98": 9
+    },
+    "sample": "Env.BudgetBestmemberTargetmixtureFeasiblemixtureTiger0.25ofrange5.68\u00b10.085.36\u00b10.105.68\u00b10.08Tiger0.50ofrange5.68\u00b10.084.96\u00b10.145.68\u00b10.08Tiger0.75ofrange5.68\u00b10.084"
+  },
+  {
+    "master": "lncs",
+    "page": 78,
+    "bounds": [
+      179.6,
+      256.20922999999993,
+      435.7,
+      459.52973999999995
+    ],
+    "font_sizes": {
+      "8.97": 557,
+      "5.98": 9
+    },
+    "sample": "Env.BudgetReferenceSame-streamreferencePairedgapTiger0.25ofrange5.025.68\u22120.33\u00b10.04Tiger0.50ofrange5.025.68\u22120.72\u00b10.06Tiger0.75ofrange5.025.68\u22121.03\u00b10.06Tigergap5."
+  },
+  {
+    "master": "lncs",
+    "page": 83,
+    "bounds": [
+      183.9,
+      298.30138999999997,
+      428.4,
+      461.07392999999996
+    ],
+    "font_sizes": {
+      "8.97": 391,
+      "5.98": 3
+    },
+    "sample": "EnvironmentAgentObs.SuccessRewardTigerH=6,w\u2217=50Myopic1.0085.3%\u22127.15\u00b10.41Planning4.2099.4%+5.19\u00b10.21Planning+IG5.6699.9%+4.21\u00b10.08EFE4.2099.4%+5.19\u00b10.21Diagnosis"
+  },
+  {
+    "master": "lncs",
+    "page": 87,
+    "bounds": [
+      193.5,
+      433.63955999999996,
+      418.8,
+      498.7369
+    ],
+    "font_sizes": {
+      "8.97": 149
+    },
+    "sample": "AgentScansSuccessRewardMyopic0.002.9%\u221248.25\u00b10.33Planning(H=2)15.6473.8%\u221221.39\u00b10.14Planning+IG(w=50)32.2597.3%\u221223.85\u00b10.19EFE(H=2)14.7572.0%\u221221.53\u00b10.57"
+  },
+  {
+    "master": "lncs",
+    "page": 107,
+    "bounds": [
+      174.2,
+      309.97490999999997,
+      438.1,
+      609.25628
+    ],
+    "font_sizes": {
+      "8.97": 857
+    },
+    "sample": "InstanceAgentGoodBadRewardRS[5,3]Greedy1.491.51+3.71\u00b10.26Planning(w=0,d=3)0.990.04+14.28\u00b10.13Plan+IG(w=5,d=3)1.440.01+16.41\u00b10.13EFE(w=1,d=3)1.440.03+16.47\u00b10.12P"
+  },
+  {
+    "master": "lncs",
+    "page": 108,
+    "bounds": [
+      145.1,
+      229.35604999999998,
+      467.2,
+      343.29098999999997
+    ],
+    "font_sizes": {
+      "8.97": 372
+    },
+    "sample": "InstanceAgentAccuracyMissedTestsRewardN=8|S|=256Greedy70.7\u00b10.5%2.340.0\u2212114.33\u00b11.96Planning(w=0)73.0\u00b10.3%0.0712.7\u221217.85\u00b10.23Planning+IG(w=5)96.3\u00b10.1%0.1019.7\u221227."
+  },
+  {
+    "master": "lncs",
+    "page": 108,
+    "bounds": [
+      143.3,
+      504.57838999999996,
+      469.0,
+      634.58249
+    ],
+    "font_sizes": {
+      "8.97": 321,
+      "5.98": 23
+    },
+    "sample": "WeightTigerDiagnosisBanditTestbedw=0.5(w\u2217ret)Diag./Testbed+5.33\u00b10.26\u22121.26\u00b10.34+6.05\u00b10.11+0.48\u00b10.02w=1(EFE/w\u2217ret)Tiger/Bandit+5.33\u00b10.26\u22121.26\u00b10.34+6.24\u00b10.09+0.37\u00b1"
+  },
+  {
+    "master": "lncs",
+    "page": 114,
+    "bounds": [
+      193.6,
+      206.92967999999996,
+      418.7,
+      304.90373999999997
+    ],
+    "font_sizes": {
+      "8.97": 245
+    },
+    "sample": "AgentListensSuccessRewardMyopic1.0085.3%\u22127.15\u00b10.55Planning(H=6)4.2099.4%+5.19\u00b10.12InfoGain(w=20)4.2099.4%+5.19\u00b10.12Planning+IG(w=50)5.6699.9%+4.21\u00b10.06Epistemic"
+  },
+  {
+    "master": "lncs",
+    "page": 114,
+    "bounds": [
+      197.3,
+      377.50278,
+      415.0,
+      475.47684
+    ],
+    "font_sizes": {
+      "8.97": 247
+    },
+    "sample": "AgentTestsSuccessRewardMyopic2.0064.7%\u221213.17\u00b10.41Planning(H=3)5.8688.8%\u22122.57\u00b10.27InfoGain(w=100)13.1999.4%\u22123.58\u00b10.09Planning+IG(w=50)13.1699.2%\u22123.66\u00b10.10Epistem"
+  },
+  {
+    "master": "lncs",
+    "page": 114,
+    "bounds": [
+      185.4,
+      548.07589,
+      426.8,
+      646.04994
+    ],
+    "font_sizes": {
+      "8.97": 248
+    },
+    "sample": "AgentInspectionsSuccessRewardMyopic2.0662.2%+5.56\u00b10.06Planning(H=2)3.2971.0%+5.75\u00b10.06InfoGain(w=20)9.5498.8%+5.12\u00b10.04Planning+IG(w=20)9.5798.9%+5.11\u00b10.04Epist"
+  },
+  {
+    "master": "lncs",
+    "page": 115,
+    "bounds": [
+      193.5,
+      249.69749000000002,
+      418.8,
+      347.67154999999997
+    ],
+    "font_sizes": {
+      "8.97": 251
+    },
+    "sample": "AgentScansSuccessRewardMyopic0.002.9%\u221248.25\u00b10.20Planning(H=2)15.6473.8%\u221221.39\u00b10.54InfoGain(w=1)5.2031.7%\u221236.16\u00b10.56InfoGain(w=100)32.3098.0%\u221223.50\u00b10.24Planning+"
+  },
+  {
+    "master": "lncs",
+    "page": 115,
+    "bounds": [
+      193.5,
+      549.1437,
+      418.8,
+      647.11776
+    ],
+    "font_sizes": {
+      "8.97": 248
+    },
+    "sample": "AgentScansSuccessRewardMyopic0.001.8%\u221248.94\u00b10.16Planning(H=2)0.001.8%\u221248.94\u00b10.16InfoGain(w=1)0.001.8%\u221248.94\u00b10.16InfoGain(w=100)39.4597.2%\u221231.15\u00b10.25Planning+IG("
+  },
+  {
+    "master": "lncs",
+    "page": 116,
+    "bounds": [
+      191.9,
+      223.58159,
+      420.4,
+      310.59673999999995
+    ],
+    "font_sizes": {
+      "8.97": 208,
+      "5.98": 10
+    },
+    "sample": "AgentObs.SuccessRewardMyopic1.0076.3%+0.43\u00b10.01Planning(H=4)3.1589.8%+0.48\u00b10.01InfoGain(w\u2217succ=20)9.7999.5%+0.01\u00b10.01Planning+IG(w\u2217succ=10)9.7999.5%+0.01\u00b10.01Po"
+  },
+  {
+    "master": "lncs",
+    "page": 122,
+    "bounds": [
+      180.9,
+      328.60137999999995,
+      434.4,
+      609.8537299999999
+    ],
+    "font_sizes": {
+      "8.97": 579,
+      "5.98": 8
+    },
+    "sample": "Environment|S|Obs.actionsCommitactionsAccuracyTiger2120.85Testbed2120.75Diagnosis(N=4)4240.80Bandit(K=4)4440.80Navigation94(move)0(implicit)var.Tileworld(6\u00d76)36"
+  },
+  {
+    "master": "lncs",
+    "page": 123,
+    "bounds": [
+      194.9,
+      277.6168399999999,
+      420.4,
+      551.70153
+    ],
+    "font_sizes": {
+      "8.97": 485
+    },
+    "sample": "EnvironmentObs.costCorrectIncorrectH/\u03b3Tiger\u22121.0+10\u22121006/1.0Testbed\u22120.1+1\u221214/1.0Diagnosis(N=4)\u22121.0+10\u2212503/1.0Bandit(K=4)\u22120.5+10+12/1.0Navigation\u22120.5+20\u20132/1.0Tile"
+  },
+  {
+    "master": "lncs",
+    "page": 126,
+    "bounds": [
+      192.3,
+      168.78706999999997,
+      419.9,
+      298.68289
+    ],
+    "font_sizes": {
+      "8.97": 313
+    },
+    "sample": "Grid|S|AgentSuccessMeanreward3\u00d739NavMyopic90.4\u00b11.3%+2.04\u00b11.51NavInfoGain86.4\u00b11.6%\u22121.37\u00b11.69NavEFE(H=2)87.2\u00b11.7%\u22121.29\u00b11.585\u00d7525NavMyopic80.7\u00b11.4%\u221216.64\u00b11.54NavIn"
+  },
+  {
+    "master": "lncs",
+    "page": 127,
+    "bounds": [
+      223.4,
+      314.33357,
+      388.8,
+      525.9437
+    ],
+    "font_sizes": {
+      "8.97": 363
+    },
+    "sample": "NAgentTestsSuccessReward2Myopic1.0080.3%\u22122.83Planning2.9194.1%+3.56InfoGain1.0080.3%\u22122.83EFE2.9194.1%+3.564Myopic2.0064.5%\u221213.29Planning5.8388.8%\u22122.58InfoGain2."
+  },
+  {
+    "master": "lncs",
+    "page": 130,
+    "bounds": [
+      155.8,
+      255.65787,
+      456.5,
+      575.90209
+    ],
+    "font_sizes": {
+      "8.97": 952
+    },
+    "sample": "EnvironmentComparisond(reward)InterpretationTigerEFEvs.Myopic+0.44smallTigerEFEvs.Planning0.00negligible(exacttie)TigerEFEvs.InfoGain-Tuned0.00negligible(exactt"
+  },
+  {
+    "master": "lncs",
+    "page": 132,
+    "bounds": [
+      230.0,
+      179.04460999999992,
+      385.4,
+      331.81318999999996
+    ],
+    "font_sizes": {
+      "8.97": 220
+    },
+    "sample": "RegimeH=1H=2H=3\u03b1(rewardasymmetry)\u03b1<371%86%86%3\u2264\u03b1<1033%75%75%\u03b1\u22651026%53%79%p(observationinformativeness)p<0.6580%84%80%0.65\u2264p<0.8511%40%71%p\u22650.8517%63%90%cost(obs"
+  },
+  {
+    "master": "lncs",
+    "page": 133,
+    "bounds": [
+      156.5,
+      273.87067,
+      455.8,
+      568.15005
+    ],
+    "font_sizes": {
+      "8.97": 757,
+      "5.98": 15
+    },
+    "sample": "EnvironmentAgent\u03b3Obs.SuccessReward\u2206Succ.(p)TigerEFE0.904.2399.6%+5.33+2.7(p<10\u22123)\u2217Planning0.902.6596.9%+3.91EFE0.954.2399.6%+5.330.0(p=1.0)Planning0.954.2399.6%"
+  },
+  {
+    "master": "lncs",
+    "page": 135,
+    "bounds": [
+      190.6,
+      227.89387999999997,
+      421.7,
+      352.78772
+    ],
+    "font_sizes": {
+      "8.97": 324,
+      "5.98": 5
+    },
+    "sample": "AgentpagentMismatchObsSuccessRewardEFE0.70\u22120.154.2399.6%+5.33\u00b10.26EFE0.75\u22120.104.2399.6%+5.33\u00b10.26EFE0.80\u22120.054.2399.6%+5.33\u00b10.26EFE0.85\u00b10.004.2399.6%+5.33\u00b10.26E"
+  },
+  {
+    "master": "lncs",
+    "page": 135,
+    "bounds": [
+      190.6,
+      467.31519,
+      421.7,
+      625.08574
+    ],
+    "font_sizes": {
+      "8.97": 432,
+      "5.98": 5
+    },
+    "sample": "AgentpagentMismatchObsSuccessRewardEFE0.65\u22120.155.8688.7%\u22122.62\u00b10.31EFE0.70\u22120.109.6897.4%\u22121.26\u00b10.34EFE0.75\u22120.059.6897.4%\u22121.26\u00b10.34EFE0.80\u00b10.009.6897.4%\u22121.26\u00b10.34E"
+  },
+  {
+    "master": "lncs",
+    "page": 150,
+    "bounds": [
+      143.7,
+      227.55697999999995,
+      468.6,
+      614.5095699999999
+    ],
+    "font_sizes": {
+      "8.97": 1402
+    },
+    "sample": "InstanceAgentStepsChecksGoodBadRewardRS[5,3]Greedy12.000.001.491.51+3.71\u00b10.26Flat-MC(1000)51.0020.691.220.03\u22129.92\u00b10.20POMCP(2048sims)7.472.970.680.03+12.74\u00b10.11"
+  },
+  {
+    "master": "lncs",
+    "page": 151,
+    "bounds": [
+      168.3,
+      339.74861999999996,
+      444.0,
+      535.39787
+    ],
+    "font_sizes": {
+      "8.97": 453
+    },
+    "sample": "EnvironmentAgentObs.SuccessRewardTigerMyopic1.0084.6%\u22127.90\u00b10.67Planning4.2399.6%+5.33\u00b10.26Planning+IG(w=50)5.6699.9%+4.25\u00b10.08EFE4.2399.6%+5.33\u00b10.26IDS4.2399.6%"
+  },
+  {
+    "master": "lncs",
+    "page": 152,
+    "bounds": [
+      161.6,
+      212.02850999999998,
+      453.8,
+      417.68172
+    ],
+    "font_sizes": {
+      "8.97": 716
+    },
+    "sample": "InstanceAgentLogscoreBrierscoreTigerPlanning(reward-only)\u22120.035\u00b10.0060.011\u00b10.002TigerEFE(w=1)\u22120.035\u00b10.0060.011\u00b10.002TigerSARSOP\u22120.035\u00b10.0060.011\u00b10.002DiagnosisP"
+  },
+  {
+    "master": "lncs",
+    "page": 152,
+    "bounds": [
+      171.7,
+      564.4425699999999,
+      443.7,
+      629.53991
+    ],
+    "font_sizes": {
+      "8.97": 188
+    },
+    "sample": "ActionCostIG(bits)w\u00b7IGTaskvalueTotalscoretest00.500.0210.106-26.29-26.18test12.000.1060.528-26.87-26.34diagnose(nominal)0.000.0000.000-26.86-26.86diagnose(fault"
+  },
+  {
+    "master": "lncs",
+    "page": 153,
+    "bounds": [
+      238.8,
+      220.94925,
+      373.4,
+      307.96439999999996
+    ],
+    "font_sizes": {
+      "8.97": 118,
+      "5.98": 8
+    },
+    "sample": "Environmentkw\u2217retw\u2217ret/kDiagnosis0.10.11.0Diagnosis1.00.50.5Diagnosis10.05.00.5Bandit0.10.11.0Bandit1.01.01.0Bandit10.010.01.0"
+  },
+  {
+    "master": "lncs",
+    "page": 153,
+    "bounds": [
+      176.3,
+      474.76248,
+      436.0,
+      642.53699
+    ],
+    "font_sizes": {
+      "8.97": 385
+    },
+    "sample": "EnvironmentAgentObs.SuccessRewardTigerPlanning4.2099.4%+5.19\u00b10.21POMCP(1000)1.8089.4%\u22123.48\u00b10.28EFE4.2099.4%+5.19\u00b10.21DiagnosisPlanning5.8688.8%\u22122.57\u00b10.20POMCP(1"
+  },
+  {
+    "master": "lncs",
+    "page": 154,
+    "bounds": [
+      158.1,
+      356.06244999999996,
+      457.2,
+      518.83498
+    ],
+    "font_sizes": {
+      "8.97": 434
+    },
+    "sample": "EnvironmentBackupIn-treeIGSuccessRewardObs.Tigermaxyes97.7\u00b10.5%+3.73\u00b10.533.73meanyes97.9\u00b10.3%+4.01\u00b10.333.68maxno97.4\u00b10.7%+3.66\u00b10.753.48meanno97.7\u00b10.5%+3.95\u00b10.60"
+  },
+  {
+    "master": "lncs",
+    "page": 155,
+    "bounds": [
+      155.6,
+      253.87883,
+      459.8,
+      653.69209
+    ],
+    "font_sizes": {
+      "8.97": 1156,
+      "5.98": 27
+    },
+    "sample": "EnvironmentSolvercRolloutSuccessRewardTigerPOMCP1uniform\u202086.5\u00b10.4%\u22126.49\u00b10.38POMCP2uniform\u202089.2\u00b10.5%\u22123.52\u00b10.57POMCP5uniform\u202089.0\u00b10.4%\u22123.76\u00b10.44POMCP10uniform\u202089."
+  },
+  {
+    "master": "lncs",
+    "page": 156,
+    "bounds": [
+      142.8,
+      366.5668,
+      472.5,
+      475.49976
+    ],
+    "font_sizes": {
+      "8.97": 534,
+      "5.98": 13
+    },
+    "sample": "Instance[Umin,Umax]BEFEB1:w\u2217bracketB2:w\u2217bracketBandit[3.23,12.34]5.11\u00b10.114.6:(0.0611,0.139]11.0:(19.3,43.9]Diagnosis[5.90,13.16]9.77\u00b10.147.0:(0.139,0.316]12.1:"
+  }
+]

@@ -164,7 +164,7 @@ def main() -> None:
         " estimates a single crossing threshold from the finite weight grid",
         " (Definition~\\ref{def:pi3}). No closed-form meta-model is implied.}",
         "\\label{tab:w-atlas}",
-        "\\small",
+        "\\tablefontsize",
         "\\begin{tabular}{lcccc}",
         "\\toprule",
         "Instance & $[U_{\\min}, U_{\\max}]$ & $B_{\\mathrm{EFE}}$ & "

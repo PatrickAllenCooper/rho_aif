@@ -5,7 +5,7 @@
 \caption{POMCP exploration-constant sweep and informed rollouts under the MCTS battery's protocol (200 episodes per seed $\times$ 5 seeds, at the same horizons and simulation budgets as the MCTS-EFE runs of \texttt{results\_mcts\_efe.csv}). $R$ is the commit reward range (110 on Tiger, 60 elsewhere), MCTS-EFE's default constant. The info-gain rollout takes the observation with the largest exact one-step information gain at every rollout step. POMCP's planner stream is seeded per run from the outer seed here, which the MCTS battery left at a fixed constant, so these POMCP rows are not bit-identical to that battery's. Uncertainty is seed-level SE. A dagger marks a row whose success or reward differs from MCTS-EFE at its default constant at seed-level Welch $p<0.05$ after Holm--Bonferroni within metric over the whole battery. See \texttt{results\_pomcp\_exploration\_sweep.csv} and its \texttt{\_stats} companion.}
 \label{tab:pomcp-sweep}
 %% Numbers in this table are produced by experiments/run_pomcp_exploration_sweep.py
-\small
+\tablefontsize
 \begin{tabular}{llllcc}
 \toprule
 Environment & Solver & $c$ & Rollout & Success & Reward \\

@@ -664,109 +664,115 @@ def plot_cost_budget(
     path: Path,
     price_df: Optional[pd.DataFrame] = None,
 ) -> None:
-    """(a) count and cost usage curves with the tested budgets and their
-    shared crossing brackets. (b) mean cost per test vs w, zoomed to the
-    range the ratio actually occupies."""
-    figstyle.apply()
-    fig, axes = plt.subplots(1, 2, figsize=figstyle.figsize(1.0, 0.45))
-    ax = axes[0]
-    pos_w = curve_df.loc[curve_df["w"] > 0, "w"]
-    zero_pos = _log_x_with_zero(ax, float(pos_w.min()), float(pos_w.max()))
-    kind_style = {
-        "count": (figstyle.BLUE, "o", "$U_{\\mathrm{count}}(w)$"),
-        "cost": (figstyle.ORANGE, "s", "$U_{\\mathrm{cost}}(w)$"),
-    }
-    for kind, (color, marker, label) in kind_style.items():
-        sub = curve_df[curve_df["usage_kind"] == kind].sort_values("w")
-        xs = np.where(sub["w"] > 0, sub["w"], zero_pos)
-        ax.errorbar(
-            xs,
-            sub["mean_usage"],
-            yerr=sub["se_usage"],
-            marker=marker,
-            ms=4,
-            capsize=figstyle.CAPSIZE,
-            color=color,
-            label=label,
-        )
-    # Tested operating points: budget rules per usage kind, plus the shared
-    # crossing brackets (the caption's coincidence claim, drawn not
-    # asserted). Four individually-labeled dashed lines plus two floating
-    # bracket annotations crowded the upper-right of this panel (an earlier
-    # audit already had to move the budget labels once to stop them
-    # overprinting the bracket text, and the crowding came back as soon as a
-    # reader tried to read the lines themselves against the labels). The
-    # exact numbers now live in the caption; the panel keeps only the visual
-    # marks a legend can explain, which is what a reader actually needs to
-    # parse the plot at a glance.
-    from matplotlib.lines import Line2D
-    from matplotlib.patches import Patch
-    extra_handles, extra_labels = [], []
-    if price_df is not None and not price_df.empty:
-        # Budget lines carry the usage kind in their line style (dashed for
-        # count, dotted for cost) as well as colour, and each is labelled at
-        # its right end, so the pairing survives a grayscale print.
-        kind_color = {"count": figstyle.BLUE, "cost": figstyle.ORANGE}
-        kind_ls = {"count": "--", "cost": ":"}
-        spans: Dict[Tuple[float, float], None] = {}
-        for _, row in price_df.sort_values("budget").iterrows():
-            kind = str(row["usage_kind"])
-            c = kind_color.get(kind, figstyle.GRAY)
-            b = float(row["budget"])
-            ax.axhline(b, ls=kind_ls.get(kind, "--"), lw=0.9, alpha=0.6, color=c, zorder=1)
-            ax.text(
-                0.995, b, f"$B={b:.2f}$ {kind}", transform=ax.get_yaxis_transform(),
-                ha="right", va="bottom", fontsize=8.0, color=("#8C5700" if kind == "cost" else c), zorder=3,
-            )
-            spans[(round(float(row["w_lo"]), 6), round(float(row["w_hi"]), 6))] = None
-        for i, (lo, hi) in enumerate(sorted(spans)):
-            ax.axvspan(lo, hi, color=figstyle.GRAY, alpha=0.10 + 0.08 * i, zorder=0)
-        extra_handles = [
-            Line2D([], [], color="0.4", ls="--", lw=0.9, alpha=0.7),
-            Line2D([], [], color="0.4", ls=":", lw=0.9, alpha=0.7),
-            Patch(facecolor=figstyle.GRAY, alpha=0.18),
-        ]
-        extra_labels = ["tested count budget $B$", "tested cost budget $B$", "shared crossing bracket $(w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$"]
-    ax.set_xlabel("Info-gain weight $w$")
-    ax.set_ylabel(
-        "Usage per episode\n($U_{\\mathrm{count}}$: observations, "
-        "$U_{\\mathrm{cost}}$: cost units)"
-    )
-    ax.set_title("(a) Usage curves")
-    figstyle.style_axis(ax)
-    handles, labels = ax.get_legend_handles_labels()
-    ax.legend(handles + extra_handles, labels + extra_labels,
-              loc="upper left", fontsize=7.5, handlelength=1.8)
+    """Separate count, cost, and their ratio; put grid brackets below the data.
 
-    ax2 = axes[1]
-    zero_pos2 = _log_x_with_zero(ax2, float(pos_w.min()), float(pos_w.max()))
+    Only count and cost have archived seed-level SEs. Their ratio is shown
+    descriptively because its uncertainty also needs the paired covariance,
+    which the aggregate curve CSV does not contain.
+    """
+    figstyle.apply()
+    fig, axes = plt.subplots(
+        4, 1, figsize=figstyle.figsize(1.0, 0.86),
+        gridspec_kw={"height_ratios": [1.05, 1.05, 0.95, 0.63]},
+    )
+    pos_w = curve_df.loc[curve_df["w"] > 0, "w"]
+    zero_positions = [
+        _log_x_with_zero(ax, float(pos_w.min()), float(pos_w.max()))
+        for ax in axes
+    ]
+    kind_style = {
+        "count": (figstyle.BLUE, "o", "Observations\nper episode"),
+        "cost": (figstyle.ORANGE, "s", "Sensing cost\nper episode"),
+    }
+    target_names = ["Lower target", "Upper target"]
+    for panel, (kind, (color, marker, ylabel)) in enumerate(kind_style.items()):
+        ax = axes[panel]
+        sub = curve_df[curve_df["usage_kind"] == kind].sort_values("w")
+        xs = np.where(sub["w"] > 0, sub["w"], zero_positions[panel])
+        ax.errorbar(
+            xs, sub["mean_usage"], yerr=sub["se_usage"],
+            marker=marker, ms=4, markerfacecolor="white", markeredgewidth=1,
+            capsize=figstyle.CAPSIZE, color=color, linewidth=1.2,
+        )
+        if price_df is not None and not price_df.empty:
+            targets = price_df[price_df["usage_kind"] == kind].sort_values("budget")
+            for i, (_, row) in enumerate(targets.iterrows()):
+                b = float(row["budget"])
+                ax.axhline(b, ls="--", lw=0.9, color="0.45", zorder=1)
+                name = target_names[i] if i < len(target_names) else f"Target {i+1}"
+                ax.text(
+                    1.015, b, f"{name}\n$B={b:.2f}$",
+                    transform=ax.get_yaxis_transform(),
+                    ha="left", va="center", fontsize=8.0, color="0.2",
+                    clip_on=False,
+                )
+        lower = float((sub["mean_usage"] - sub["se_usage"]).min())
+        upper = float((sub["mean_usage"] + sub["se_usage"]).max())
+        ax.set_ylim(lower - 0.10 * (upper - lower), upper + 0.12 * (upper - lower))
+        ax.set_ylabel(ylabel)
+        title = "Observation-count target" if kind == "count" else "Sensing-cost target"
+        ax.set_title(f"({chr(97+panel)}) {title}", loc="left", fontsize=9.5)
+        figstyle.style_axis(ax)
+
     piv = curve_df.pivot_table(index="w", columns="usage_kind", values="mean_usage")
-    piv_se = curve_df.pivot_table(index="w", columns="usage_kind", values="se_usage")
-    piv_se = piv_se.loc[piv["count"] > 0]
     piv = piv[piv["count"] > 0]
     ratio = piv["cost"] / piv["count"]
-    # Delta-method SE of the ratio from the two usage SEs.
-    ratio_se = ratio * np.sqrt(
-        (piv_se["cost"] / piv["cost"]) ** 2 + (piv_se["count"] / piv["count"]) ** 2
+    xs = np.where(piv.index.to_numpy() > 0, piv.index.to_numpy(), zero_positions[2])
+    axes[2].plot(
+        xs, ratio, marker="D", ms=4, markerfacecolor="white",
+        markeredgewidth=1, color=figstyle.GREEN, linewidth=1.2,
     )
-    xs2 = np.where(piv.index.to_numpy() > 0, piv.index.to_numpy(), zero_pos2)
-    ax2.errorbar(
-        xs2, ratio, yerr=ratio_se, marker="o", ms=4,
-        capsize=figstyle.CAPSIZE, color=figstyle.GREEN,
+    axes[2].set_ylim(1.20, 1.45)
+    axes[2].set_ylabel("Cost per test\n$U_{\\mathrm{cost}}/U_{\\mathrm{count}}$")
+    axes[2].set_title("(c) The cost per test changes with the weight", loc="left", fontsize=9.5)
+    axes[2].text(
+        1.015, 0.52, "Ratio of means\nNo uncertainty\nestimate",
+        transform=axes[2].transAxes, fontsize=8, va="center", color="0.2",
     )
-    # Zoom to the range the ratio occupies; the reference per-test costs are
-    # far outside it and are reported as a corner note instead of rules.
-    ax2.set_ylim(1.20, 1.45)
-    ax2.text(
-        0.02, 0.97,
-        "reference costs: cheap 0.5,\nuniform mix 1.5, expensive 2.5",
-        transform=ax2.transAxes, fontsize=8.0, color="#333333", va="top",
+    figstyle.style_axis(axes[2])
+
+    # A dedicated strip keeps grid resolution separate from measurement SEs.
+    # Rows share the plotted weight coordinates and identify both target units.
+    bracket_ax = axes[3]
+    bracket_ax.set_ylim(-0.7, 1.7)
+    bracket_ax.set_yticks([])
+    bracket_ax.grid(False)
+    bracket_ax.spines["left"].set_visible(False)
+    bracket_ax.set_title("(d) Grid crossing brackets shared by the paired targets",
+                         loc="left", fontsize=9.5)
+    if price_df is not None and not price_df.empty:
+        count_rows = price_df[price_df["usage_kind"] == "count"].sort_values("budget")
+        cost_rows = price_df[price_df["usage_kind"] == "cost"].sort_values("budget")
+        for i, ((_, count_row), (_, cost_row)) in enumerate(zip(count_rows.iterrows(), cost_rows.iterrows())):
+            count_bracket = count_row[["w_lo", "w_hi"]].to_numpy(dtype=float)
+            cost_bracket = cost_row[["w_lo", "w_hi"]].to_numpy(dtype=float)
+            if not np.array_equal(count_bracket, cost_bracket):
+                raise ValueError("The cost-budget bracket strip requires matching count/cost grid brackets")
+            lo, hi = count_bracket
+            y = 1 - i
+            bracket_ax.plot([lo, hi], [y, y], color="0.35", lw=2.4, solid_capstyle="butt")
+            bracket_ax.plot(lo, y, "o", ms=4.5, mec="0.35", mfc="white", zorder=3)
+            bracket_ax.plot(hi, y, "o", ms=4.5, mec="0.35", mfc="0.35", zorder=3)
+            pair_name = "Lower targets" if i == 0 else "Upper targets"
+            bracket_ax.text(
+                0.025, y, f"{pair_name}  $({lo:.3g}, {hi:.3g}]$",
+                transform=bracket_ax.get_yaxis_transform(),
+                ha="left", va="center", fontsize=8.5,
+            )
+    for ax in axes[:-1]:
+        ax.tick_params(axis="x", labelbottom=False)
+    bracket_ax.set_xlabel("Information weight $w$")
+    fig.legend(
+        handles=[
+            Line2D([], [], color="0.25", marker="o", markerfacecolor="white",
+                   lw=1.2, markersize=4, label="Means ± seed SE in (a) and (b)"),
+            Line2D([], [], color="0.45", ls="--", lw=0.9,
+                   label="Expected-usage target"),
+        ],
+        loc="upper center", bbox_to_anchor=(0.53, 1.01), ncol=2,
+        fontsize=8, handlelength=2,
     )
-    ax2.set_xlabel("Info-gain weight $w$")
-    ax2.set_ylabel("Mean cost per test $U_{\\mathrm{cost}}/U_{\\mathrm{count}}$")
-    ax2.set_title("(b) Mean cost per test")
-    figstyle.style_axis(ax2)
-    fig.tight_layout()
+    fig.subplots_adjust(left=0.13, right=0.80, bottom=0.075, top=0.915, hspace=0.57)
     _savefig(fig, path)
     plt.close(fig)
 
@@ -961,109 +967,101 @@ def plot_scale_collapse(
     path: Path,
     budget: float,
 ) -> None:
+    """Show the measured scale shift before showing its normalization.
+
+    Both panels read the same saved rows. No horizontal marker dodging,
+    invented threshold, interpolation-based estimate, or simulation is used.
+    Bracket bands mark grid resolution, not sampling uncertainty.
+    """
     figstyle.apply()
-    fig, axes = plt.subplots(
-        1, 2, figsize=figstyle.figsize(1.0, 0.45),
-        gridspec_kw={"width_ratios": [3, 1]},
-    )
-    ax = axes[0]
+    fig, axes = plt.subplots(1, 2, figsize=figstyle.figsize(1.0, 0.58), sharey=True)
     alphas = sorted(curve_df["scale_k"].unique())
-    # Fixed per-alpha colors (deliberately not the env mapping: these series
-    # are reward scales within one environment, not environments).
-    alpha_palette = [figstyle.BLUE, figstyle.ORANGE, figstyle.GREEN, figstyle.PINK]
-    colors = {a: alpha_palette[i % len(alpha_palette)] for i, a in enumerate(alphas)}
+    palette = [figstyle.BLUE, figstyle.ORANGE, figstyle.GREEN, figstyle.PINK]
     markers = ["o", "s", "^", "D"]
-    pos = curve_df.loc[curve_df["w_over_alpha"] > 0, "w_over_alpha"]
-    zero_pos = _log_x_with_zero(ax, float(pos.min()), float(pos.max()))
-    # The alpha curves coincide bit-exactly (that IS the result). Nested
-    # concentric markers of decreasing size read as a single blob rather than
-    # three agreeing series, so instead each alpha is dodged by a small fixed
-    # multiplicative factor on the shared log x-axis (the same technique used
-    # for tied series in plot_reward_asymmetry_sweep): markers sit side by
-    # side in a tight cluster at every grid point, legibly distinct, rather
-    # than stacked exactly on top of one another.
-    dodge = {a: f for a, f in zip(alphas, (0.94, 1.0, 1.065, 1.13))}
+    colors = {a: palette[i % len(palette)] for i, a in enumerate(alphas)}
     base_alpha = 1.0 if 1.0 in alphas else alphas[0]
     base = curve_df[curve_df["scale_k"] == base_alpha].sort_values("w_over_alpha")
-    xb = np.where(base["w_over_alpha"] > 0, base["w_over_alpha"], zero_pos)
-    ax.errorbar(
-        xb,
-        base["mean_usage"],
-        yerr=base["se_usage"],
-        color="0.4",
-        lw=1.4,
-        capsize=figstyle.CAPSIZE,
-        marker="",
-        zorder=2,
+    normalized_equal = all(
+        np.array_equal(
+            curve_df[curve_df["scale_k"] == a].sort_values("w_over_alpha")
+            [["mean_usage", "se_usage"]].to_numpy(),
+            base[["mean_usage", "se_usage"]].to_numpy(),
+        ) for a in alphas
     )
-    for i, a in enumerate(alphas):
-        sub = curve_df[curve_df["scale_k"] == a].sort_values("w_over_alpha")
-        true_x = np.where(sub["w_over_alpha"] > 0, sub["w_over_alpha"], zero_pos)
-        xs = true_x * dodge[a]
-        ax.plot(
-            xs,
-            sub["mean_usage"],
-            linestyle="none",
-            marker=markers[i % len(markers)],
-            ms=6.5,
-            markerfacecolor="none",
-            markeredgewidth=1.2,
-            color=colors[a],
-            label=f"$\\alpha={a:g}$",
-            zorder=3 + i,
+    handles = []
+    for panel, (ax, xcol) in enumerate(zip(axes, ("w", "w_over_alpha"))):
+        positive = curve_df.loc[curve_df[xcol] > 0, xcol]
+        zero_pos = _log_x_with_zero(ax, float(positive.min()), float(positive.max()))
+        # Keep the seven-decade raw axis readable at manuscript width.
+        if panel == 0:
+            first_decade = int(math.floor(math.log10(float(positive.min()))))
+            last_decade = int(math.floor(math.log10(float(positive.max()))))
+            decades = list(range(first_decade, last_decade + 1, 2))
+            ticks = [zero_pos] + [10.0 ** k for k in decades]
+            ax.set_xticks(ticks)
+            ax.set_xticklabels(["$0$"] + [f"$10^{{{k}}}$" for k in decades])
+        for i, a in enumerate(alphas):
+            sub = curve_df[curve_df["scale_k"] == a].sort_values("w_over_alpha")
+            xs = np.where(sub[xcol] > 0, sub[xcol], zero_pos)
+            # Normalized equal series use nested outlines at their true
+            # coordinates. Largest symbol is drawn first, smallest last.
+            zorder = 6 - i if panel else 3 + i
+            ms = 4.0 + 2.0 * i if panel else 4.5
+            line = ax.errorbar(
+                xs, sub["mean_usage"], yerr=sub["se_usage"],
+                color=colors[a], marker=markers[i % len(markers)],
+                markerfacecolor="none", markeredgewidth=1.0, markersize=ms,
+                linestyle=("none" if panel and normalized_equal else ["-", "--", ":"][i % 3]),
+                linewidth=1.1, elinewidth=0.7, capsize=1.7,
+                zorder=zorder, label=rf"$\alpha={a:g}$",
+            )
+            if panel == 0:
+                handles.append(line)
+        if panel == 1 and normalized_equal:
+            xs = np.where(base[xcol] > 0, base[xcol], zero_pos)
+            ax.plot(xs, base["mean_usage"], color="0.35", lw=1.1, zorder=2)
+        ax.axhline(budget, color="0.35", ls="--", lw=0.9, zorder=1)
+        ax.text(0.02, budget + 0.08, rf"$B={budget:g}$",
+                transform=ax.get_yaxis_transform(), fontsize=8)
+        for _, row in cross_df.sort_values("scale_k").iterrows():
+            if panel and row["scale_k"] != base_alpha and normalized_equal:
+                continue
+            suffix = "_over_alpha" if panel else ""
+            lo, hi = float(row["w_lo" + suffix]), float(row["w_hi" + suffix])
+            if not (0 < lo < hi):
+                continue
+            color = "0.4" if panel and normalized_equal else colors[row["scale_k"]]
+            ax.axvspan(lo, hi, color=color, alpha=0.10, zorder=0)
+            ax.plot([lo, hi], [budget, budget], color=color, lw=2, zorder=7)
+            ax.plot(lo, budget, "o", ms=4, mec=color, mfc="white", zorder=8)
+            ax.plot(hi, budget, "o", ms=4, mec=color, mfc=color, zorder=8)
+        figstyle.style_axis(ax)
+        lower = min(float((curve_df["mean_usage"] - curve_df["se_usage"]).min()), budget)
+        upper = max(float((curve_df["mean_usage"] + curve_df["se_usage"]).max()), budget)
+        margin = max(0.1 * (upper - lower), 0.2)
+        ax.set_ylim(lower - margin, upper + margin)
+    axes[0].set_ylabel("Mean observations per episode")
+    axes[0].set_xlabel("Information weight $w$")
+    axes[1].set_xlabel(r"Normalized weight $w/\alpha$")
+    axes[0].set_title("(a) Reward scaling shifts the curve", loc="left", fontsize=9)
+    axes[1].set_title("(b) Weight rescaling restores it", loc="left", fontsize=9)
+    axes[0].text(0.04, 0.26, "Larger reward scale\nshifts the curve right",
+                 transform=axes[0].transAxes, fontsize=8.5, va="top")
+    if normalized_equal:
+        axes[1].text(0.04, 0.26, "All three measured series\ncoincide at every grid point",
+                     transform=axes[1].transAxes, fontsize=8.5, va="top")
+        row = cross_df[cross_df["scale_k"] == base_alpha].iloc[0]
+        lo, hi = row["w_lo_over_alpha"], row["w_hi_over_alpha"]
+        axes[1].annotate(
+            f"Shared grid bracket\n({lo:.3f}, {hi:.3f}]",
+            xy=(np.sqrt(lo * hi), budget), xycoords="data",
+            xytext=(0.43, 0.76), textcoords="axes fraction",
+            ha="center", va="center", fontsize=8,
+            arrowprops=dict(arrowstyle="-", color="0.3", lw=0.8),
         )
-    ax.axhline(budget, color=figstyle.GRAY, ls="--", lw=1.2, label=f"$B={budget:g}$")
-    ax.annotate(
-        "coincide to floating-point\nprecision at every $\\alpha$",
-        xy=(0.98, 0.30), xycoords="axes fraction",
-        fontsize=7.5, color=figstyle.GRAY, ha="right", va="top",
-    )
-    ax.set_xlabel("$w/\\alpha$ (markers dodged horizontally for visibility)")
-    ax.set_ylabel("Mean observations per episode $U$")
-    ax.set_title("(a) Usage curves across reward scales")
-    figstyle.style_axis(ax)
-    ax.legend(loc="upper left")
-
-    ax2 = axes[1]
-    if not cross_df.empty and "w_lo_over_alpha" in cross_df.columns:
-        # Interval bars of the crossing bracket in w/α units per scale.
-        # Scale invariance <=> brackets coincide across α.
-        sub = cross_df.sort_values("scale_k")
-        xs = np.arange(len(sub))
-        labels = [f"$\\alpha={a:g}$" for a in sub["scale_k"]]
-        lo = sub["w_lo_over_alpha"].to_numpy(dtype=float)
-        hi = sub["w_hi_over_alpha"].to_numpy(dtype=float)
-        # Shared bracket edges: dashed rules labeled with their values (the
-        # quantitative content of the panel), no legend needed.
-        lo_shared = float(np.min(lo))
-        hi_shared = float(np.max(hi))
-        for v in (lo_shared, hi_shared):
-            ax2.axhline(v, color=figstyle.GRAY, ls="--", lw=0.9, zorder=1)
-        for i, (l, h, a) in enumerate(zip(lo, hi, sub["scale_k"])):
-            c = colors.get(float(a), figstyle.BLUE)
-            ax2.plot([i, i], [l, h], color=c, lw=3.5, solid_capstyle="butt", zorder=3)
-            ax2.plot([i - 0.07, i + 0.07], [l, l], color=c, lw=1.6, zorder=3)
-            ax2.plot([i - 0.07, i + 0.07], [h, h], color=c, lw=1.6, zorder=3)
-        if len(xs):
-            for v, va in ((hi_shared, "bottom"), (lo_shared, "top")):
-                ax2.annotate(
-                    f"{v:.3f}",
-                    (xs[-1] + 0.35, v),
-                    fontsize=8.5,
-                    color=figstyle.BLACK,
-                    va=va,
-                    ha="left",
-                )
-        ax2.set_xticks(xs)
-        ax2.set_xticklabels(labels)
-        ax2.set_xlim(-0.6, len(xs) - 1 + 1.1)
-        span = hi_shared - lo_shared
-        ax2.set_ylim(lo_shared - 0.3 * span, hi_shared + 0.3 * span)
-        ax2.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=6))
-        ax2.set_ylabel("Normalized weight $w/\\alpha$")
-        ax2.set_title(f"(b) Crossing brackets at $B={budget:g}$")
-        figstyle.style_axis(ax2)
-    fig.tight_layout()
+    fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.53, 1.00),
+               ncol=len(alphas), title="Multiplier on all rewards and sensing costs")
+    fig.subplots_adjust(left=0.085, right=0.99, bottom=0.16, top=0.76, wspace=0.11)
     _savefig(fig, path)
     plt.close(fig)
 

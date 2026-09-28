@@ -3,9 +3,9 @@
 Hero figure (graphical abstract) for the Introduction.
 
 Schematic, not data-bearing: no episodes are run and no CSV is read or
-written. Every other figure in this paper reports a measured result: this
-one instead gives a first-time reader, in one picture, the two claims the
-rest of the paper backs with data.
+written. Like the explanatory diagrams in build_fig_concepts.py, this
+figure is schematic. It gives a first-time reader, in one picture, the two
+claims the rest of the paper develops and evaluates.
 
 (1) The information weight is a price. A usage curve U(w) relates the
     info-gain weight w to how much sensing an agent spends. A stated

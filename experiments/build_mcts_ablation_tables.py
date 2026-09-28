@@ -49,7 +49,7 @@ def build_ablation(csv, stats_csv, out):
              "See \\texttt{results\\_mcts\\_efe\\_ablation.csv} and its \\texttt{\\_stats} companion.}",
              "\\label{tab:mcts-ablation}",
              "%% Numbers in this table are produced by experiments/run_mcts_efe_ablation.py",
-             "\\small", "\\begin{tabular}{lllccc}", "\\toprule",
+             "\\tablefontsize", "\\begin{tabular}{lllccc}", "\\toprule",
              "Environment & Backup & In-tree IG & Success & Reward & Obs. \\\\", "\\midrule"]
     envs = list(dict.fromkeys(df["env"]))
     for i, env in enumerate(envs):
@@ -89,7 +89,7 @@ def build_sweep(csv, stats_csv, out):
              "See \\texttt{results\\_pomcp\\_exploration\\_sweep.csv} and its \\texttt{\\_stats} companion.}",
              "\\label{tab:pomcp-sweep}",
              "%% Numbers in this table are produced by experiments/run_pomcp_exploration_sweep.py",
-             "\\small", "\\begin{tabular}{llllcc}", "\\toprule",
+             "\\tablefontsize", "\\begin{tabular}{llllcc}", "\\toprule",
              "Environment & Solver & $c$ & Rollout & Success & Reward \\\\", "\\midrule"]
     envs = list(dict.fromkeys(df["env"]))
     for i, env in enumerate(envs):

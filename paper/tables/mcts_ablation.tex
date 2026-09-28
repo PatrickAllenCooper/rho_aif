@@ -5,7 +5,7 @@
 \caption{MCTS-EFE component ablation under the MCTS battery's protocol (200 episodes per seed $\times$ 5 seeds, at the same horizons and simulation budgets as the MCTS-EFE runs of \texttt{results\_mcts\_efe.csv}). The first row of each block, max-backup with the in-tree information gain, is the manuscript's MCTS-EFE. Uncertainty is seed-level SE. A dagger marks a variant whose success or reward differs from that row at seed-level Welch $p<0.05$ after Holm--Bonferroni within metric over the whole battery. No variant carries one, so no component shows a detectable effect on success or reward on any environment tested. See \texttt{results\_mcts\_efe\_ablation.csv} and its \texttt{\_stats} companion.}
 \label{tab:mcts-ablation}
 %% Numbers in this table are produced by experiments/run_mcts_efe_ablation.py
-\small
+\tablefontsize
 \begin{tabular}{lllccc}
 \toprule
 Environment & Backup & In-tree IG & Success & Reward & Obs. \\

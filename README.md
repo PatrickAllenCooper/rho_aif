@@ -159,6 +159,7 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | SARSOP TOST equivalence, unpaired and paired, with per-seed means archived | `python experiments/run_tost_sarsop.py` |
 | SARSOP TOST robustness at n=20 seeds (canonical five plus 2000 to 2014), with per-seed means archived | `python experiments/run_tost_sarsop.py --seeds 42 123 456 789 1024 $(seq 2000 2014) --episodes 500 --out results/results_tost_sarsop_n20_robustness.csv` |
 | Figure 1 (schematic hero figure, no data; one file per master because the equivalence proposition is numbered differently in each) | `python experiments/build_fig_hero.py` (writes both files) |
+| Explanatory diagrams (observe-or-commit loop, state preservation, target versus cap, projected feedback) | `python experiments/build_fig_concepts.py` (schematics, no simulations) |
 | EFE on the RockSample POMCP diagnostic protocol (Appendix N) | `python experiments/run_rocksample_efe_diagnostic.py` |
 | Compute-matched POMCP check | `python experiments/run_pomcp_compute_matched.py` |
 | RockSample POMCP: configuration selection on tuning seeds | `python experiments/run_rocksample_pomcp.py tuning` |
@@ -201,6 +202,8 @@ tectonic full_paper.tex
 The review PDFs are `paper/full_paper_jair.pdf` and `paper/full_paper.pdf`. They are generated locally and ignored by Git; the source, figures, tables, and bibliography are versioned.
 
 The [Overleaf source archive](paper/rho_aif_jair_overleaf_2026-09-28.zip) contains the JAIR manuscript and all project dependencies. Upload it as a new project, select `full_paper_jair.tex` as the main document, and use pdfLaTeX with Biber on a current TeX Live version. Its README includes the build instructions. A fresh local extraction was compiled independently; no hosted Overleaf test or journal submission was performed.
+
+After changing the manuscript or its figures, regenerate that archive with `python tools/build_overleaf_package.py`. The script discovers referenced figures and table inputs from the current source so additions are included automatically.
 
 ## License
 

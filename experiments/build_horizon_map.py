@@ -134,7 +134,7 @@ def main() -> None:
         " (Appendix~\\ref{app:nearopt_horizon}). This is an empirical boundary map, not an",
         " adaptive-submodularity guarantee.}",
         "\\label{tab:horizon-map}",
-        "\\small",
+        "\\tablefontsize",
         "\\begin{tabular}{l" + "c" * len(horizons) + "}",
         "\\toprule",
         "Regime & " + " & ".join(f"$H{{=}}{h}$" for h in horizons) + " \\\\",
@@ -149,7 +149,7 @@ def main() -> None:
             lines.append(f"\\quad {label_tex} & {vals} \\\\")
     lines += ["\\bottomrule", "\\end{tabular}"]
     lines.append(
-        f"\\par\\vspace{{2pt}}\\footnotesize $H{{=}}1$ vs.\\ $H{{\\geq}}2$ agreement: "
+        f"\\par\\vspace{{2pt}}\\tablefontsize $H{{=}}1$ vs.\\ $H{{\\geq}}2$ agreement: "
         f"{agreement['agreement_rate']*100:.0f}\\% of {agreement['n_envs']} environments "
         f"agree; myopic overclaims {agreement['myopic_overclaims']}, "
         f"underclaims {agreement['myopic_underclaims']}."

@@ -76,29 +76,21 @@ ANNOTATED_WEIGHTS = {0.01, 1.0, 10.0, 100.0}
 # Caption-named points beyond the default subset (fig:pareto names w=20 as
 # Pareto-dominating w=1 on Tileworld).
 CAPTION_WEIGHTS = {"Tileworld": {20.0}}
-# The bracket containing w=1 sits under the large diamond+star markers, so
-# its label needs a longer manual leader. Offsets are in points, chosen per
-# environment to point into empty plot area; the fallback works for any
-# environment added later.
-W1_LABEL_OFFSETS = {
-    "Tiger": (30, 8, "left"),
-    "Testbed": (-26, -16, "right"),
-    "Diagnosis": (-30, 6, "right"),
-    "Bandit": (-20, 12, "right"),
-    "Tileworld": (-16, -16, "right"),
-}
-# Targeted nudges for non-w=1 labels that would otherwise sit on the sweep
-# polyline or on a point's seed-level error bar, keyed by (env, first weight
-# of the tied bracket). Each offset points into empty plot area; the
-# Tileworld bracket leader departs away from the w=1 diamond so the two
-# leaders do not converge on the same neighborhood.
-MANUAL_LABEL_OFFSETS = {
-    ("Tiger", 50.0): (-8, 9, "right"),
-    ("Testbed", 0.01): (10, 10, "left"),
-    ("Diagnosis", 0.01): (8, -14, "left"),
-    ("Bandit", 0.01): (8, -14, "left"),
-    ("Tileworld", 0.01): (0, 18, "left"),
-    ("Tileworld", 10.0): (8, -10, "left"),
+# Stable empty regions of each printed panel, in axes coordinates. Offset
+# labels previously crossed the panel borders or touched the nearby sweep.
+# Anchoring all labels inside the axes leaves room for their complete text,
+# while leaders identify the original, unshifted measured points.
+LABEL_POSITIONS = {
+    "Tiger": {0.01: (.08, .91), 50.0: (.25, .53)},
+    "Testbed": {0.01: (.06, .92), 1.0: (.30, .65),
+                10.0: (.48, .41), 50.0: (.37, .17)},
+    "Diagnosis": {0.01: (.08, .51), 0.5: (.36, .92),
+                  50.0: (.40, .37)},
+    "Bandit": {0.01: (.07, .52), 1.0: (.36, .92),
+               10.0: (.46, .46), 100.0: (.48, .18)},
+    "Tileworld": {0.01: (.07, .92), 1.0: (.05, .42),
+                  10.0: (.32, .59), 20.0: (.65, .92),
+                  100.0: (.55, .28)},
 }
 
 
@@ -129,7 +121,7 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
     n = len(envs)
     if n >= 5:
         nrows, ncols = 3, 2
-        fig, axes = plt.subplots(nrows, ncols, figsize=figstyle.figsize(1.0, aspect=1.0))
+        fig, axes = plt.subplots(nrows, ncols, figsize=figstyle.figsize(1.0, aspect=1.04))
         axes = axes.ravel()
     else:
         nrows, ncols = 1, n
@@ -186,7 +178,7 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
             xr = 2.0
         yr = (hi_y - lo_y) or 1.0
         ax.set_xlim(lo_x - 0.22 * xr, hi_x + 0.22 * xr)
-        ax.set_ylim(lo_y - 0.14 * yr, hi_y + 0.16 * yr)
+        ax.set_ylim(lo_y - 0.18 * yr, hi_y + 0.28 * yr)
 
         # Annotate the labeled weight subset plus caption-named points. Tied
         # brackets get one label spanning the bracket (e.g. "w=0.01-20").
@@ -200,23 +192,16 @@ def plot_pareto(all_results: Dict, save_path: str = "figures/fig_pareto.pdf"):
                 label = f"$w$={g['ws'][0]:g}–{g['ws'][-1]:g}"
             else:
                 label = f"$w$={g['ws'][0]:g}"
-            manual = None
-            if 1.0 in g["ws"]:
-                # This point carries the diamond and star markers. Label it
-                # with a longer leader into empty area so nothing occludes.
-                manual = W1_LABEL_OFFSETS.get(env_name, (-24, -14, "right"))
-            elif (env_name, g["ws"][0]) in MANUAL_LABEL_OFFSETS:
-                manual = MANUAL_LABEL_OFFSETS[(env_name, g["ws"][0])]
-            if manual is not None:
-                dx, dy, ha = manual
+            placement = LABEL_POSITIONS.get(env_name, {}).get(g["ws"][0])
+            if placement is not None:
                 # The w=1 leader stops short of the large diamond+star
                 # markers (shrinkB=10); other manual leaders touch their
                 # small dot (shrinkB=3) so the target is unambiguous.
                 shrink_b = 10 if 1.0 in g["ws"] else 3
                 ax.annotate(label, xy=(g["succ"], g["rew"]),
-                            xytext=(dx, dy), textcoords="offset points",
+                            xytext=placement, textcoords="axes fraction",
                             fontsize=8.5, color="#333333",
-                            ha=ha, va="center",
+                            ha="left", va="center",
                             arrowprops=dict(arrowstyle="-", lw=0.5,
                                             color=figstyle.GRAY,
                                             shrinkA=2, shrinkB=shrink_b))

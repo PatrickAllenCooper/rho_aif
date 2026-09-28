@@ -1,0 +1,20 @@
+{
+  "jair_pages": 120,
+  "lncs_pages": 156,
+  "zip_build_identical_page_text": true,
+  "zip_build_repository_inputs": false,
+  "sha256": {
+    "paper/full_paper_jair.tex": "17dac3f19c1664a1b67401bd5dbd56d1463a4b7623808f920b8d64cbce6135ac",
+    "paper/full_paper.tex": "26043345739d37421e2699272bad41df1102ad40effc463482bf7e0ffdd5e4c4",
+    "paper/full_paper_jair.pdf": "f403869b31320045520a1936d4cf34fea91a6197606c60d7c095fc8d15dc95b5",
+    "paper/full_paper.pdf": "49e99dfbd6771eb52cc970c5073de23c0231239496e2147c84d4ce3628f3c6d3",
+    "paper/rho_aif_jair_overleaf_2026-09-28.zip": "24df1cc764ce1307c2cc3bd76b238f826f92af494201beb2251453502695b3cc",
+    "figures/fig_otc_loop.pdf": "2e5cd127544a1885f4ba838d47545cd8ff53fed0ed3a0eadbdff88de68ab4067",
+    "figures/fig_state_preservation.pdf": "5cd81e2af7cffacabbc35e3c58ee27b7e33c703e02f9d708242b9c7a544ee527",
+    "figures/fig_target_vs_cap.pdf": "738bd54b0144bf849321a92f0bfe83b3490d27ba0ebf9d71b6261b48180ae9b0",
+    "figures/fig_dual_feedback.pdf": "cb31e8c14cc41d39c6a88da59059b85e2eca54c048a42df3212dac12e1743a17",
+    "figures/price_scale_invariance.pdf": "d1d8cfd7ea1a02d68efc6c62ce652fb266f412702ff62b8f23838953af304cdc",
+    "figures/price_cost_budget.pdf": "643242884045aa026b59a9d1fd54b9d9c99a34f4d9e9ae430868ca0cf8df25ae",
+    "figures/fig_pareto.pdf": "af630161e2c7c2db1587b5e0c98de204c16a4169c1d0302c6729707197c99fc2"
+  }
+}
