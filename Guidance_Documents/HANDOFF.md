@@ -1,5 +1,7 @@
 # Handoff: JAIR submission review loop
 
+[Update 2026-09-28: the most recent handoff is `HANDOFF_2026-09-28_final_panel.md`, written after the final four-provider panel (four unqualified accepts) and the post-polishing citation check. Read that one first. This file is the 2026-08-31 snapshot with dated in-place updates.]
+
 Written 2026-08-31. Read this first if you are picking up this project cold.
 It orients you in five minutes; `full_paper_plan.md` has the full narrative
 ledger if you need more depth on any specific round.
