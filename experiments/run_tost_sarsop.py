@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """
-Predeclared-margin TOST equivalence test: EFE (w=1) vs SARSOP.
+Fixed-margin TOST equivalence test: EFE (w=1) vs SARSOP.
 
 Both referees asked for a formal equivalence test rather than the
 "within sampling error" / non-overlapping-CI language used elsewhere for
 the EFE-vs-SARSOP comparison on the three discrete OTC benchmarks. This
 script runs a two one-sided tests (TOST) procedure (Schuirmann, 1987) on
-per-seed mean reward, using the pre-declared margin of one sensing
-action's cost per environment (Tiger/Diagnosis: 1.0 reward unit, one
-listen/test; Bandit: 0.5, one inspection) -- a difference smaller than
-the price of a single sensing action is not operationally meaningful in
-this budgeted-sensing framing, and the margin is fixed by the
-environment's own cost parameter rather than chosen after seeing the
-reward gap.
+per-seed mean reward, using a fixed margin of one sensing action's cost
+per environment (Tiger/Diagnosis: 1.0 reward unit, one listen/test;
+Bandit: 0.5, one inspection) -- a difference smaller than the price of a
+single sensing action is not operationally meaningful in this
+budgeted-sensing framing, and the margin is fixed by the environment's own
+cost parameter. The test was added after an earlier comparison of the same
+policies on the canonical seeds had been reported, so the five-seed test
+is retrospective. The project ledger records that the fifteen seeds
+{2000..2014} added for the n=20 robustness run were fixed before that run.
 
 Reuses the already-solved SARSOP policies in results/sarsop_models/ when
 present (falls back to solving fresh); reuses run_sarsop_baseline's

@@ -364,7 +364,7 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
     ax.set_xticklabels([f"{t:g}" for t in xticks])
     ax.xaxis.set_minor_locator(matplotlib.ticker.NullLocator())
     ax.set_xlabel("Sensing budget $B$ (mean observations, log scale)")
-    ax.set_ylabel("Shadow price $w^*(B)$")
+    ax.set_ylabel("Shadow price: estimate $\\hat{w}(B)$, bracket")
     # symlog: w* is 0 at slack budgets, so the "0" tick is a real data value.
     ax.set_yscale("symlog", linthresh=linthresh)
     yticks = [0.0] + [d for d in (0.1, 1.0, 10.0, 100.0) if d >= linthresh - 1e-12]
@@ -403,7 +403,7 @@ def plot_shadow_price_curves(price_df: pd.DataFrame, path: Path) -> None:
         Line2D(
             [], [], color=figstyle.GRAY, alpha=0.6, lw=1.4, ls=":",
             marker="o", markerfacecolor="none", markersize=4.5,
-            label="slack budget: $w^*$ below first binding bracket",
+            label="slack budget: $\\hat{w}(B)$ below its crossing bracket",
         )
     )
     if any_unresolved:
@@ -726,7 +726,7 @@ def plot_cost_budget(
             Line2D([], [], color="0.4", ls=":", lw=0.9, alpha=0.7),
             Patch(facecolor=figstyle.GRAY, alpha=0.18),
         ]
-        extra_labels = ["tested count budget $B$", "tested cost budget $B$", "shared crossing bracket $w^*(B)$"]
+        extra_labels = ["tested count budget $B$", "tested cost budget $B$", "shared crossing bracket $(w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$"]
     ax.set_xlabel("Info-gain weight $w$")
     ax.set_ylabel(
         "Usage per episode\n($U_{\\mathrm{count}}$: observations, "

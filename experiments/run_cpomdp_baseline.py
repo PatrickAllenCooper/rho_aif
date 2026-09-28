@@ -11,19 +11,17 @@ near-optimal (SARSOP, precision 1e-3) value of
     max_pi  E_pi[R] - lambda * E_pi[U]
 
 over the full space of POMDP policies (not the restricted Planning+IG
-family). For a finite discounted CMDP this is a strong-duality Lagrangian
-relaxation of the budgeted problem max_pi E[R] s.t. E[U] <= B: the swept
-points trace the upper concave envelope of the achievable (E[U], E[R])
-region, and any budget between two adjacent swept usages is attained by a
-per-episode mixture of the two bracketing policies (the same
-mixture argument used for the Planning+IG shadow price in
-Definition~\\ref{def:pi3} / rho_aif.budget.crossing_bracket).
+family). This is a Lagrangian relaxation of the budgeted problem
+max_pi E[R] s.t. E[U] <= B. Strong duality is not claimed for the belief
+MDP, so the swept points are sampled reference policies, and the reference
+at a budget is their estimated feasible envelope: the best reward attainable
+by a per-episode mixture of sampled points whose expected usage is at most B
+(rho_aif.budget.feasible_envelope).
 
-This directly answers the "no exact CPOMDP baseline" limitation raised by
-both referees: it reports the optimality gap of the Planning+IG family
-(and of the canonical EFE weight w=1) relative to the true optimal policy
-at a matched sensing budget, for the three discrete OTC benchmarks that
-admit exact SARSOP solves (Tiger, Diagnosis, Bandit).
+It reports the estimated optimality gap of the Planning+IG family (and of
+the canonical EFE weight w=1) relative to this near-optimal, simulation-
+estimated reference at a matched sensing budget, for the three discrete OTC
+benchmarks that admit SARSOP solves (Tiger, Diagnosis, Bandit).
 
 Scope: SARSOP-solved for these three environments under the same discounted
 infinite-horizon relaxation (discount 0.999) already used for the

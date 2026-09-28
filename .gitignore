@@ -100,3 +100,8 @@ paper/*.run.xml
 paper/*.fls
 paper/*.fdb_latexmk
 paper/*.out
+
+# Local run logs (provenance lives in each CSV's git_sha/generated_utc stamp)
+logs/
+reviews/*/manuscript_jair.txt
+reviews/*/batch_full_jair.diff

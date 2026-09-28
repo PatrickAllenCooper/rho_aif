@@ -2309,8 +2309,8 @@
       \field{booktitle}{Proc.\ International Conference on Simulation of Adaptive Behavior}
       \field{title}{A possibility for implementing curiosity and boredom in model-building neural controllers}
       \field{year}{1991}
-      \field{pages}{222\bibrangedash 227}
-      \range{pages}{6}
+      \field{pages}{222\bibrangedash 228}
+      \range{pages}{7}
     \endentry
     \entry{schuirmann1987}{article}{}{}
       \name{author}{1}{}{%

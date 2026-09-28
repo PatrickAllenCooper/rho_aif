@@ -194,7 +194,7 @@ def plot_hero(path: str = "figures/fig_hero_price_curve.pdf",
         ("Active inference minimizes", "0.15"),
     ], fontsize=fs, right_limit=box_right - 0.01, line_name="line 1")
     _rainbow_text(ax, fig, pad_x, top_y - line_h, [
-        ("$G(\\pi){=}$ pragmatic $+$ epistemic", "0.15"),
+        ("$G(\\pi){=}$ pragmatic $-$ epistemic", "0.15"),
     ], fontsize=fs, right_limit=box_right - 0.01, line_name="line 2")
     _rainbow_text(ax, fig, pad_x, top_y - 2 * line_h, [
         ("is exactly maximizing $R(s,a){+}w{\\cdot}I(b,a)$ at ", "0.15"),

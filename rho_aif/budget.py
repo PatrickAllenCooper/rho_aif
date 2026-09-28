@@ -299,11 +299,12 @@ def usage_curve_to_arrays(curve: Sequence[UsageCurvePoint]):
 @dataclass
 class CrossingBracket:
     """
-    Set-valued shadow price at a (possibly gap) budget.
+    Finite-grid bracket of the crossing threshold at a (possibly gap) budget.
 
     The interval (w_lo, w_hi] is the last grid weight with U < B and the first
-    subsequent weight with U >= B. When B falls inside a usage gap, any point
-    estimate of w* is arbitrary; the bracket is the scale-invariant object.
+    subsequent weight with U >= B. Its closed enclosure contains the crossing
+    threshold w*(B) when the grid resolves every crossing. The weights inside
+    it are not each exact prices; the bracket's width is grid resolution.
     """
 
     w_lo: float

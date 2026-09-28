@@ -21,6 +21,9 @@ in their last bits across processor families and system math libraries.
 
 To reproduce from scratch, install `requirements-lock.txt` into a Python 3.9
 environment and follow the reproduction table in `README.md`. Per-seed metrics
-for the claim-bearing batteries are committed alongside the aggregates
-(`*_stats.csv`, `*_per_seed.csv`, `*_metrics.csv`), so every reported test can
-be recomputed without rerunning an episode.
+are committed for the batteries listed in the README's reproduction section
+(SARSOP TOST at n=5 and n=20, budget frontier and its same-stream reference, multi-seed dual
+control, shadow-price staircase curves), whose tests can be recomputed without
+rerunning an episode. The other batteries commit aggregates, seed-level SEs,
+and computed tests (`*_stats.csv`), and their per-seed values are regenerable
+exactly by rerunning the producer.
