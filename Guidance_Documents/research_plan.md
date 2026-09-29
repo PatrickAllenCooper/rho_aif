@@ -1031,3 +1031,6 @@ This guidance document is updated continuously to reflect:
 - Progress toward publication
 
 Each significant change should be committed to version control with clear documentation of what changed and why.
+
+
+**2026-09-28, main-text concision complete (ledger 9.17.56).** JAIR now reaches the references on page 38 rather than page 82, with 117 total pages including the preserved evidence and proofs in bound appendices. LNCS has 155 pages. Both masters received the structural revision and a dedicated mathematics/notation audit. Three reviewers accept the final sources, all 486 tests pass, and the refreshed Overleaf package builds independently with identical PDF text. The complete pre-concision alternative remains frozen at `paper/legacy/2026-09-28_pre_concision/` from `2d3bac4`, with hashes verified unchanged. No experiment or empirical CSV changed. Final review reports and hashes are in `reviews/concision_2026-09-28/`.

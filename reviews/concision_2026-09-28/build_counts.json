@@ -1,0 +1,14 @@
+{
+  "full_paper_jair": {
+    "pages": 117,
+    "references_start": 38,
+    "main_figures": 12,
+    "all_figures": 25
+  },
+  "full_paper": {
+    "pages": 155,
+    "references_start": 50,
+    "main_figures": 12,
+    "all_figures": 25
+  }
+}

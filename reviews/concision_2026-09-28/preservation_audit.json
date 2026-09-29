@@ -1,0 +1,27 @@
+{
+  "legacy_hashes_unchanged": true,
+  "masters": {
+    "full_paper_jair": {
+      "labels": 152,
+      "missing_labels": [],
+      "duplicate_labels": [],
+      "unresolved_references": [],
+      "citation_keys": 69,
+      "missing_citation_keys": [],
+      "missing_original_table_bodies_after_documented_header_fix": 0,
+      "main_figures": 12,
+      "all_figures": 25
+    },
+    "full_paper": {
+      "labels": 151,
+      "missing_labels": [],
+      "duplicate_labels": [],
+      "unresolved_references": [],
+      "citation_keys": 68,
+      "missing_citation_keys": [],
+      "missing_original_table_bodies_after_documented_header_fix": 0,
+      "main_figures": 12,
+      "all_figures": 25
+    }
+  }
+}
