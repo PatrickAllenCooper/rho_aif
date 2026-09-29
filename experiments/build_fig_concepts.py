@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build four explanatory diagrams for the full manuscript.
+"""Build five explanatory diagrams for the full manuscript.
 
 These are analytical schematics, not experimental results.  No episodes
 are run and no result files are read or modified.  The destructive-test
@@ -104,6 +104,38 @@ def plot_otc_loop(output: Path):
     arrow(ax, (.72, .28), (.77, .28))
     label(ax, .53, .055, "Rewards contribute to return, not to belief updates.", fontsize=9.5)
     save(fig, "fig_otc_loop", output)
+
+
+def plot_engineering_workflow(output: Path):
+    """Illustrate how an inspection requirement becomes a running policy."""
+    fig, ax = canvas(2.85)
+    label(ax, .50, .91, "From an inspection requirement to a policy", fontsize=11)
+
+    stages = [
+        (.125, "Inspection task", "Hidden fault\nPaid tests\nRepair or release"),
+        (.375, "Design target", "$B$ tests per item\non average"),
+        (.625, "Offline calibration", "Sweep $w$; estimate $U(w)$\nBracket $B$; mix if needed"),
+        (.875, "At each item", "Choose test or commit\nfrom the current belief"),
+    ]
+    for index, (x, heading, body) in enumerate(stages):
+        edge = figstyle.BLUE if index in (1, 2) else INK
+        patch = FancyBboxPatch((x - .105, .42), .21, .31,
+                               boxstyle="round,pad=0.008,rounding_size=0.014",
+                               linewidth=1.0, edgecolor=edge, facecolor="white",
+                               zorder=3)
+        ax.add_patch(patch)
+        label(ax, x, .665, heading, fontsize=9.5, weight="bold")
+        label(ax, x, .535, body, fontsize=9.0)
+    for start in (.231, .481, .731):
+        arrow(ax, (start, .575), (start + .028, .575), lw=1.0)
+
+    label(ax, .50, .275,
+          "Audit across items: compare mean test use with $B$ and assess reward separately.",
+          fontsize=9.5)
+    label(ax, .50, .12,
+          "A usage target is an expectation, not a limit on tests for each item.",
+          fontsize=9.0, color=MUTED)
+    save(fig, "fig_engineering_workflow", output)
 
 
 def plot_state_preservation(output: Path):
@@ -213,7 +245,8 @@ def main():
     parser.add_argument("--output-dir", type=Path, default=Path("figures"))
     args = parser.parse_args()
     figstyle.apply()
-    for plot in [plot_otc_loop, plot_state_preservation, plot_target_vs_cap, plot_dual_feedback]:
+    for plot in [plot_engineering_workflow, plot_otc_loop, plot_state_preservation,
+                 plot_target_vs_cap, plot_dual_feedback]:
         plot(args.output_dir)
 
 
