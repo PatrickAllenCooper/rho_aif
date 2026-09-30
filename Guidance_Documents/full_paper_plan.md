@@ -1606,7 +1606,7 @@ The batch 6 audit (`audit_batch6.md`) found 13 defects, all fixed by `apply_batc
 
 The audit also found that the machine slept during the MCTS rerun's Tileworld rows, inflating their timings by up to 190 times. The manuscript cites none of them, but the rows are rerun under `caffeinate` so the committed file is clean. The rerun CSVs carry git stamp `9e6ffde`, which predates the uncommitted POMCP fix they were produced with. After the fix is committed, the stamps are rewritten to that commit, whose `pomcp.py` is byte-identical to the working tree that produced them.
 
-The AI-use statement's mention of simulated referee reviews is kept because it discloses tool use, not an error. 492 tests pass.
+The Tileworld timing rows were rerun under `caffeinate`, reproducing every outcome column, and only their timing columns were spliced in (for example 4x4 POMCP(200) 5.6 ms, previously 1091 ms during sleep). The round was committed as `166718e`, then the 81 `git_sha` stamps in the sweep, tuning, compute-matched, and fresh-seed replication CSVs were rewritten from `9e6ffde` to `166718e`. File times confirm that `pomcp.py` and the replication script were last edited before those runs started, and the later sweep-runner edit only guards `--merge`. The AI-use statement's mention of simulated referee reviews is kept because it discloses tool use, not an error. 492 tests pass.
 
 ### 9.17.7 Bibliography hallucination audit for JAIR submission (2026-08-27)
 
