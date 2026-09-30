@@ -183,16 +183,47 @@ def run(envs, num_episodes, seeds, out_csv, stats_csv):
                 "diff": t["mean_of_seed_means_a"] - t["mean_of_seed_means_b"],
                 "t_stat": t["t_stat"], "p_seed_level": t["p_value"], "n_seeds": t["n_seeds_a"],
             })
-    df_stats = pd.DataFrame(stats)
+    df_stats = _apply_holm(pd.DataFrame(stats))
     if len(df_stats):
+        df_stats.to_csv(stats_csv, index=False)
+    print(f"\nSaved {out_csv} and {stats_csv}", flush=True)
+    return pd.DataFrame(rows), df_stats
+
+
+def _apply_holm(df_stats):
+    if len(df_stats):
+        df_stats = df_stats.reset_index(drop=True)
         df_stats["significant_hb_seed_level"] = False
         for (family, metric), grp in df_stats.groupby(["family", "metric"]):
             flags = holm_bonferroni([float(x) for x in grp["p_seed_level"]])
             for i, f in zip(grp.index, flags):
                 df_stats.loc[i, "significant_hb_seed_level"] = bool(f)
-        df_stats.to_csv(stats_csv, index=False)
-    print(f"\nSaved {out_csv} and {stats_csv}", flush=True)
-    return pd.DataFrame(rows), df_stats
+    return df_stats
+
+
+def merge(parts, out_csv):
+    """Combine per-environment runs (``--envs X --out part.csv``) into one
+    battery. Holm-Bonferroni needs only the p-values, so recomputing it over
+    the concatenated stats reproduces a single all-environment run."""
+    order = {e: i for i, e in enumerate(ENVS)}
+    frames = [pd.read_csv(p) for p in parts]
+    envs = [e for f in frames for e in f["env"].unique()]
+    if len(envs) != len(set(envs)):
+        raise ValueError(f"an environment appears in more than one part: {envs}")
+    for col in ("seed_list", "episodes_per_seed"):
+        values = {str(v) for f in frames for v in f[col].unique()}
+        if len(values) > 1:
+            raise ValueError(f"parts disagree on {col}: {sorted(values)}")
+    rows = pd.concat(frames, ignore_index=True)
+    rows = rows.sort_values("env", key=lambda s: s.map(order), kind="stable")
+    stats = pd.concat([pd.read_csv(p.replace(".csv", "_stats.csv")) for p in parts],
+                      ignore_index=True)
+    stats = stats.sort_values("env", key=lambda s: s.map(order), kind="stable")
+    stats = _apply_holm(stats.drop(columns=["significant_hb_seed_level"], errors="ignore"))
+    os.makedirs(os.path.dirname(out_csv) or ".", exist_ok=True)
+    rows.to_csv(out_csv, index=False)
+    stats.to_csv(out_csv.replace(".csv", "_stats.csv"), index=False)
+    print(f"Merged {len(parts)} parts into {out_csv} and its _stats companion", flush=True)
 
 
 def main():
@@ -201,7 +232,8 @@ def main():
     p.add_argument("--episodes", type=int, default=None,
                    help="episodes per seed: 200 for the canonical sweep, 100 for --tuning (the committed protocols)")
     p.add_argument("--quick", action="store_true", help="smoke test: 4 episodes, 2 seeds, scratch output")
-    p.add_argument("--out", default="results/results_pomcp_exploration_sweep.csv")
+    p.add_argument("--out", default=None,
+                   help="output CSV (default: the canonical sweep or tuning CSV)")
     p.add_argument(
         "--tuning", action="store_true",
         help="Selection run on the disjoint tuning seeds the RockSample POMCP uses "
@@ -212,12 +244,20 @@ def main():
              "configuration is selected on the seeds that report it. Runs 100 "
              "episodes per seed unless --episodes is given (ledger 9.17.45, 9.17.46).",
     )
+    p.add_argument("--merge", nargs="+", metavar="PART_CSV",
+                   help="merge per-environment part CSVs into --out and recompute Holm; runs no episodes")
     args = p.parse_args()
-    seeds, out = list(SEEDS), args.out
+    if args.merge:
+        default = ("results/results_pomcp_exploration_tuning.csv" if args.tuning
+                   else "results/results_pomcp_exploration_sweep.csv")
+        merge(args.merge, args.out or default)
+        return
+    seeds = list(SEEDS)
+    out = args.out or "results/results_pomcp_exploration_sweep.csv"
     episodes = args.episodes if args.episodes is not None else 200
     if args.tuning:
         seeds = [11, 22, 33]
-        out = "results/results_pomcp_exploration_tuning.csv"
+        out = args.out or "results/results_pomcp_exploration_tuning.csv"
         # The committed tuning study ran 100 episodes per seed (ledger 9.17.45);
         # a re-review found the README command would have run 200 (9.17.46).
         episodes = args.episodes if args.episodes is not None else 100

@@ -139,7 +139,9 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | Tileworld | `python experiments/run_tileworld.py all` |
 | Structural Inspection | `python experiments/run_inspection.py` |
 | RockSample (regenerated single-source tables) | `python experiments/build_rocksample_tables.py` (reads `results/results_rocksample_*.csv`) |
-| Pareto / transfer / POMCP / MCTS / ... | see `experiments/run_*.py` |
+| POMCP comparison and simulation-budget scaling (POMCP Baseline Comparison appendix, Table `tab:pomcp`) | `python experiments/run_pomcp.py` |
+| MCTS-EFE battery with its POMCP reference rows (POMCP Baseline Comparison appendix) | `python experiments/run_mcts_experiments.py` |
+| Pareto / transfer / ... | see `experiments/run_*.py` |
 | Near-optimality across planning horizons | `python experiments/run_nearopt_horizon.py` then `python experiments/build_horizon_map.py` |
 | Price-of-information: full battery (curves, collapse, Prop 2, dual control, cost budgets, interleaved) | `python experiments/run_price_of_information.py --mode full` |
 | Price-of-information: one sub-battery | `python experiments/run_price_of_information.py --only {curves,interleaved,cost,scale,prop2,dual-multiseed,efe}` |
@@ -151,10 +153,11 @@ Run from the repository root after `pip install -e ".[dev]"`.
 | Pareto sweep + reward-maximizing weight brackets | `python experiments/run_pareto.py pareto` |
 | Nat-canonical weight check, w=ln(2) vs. w=1 under the Pareto sweep protocol on all five swept environments (Section 3.3, reward-to-nats calibration paragraph) | `python experiments/run_nat_canonical_check.py` |
 | Bandit w=100 depth comparison (Discussion) | `python experiments/run_bandit_w100_depth_comparison.py` |
-| MCTS-EFE component ablation (Discussion, Appendix R) | `python experiments/run_mcts_efe_ablation.py` then `python experiments/build_mcts_ablation_tables.py` |
-| POMCP exploration-constant sweep and informed rollouts (Discussion, Appendix R) | `python experiments/run_pomcp_exploration_sweep.py` then `python experiments/build_mcts_ablation_tables.py` |
-| POMCP exploration-constant selection on disjoint tuning seeds {11, 22, 33}, then the frozen comparison on the canonical seeds (Discussion, Appendix R) | `python experiments/run_pomcp_exploration_sweep.py --tuning --episodes 100` then `python experiments/select_pomcp_constants.py` |
+| MCTS-EFE component ablation (Discussion, POMCP Baseline Comparison appendix) | `python experiments/run_mcts_efe_ablation.py` then `python experiments/build_mcts_ablation_tables.py` |
+| POMCP exploration-constant sweep and informed rollouts (Discussion, POMCP Baseline Comparison appendix) | `python experiments/run_pomcp_exploration_sweep.py` then `python experiments/build_mcts_ablation_tables.py`. To parallelize, run each environment with `--envs X --out part_X.csv` and combine with `--merge part_*.csv`, which recomputes Holm over the whole battery (add `--tuning` to both steps for the tuning study) |
+| POMCP exploration-constant selection on disjoint tuning seeds {11, 22, 33}, then the frozen comparison on the canonical seeds (Discussion, POMCP Baseline Comparison appendix) | `python experiments/run_pomcp_exploration_sweep.py --tuning --episodes 100` then `python experiments/select_pomcp_constants.py` |
 | Budget-frontier study at calibration-derived target budgets (a predeclared rule on each calibration curve's range and largest jump), calibrated on the canonical seeds and evaluated on held-out seeds {7, 8, 9, 10, 11} (Section 6.9, Table `tab:budget_frontier`) | `python experiments/run_budget_frontier.py`, then `python experiments/run_frontier_reference_heldout.py` (same-stream reference and paired gaps, the table's last two columns), then `python experiments/build_budget_frontier_table.py` |
+| Predeclared fresh-seed replication of the frontier gaps on seeds 12 to 21, nothing refit (Appendix, frontier details) | `python experiments/run_frontier_fresh_seed_replication.py` (`--lineage` first replays the held-out seeds and aborts unless every gap matches) |
 | Seed-bootstrap stability of the staircase crossing brackets, with per-seed usage curves archived (Section 6.6) | `python experiments/run_bracket_stability.py` |
 | SARSOP TOST equivalence, unpaired and paired, with per-seed means archived | `python experiments/run_tost_sarsop.py` |
 | SARSOP TOST robustness at n=20 seeds (canonical five plus 2000 to 2014), with per-seed means archived | `python experiments/run_tost_sarsop.py --seeds 42 123 456 789 1024 $(seq 2000 2014) --episodes 500 --out results/results_tost_sarsop_n20_robustness.csv` |

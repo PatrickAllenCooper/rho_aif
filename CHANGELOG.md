@@ -3,6 +3,43 @@
 All notable changes to this project are documented here. Format loosely
 follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.1.0] - 2026-09-29
+
+A correctness release for the observe-then-commit POMCP baseline, found
+during the concise-manuscript review panel (ledger 9.17.57). Every result
+that uses `POMCPAgent` was rerun. EFE, Planning, MCTS-EFE, and the
+RockSample POMCP (a separate class) are unaffected, and their rows in the
+rerun CSVs reproduce bit-identically apart from wall-clock columns.
+
+### Fixed
+
+- `POMCPAgent` (`rho_aif/agents/pomcp.py`) added the observation cost in
+  both its tree step and its rollout instead of subtracting it, so each
+  simulated observation was credited its cost instead of charged it, a
+  swing of twice the cost. It
+  now charges `-cost`, the sign every environment and every other planner
+  uses (`tests/test_pomcp_cost_sign.py`).
+
+### Changed
+
+- `POMCPAgent` rollouts now start from the belief updated along the
+  simulated action-observation history that reached the leaf
+  (`rollout_belief="path"`, the new default). The previous behavior, which
+  started every rollout from the root belief and so gave an observation no
+  credit in the rollout after it, remains available as
+  `rollout_belief="root"` (`tests/test_pomcp_rollout_belief.py`).
+
+### Added
+
+- `experiments/run_frontier_fresh_seed_replication.py`, a predeclared
+  replication of the budget-frontier gaps on ten fresh seeds (12 to 21)
+  with nothing refit, writing
+  `results/results_budget_frontier_fresh_seed_replication.csv`.
+- `experiments/run_pomcp_exploration_sweep.py --merge`, which combines
+  per-environment runs into one battery and recomputes Holm-Bonferroni
+  over the whole family, reproducing a single all-environment run. `--out`
+  is now honored in `--tuning` mode.
+
 ## [2.0.0] - 2026-09-07
 
 The JAIR-submission release. Everything in `v1.0.0` was the IWAI-era

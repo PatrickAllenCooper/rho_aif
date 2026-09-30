@@ -66,6 +66,7 @@ class POMCPAgent(BaseAgent):
         discount: float = 1.0,
         seed: int = 42,
         rollout_policy: str = "uniform",
+        rollout_belief: str = "path",
         **kwargs,
     ):
         super().__init__(observation_models, env_config, **kwargs)
@@ -84,6 +85,16 @@ class POMCPAgent(BaseAgent):
                 f"rollout_policy must be 'uniform' or 'info_gain', got {rollout_policy!r}"
             )
         self.rollout_policy = rollout_policy
+        # "path" starts each rollout from the belief updated along the
+        # simulated action-observation history that reached the leaf.
+        # "root" is the pre-2026-09-29 behavior, which started every
+        # rollout from the root belief and so gave an observation no
+        # credit in the rollout that follows it.
+        if rollout_belief not in ("path", "root"):
+            raise ValueError(
+                f"rollout_belief must be 'path' or 'root', got {rollout_belief!r}"
+            )
+        self.rollout_belief = rollout_belief
         self.all_actions = list(range(self.num_observe_actions + self.num_commit_actions))
         # Default preserves prior behavior (fixed internal stream across
         # runs); pass a per-run seed to vary the planner's own randomness
@@ -105,13 +116,16 @@ class POMCPAgent(BaseAgent):
         )
         return best_action
 
-    def _simulate(self, node: POMCPNode, state: int, depth: int) -> float:
+    def _simulate(self, node: POMCPNode, state: int, depth: int,
+                  belief: Optional[np.ndarray] = None) -> float:
+        if belief is None:
+            belief = self.belief.belief
         if depth >= self.rollout_depth:
             return self._best_commit_reward(state)
 
         if node.visit_count == 0:
             node.visit_count = 1
-            reward = self._rollout(state, depth)
+            reward = self._rollout(state, depth, belief)
             node.value_sum = reward
             return reward
 
@@ -132,7 +146,15 @@ class POMCPAgent(BaseAgent):
             child = node.obs_children[key]
             child.particles.append(state)
 
-            reward = obs_cost + self.discount * self._simulate(child, state, depth + 1)
+            if self.rollout_belief == "path":
+                child_belief = belief * self.obs_models[obs_action_idx][:, obs]
+                norm = child_belief.sum()
+                child_belief = child_belief / norm if norm > 0 else belief
+            else:
+                child_belief = belief
+            reward = -obs_cost + self.discount * self._simulate(
+                child, state, depth + 1, child_belief
+            )
 
         if action not in node.children:
             node.children[action] = POMCPNode()
@@ -165,10 +187,11 @@ class POMCPAgent(BaseAgent):
 
         return best_action if best_action is not None else self._rng.choice(self.all_actions)
 
-    def _rollout(self, state: int, depth: int) -> float:
+    def _rollout(self, state: int, depth: int,
+                 belief: Optional[np.ndarray] = None) -> float:
         total = 0.0
         gamma_power = 1.0
-        b = self.belief.belief.copy()
+        b = (self.belief.belief if belief is None else belief).copy()
 
         for d in range(depth, self.rollout_depth):
             if self._rng.random() < 0.3:
@@ -182,7 +205,7 @@ class POMCPAgent(BaseAgent):
                 obs_action = self._rng.randint(0, self.num_observe_actions)
             obs = self._sample_observation(state, obs_action)
 
-            total += gamma_power * self.obs_costs[obs_action]
+            total -= gamma_power * self.obs_costs[obs_action]
             gamma_power *= self.discount
 
             likelihood = self.obs_models[obs_action][:, obs]
