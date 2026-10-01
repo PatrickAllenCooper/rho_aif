@@ -1730,6 +1730,8 @@ Main text (Section 6.6) and the SARSOP appendix were updated. The frontier appen
 - The episode-matching overstatement.
 - D12 (the CSV git stamp predating the producer) is fixed by committing the producer and restamping the two CSVs to that commit.
 
+**Provenance restamp (D12).** The producer and its outputs were committed in `90928ac`. The `git_sha` column of `results_cpomdp_frontier_subsidy.csv` (69 rows) and `results_budget_frontier_target_reference.csv` (12 rows) was then rewritten from the pre-commit `445daf9` to `90928ac` by byte replacement, with no other byte changed. The usage-matched file carries no stamp, because it is derived without episodes from the stamped files.
+
 **Result.** JAIR 111 pp (references p38), LNCS 142 pp, zero overfull, zero undefined, `verify_claims` exits 0, 495 tests pass.
 
 ### 9.17.7 Bibliography hallucination audit for JAIR submission (2026-08-27)
