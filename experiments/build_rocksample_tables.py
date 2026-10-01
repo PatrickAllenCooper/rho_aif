@@ -9,8 +9,7 @@ sync with the committed CSVs across three prior revisions of the paper.
 
 RS[5,3] and RS[7,4] were run at 500 episodes x 10 seeds (5,000 episodes).
 RS[7,8] and RS[11,11] were run at a reduced 100 episodes x 5 seeds
-(500 episodes). All four instances now include a Flat-MC(1000) baseline
-in the extended table.
+(500 episodes).
 """
 
 from pathlib import Path
@@ -75,19 +74,19 @@ def build_main_table() -> str:
         "\\caption{RockSample results. RS[5,3] and",
         " RS[7,4] run 500 episodes $\\times$ 10 seeds (5{,}000 episodes), and RS[7,8]",
         " and RS[11,11] run 100 episodes $\\times$ 5 seeds (500 episodes, reduced",
-        " protocol). Greedy samples without checking. POMCP is the genuine",
+        " protocol). Greedy samples without checking. POMCP is the",
         " search-tree solver at its tuned, frozen configuration (2{,}048",
         " simulations, Appendix~\\ref{app:rocksample}). Rollout only runs",
         " POMCP's approach-then-check rollout policy standalone, with no",
-        " search tree. Bold marks the best mean reward per instance plus any",
+        " search tree. It is not significantly different from EFE on RS[5,3] and",
+        " RS[7,4] and earns more on RS[7,8] and RS[11,11]. Bold marks the best mean reward per instance plus any",
         " agent not significantly different from it by a seed-level Welch",
         " $t$-test with Holm--Bonferroni correction, corrected within metric",
         " (complete pairwise statistics in the committed",
         " \\texttt{results\\_rocksample\\_*\\_stats.csv} files). Reward reported as mean $\\pm$",
         " seed-level SE (SE of the per-seed means over 10 seeds for RS[5,3] and RS[7,4]",
         " and over 5 seeds for RS[7,8] and RS[11,11]).",
-        " Steps and Checks omitted here (per-instance step and check counts,",
-        " and a Flat-MC(1000) reference on every instance, are in",
+        " Steps and Checks omitted here (per-instance step and check counts are in",
         " Appendix~\\ref{app:rocksample}).}",
         "\\label{tab:rocksample}",
         "\\begin{tablebody}",
@@ -127,7 +126,6 @@ def build_main_table() -> str:
 
 EXT_AGENT_ORDER = [
     "Greedy",
-    "Flat-MC (1000)",
     "POMCP (2048 sims)",
     "Planning ({d})",
     "Plan+IG w=5 ({d})",
@@ -143,7 +141,7 @@ def build_extended_table() -> str:
         "\\begin{table}[ht]",
         "\\centering",
         "\\caption{RockSample extended results with the full agent roster, including",
-        " a flat one-ply Monte Carlo (Flat-MC) reference, the genuine POMCP at",
+        " POMCP at",
         " its tuned frozen configuration, POMCP's rollout policy run",
         " standalone (Rollout only), and Planning+IG at",
         " both $w{=}5$ and $w{=}10$. Steps and checks are episode means.",

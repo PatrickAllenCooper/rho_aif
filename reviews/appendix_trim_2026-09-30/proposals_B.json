@@ -1,0 +1,575 @@
+{
+ "proposals": [
+  {
+   "id": "B01",
+   "category": "FAILED",
+   "old": "including a flat one-ply Monte Carlo (Flat-MC) reference on every instance, the genuine POMCP",
+   "new": "including the genuine POMCP",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 12,
+   "rationale": "Flat-MC is a degenerate one-ply reference that the appendix itself says must not be compared and whose returns are step-cap truncation. Removing it from the roster description. Depends on producer change BP1 (row removed from Table rocksample_extended).",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B02",
+   "category": "FAILED",
+   "old": " The Flat-MC baseline collapses to a large negative reward on every instance ($-9.92$ to $-87.22$), but we do not read this as a directed-checking result. It should not be compared to the POMCP findings of Appendix~\\ref{app:pomcp}. Flat-MC is a one-ply Monte Carlo evaluator with no search tree and no UCB1 selection (\\texttt{rho\\_\\allowbreak aif/\\allowbreak agents/\\allowbreak rocksample\\_\\allowbreak agents.py}). Because its rollout policy conditions on the rock-quality hypothesis sampled at the root, a check accrues no simulated value beyond the root action itself, so the agent structurally cannot represent a check that informs a later decision. On the two larger instances this degenerates outright. It checks almost continuously ($82.4$ checks/episode on RS[7,8], $165.8$ on RS[11,11]) and never reaches the exit, hitting the episode step cap on $100\\%$ of episodes for both (mean steps $129.00$ of a $129$-step cap, and $231.00$ of $231$). Its returns are therefore that truncation, not evidence about information-directed planning. We report it as a weak reference point under an accurate name rather than dropping it.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 187,
+   "rationale": "Whole Flat-MC paragraph tail: a baseline reported only to be dismissed ('should not be compared', 'weak reference point ... rather than dropping it'). It bears on no claim. The POMCP comparisons use the genuine tree POMCP. Depends on BP1.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B03",
+   "category": "FAILED",
+   "old": "Per-instance detail, including the Flat-MC reference (a flat one-ply Monte Carlo baseline with no search tree, kept in the appendix as a reference) and the standalone heuristic on every instance, is in",
+   "new": "Per-instance detail, including the standalone heuristic on every instance, is in",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 23,
+   "rationale": "OUTSIDE SCOPE B (the RockSample extended discussion near JAIR line 2083, LNCS 2387), listed here because it is required prose for BP1: once the Flat-MC row is gone this pointer would be dangling. Coordinate with the scout owning that region.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B04",
+   "category": "FAILED",
+   "old": "giving $28$ tests per metric per instance over its eight agents",
+   "new": "giving $21$ tests per metric per instance over its seven agents",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 0,
+   "rationale": "OUTSIDE SCOPE B (statistics appendix, app:stats). Apply only if producer change BP2 (Holm families recomputed without Flat-MC) is adopted. If BP2 is not adopted, leave this sentence as is, since the committed stats CSVs then still contain 28 tests per metric.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B05",
+   "category": "VERBOSE",
+   "old": "Two further measurements are needed before that comparison means anything, and both cut against the baseline being taken at face value.",
+   "new": "Two further measurements qualify that comparison.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 15,
+   "rationale": "Rhetorical framing sentence, content carried by the two numbered measurements that follow.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B06",
+   "category": "VERBOSE",
+   "old": "The budget-scaling direction reverses with the horizon, and it is not a clean slope in either direction, since at $H{=}10$ the sweep is non-monotone across the budget range ($256$ scores $+11.73$, the worst tested, and the peak sits at $1{,}024$). At $H{=}10$ more simulations beyond $1{,}024$ make POMCP worse, from $+13.19$ at $1{,}024$ to $+12.52$ at $16{,}384$, because a longer search only sharpens a conclusion that is wrong for being truncated. At $H{=}15$ more simulations help substantially, from $+14.00$ to $+15.60$, which is the behavior the algorithm is supposed to show. This is a real gap in our tuning protocol and not a property of POMCP. Stage B selected the horizon at a fixed budget of $1{,}024$ simulations, so a budget-by-horizon interaction was structurally invisible to it.",
+   "new": "The budget-scaling direction reverses with the horizon. At $H{=}10$ the sweep is non-monotone ($256$ scores $+11.73$, the worst tested, and the peak sits at $1{,}024$), and more simulations beyond $1{,}024$ make POMCP worse, from $+13.19$ to $+12.52$ at $16{,}384$, because a longer search only sharpens a conclusion that is wrong for being truncated. At $H{=}15$ more simulations help, from $+14.00$ to $+15.60$. This is a gap in our tuning protocol, not a property of POMCP. Stage B selected the horizon at a fixed budget of $1{,}024$ simulations, so a budget-by-horizon interaction was invisible to it.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 34,
+   "rationale": "Same numbers and the same tuning-protocol disclosure, fewer words. The post-hoc disclosure sentence that follows is untouched.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B07",
+   "category": "VERBOSE",
+   "old": "shows the opposite pattern. Deepening the horizon does not rescue POMCP at scale. It makes it monotonically worse. $H{=}10$",
+   "new": "shows the opposite pattern, with deeper horizons monotonically worse. $H{=}10$",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 9,
+   "rationale": "Three sentences saying one thing.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B08",
+   "category": "VERBOSE",
+   "old": "So the tuning-protocol gap the RS[5,3] sweep exposed does not transfer to the large instance. On RS[5,3] the frozen $H{=}10$ was the worst measured setting. On RS[11,11] it is the best by a wide margin, and the frozen configuration was not handicapping POMCP there.",
+   "new": "So the tuning-protocol gap does not transfer. The frozen $H{=}10$, the worst measured setting on RS[5,3], is the best by a wide margin on RS[11,11].",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 21,
+   "rationale": "Restates the preceding numbers. The behavioral trace that the later RS[11,11] discussion cites (Appendix rocksample) is kept.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B09",
+   "category": "VERBOSE",
+   "old": "We report the predeclared row in the main table and this diagnostic beside it, so a reader can see both what the protocol committed to and what a more generous configuration achieves.",
+   "new": "The main table reports the predeclared configuration, and this diagnostic shows what a more generous one achieves.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 15,
+   "rationale": "Shorter, keeps the predeclared-versus-diagnostic distinction.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B10",
+   "category": "VERBOSE",
+   "old": "The honest summary is that $w{=}1$ is not uniformly best",
+   "new": "In summary, $w{=}1$ is not uniformly best",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 3,
+   "rationale": "Rhetorical 'honest'.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B11",
+   "category": "DUPLICATE",
+   "old": "\n\nThese results exercise the extension Proposition~\\ref{prop:factored} already establishes for interleaved settings despite the transition--observation coupling analyzed in Section~\\ref{sec:methodology} (factored observation extension). The agent's behavior mirrors the observe-then-commit pattern. It checks (gathers information), then samples or exits (commits), even though checking and acting are interleaved with movement.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 54,
+   "rationale": "Restated in Appendix theory_factored ('Section rocksample exercises this extension empirically across four RockSample instances, and empirical agreement exercises the algebraic result but does not prove it') and in the main RockSample section. Keeps the stronger copy there.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B12",
+   "category": "VERBOSE",
+   "old": "Nothing in the main results exposes this decomposition directly. We add an optional, backward-compatible audit record at the shared Planning+IG evaluation boundary used by \\texttt{PlanningInfoGainAgent}, \\texttt{EFEAgent} (at $w{=}1$), and \\texttt{Inspection\\allowbreak Tree\\allowbreak Search\\allowbreak Agent}.",
+   "new": "An optional audit record at the shared Planning+IG evaluation boundary, used by \\texttt{PlanningInfoGainAgent}, \\texttt{EFEAgent} (at $w{=}1$), and \\texttt{Inspection\\allowbreak Tree\\allowbreak Search\\allowbreak Agent}, exposes this decomposition.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 10,
+   "rationale": "'backward-compatible' is software-release narration. Same content.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B13",
+   "category": "VERBOSE",
+   "old": "This is the audit trail's purpose. It lets a practitioner check, for any single decision, whether an unexpected action was chosen for an information-theoretic reason or a task-value reason, rather than only reporting an aggregate reward or success rate. We keep this as an interpretability appendix artifact. It does not change any reported headline result.",
+   "new": "The audit trail lets a practitioner check, for any single decision, whether an unexpected action was chosen for an information-theoretic reason or a task-value reason. It is an interpretability artifact and changes no reported result.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 21,
+   "rationale": "Shorter. The non-interference statement stays.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B14",
+   "category": "DUPLICATE",
+   "old": " Equivalently, keeping $w$ fixed while scaling rewards by $k$ is indistinguishable from rescaling the weight by $1/k$.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 18,
+   "rationale": "Restates the preceding sentence ('Maximizing E[kR] + wI induces the same policy as maximizing E[R] + (w/k)I').",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B15",
+   "category": "VERBOSE",
+   "old": "Whether the gap between the implemented weight and the canonical one changes any reported result is a question the weight sweep of Section~\\ref{sec:pareto} can answer in part. On Tiger the reward-maximizing tied bracket is $[0.01, 20]$ and on Diagnosis it is $[0.5, 20]$. Both weights, the implemented $w{=}1$ and the nat-canonical $0.69$ in the implementation's bit units, therefore lie inside it, and the choice of information base changes no qualitative conclusion there. On Bandit the tied bracket's grid endpoints are $[1, 2]$, which contains $w{=}1$ but not $0.69$. Because the sweep measures only grid weights, a weight that falls between two grid points is not directly observed, and $0.69$ falls between two of them. The nearest swept weight below it, $w{=}0.5$, scores $6.05$ against the tied $6.24$ (\\texttt{results\\_\\allowbreak pareto\\_\\allowbreak sweep.csv}), so the sweep grid alone cannot say which side of that boundary the nat-canonical weight falls on.\n\nTo settle the remainder directly, we ran the exactly nat-canonical agent of Proposition~\\ref{prop:equivalence}, $w{=}\\ln 2$ in the implementation's bit units, together with a fresh $w{=}1$ run on the same seeds, under the sweep's own protocol (500 episodes $\\times$ 5 seeds) on all five swept environments (\\texttt{results\\_\\allowbreak nat\\_\\allowbreak canonical\\_\\allowbreak check.csv}, \\url{experiments/run_nat_canonical_check.py}). On Tiger, Diagnosis, Bandit, and Testbed the two agents are bit-identical in reward, success rate, and mean observation count ($5.33$ and $99.6\\%$ on Tiger, $-1.26$ and $97.4\\%$ on Diagnosis, $6.24$ and $86.9\\%$ on Bandit, $0.37$ and $96.4\\%$ on Testbed). On four of the five swept environments, then, the choice of information base moves none of the sweep's reported numbers, and on Bandit in particular the nat-canonical weight lands inside the tied bracket rather than with $w{=}0.5$.",
+   "new": "The weight sweep of Section~\\ref{sec:pareto} answers whether this gap matters only in part, because $0.69$ is not a grid weight. On Bandit the reward-maximizing tied bracket (the closed range of adjacent grid weights whose sweep rewards are exactly tied at the maximum) has grid endpoints $[1, 2]$, and the nearest swept weight below $0.69$, $w{=}0.5$, scores $6.05$ against the tied $6.24$ (\\texttt{results\\_\\allowbreak pareto\\_\\allowbreak sweep.csv}). We therefore ran the exactly nat-canonical agent, $w{=}\\ln 2$ in the implementation's bit units, together with a fresh $w{=}1$ run on the same seeds, under the sweep's own protocol (500 episodes $\\times$ 5 seeds) on all five swept environments (\\texttt{results\\_\\allowbreak nat\\_\\allowbreak canonical\\_\\allowbreak check.csv}, \\url{experiments/run_nat_canonical_check.py}). On Tiger, Diagnosis, Bandit, and Testbed the two agents are bit-identical in reward, success rate, and mean observation count ($5.33$ and $99.6\\%$ on Tiger, $-1.26$ and $97.4\\%$ on Diagnosis, $6.24$ and $86.9\\%$ on Bandit, $0.37$ and $96.4\\%$ on Testbed), so on Bandit the nat-canonical weight lands inside the tied bracket rather than with $w{=}0.5$.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 125,
+   "rationale": "Merges the grid-reasoning paragraph into the direct-run paragraph. The grid-only reasoning for Tiger and Diagnosis (both weights inside [0.01, 20] and [0.5, 20]) is superseded by the direct run, which shows bit-identical behaviour, and those brackets remain in Table alpha_eta. Adds a one-clause definition of the tied bracket, which B17 removes from its later, second location. All numbers kept.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B16",
+   "category": "DUPLICATE",
+   "old": " Testbed's exactly identical result carries one further remark. Proposition~\\ref{prop:nearopt} derives, for a two-observation horizon ($H{=}2$), a closed-form interval of near-optimal weights. On Testbed that interval's upper endpoint falls between the nat-denominated weight $w{=}1$ and the implemented bit-denominated agent's $1.44$ reward units per nat, a separation taken up in the discussion following Table~\\ref{tab:alpha_eta}. Under the sweep's $H{=}4$ protocol, however, the two agents behave identically, both scoring $0.37$ reward against the $0.48$ that the weights of the tied reward-maximizing bracket $[0.01, 0.5]$ achieve.",
+   "new": " On Testbed both agents score $0.37$ against the $0.48$ that the weights of the tied reward-maximizing bracket $[0.01, 0.5]$ achieve, and the separation of the two conventions by the $H{=}2$ interval is discussed after Table~\\ref{tab:alpha_eta}.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 60,
+   "rationale": "The H=2 interval separation of nat and bit weights on Testbed is stated in full in the paragraph following Table alpha_eta (Appendix theory_thresholds). Keeps the 0.37 vs 0.48 numbers and a pointer.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B17",
+   "category": "VERBOSE",
+   "old": " That conclusion rests on a direct run of the nat-canonical agent rather than on reading between two grid points.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 20,
+   "rationale": "Restates the section's method.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B18",
+   "category": "DUPLICATE",
+   "old": "Deriving that recursion from a normalized preference distribution would add a term the recursion omits. Writing $Z = \\sum_{o'} \\exp(\\beta R(o'))$ for the normalizer over the outcome space, $\\ln P(o|C) = \\beta R(o) - \\ln Z$, and the constant $\\ln Z$ is scored once per outcome, so a path that scores $T$ outcomes before it ends accumulates $-T \\ln Z$. Observe-then-commit paths of different lengths score different numbers of outcomes, so that accumulated constant is policy-dependent and can change which of observing and committing minimizes the objective. Apart from the log-scoring case, in which the reward is itself a log probability so that $Z{=}1$ and the constant vanishes, it cancels only under a convention that scores the same number of outcomes on every path, for example a fixed-length construction in which an episode that has committed keeps emitting a null outcome of zero reward from an absorbing state at every remaining step, scored against one preference distribution over a common outcome space.",
+   "new": "Deriving that recursion from a normalized preference distribution would add the accumulated term $-T\\ln Z$ of Section~\\ref{subsec:formal_rho_equiv}, which is policy-dependent because observe-then-commit paths score different numbers of outcomes. It vanishes under log scoring ($Z{=}1$) and otherwise cancels only when every path scores the same number of outcomes against one preference distribution over a common outcome space, for example when a committed episode keeps emitting a zero-reward null outcome from an absorbing state at every remaining step.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 78,
+   "rationale": "The normalizer derivation with its equation is stated in the main body (Section formal_rho_equiv). Keeps the appendix-only detail (the fixed-length null-outcome construction) and the scope sentence that follows.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B19",
+   "category": "DUPLICATE",
+   "old": "The exact case is Bernardo's, where the reward is itself a log probability and no normalizer arises.",
+   "new": "The exact case is that of \\citet{bernardo1979}, where rewards are log scoring rules, so the reward is already a log probability measured in nats and no normalizer arises.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": -10,
+   "rationale": "Absorbs the later, duplicated Bernardo sentence (removed in B20) at the first mention, with its citation.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B20",
+   "category": "DUPLICATE",
+   "old": "The choice has a consequence for scale. Rescaling all rewards by a positive factor $k$ (the factor written $\\alpha$ in Proposition~\\ref{prop:pi1}) at fixed $w$ induces the same policy as weight $w/k$ on the unscaled rewards, so $w{=}1$ is not scale-invariant, and the reward-maximizing weight $w^*_{\\mathrm{ret}}$ (the subscript abbreviates return) scales as $w^*_{\\mathrm{ret}}(k)\\propto k$ (Appendix~\\ref{app:reward_scaling}). Following \\citet{bernardo1979}, the identification is exact when rewards are log scoring rules, that is, when the reward for an outcome is the log probability the agent assigned to that outcome, so that reward is already measured in nats and no unit conversion stands between the two terms. ",
+   "new": "Rescaling all rewards by a positive factor $k$ (the factor written $\\alpha$ in Proposition~\\ref{prop:pi1}) at fixed $w$ induces the same policy as weight $w/k$, so $w{=}1$ is not scale-invariant, and the reward-maximizing weight $w^*_{\\mathrm{ret}}$ (the subscript abbreviates return) scales as $w^*_{\\mathrm{ret}}(k)\\propto k$ (Appendix~\\ref{app:reward_scaling}). ",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 58,
+   "rationale": "Removes the second statement of the Bernardo log-scoring case (moved to B19). The scale consequence is kept because Appendix line 2104 points here for the weight's reward-scale dependence.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B21",
+   "category": "DUPLICATE",
+   "old": "The implementation measures information in bits rather than nats (\\texttt{scipy.\\allowbreak stats.\\allowbreak entropy} with $\\mathrm{base}{=}2$), a constant-factor difference that we make explicit here. Every result reported as EFE ($w{=}1$) in this article runs the agent at $w{=}1$ in those bit units, that is, one reward unit per bit. Since one bit is $\\ln 2$ nats, one reward unit per bit is one reward unit per $\\ln 2$ nats, or $1/\\ln 2$ reward units per nat, which is an effective nat-denominated weight of $1/\\ln 2 \\approx 1.44$. Running the same conversion in reverse, the exactly canonical nat-unit identification of Proposition~\\ref{prop:equivalence} corresponds to $w = \\ln 2 \\approx 0.69$ in the implementation's bit units.\n\nWhether that constant factor changes any reported result is settled directly in Appendix~\\ref{app:nat_canonical}, which runs the exactly nat-canonical agent of Proposition~\\ref{prop:equivalence}, $w{=}\\ln 2$ in the implementation's bit units, under the Pareto sweep protocol of Section~\\ref{sec:pareto} on all five swept environments (\\texttt{results\\_\\allowbreak nat\\_\\allowbreak canonical\\_\\allowbreak check.csv}). On Tiger, Diagnosis, Bandit, and Testbed it is bit-identical to the implemented $w{=}1$ agent in reward, success rate, and observation count. Where that sweep's mean reward is exactly tied across adjacent swept weights, its reward-maximizing weight is reported as the closed range of tied grid weights, the reward-maximizing tied bracket. On Tiger and Diagnosis both weights lie inside it, and on Bandit, whose bracket has grid endpoints $[1, 2]$ and so contains $w{=}1$ but not $0.69$, the directly run nat-canonical agent attains the bracket's tied reward. Tileworld is the one swept environment where the base changes the policy, and there $w{=}1$ remains Pareto-dominated by $w{=}20$ under either convention.",
+   "new": "The implementation measures information in bits (\\texttt{scipy.\\allowbreak stats.\\allowbreak entropy} with $\\mathrm{base}{=}2$) and runs every reported EFE ($w{=}1$) agent at one reward unit per bit, which is $1/\\ln 2 \\approx 1.44$ reward units per nat. The exactly nat-canonical identification of Proposition~\\ref{prop:equivalence} is therefore $w = \\ln 2 \\approx 0.69$ in the implementation's bit units. Appendix~\\ref{app:nat_canonical} runs that agent on all five swept environments. It is bit-identical to the implemented $w{=}1$ agent in reward, success rate, and observation count on Tiger, Diagnosis, Bandit, and Testbed, and on Tileworld, the one environment where the base changes the policy, $w{=}1$ remains Pareto-dominated by $w{=}20$ under either convention.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 175,
+   "rationale": "Two paragraphs that restate the main body (Section formal_rho_equiv, the bit/nat paragraph) and Appendix nat_canonical nearly sentence for sentence. One paragraph keeps the conversion, the implementation pointer, and the per-environment consequences that Appendix line 2104 points here for. The tied-bracket definition moves to Appendix nat_canonical (B15).",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B22",
+   "category": "VERBOSE",
+   "old": " In the undiscounted case ($\\gamma{=}1$), the immediate information gain and the commit reward it later buys are weighted equally at every depth.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 22,
+   "rationale": "Implied by the preceding sentence. The following sentence carries the consequence for gamma < 1.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B23",
+   "category": "DUPLICATE",
+   "old": " A reader from the active-perception literature should therefore read Planning+IG at a tuned weight as the familiar baseline from that tradition rather than as a construction specific to this article.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 32,
+   "rationale": "Restates the preceding sentence ('Planning+IG stands in for both') and the main body's 'represents the familiar information-reward construction'.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B24",
+   "category": "VERBOSE",
+   "old": "Under a constant step, which no reported run uses, the recursion need not converge to a point. The standard constant-step stochastic-approximation intuition is that the iterate is instead held near $w^*$ in a neighborhood whose width shrinks with the step size, and that this residual motion is the mechanism that lets the controller re-adapt after the budget or environment shifts. Making it precise requires constant-step tracking arguments (stationary-distribution or moment bounds under drift and noise assumptions) that we do not develop here. Section~\\ref{sec:dual_multiseed} assesses re-adaptation under reward-scale shift empirically on the decaying schedule, to which the same intuition applies through whatever step size is left at the moment of the shift. That section also runs the reset-on-shift variant, described next.",
+   "new": "Under a constant step, which no reported run uses, the recursion need not converge to a point. The standard intuition that the iterate instead stays in a step-size-dependent neighborhood of $w^*$, which would let the controller re-adapt after a shift, would require constant-step tracking arguments that we do not develop. Section~\\ref{sec:dual_multiseed} assesses re-adaptation under reward-scale shift empirically on the decaying schedule, together with the reset-on-shift variant described next.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 53,
+   "rationale": "Same scope statement (no tracking guarantee, re-adaptation empirical only) in fewer words.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B25",
+   "category": "VERBOSE",
+   "old": "Their method is not a Lagrangian one. Point-based solvers represent the value function by a set of vectors over beliefs and discard the dominated ones at each backup, and their method enforces the cost bound inside that pruning step rather than pricing it. The dominated vectors are pruned exactly with a minimax quadratically constrained program and approximately with a linear program at each collected belief point.",
+   "new": "Their method is not a Lagrangian one. It enforces the cost bound inside the point-based pruning of dominated value vectors at each collected belief point, exactly with a minimax quadratically constrained program or approximately with a linear program, rather than pricing it.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 24,
+   "rationale": "Same attributed claims about Kim et al. (2011), fewer words. No claim added or dropped.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B26",
+   "category": "DUPLICATE",
+   "old": "We do not have such a solver, so Section~\\ref{sec:cpomdp} benchmarks against a near-optimal constrained-POMDP reference on the three core observe-then-commit environments (Tiger, Diagnosis, and Bandit). The reference is built as a Lagrangian-penalized sweep. For each value of a penalty $\\lambda$ on a grid, the POMDP is re-solved by SARSOP, the offline point-based solver that already serves as this paper's near-optimal reference (Section~\\ref{sec:sarsop}), with every observation action charged an extra $\\lambda$. The reward and usage of the resulting policy are then estimated by Monte Carlo simulation. SARSOP is solved to precision $10^{-3}$, and the reference is a simulation estimate rather than a certified exact solution. Because a near-optimal reference is a feasible policy rather than a certified optimum, it can only estimate the constrained optimum from below, up to its own sampling error and the upward selection bias of taking a maximum over noisy sampled points, so any measured gap to it understates the gap to the optimum up to those two effects. The estimated optimality gap, the gap between the EFE agent at $w{=}1$ and this reference, is small, zero on Tiger and within Monte Carlo noise of zero on Bandit and Diagnosis.",
+   "new": "We do not have such a solver, so Section~\\ref{sec:cpomdp} benchmarks against a near-optimal constrained-POMDP reference on Tiger, Diagnosis, and Bandit, the feasible envelope of a SARSOP usage-penalty sweep evaluated by Monte Carlo simulation (Appendix~\\ref{app:cpomdp_details}). It is a feasible-policy estimate rather than a certified optimum, so up to its own sampling error and the upward selection bias of maximizing over noisy points it estimates the constrained optimum from below, and any measured gap to it understates the gap to the optimum. The estimated gap between the EFE agent at $w{=}1$ and this reference is zero on Tiger and small relative to the estimates' standard errors on Diagnosis and Bandit.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 89,
+   "rationale": "The penalized-sweep construction is described in full in Section cpomdp and Appendix cpomdp_details. The appendix copy also described the reference as the raw penalized sweep, while the reference is the LP feasible envelope over sampled points. The rewrite matches Section cpomdp's wording ('small relative to the estimates' standard errors') and keeps the selection-bias and understatement caveats.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B27",
+   "category": "FAILED",
+   "old": "The RockSample[7,8] reference calculation instead exposes a limitation. We apply the usage-cap Lagrangian construction of Section~\\ref{sec:cpomdp}, a per-observation penalty of $\\lambda$, to this project's own depth-3 tree search (the reference planner for RockSample, standing in for SARSOP) and sweep the same log-spaced 12-point $\\lambda$ grid used there for the three core environments (\\url{experiments/run_rocksample_cpomdp_reference.py}). The result is a degenerate frontier, the reward-versus-usage curve that the sweep traces collapsing to two points. Across the entire lambda range the penalized planner checks zero or one rock, reward $9.5$ or $12.3$, and never approaches EFE's actual operating point of $9.84$ checks, so no meaningful reference reward is available there. The failure is structural rather than a tuning artifact. A literal usage-cap penalty rewards a check only through what a 3-step lookahead can see beyond it. No such short horizon can justify checking eight rocks in sequence, whereas the information-floor dual that Planning+IG and EFE actually use credits each check's information gain immediately at the node where it occurs, independent of horizon. The usage-cap Lagrangian that gives a near-optimal reference on Tiger, Diagnosis, and Bandit relies on SARSOP's effectively unbounded horizon, and it has no depth-limited analogue that reaches RockSample's operating region. Closing this gap remains future work with a sharper target, either a genuinely deeper RockSample solver or a usage-cap construction that values information locally the way the information-floor dual already does.",
+   "new": "No constrained reference is available for RockSample. Applying the same per-observation penalty $\\lambda$ over the same 12-point grid to this project's depth-3 tree search on RockSample[7,8] (\\url{experiments/run_rocksample_cpomdp_reference.py}) gives a planner that checks zero or one rock at every $\\lambda$, at reward $9.5$ or $12.3$, far from EFE's $9.84$ checks. A usage penalty credits a check only through what a 3-step lookahead sees beyond it, whereas the information weight credits each check's information gain at the node where it occurs, so the penalty construction depends on SARSOP's effectively unbounded horizon. A deeper RockSample solver, or a usage-cap construction that values information locally, would be needed.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 138,
+   "rationale": "Compresses a failed reference attempt to the scope limit the main body relies on (Section budget_positioning: 'The shallow RockSample reference fails to reach EFE's operating region. Appendix theory_positioning reports that limitation'). Keeps the script, the numbers, and the structural reason.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B28",
+   "category": "VERBOSE",
+   "old": "What it buys instead is twofold. The design primitive becomes a quantity a practitioner can actually state (a sensing budget in observation count or cost) rather than one they must guess. The online dual controller (Proposition~\\ref{prop:pi5}) skips the offline curve entirely, converging from interaction alone to the budget crossing point. Scale equivariance (Proposition~\\ref{prop:pi1}) lets a count-usage curve computed at one reward scale transfer across pure reward-and-cost rescalings without recomputation, and lets a cost-usage curve transfer after rescaling by the same factor. That is a property of the planner and its weight rather than of how the weight was chosen. The same transformation carries a directly tuned weight $w$ to $\\alpha w$ under the same rescaling and tie-break assumptions, on a weight grid rescaled with the rewards, as the scaling of the reward-optimal tuned weights in Section~\\ref{subsec:formal_rho_equiv} already records.",
+   "new": "What it buys instead is a design primitive a practitioner can state (a sensing budget in observation count or cost) rather than a weight they must guess, and an online controller (Proposition~\\ref{prop:pi5}) that skips the offline curve and, under that proposition's conditions, converges from interaction alone to the budget crossing point. Scale equivariance (Proposition~\\ref{prop:pi1}) lets a count-usage curve computed at one reward scale transfer across pure reward-and-cost rescalings without recomputation, and a cost-usage curve transfer after rescaling by the same factor. That is a property of the planner and its weight, not of how the weight was chosen, and it carries a directly tuned weight $w$ to $\\alpha w$ under the same rescaling and tie-break assumptions, on a weight grid rescaled with the rewards (Section~\\ref{subsec:formal_rho_equiv}).",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 13,
+   "rationale": "Also fixes an internal miscount ('twofold' followed by three items) and conditions the controller's convergence on Proposition PI-5's hypotheses, matching the claim-calibration vocabulary.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B29",
+   "category": "VERBOSE",
+   "old": "Crucially, our POMCP rollout policy is semi-informed.",
+   "new": "Our POMCP rollout policy is semi-informed.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 1,
+   "rationale": "Rhetorical adverb.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B30",
+   "category": "VERBOSE",
+   "old": ", so the reported variability reflects genuine run-to-run differences rather than a fixed planner seed collapsing one axis of variation.",
+   "new": ", so the reported variability includes planner randomness.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 14,
+   "rationale": "Same seeding statement, shorter. The seeding protocol itself is unchanged.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B31",
+   "category": "DUPLICATE",
+   "old": " POMCP's semi-informed rollout policy selects observation actions uniformly at random and so cannot evaluate which of the $K{=}2$ diagnostic tests to run. It treats all observation actions equally, whereas EFE's information gain term directly values differential informativeness.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 41,
+   "rationale": "Repeats the uniform-rollout contrast already stated in the POMCP setup paragraph and reads as a causal attribution that the same appendix explicitly withholds ('we do not attribute the gap to that difference in isolation'). The claim that the rollout 'cannot evaluate which test to run' also overstates the case for the tree, whose UCB1 selection does distinguish tests. Removing it aligns the paragraph with the stated non-attribution.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B32",
+   "category": "VERBOSE",
+   "old": "We additionally ran a compute-matched check on this machine (\\url{experiments/run_pomcp_compute_matched.py}), instrumented with seed-level statistics throughout. Timing MCTS-EFE(500) end to end for the full protocol (5 seeds $\\times$ 200 episodes) gives 13.87s",
+   "new": "A compute-matched check on the same machine (\\url{experiments/run_pomcp_compute_matched.py}) times MCTS-EFE(500) end to end for the full protocol (5 seeds $\\times$ 200 episodes) at 13.87s",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 8,
+   "rationale": "'instrumented with seed-level statistics throughout' is process narration. The statistics are reported in the following sentences.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B33",
+   "category": "DUPLICATE",
+   "old": "The rule was recorded in \\texttt{experiments/\\allowbreak select\\_\\allowbreak pomcp\\_\\allowbreak constants.py} before the selection was run, over the same candidate grid, and the comparison family is success and reward on the three environments, six tests under Holm correction with success the primary metric. The rule and its candidate grid were written after an exploratory sweep on the canonical seeds had been inspected.",
+   "new": "The rule was recorded before the selection was run, with success the primary metric, but the rule and its candidate grid were written after an exploratory sweep on the canonical seeds had been inspected.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 27,
+   "rationale": "The script and the six-test family are named in the preceding sentence. Keeps the required disclosure that the selection rule was written after an exploratory sweep.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B34",
+   "category": "DUPLICATE",
+   "old": " Tuning the constant narrows the Tiger gap and does not remove it. Third,",
+   "new": " Third,",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 12,
+   "rationale": "Restates 'First, the constant matters on Tiger, and tuning it does not close the gap.'",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "B35",
+   "category": "VERBOSE",
+   "old": "with four documented patches required for a modern clang toolchain on Apple Silicon. The patches drop unsupported \\texttt{-msse2} and \\texttt{-mfpmath=sse} flags, replace raw-pointer \\texttt{SparseCol} iterators (modern libc++ cannot construct \\texttt{std::vector::const\\_\\allowbreak iterator} from a raw pointer), convert chained comparison assertions to conjunctions, and suppress implicit-function-declaration errors in the legacy Cassandra parser. The resulting binary is not committed, but the patch script is.",
+   "new": "which applies and documents four compatibility patches for a modern clang toolchain on Apple Silicon (compiler flags, iterator construction, assertion syntax, and the legacy parser). The binary is not committed.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 37,
+   "rationale": "Patch-level details are documented in the committed script header. Keeps the four patches' categories.",
+   "labels_removed": [],
+   "refs_repointed": []
+  }
+ ],
+ "producer_changes": [
+  {
+   "id": "BP1",
+   "producer": "experiments/build_rocksample_tables.py",
+   "change": "Drop 'Flat-MC (1000)' from EXT_AGENT_ORDER (rows removed on all four instances of Table rocksample_extended, multirow count 8 to 7). Edit the extended caption to remove 'a flat one-ply Monte Carlo (Flat-MC) reference,' and the main caption (Table rocksample) to remove ', and a Flat-MC(1000) reference on every instance,' so it reads '(per-instance step and check counts are in Appendix~\\ref{app:rocksample})'. Update the module docstring's Flat-MC line. Keep the committed results CSVs (they are raw battery output). The RockSampleFlatMCAgent class may stay in the package, but should also be dropped from the battery list in experiments/run_rocksample.py so a rerun reproduces the reported roster.",
+   "rationale": "The Flat-MC reference is not POMCP, degenerates to the step cap on the two larger instances, and the text itself says it must not be compared. Its rows are the only reason for B01 to B03.",
+   "dependent_prose": [
+    "B01",
+    "B02",
+    "B03"
+   ]
+  },
+  {
+   "id": "BP2",
+   "producer": "experiments/run_rocksample.py (compute_rocksample_stats) or a --refresh-stats path in experiments/build_rocksample_tables.py",
+   "change": "Recompute the within-metric Holm families of results_rocksample_{5x3,7x4,7x8,11x11}_stats.csv without the Flat-MC pairs, from the stored p_seed_level and p_pooled columns (no episodes rerun). Family size per metric per instance goes from 28 to 21.",
+   "rationale": "If Flat-MC leaves the paper but stays in the Holm families, a referee opening the stats CSVs finds corrections computed over an agent the paper never shows. Checked 2026-09-30 from the committed CSVs: exactly one verdict flips, RS[7,8] Bad-sample count, Planning (d=3) vs Rollout only, p_seed_level=0.0034, not significant with 28 tests, significant with 21. It is on the Bad metric, which is never bolded and not cited in prose that I found. No Reward verdict (the bolding metric) and no pooled verdict changes. Alternative if BP2 is not adopted: keep the families and add one clause to the Table rocksample caption noting that the stats files' Holm families also include a flat one-ply reference agent not shown, and skip B04.",
+   "dependent_prose": [
+    "B04"
+   ]
+  }
+ ],
+ "considered_and_kept": [
+  {
+   "passage": "Three departures in the search procedure itself remain, all keyed to fully observable quantities",
+   "reason": "POMCP fidelity-gap statement for the RockSample POMCP. Protected."
+  },
+  {
+   "passage": "A literal unweighted particle filter with rejection sampling is also implemented and scores within sampling error",
+   "reason": "Sensitivity check showing the exact belief is not what carries the result. Load-bearing for the fairness of the POMCP comparison."
+  },
+  {
+   "passage": "The horizon sweep ran on the canonical evaluation seeds and is therefore reported as a disclosed post-hoc diagnostic",
+   "reason": "Post hoc disclosure. Protected."
+  },
+  {
+   "passage": "At $H{=}40$ it plays $196$-step episodes with $144$ checks",
+   "reason": "Behavioral trace that the later RS[11,11] mechanism discussion cites via Appendix rocksample."
+  },
+  {
+   "passage": "On RS[7,8] the standalone approach-then-check heuristic beats $w{=}1$ decisively",
+   "reason": "Genuine negative finding (heuristic beats EFE). Must stay."
+  },
+  {
+   "passage": "Two fidelity gaps against Russo and Van Roy must be stated.",
+   "reason": "IDS fidelity gaps. Protected."
+  },
+  {
+   "passage": "These scores assess overall terminal-belief quality, which depends on both calibration and how informative the belief is.",
+   "reason": "Proper-score interpretation qualification added at referee request."
+  },
+  {
+   "passage": "two fidelity gaps against Silver and Veness must be stated before the numbers",
+   "reason": "POMCP fidelity gaps and the tests that check them. Protected."
+  },
+  {
+   "passage": "The comparison is simulation-matched, not compute-matched",
+   "reason": "Protected disclosure."
+  },
+  {
+   "passage": "This was not tuned per environment, and because reward scales differ across our benchmarks",
+   "reason": "Exploration-constant caveat that the POMCP gap statements rely on."
+  },
+  {
+   "passage": "At five seeds this is a failure to detect an effect rather than evidence that there is none.",
+   "reason": "MCTS-EFE ablation's attribution narrowing. Load-bearing."
+  },
+  {
+   "passage": "The evaluation seeds' own best POMCP configuration on Diagnosis, $c{=}2$ at $69.1\\% \\pm 1.7$, is not the selected one",
+   "reason": "Disclosure that evaluation seeds would have selected differently. Keep."
+  },
+  {
+   "passage": "POMCP's planner stream is seeded per run from the outer seed in this battery",
+   "reason": "Seeding protocol difference between batteries, explains non-identical rows. Statistical protocol, kept."
+  },
+  {
+   "passage": "Tileworld is the one swept environment where the base changes the policy.",
+   "reason": "Pareto-dominance of w=1 on Tileworld. Genuine negative finding."
+  },
+  {
+   "passage": "Proposition~\\ref{prop:equivalence} covers one specific formulation of EFE, and we name what it does not cover",
+   "reason": "Scope of the equivalence across EFE formulations. Main body points here."
+  },
+  {
+   "passage": "Exploitation actions are not covered by Proposition~\\ref{prop:factored}",
+   "reason": "Rewards-are-not-observations argument added at review. Rigor-critical."
+  },
+  {
+   "passage": "\\begin{remark}[The scope restriction is on the reduction",
+   "reason": "Destructive-sensing scope remark, cited from the main body."
+  },
+  {
+   "passage": "The second is the released library default, which sets no upper projection and uses a constant step",
+   "reason": "States which controller variant the proposition covers. Scope, not history."
+  },
+  {
+   "passage": "It is conditional on a single, sign-consistent crossing of $B$.",
+   "reason": "Limitation of PI-5. Keep."
+  },
+  {
+   "passage": "\\citet{kouw2026bethe} derive expected free energy itself as the stationary point",
+   "reason": "Closest prior work with distinguishing detail. The main body points here for the comparisons."
+  },
+  {
+   "passage": "Each tuned weight is therefore a selection on one stream of $200$ or $100$ episodes and carries that stream's sampling noise.",
+   "reason": "Weight-selection protocol disclosure."
+  },
+  {
+   "passage": "Table~\\ref{tab:ids} and Table~\\ref{tab:pomcp} inline tabulars",
+   "reason": "Tables unchanged. No row is failed or dismissed."
+  },
+  {
+   "passage": "The Greedy agent moves to rocks and samples them without checking quality first",
+   "reason": "Kept. Seed-level numbers for the bad-sample contrast, not duplicated elsewhere in the appendix."
+  }
+ ]
+}

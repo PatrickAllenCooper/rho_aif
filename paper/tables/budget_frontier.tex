@@ -4,7 +4,7 @@
 \centering
 \caption{The calibrated family at calibration-derived target budgets, set by a predeclared rule from each calibration curve and evaluated on five held-out seeds it was not calibrated on ($100$ episodes per seed, seed-level SE). Budgets are set from each calibration curve's attainable range $[U_{\min}, U_{\max}]$ at three fractions of the range, at the midpoint of the largest jump (gap), and below $U_{\min}$ (declared unattainable, not run). The mixture plays the bracket's upper endpoint with probability $q$ and its lower endpoint otherwise, drawn afresh each episode. Usage is the observation count. See \texttt{results\_budget\_frontier.csv} and \texttt{results\_budget\_frontier\_heldout\_reference.csv}.}
 \label{tab:budget_frontier}
-%% Numbers produced by experiments/run_budget_frontier.py and experiments/run_frontier_reference_heldout.py
+%% Numbers produced by experiments/run_budget_frontier.py, experiments/run_frontier_reference_heldout.py, and experiments/run_frontier_target_reference.py
 \tablefontsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}llcccc@{}}
@@ -37,7 +37,7 @@ Bandit & below $U_{\min}$ & $1.62$ & -- & \multicolumn{2}{l}{declared unattainab
 \addtocounter{table}{-1}
 \renewcommand{\theHtable}{\arabic{table}.2}
 \caption{The calibrated family (continued). Held-out reward comparisons within the calibration grid. Best member is the calibration-grid weight with the highest calibration reward among those whose calibration usage is at or below $B$. Target mixture is the reward-maximizing mixture of calibration-grid weights whose calibration usage equals $B$, and feasible mixture the same with usage at most $B$, each a linear program with at most two support weights, selected on the calibration data and run on the held-out seeds.}
-%% Numbers produced by experiments/run_budget_frontier.py and experiments/run_frontier_reference_heldout.py
+%% Numbers produced by experiments/run_budget_frontier.py, experiments/run_frontier_reference_heldout.py, and experiments/run_frontier_target_reference.py
 \tablefontsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}llccc@{}}
@@ -69,31 +69,31 @@ Bandit & below $U_{\min}$ & \multicolumn{3}{l}{declared unattainable} \\
 \centering
 \addtocounter{table}{-1}
 \renewcommand{\theHtable}{\arabic{table}.3}
-\caption{The calibrated family (continued). Constrained-reference comparisons. The reference is the estimated feasible envelope of the near-optimal constrained-POMDP reference of Section~\ref{sec:cpomdp}, the largest reward attainable by mixing its sampled points subject to expected usage at most $B$, flat at the largest sampled reward where $B$ exceeds the largest sampled usage. That reference was evaluated on the canonical seeds with once-per-seed seeding. Same-stream reference is the same envelope with every sampled reference policy re-evaluated on the held-out seeds under the family's per-episode seeding, and paired gap is the mixture's reward minus that envelope, per seed, with its seed-level SE. Reference support and mixture weights are fitted on those same held-out seed means and held fixed for the SE. The nominal pointwise plug-in intervals discussed in the text omit uncertainty from that fit and cap feasibility, and make no multiplicity adjustment.}
-%% Numbers produced by experiments/run_budget_frontier.py and experiments/run_frontier_reference_heldout.py
+\caption{The calibrated family (continued). Constrained-reference comparisons. The reference is the estimated feasible envelope of the near-optimal constrained-POMDP reference of Section~\ref{sec:cpomdp}, the largest reward attainable by mixing its sampled points subject to expected usage at most $B$, flat at the largest sampled reward where $B$ exceeds the largest sampled usage. That reference was evaluated on the canonical seeds with once-per-seed seeding. Same-stream reference is the same envelope with every sampled reference policy re-evaluated on the held-out seeds under the family's per-episode seeding, and paired gap is the mixture's reward minus that envelope, per seed, with its seed-level SE. Reference support and mixture weights are fitted on those same held-out seed means and held fixed for the SE. The nominal pointwise plug-in intervals discussed in the text omit uncertainty from that fit and cap feasibility, and make no multiplicity adjustment. Target reference is the best mixture of sampled reference policies, including subsidized ones with negative usage penalties, whose held-out usage equals $B$, and target gap is the paired held-out gap against it (\texttt{results\_budget\_frontier\_target\_reference.csv}).}
+%% Numbers produced by experiments/run_budget_frontier.py, experiments/run_frontier_reference_heldout.py, and experiments/run_frontier_target_reference.py
 \tablefontsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}llccc@{}}
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}llccccc@{}}
 \toprule
-Env. & Budget & Reference & \shortstack{Same-stream\\reference} & Paired gap \\
+Env. & Budget & Reference & \shortstack{Same-stream\\reference} & Paired gap & \shortstack{Target\\reference} & \shortstack{Target\\gap} \\
 \midrule
-Tiger & 0.25 of range & $5.02$ & $5.68$ & $-0.33 \pm 0.04$ \\
-Tiger & 0.50 of range & $5.02$ & $5.68$ & $-0.72 \pm 0.06$ \\
-Tiger & 0.75 of range & $5.02$ & $5.68$ & $-1.03 \pm 0.06$ \\
-Tiger & gap & $5.02$ & $5.68$ & $-0.72 \pm 0.06$ \\
-Tiger & below $U_{\min}$ & \multicolumn{3}{l}{declared unattainable} \\
+Tiger & 0.25 of range & $5.02$ & $5.68$ & $-0.33 \pm 0.04$ & $5.28$ & $0.08 \pm 0.04$ \\
+Tiger & 0.50 of range & $5.02$ & $5.68$ & $-0.72 \pm 0.06$ & $4.93$ & $0.03 \pm 0.06$ \\
+Tiger & 0.75 of range & $5.02$ & $5.68$ & $-1.03 \pm 0.06$ & $4.58$ & $0.07 \pm 0.06$ \\
+Tiger & gap & $5.02$ & $5.68$ & $-0.72 \pm 0.06$ & $4.93$ & $0.03 \pm 0.06$ \\
+Tiger & below $U_{\min}$ & \multicolumn{5}{l}{declared unattainable} \\
 \midrule
-Diagnosis & 0.25 of range & $-2.00$ & $-2.11$ & $-0.03 \pm 0.28$ \\
-Diagnosis & 0.50 of range & $-1.35$ & $-1.35$ & $-0.76 \pm 0.15$ \\
-Diagnosis & 0.75 of range & $-1.27$ & $-1.21$ & $-1.10 \pm 0.22$ \\
-Diagnosis & gap & $-1.95$ & $-2.06$ & $0.00 \pm 0.22$ \\
-Diagnosis & below $U_{\min}$ & \multicolumn{3}{l}{declared unattainable} \\
+Diagnosis & 0.25 of range & $-2.00$ & $-2.11$ & $-0.03 \pm 0.28$ & $-2.11$ & $-0.03 \pm 0.28$ \\
+Diagnosis & 0.50 of range & $-1.35$ & $-1.35$ & $-0.76 \pm 0.15$ & $-1.35$ & $-0.76 \pm 0.15$ \\
+Diagnosis & 0.75 of range & $-1.27$ & $-1.21$ & $-1.10 \pm 0.22$ & $-2.26$ & $-0.05 \pm 0.16$ \\
+Diagnosis & gap & $-1.95$ & $-2.06$ & $0.00 \pm 0.22$ & $-2.06$ & $0.00 \pm 0.22$ \\
+Diagnosis & below $U_{\min}$ & \multicolumn{5}{l}{declared unattainable} \\
 \midrule
-Bandit & 0.25 of range & $6.31$ & $6.27$ & $-0.21 \pm 0.12$ \\
-Bandit & 0.50 of range & $6.31$ & $6.27$ & $-0.57 \pm 0.09$ \\
-Bandit & 0.75 of range & $6.31$ & $6.27$ & $-1.32 \pm 0.08$ \\
-Bandit & gap & $6.23$ & $6.21$ & $-0.59 \pm 0.20$ \\
-Bandit & below $U_{\min}$ & \multicolumn{3}{l}{declared unattainable} \\
+Bandit & 0.25 of range & $6.31$ & $6.27$ & $-0.21 \pm 0.12$ & $6.22$ & $-0.16 \pm 0.12$ \\
+Bandit & 0.50 of range & $6.31$ & $6.27$ & $-0.57 \pm 0.09$ & $5.78$ & $-0.08 \pm 0.06$ \\
+Bandit & 0.75 of range & $6.31$ & $6.27$ & $-1.32 \pm 0.08$ & $4.90$ & $0.05 \pm 0.04$ \\
+Bandit & gap & $6.23$ & $6.21$ & $-0.59 \pm 0.20$ & $6.21$ & $-0.59 \pm 0.20$ \\
+Bandit & below $U_{\min}$ & \multicolumn{5}{l}{declared unattainable} \\
 \bottomrule
 \end{tabular}
 \end{table}

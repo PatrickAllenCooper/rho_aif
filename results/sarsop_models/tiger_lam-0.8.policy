@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Policy version="0.1" type="value" model="/Users/pat/code/rho_aif/results/sarsop_models/tiger_lam-0.8.pomdp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="policyx.xsd">
+<AlphaVector vectorLength="3" numObsValue="1" numVectors="10">
+<Vector action="0" obsValue="0">9.10763 5.39352 0 </Vector>
+<Vector action="2" obsValue="0">10 -100 0 </Vector>
+<Vector action="1" obsValue="0">-100 10 0 </Vector>
+<Vector action="0" obsValue="0">-11.0533 9.69975 0 </Vector>
+<Vector action="0" obsValue="0">4.86603 9.39774 0 </Vector>
+<Vector action="0" obsValue="0">7.91658 9.08375 0 </Vector>
+<Vector action="0" obsValue="0">9.69975 -11.0531 0 </Vector>
+<Vector action="0" obsValue="0">9.39774 4.86604 0 </Vector>
+<Vector action="0" obsValue="0">9.08375 7.91658 0 </Vector>
+<Vector action="0" obsValue="0">8.69977 8.69977 0 </Vector>
+</AlphaVector> </Policy>

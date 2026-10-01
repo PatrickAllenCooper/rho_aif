@@ -1555,7 +1555,7 @@ The first complete structural draft reached the references on page 28, cutting b
 
 **Validation and artifacts.** Both masters compile with no overfull boxes, missing-character messages, unresolved references, or oversized floats in their final-pass logs. All 117 JAIR pages were rendered and inspected as contact sheets, with focused equation inspection in both formats by the reviewers. The full suite passes, 486 tests with 20 existing deprecation warnings. `verify_claims.py` reports no hard failures and 160 heuristic advisories, which are not treated as automatic scientific verification. The 39-file Overleaf ZIP includes 25 figures and 9 table inputs. It builds successfully after extraction into a fresh directory, and its PDF text matches the canonical JAIR PDF exactly. The six legacy-file hashes remain unchanged. No experiment or empirical CSV was altered.
 
-### 9.17.57 Four-provider JAIR referee panel on the concise manuscript (2026-09-28, in progress)
+### 9.17.57 Four-provider JAIR referee panel on the concise manuscript (2026-09-28 to 09-30, closed: four Accepts)
 
 Pat asked for the 9.17.50 review process to be repeated on the shortened manuscript, with a hard rule: the main body must not pass 40 pages, and moderate appendix growth is acceptable. The goal is general accepts across the board. The baseline is commit `9e6ffde`. The JAIR PDF has 117 pages, the main body ends on page 37, and the references begin on page 38. Referees are Gemini 3.1 Pro (active inference and theory), Fable 5.1 (decision theory and POMDP planning), Grok 4.7 (editor and clarity), and Sol 5.6 (statistics and reproducibility), all with full artifact access. Brief and reports: `reviews/final_panel_concise_2026-09-28/`.
 
@@ -1607,6 +1607,130 @@ The batch 6 audit (`audit_batch6.md`) found 13 defects, all fixed by `apply_batc
 The audit also found that the machine slept during the MCTS rerun's Tileworld rows, inflating their timings by up to 190 times. The manuscript cites none of them, but the rows are rerun under `caffeinate` so the committed file is clean. The rerun CSVs carry git stamp `9e6ffde`, which predates the uncommitted POMCP fix they were produced with. After the fix is committed, the stamps are rewritten to that commit, whose `pomcp.py` is byte-identical to the working tree that produced them.
 
 The Tileworld timing rows were rerun under `caffeinate`, reproducing every outcome column, and only their timing columns were spliced in (for example 4x4 POMCP(200) 5.6 ms, previously 1091 ms during sleep). The round was committed as `166718e`, then the 81 `git_sha` stamps in the sweep, tuning, compute-matched, and fresh-seed replication CSVs were rewritten from `9e6ffde` to `166718e`. File times confirm that `pomcp.py` and the replication script were last edited before those runs started, and the later sweep-runner edit only guards `--merge`. The AI-use statement's mention of simulated referee reviews is kept because it discloses tool use, not an error. 492 tests pass.
+
+### 9.17.58 Appendix trim, failed-experiment removal, and five-provider JAIR panel (2026-09-30, closed: five Accepts or minor-revision Accepts with fixes applied)
+
+**Request (Pat, 2026-09-30).** "Consider possibilities for trimming the appendix where possible. Remove historical comments regarding failed experiments, we haven't published anything yet, let's put our best foot forward. Once this is done please perform a set of accept/reject reviews for JAIR."
+
+**Method.** Four scouts proposed guarded replacements under `reviews/appendix_trim_2026-09-30/BRIEF.md`:
+- three by appendix range (A: proofs to misspecification, B: RockSample to methodology, C: extended evidence to checklist);
+- one for duplication across sections (X).
+
+They produced 158 proposals. Overlaps between scouts were resolved by keeping whole cross-location groups, or otherwise the larger cut (skipped ids in `skipped.txt`). `apply_trim.py` applied 123 edits to both masters. It refuses non-unique strings, overlapping spans, and dangling references, and it resolves `\input` table labels. A mechanical check found that the only numbers removed from the paper entirely were the Flat-MC values and one raw Testbed pair whose trade-off the main body states.
+
+**What went.**
+- Content the appendix stated two or three times, including restatements of main-body paragraphs. Examples: the frontier study, the MCTS-EFE and POMCP comparisons, misspecification, near-optimality, the nat-canonical result, Pareto readings, and the atlas.
+- Narration of failed or declined attempts: the SARSOP usage-matched comparison and POMCPOW, the workshop-history sentence in the dual-control section, and leftover "confirmed finding" and "legacy" wording.
+- The degenerate RockSample constrained reference, compressed to one sentence stating the limit the main body relies on.
+- The Flat-MC RockSample baseline. It was not POMCP, degenerated to the step cap on the larger instances, and was described as not comparable.
+
+**The Flat-MC removal at its producers.**
+- It is dropped from the `run_rocksample.py` roster.
+- Its rows are dropped from the five RockSample result and stats CSVs. They were regenerated from HEAD with lossless float parsing, so every kept row is byte-identical.
+- Holm is recomputed within (instance, metric) from the stored p-values by the new `apply_holm` and `--refresh-stats` (21 tests per family instead of 28). Exactly one verdict flips: RS[7,8] bad-sample count, Planning against Rollout only, p = 0.0034, now significant. It is uncited and unbolded.
+- `build_rocksample_tables.py` regenerated both tables without the rows and without "genuine".
+
+Every other agent reseeds the global stream per agent and seed and seeds each episode explicitly, so a rerun without Flat-MC reproduces the kept rows exactly. `tests/test_rocksample_holm.py` covers the family structure and reproduces the committed flags. README now lists the RockSample battery and its refresh path.
+
+**Audits.**
+- `audit_trim_1.md` covered A, B, and the producers: 10 findings, all fixed (`apply_audit1_fixes.py` plus producer edits). They included a section opening directly on a subsection, undefined underclaim and overclaim terms, a pointer covering one of three agents, a Tiger overstatement in discount sensitivity, "genuine POMCP" wording, and lossy CSV floats.
+- `audit_trim_2.md` covered C and X: no content lost from the paper as a whole, and 11 local defects fixed by `apply_audit2_fixes.py` (lost antecedents, a wrong table pointer, a dropped Holm qualifier, an overclaim).
+
+**Result.** JAIR 117 to 106 pages and LNCS 154 to 139, references still on page 38, and the main body unchanged. Zero overfull boxes and zero undefined references. `verify_claims` exits 0, no prose semicolons, and 495 tests pass.
+
+**Predeclared episode-matched SARSOP equivalence check (2026-09-30, written before the run).**
+
+*Trigger.* The hostile associate-editor referee (report R1) found a stream conflict on Diagnosis. On the held-out frontier stream, with per-episode seeding on seeds 7 to 11 at 100 episodes, w=1 trails unpenalized SARSOP by 1.008 (SE 0.181). On the canonical once-per-seed stream at n=20, the estimate is +0.146.
+
+*Exploratory diagnosis.* `/tmp/r1/diag.py`, not used for any claim. On the held-out stream, `EFEAgent` and Planning+IG at w=1 are identical, and so are `diagnosis.policy` and `diagnosis_lam0.policy`. So the conflict is not a policy mismatch.
+
+*Confirmatory protocol.*
+- Command: `run_tost_sarsop.py --episode-seeding`, writing to `results/results_tost_sarsop_episode_paired.csv`.
+- Environments: Tiger, Diagnosis, Bandit.
+- Seeds: the predeclared n=20 set {42, 123, 456, 789, 1024, 2000..2014}, 500 episodes per seed.
+- Seeding: per-episode reset seeds of seed * 10000 + episode, so both policies face matched episodes.
+- Margins: the existing ones (1.0, 1.0, 0.5).
+- Primary analysis: the paired TOST on per-seed differences at alpha 0.05. The unpaired TOST is reported beside it.
+- Reporting: whatever the result, it goes in the SARSOP appendix, and the main-body equivalence sentence is worded to match it.
+
+**Predeclared target-matched frontier reference (2026-09-30, written before any output).**
+
+*Trigger.* The hostile associate-editor referee's R2 and R3: at seven of the eleven distinct frontier budgets, the cap reference is unpenalized SARSOP, whose usage is below the target. There the reference is the unconstrained reward optimum, so the gap measures the cost of the target and the family's inefficiency together, with no way to tell them apart.
+
+*Feasibility probe.* `/tmp/r1/probe.py`, not used for any claim. Diagnosis at a penalty of -0.3, -0.6, and -0.9 solves in seconds, with usage rising to 13.2.
+
+*Protocol.* The producer is `experiments/run_frontier_target_reference.py`.
+- Subsidy grid: for each of Tiger, Diagnosis, and Bandit, add negative penalties lambda = -c * s, with s in {0.1, 0.2, ..., 0.9, 0.95, 0.98} and c the smallest observation cost. Net observation reward therefore stays negative.
+- Solving: SARSOP at precision 1e-3 and discount 0.999, the existing frontier settings.
+- Evaluation: on the held-out stream (seeds 7..11) and the fresh stream (seeds 12..21), 100 episodes per seed, with per-episode seeding.
+- Target reference at budget B: the equality-constrained mixture (`lp_mixture(..., equality=True)`) over the held-out means of all sampled points, both the existing penalties and the new subsidies. It is fitted on the held-out stream and frozen for the fresh stream.
+- Comparison: the paired per-seed gap of each committed family mixture against that reference, with nominal 95 percent t intervals.
+- Readout: the count of distinct budgets whose interval lies below zero, on each stream, overall and for the slack subset.
+- Lineage: abort unless the existing penalty policies reproduce their committed held-out per-seed rewards.
+- Interpretation: the reference is still a maximum over noisy sampled points, so selection bias remains.
+
+**Outcome of the episode-matched SARSOP check (verdict HOLD).** `results_tost_sarsop_episode_paired.csv` and its per-seed file.
+
+| Environment | Paired difference (EFE minus SARSOP) | Paired SE | Paired p_TOST | Unpaired p_TOST |
+|---|---|---|---|---|
+| Tiger | 0 (identical policies on all twenty seeds) | 0 | not applicable | not applicable |
+| Diagnosis | +0.1118 | 0.0899 | 3.2e-9 | 3.8e-5 |
+| Bandit | +0.0435 | 0.0313 | 4.6e-12 | 1.8e-8 |
+
+Equivalence holds on all three environments. The held-out Diagnosis value of -1.008 +- 0.181 is about 2.8 SE from +0.11 under that check's spread scaled to 100 episodes per seed, so it is reported as seed-set variation with that number attached.
+
+Main text (Section 6.6) and the SARSOP appendix were updated. The frontier appendix places the two numbers side by side.
+
+**Outcome of the target-matched frontier reference (verdict HOLD, with a post hoc qualification).** Inputs and outputs: `results_cpomdp_frontier_subsidy.csv` and `results_budget_frontier_target_reference.csv`. The lineage check passed for every committed penalty.
+- Subsidized usage: the larger subsidies raise held-out usage to at most 7.17 (Tiger), 16.58 (Diagnosis), and 11.59 (Bandit). The smaller ones leave it unchanged or slightly lower.
+- Counts: against the equality-constrained reference, 95 percent intervals exclude zero at 2 of 11 distinct budgets.
+  - Held-out: Diagnosis 9.53 and the Bandit gap budget.
+  - Fresh: Diagnosis 7.72 and the Bandit gap budget.
+  - Against the cap reference the count was 8 of 11.
+- Slack budgets: none of the seven shows a shortfall on either stream.
+- Binding budgets: at the four binding budgets the target reference coincides with the cap reference.
+- Post hoc qualification: `--usage-matched` was added after the auditor found that the Tiger target gaps equal B minus U. It refits the reference at each mixture's realized held-out usage and runs no episodes, writing `results_budget_frontier_target_reference_usage_matched.csv`.
+  - Every Tiger gap becomes 0.
+  - Diagnosis 9.53 (held-out) and 7.72 (fresh) still fall short.
+  - The Bandit gap-budget held-out interval reaches +0.001, while the fresh interval still excludes zero.
+  - The main text and abstract keep the predeclared readout at B, and the main text adds the qualifier.
+
+**Panel (`reviews/appendix_trim_2026-09-30/report_*.md`, brief `PANEL_BRIEF.md`).**
+
+| Referee | Lens | First report | Required changes | Final |
+|---|---|---|---|---|
+| Gemini 3.1 Pro | theory | Accept | none | Accept |
+| Sol (GPT 5.6) | statistics | Minor | report the bootstrap of bracket selection, already in the main body at line 567, withdrawn on re-read | Accept |
+| Grok 4.7 | editor | Minor | appendix floats escaping their sections, and the discussion pointer | Accept on re-review |
+| Opus 5.5 | hostile associate editor | Major revisions | R1 to R6 | Accept on re-review |
+| Fable 5.1 | POMDP planning | Minor | attribute the Diagnosis 9.53 shortfall | applied |
+
+- Grok's fixes: `placeins` with a `\FloatBarrier` before every appendix section, a lead sentence for Appendix B, a three-target pointer, and ten subsection headings title-cased.
+- Opus's required changes:
+  - R1: episode-matched TOST.
+  - R2 and R3: target-matched reference.
+  - R4: Epistemic-only outcome forced by units. Verified: the maximum one-step information gain is 0.39 bits on Tiger and 0.278 on the others, against costs of 1, 1, 0.5, and 1.
+  - R5: RS[11,11] scoped to the leaf rule.
+  - R6: success dips from w=0.5 to w=1 on Bandit and Tileworld.
+- Opus's optional items adopted: "bracket" changed to "run" for reward-tied weights, the Champion citation checked against the arXiv 2402.14460 abstract, the RockSample caption, and the docstring.
+- Opus's optional items declined: 3 (held-out usage is the method's out-of-sample promise), 6 (no main-body room, and the conclusion already names unit dependence), and 7 (scope).
+- Fable's first run stopped without writing a report. A narrower relaunch completed. Its optional "exact beliefs" point was declined, because the sentence contrasts MCTS-EFE with UCT, not with POMCP.
+
+**Audits.** `audit_panel_batch.md` found 15 defects, all fixed by `apply_audit3_fixes.py`, which also records the inline edits.
+- Stale column pointers in the main text, appendix, and README.
+- Subsidy usage overgeneralized.
+- The Diagnosis 9.53 gloss contradicting the held-out matched gap.
+- The Tiger rare-event sensitivity restored.
+- The Tiger target gaps shown to be usage error.
+- The target reference wrongly called a single policy.
+- "estimated" added to the unconstrained optimum.
+- Checklist archives and seeding, and `ENVIRONMENT.md`.
+- Producer stamps.
+- The ledger and CHANGELOG.
+- The episode-matching overstatement.
+- D12 (the CSV git stamp predating the producer) is fixed by committing the producer and restamping the two CSVs to that commit.
+
+**Result.** JAIR 111 pp (references p38), LNCS 142 pp, zero overfull, zero undefined, `verify_claims` exits 0, 495 tests pass.
 
 ### 9.17.7 Bibliography hallucination audit for JAIR submission (2026-08-27)
 

@@ -1,0 +1,336 @@
+{
+ "proposals": [
+  {
+   "id": "A01",
+   "category": "VERBOSE",
+   "old": "This covers every agent in the Tileworld battery (\\texttt{experiments/\\allowbreak run\\_\\allowbreak tileworld.py}). POMCP and MCTS-EFE were additionally run on Tileworld $6{\\times}6$ under their own protocols and are reported in Table~\\ref{tab:pomcp} and Appendices~\\ref{app:pomcp} and~\\ref{app:interpretation}. Posterior-vote and the PyMDP-AIF consistency agent are observe-then-commit agents and were not run on the spatial environments, so they are absent here rather than omitted.",
+   "new": "This covers every agent in the Tileworld battery (\\texttt{experiments/\\allowbreak run\\_\\allowbreak tileworld.py}). POMCP and MCTS-EFE results on this grid, run under their own protocols, are in Table~\\ref{tab:pomcp} and Appendix~\\ref{app:pomcp}. Posterior-vote and PyMDP-AIF were not run on the spatial environments.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 19,
+   "rationale": "Caption scope notes compressed. Keeps the producer, the pointer to the POMCP/MCTS-EFE results, and the reason two agents are absent. app:interpretation stays referenced elsewhere.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A02",
+   "category": "VERBOSE",
+   "old": "As with the $6{\\times}6$ table, this covers every agent in the Tileworld battery. Posterior-vote and PyMDP-AIF are observe-then-commit agents and were not run here. Bold marks EFE and any agent not significantly different from it at the seed level (Welch $p > 0.05$, uncorrected), not the single best value per column, so the higher success rates of the two heavily scanning tuned agents are unbolded by design. EFE's success rate here ($69.8\\%$) is nearly identical to the $69.4\\%$ reported in the independent spatial-scaling sweep (Figure~\\ref{fig:tw_scaling}). Likewise Planning's $1.8\\%$ here is close to that sweep's $1.4\\%$. The two figures come from separate experiment scripts with different per-seed episode counts, and the small residual gaps are consistent with ordinary seed-to-seed variation. Planning, untuned Info Gain, and Epistemic-only all fail to explore because a single noisy scan over 64 states barely narrows the belief, so all three commit immediately and tie exactly with Myopic, while EFE's epistemic bonus drives meaningful exploration.",
+   "new": "The agent set and bolding rule are those of the $6{\\times}6$ table, so the higher success rates of the two heavily scanning tuned agents are unbolded by design. The separate spatial-scaling sweep (Figure~\\ref{fig:tw_scaling}), with a different per-seed episode count, gives $69.4\\%$ for EFE and $1.4\\%$ for Planning. Planning, untuned Info Gain, and Epistemic-only take no scans and tie Myopic exactly (mechanism in Appendix~\\ref{app:tileworld_details}).",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 95,
+   "rationale": "Duplicates the 6x6 caption's agent-set and bolding notes and the tileworld_details appendix's mechanism for the zero-scan collapse. Keeps the cross-battery numbers (69.4 vs 69.8, 1.4 vs 1.8) so the main-text/appendix discrepancy stays reconciled.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A03",
+   "category": "DUPLICATE",
+   "old": " Both buy near-ceiling success by scanning almost twice as much as EFE, and both give up nearly all the return to do it. Every row here",
+   "new": " Every row here",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 23,
+   "rationale": "Restated in the paragraph below the table (99.5 percent success at +0.01 reward).",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A04",
+   "category": "DUPLICATE",
+   "old": "The success-tuned agents show the same effect more starkly. At their in-class tuned weights both drive reward to a near-zero $+0.01$ while reaching $99.5\\%$ success, giving up almost the entire return to buy the last few points of accuracy. This is the one environment where the posterior-vote baseline exactly ties the best agent, and on Bandit it posts the highest mean reward of any agent. Posterior-vote matches reward-only Planning bit-for-bit ($+0.48$, $89.8\\%$, $3.15$ observations), and both beat EFE on reward. The Epistemic-only ablation of Table~\\ref{tab:agents}, which sets $\\mathcal{G}(\\text{commit}) = 0$, also observes $3.15$ times and succeeds at $89.8\\%$ here, matching reward-only Planning exactly on both figures (\\texttt{results\\_\\allowbreak summary.csv}), because Testbed's observation is cheap enough that information gain alone clears its cost. On Tiger, Diagnosis, Bandit, and Tileworld it instead commits immediately at the chance rate (Appendix~\\ref{app:full_tables}). The testbed result is informative about the conditions under which $w{=}1$ is near-optimal. With symmetric $\\pm 1$ rewards a second observation at the post-first-observation belief has zero instrumental value, since the disconfirming outcome returns the belief exactly to the tie point, so its $0.1$ cost buys no reward at all. Proposition~\\ref{prop:nearopt}'s over-observation ceiling is correspondingly tight here, $w^*_{\\mathrm{over}} \\approx 1.01$ reward units per nat (Table~\\ref{tab:alpha_eta}), which sits below the implemented bit-denominated $w{=}1$ at $1.44$ reward units per nat. The reward-optimal weight therefore falls below the canonical one. In this regime, EFE assigns too much weight to information gain. Many real-world decision problems, including medical diagnosis, fault detection, and security screening, have asymmetric penalties ($|R^-|/|R^+| \\gg 1$), the regime in which the two-state interval analysis is most favorable to $w{=}1$. Within that regime, $w{=}1$ lies on the reward-maximizing plateau on Tiger and Diagnosis but is Pareto-dominated by $w{=}20$ on Tileworld (Section~\\ref{sec:pareto}).",
+   "new": "The success-tuned agents show the same effect more starkly, driving reward to $+0.01$ to reach $99.5\\%$ success. Posterior-vote matches reward-only Planning bit-for-bit ($+0.48$, $89.8\\%$, $3.15$ observations), and both beat EFE on reward. The Epistemic-only ablation of Table~\\ref{tab:agents}, which sets $\\mathcal{G}(\\text{commit}) = 0$, also matches reward-only Planning on observations and success here (\\texttt{results\\_\\allowbreak summary.csv}), because Testbed's observation is cheap enough that information gain alone clears its cost. On Tiger, Diagnosis, Bandit, and Tileworld it instead commits immediately at the chance rate (Appendix~\\ref{app:full_tables}). With symmetric $\\pm 1$ rewards a second observation at the post-first-observation belief has zero instrumental value, since the disconfirming outcome returns the belief exactly to the tie point, so its $0.1$ cost buys no reward. Proposition~\\ref{prop:nearopt}'s over-observation ceiling is correspondingly tight, $w^*_{\\mathrm{over}} \\approx 1.01$ reward units per nat (Table~\\ref{tab:alpha_eta}), below the implemented bit-denominated $w{=}1$ at $1.44$ reward units per nat, so in this regime EFE assigns too much weight to information gain. The high-asymmetry regime in which the interval analysis favors $w{=}1$ is discussed in Appendix~\\ref{app:interpretation}. Even there, $w{=}1$ lies on the reward-maximizing plateau on Tiger and Diagnosis but is Pareto-dominated by $w{=}20$ on Tileworld (Section~\\ref{sec:pareto}).",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 99,
+   "rationale": "The Bandit posterior-vote remark duplicates app:core_details, and the real-world asymmetry sentence duplicates app:interpretation. Repeated framing sentences are merged. Every number and the Tileworld Pareto-dominance negative stay.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A05",
+   "category": "DUPLICATE",
+   "old": "This appendix collects figures that support the main text but are not needed to follow it. They cover the decomposition of the EFE objective along a trajectory, how observation actions scale and how tests are selected, the reward-asymmetry sweep on Tiger, the evolution of the belief within an episode, and exploration efficiency.\n\n\n",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 52,
+   "rationale": "Lists the five subsection headings that follow directly. The section label is kept, and nothing references it.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A06",
+   "category": "DUPLICATE",
+   "old": "Figure~\\ref{fig:traj} decomposes EFE within Tiger episodes. The agent commits at the crossover where commit value exceeds observe value. As belief entropy falls, the transition from exploration to exploitation happens on its own, with no stopping rule.",
+   "new": "Figure~\\ref{fig:traj} decomposes EFE within Tiger episodes. The transition from exploration to commitment needs no separate stopping rule.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 19,
+   "rationale": "Restates the caption almost verbatim. Keeps the figure reference and the one point the caption does not make, that no stopping rule is used.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A07",
+   "category": "VERBOSE",
+   "old": "At $K{=}1$ all agents face the same single test, and EFE and Planning are bit-identical. At $K{=}2$ the two remain within seed-level sampling error of each other ($43.2\\%$ against $43.8\\%$ success), with the multi-test evidence at that scale carried by the main Diagnosis battery (Section~\\ref{sec:results}). The separation opens at $K{=}3$ ($96.0\\%$ against $82.8\\%$, $+13.2$pp), because selecting among competing tests is what the information-gain term contributes. The pattern is a threshold rather than a steady growth. Figure~\\ref{fig:extended_efe} shows the mechanism at work over a single extended episode. Tests become differentially informative as belief concentrates, since some partitions of the state space stop mattering once the condition is narrowed down while others remain decisive. The EFE agent changes its test selection as belief evolves. It optimizes a recursive pragmatic--epistemic score, so its chosen test need not maximize the one-step information gain plotted in panel (b). This episode illustrates adaptive test selection, with the aggregate comparison reported in Section~\\ref{sec:results}.",
+   "new": "EFE and Planning are bit-identical at $K{=}1$ and within seed-level sampling error at $K{=}2$ ($43.2\\%$ against $43.8\\%$ success, the multi-test evidence at that scale being carried by the main Diagnosis battery of Section~\\ref{sec:results}). They separate at $K{=}3$ ($96.0\\%$ against $82.8\\%$), a threshold rather than steady growth. Figure~\\ref{fig:extended_efe} shows the mechanism in one extended episode. Tests become differentially informative as belief concentrates, because some partitions stop mattering once the condition is narrowed down while others remain decisive, and the agent shifts its test selection accordingly. It optimizes a recursive pragmatic--epistemic score, so its chosen test need not maximize the one-step information gain plotted in panel (b).",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 51,
+   "rationale": "Removes restatements of the caption (+13.2pp) and a closing sentence that repeats the pointer to Section results. Keeps every number that the caption does not already carry.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A08",
+   "category": "DUPLICATE",
+   "old": "EFE and Planning adapt their listening as the penalty grows, with EFE rising from $2.7$ observations at $|R^-|{=}1$ to $5.8$ at $500$. The myopic InfoGain-Tuned agent at the fixed tuned weight listens $4.37$ times at every penalty, while Planning+IG at the same weight rises to $5.77$ at the two largest penalties. The myopic agent's fixed weight over-listens at low stakes, costing about $1.6$ reward against reward-only Planning at $|R^-|{=}1$, and its reward sits marginally ahead of EFE's only at the largest penalty, where it listens less ($4.37$ against $5.77$).}",
+   "new": "EFE and Planning adapt their listening as the penalty grows, while the myopic InfoGain-Tuned agent at its fixed tuned weight listens $4.37$ times at every penalty. The accompanying text gives the per-agent observation counts and reward gaps.}",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 52,
+   "rationale": "Every number in this caption is repeated in the paragraph directly below it (2.7, 5.8, 4.37, 5.77, 1.6, and the largest-penalty comparison). The paragraph keeps them all.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A09",
+   "category": "DUPLICATE",
+   "old": "Figure~\\ref{fig:tw_belief} follows belief within one EFE episode on the $6{\\times}6$ Tileworld. Figure~\\ref{fig:belief_heatmap} does the same on extended Diagnosis instances ($N{=}8$, $K{=}3$, accuracy $0.75$) long enough for the plotted episode to run from fourteen to thirty-two observation steps across the three agents. EFE narrows by partition.",
+   "new": "Figures~\\ref{fig:tw_belief} and~\\ref{fig:belief_heatmap} follow belief within single episodes on the $6{\\times}6$ Tileworld and on extended Diagnosis instances. EFE narrows by partition.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 25,
+   "rationale": "The instance parameters and step counts are in the fig:belief_heatmap caption.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A10",
+   "category": "DUPLICATE",
+   "old": "Inspection additionally pays $-0.5$ per move, gives $+2$ for a correct nominal call, and $-5$ for a false alarm, with fault prior $0.3$.",
+   "new": "Inspection also gives $+2$ for a correct nominal call and $-5$ for a false alarm, with fault prior $0.3$.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 4,
+   "rationale": "The per-move cost is already in the continued specifications table's caption.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A11",
+   "category": "VERBOSE",
+   "old": "At the other two sizes no pairwise difference survives correction at 5 seeds. Extra steps devoted to exploratory detours incur the per-move cost without the sharp information returns seen when tests can be chosen explicitly, and at no size does an epistemic agent significantly beat the myopic rule. This is not a failure of $w{=}1$ so much as a structural regime change relative to our main benchmarks. NavEFE is competitive with one-step NavInfoGain at $7{\\times}7$, with nominally higher mean reward ($-40.86$ against $-44.28$, seed-level $p{=}0.040$ uncorrected, not significant after Holm) and comparable success. This is evidence that recursive epistemic valuation is not harmful once the grid is large enough that myopic information gain is already costly. The contrast with Tileworld (Figure~\\ref{fig:tw_scaling}) underscores the multiple-observation-actions condition of Section~\\ref{sec:discussion}.",
+   "new": "At the other two sizes no pairwise difference survives correction at 5 seeds, so at no size does an epistemic agent significantly beat the myopic rule. Exploratory detours pay the per-move cost without the sharp information returns available when tests can be chosen explicitly. At $7{\\times}7$, NavEFE's mean reward is nominally above one-step NavInfoGain's ($-40.86$ against $-44.28$, seed-level $p{=}0.040$ uncorrected, not significant after Holm), with comparable success. The contrast with Tileworld (Figure~\\ref{fig:tw_scaling}) supports the multiple-observation-actions condition of Section~\\ref{sec:discussion}.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 49,
+   "rationale": "Removes an interpretive reading of a result that is not significant after Holm ('evidence that recursive epistemic valuation is not harmful') and the defensive 'not a failure of w=1' framing. The negative finding and all numbers stay.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A12",
+   "category": "VERBOSE",
+   "old": "We check our EFE computation against the \\texttt{pymdp} library \\citep{heins2022} by wrapping pymdp's standard Agent class. This comparison checks consistency between implementations. It does not certify numerical equivalence, so the evidence below is stated in terms of the behaviors actually compared. The quantitative form of the check is a deployed comparison on the two-state testbed. Run as an ordinary observe-then-commit agent over the canonical protocol, \\texttt{pymdp}-AIF returns $3.15$ observations, $89.8\\%$ success, and $+0.480$ reward, bit-identical to reward-only Planning on all three metrics (\\texttt{results\\_\\allowbreak summary.csv}). The meaningful comparator here is our own myopic Info Gain agent at $w{=}1$, which \\texttt{results\\_\\allowbreak summary.csv} records at the same $3.15$ observations, $89.8\\%$ success, and $+0.480$ reward. Both agents evaluate single-step policies, and by Proposition~\\ref{prop:equivalence} the myopic $w{=}1$ agent is the myopic EFE agent. This is therefore a like-for-like agreement. Our $H{=}4$ recursive EFE agent legitimately differs on this environment ($5.50$ observations), through planning depth rather than through any disagreement about the epistemic term. The check is therefore evidence that the two myopic implementations agree, not that recursive EFE matches pymdp. It remains weak evidence, since on this environment the myopic $w{=}1$ agent is itself bit-identical to reward-only Planning, so the comparison cannot separate a correctly implemented epistemic term from its absence.",
+   "new": "We check our EFE computation against the \\texttt{pymdp} library \\citep{heins2022} by wrapping pymdp's standard Agent class. The check tests consistency between implementations, not numerical equivalence. Run as an observe-then-commit agent on the two-state testbed under the canonical protocol, \\texttt{pymdp}-AIF returns $3.15$ observations, $89.8\\%$ success, and $+0.480$ reward. Our myopic Info Gain agent at $w{=}1$, which by Proposition~\\ref{prop:equivalence} is the myopic EFE agent, returns the same three values (\\texttt{results\\_\\allowbreak summary.csv}), so the two single-step implementations agree. Our $H{=}4$ recursive EFE agent differs on this environment ($5.50$ observations) through planning depth, so the check says nothing about recursive EFE. It is also weak evidence, because on this environment the myopic $w{=}1$ agent and \\texttt{pymdp}-AIF are both bit-identical to reward-only Planning, so the comparison cannot separate a correctly implemented epistemic term from its absence.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 75,
+   "rationale": "Same numbers and the same three limitations (consistency not equivalence, myopic only, cannot distinguish the epistemic term from its absence) in about half the words. The triple statement of 3.15/89.8/+0.480 becomes one.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A13",
+   "category": "VERBOSE",
+   "old": " These exceptions arise because in each case those rows are accumulated and corrected together before the table is written.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 19,
+   "rationale": "Tautological rationale. The preceding sentence already says each exception's family is corrected jointly.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A14",
+   "category": "DUPLICATE",
+   "old": "The reward table shows that EFE vs.\\ Planning is negligible to none on Tiger, Diagnosis, and Bandit (exactly zero on Tiger, where EFE and Planning tie). Once both agents take enough informative actions, mean returns are similar, even though success rates differ. The success-rate rows isolate the axis where EFE improves most relative to Planning on Diagnosis and Bandit. Against over-exploring tuned alternatives (InfoGain-Tuned, Planning+IG), EFE shows medium reward effects on the Testbed ($d = 0.69$) and small effects on Bandit ($d \\approx 0.36$-$0.37$), reflecting the cost of over-exploration at Bandit's success-tuned weight of $w{=}20$.",
+   "new": "On reward, EFE against Planning is negligible on Tiger, Diagnosis, and Bandit (exactly zero on Tiger, where the two tie), while on success the effect is small on Testbed, Diagnosis, and Bandit. Against the over-exploring success-tuned agents, EFE shows a medium reward effect on Testbed ($d{=}0.69$) and small effects on Bandit ($d \\approx 0.36$--$0.37$). Appendix~\\ref{app:core_details} interprets these magnitudes.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 37,
+   "rationale": "The interpretation of these effect sizes is given at greater length in app:core_details, so this keeps only the summary and a pointer. It also fixes a hyphen that should be an en dash in a numeric range.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A15",
+   "category": "DUPLICATE",
+   "old": " This is the same trend reported for Bandit in Appendix~\\ref{app:interpretation}, where a one-step reading would lead one to expect the least from $w{=}1$ yet multi-step EFE performs well in practice. The two-state threshold formula does not apply to Bandit, so no threshold is computed for it.",
+   "new": " Appendix~\\ref{app:interpretation} relates this trend to Bandit.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 40,
+   "rationale": "app:interpretation states the Bandit link and the fact that the formula does not apply to Bandit at full length.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A16",
+   "category": "VERBOSE",
+   "old": "\\paragraph{Agreement across planning horizons.} Figure~\\ref{fig:nearopt_horizon} stratifies only by reward asymmetry $\\alpha$. Table~\\ref{tab:horizon-map} breaks the same 100 environments down by all three sampled regime axes and adds a direct per-environment comparison of the $H{=}1$ classification against $H{\\geq}2$. Eight of the nine regime strata show the same qualitative pattern, with near-optimality rarer at $H{=}1$ than at $H{=}3$. The effect is sharpest for high-informativeness observations ($p \\geq 0.85$, rising $17\\% \\to 90\\%$). The exception is the low-informativeness stratum ($p < 0.65$, $25$ environments), which is flat and mildly non-monotone at $80\\% \\to 84\\% \\to 80\\%$, since weak observations leave little for a deeper horizon to exploit. Low reward asymmetry rises but less sharply ($\\alpha < 3$, from $71\\%$ at $H{=}1$ to $86\\%$ by $H{=}2$, holding there through $H{=}3$, on 7 environments). The per-environment comparison uses the producing script's definition of agreement. An environment agrees when $w{=}1$ is near-optimal at $H{=}1$ and at some deeper horizon, or at neither. By that definition the two horizons agree on 44 of the 100 environments. In 30 the $H{=}1$ check passes and near-optimality recurs at some deeper horizon. In 26 of those 30 it holds at every deeper horizon tested. In 14 the check fails and never recovers. The remaining 56 environments fail the $H{=}1$ check yet turn out near-optimal at some deeper horizon (myopic underclaiming, the safe direction, a missed opportunity rather than a risk). On this random sample, zero environments show the opposite pattern (myopic overclaiming, where $H{=}1$ predicts near-optimality but no deeper horizon delivers it). Four of the 30 passers fail at exactly one of the two deeper horizons (environments 2, 42, 63, and 95 in the committed CSV). A practitioner validating $w{=}1$ with a cheap $H{=}1$ check would therefore have been misled at one specific deeper horizon in 4 of 30 cases, and in no case toward a weight that fails at every deeper horizon. This is a property of the observed sample, not a proven guarantee. We report it as an empirical boundary map over one random family of two-state environments, not an adaptive-submodularity result. We make no claim that the $H{=}1$ check is monotone or that overclaiming is impossible in general, only that it did not occur here (the per-environment data is in \\texttt{results/\\allowbreak results\\_\\allowbreak nearopt\\_\\allowbreak horizon.csv}, from which \\texttt{experiments/\\allowbreak build\\_\\allowbreak horizon\\_\\allowbreak map.py} derives the aggregate agreement counts in \\texttt{results/\\allowbreak results\\_\\allowbreak horizon\\_\\allowbreak map\\_\\allowbreak agreement.csv}).",
+   "new": "\\paragraph{Agreement across planning horizons.} Table~\\ref{tab:horizon-map} breaks the same 100 environments down by all three sampled regime axes and compares the $H{=}1$ classification with $H{\\geq}2$ per environment. Eight of the nine regime strata show near-optimality rarer at $H{=}1$ than at $H{=}3$, most sharply for high-informativeness observations ($p \\geq 0.85$, $17\\% \\to 90\\%$). The exception is the low-informativeness stratum ($p < 0.65$, $25$ environments), flat and mildly non-monotone at $80\\% \\to 84\\% \\to 80\\%$, since weak observations leave little for a deeper horizon to exploit. Low reward asymmetry ($\\alpha < 3$, 7 environments) rises less sharply, from $71\\%$ at $H{=}1$ to $86\\%$ at both $H{=}2$ and $H{=}3$. Following the producing script, an environment agrees when $w{=}1$ is near-optimal at $H{=}1$ and at some deeper horizon, or at neither, which holds for 44 of the 100. In 30 the $H{=}1$ check passes and near-optimality recurs deeper, at every deeper horizon in 26 of them and at exactly one of the two in the other four (environments 2, 42, 63, and 95 in the committed CSV). In 14 the check fails and never recovers. The remaining 56 fail at $H{=}1$ yet are near-optimal at some deeper horizon, a missed opportunity rather than a risk. No environment in this sample shows the opposite pattern, where $H{=}1$ predicts near-optimality and no deeper horizon delivers it. This is an empirical boundary map over one random family of two-state environments. It is not an adaptive-submodularity result, and it does not show that the $H{=}1$ check is monotone or that such overclaiming is impossible in general (per-environment data in \\texttt{results/\\allowbreak results\\_\\allowbreak nearopt\\_\\allowbreak horizon.csv}, aggregated by \\texttt{experiments/\\allowbreak build\\_\\allowbreak horizon\\_\\allowbreak map.py} into \\texttt{results/\\allowbreak results\\_\\allowbreak horizon\\_\\allowbreak map\\_\\allowbreak agreement.csv}).",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 117,
+   "rationale": "Every count (44, 30, 26, 4, 14, 56, 0), the environment IDs, the stratum percentages, and the non-guarantee disclaimer stay. The practitioner restatement of 4 of 30 and the three overlapping disclaimers become one.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A17",
+   "category": "VERBOSE",
+   "old": "We test EFE and Planning agents' sensitivity to discounting by sweeping $\\gamma \\in \\{0.9, 0.95, 0.99, 1.0\\}$ across three environments, at the canonical 5-seed protocol. Including Planning at each $\\gamma$ enables comparison of the relative gap between agents under discounting.",
+   "new": "We sweep $\\gamma \\in \\{0.9, 0.95, 0.99, 1.0\\}$ for EFE and same-horizon Planning on three environments under the canonical 5-seed protocol, so that the gap between the two agents can be read at each discount.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 5,
+   "rationale": "Tighter wording with the same content.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A18",
+   "category": "FAILED",
+   "old": "On Diagnosis and Bandit, heavy discounting ($\\gamma{=}0.9$--$0.95$) renders both agents effectively myopic, erasing EFE's advantage entirely. At $\\gamma{=}0.9$--$0.95$, EFE's epistemic term cannot propagate value through future observations because discounting truncates the effective horizon below the number of observations needed for disambiguation. Both agents observe the same number of times on Bandit (${\\sim}2$) and Diagnosis (${\\sim}6$) at these discount levels, and the residual success gaps are not statistically significant (Diagnosis diff $\\approx 0.04$pp, $p{=}0.96$, Bandit diff $\\approx -0.16$pp, $p{=}0.95$, Table~\\ref{tab:discount}). The transition between $\\gamma{=}0.95$ and $\\gamma{=}0.99$ is sharp and, with 5-seed replication, clearly significant. At $\\gamma{=}0.99$, EFE's success gap over Planning jumps to $+7.9$ pp on Diagnosis and $+22.4$ pp on Bandit (both $p<10^{-4}$), matching the undiscounted pattern ($+8.6$ pp Diagnosis, $+17.0$ pp Bandit at $\\gamma{=}1.0$, both $p<10^{-4}$). This confirms that EFE's advantage depends on the discount factor preserving a sufficient effective horizon for recursive epistemic evaluation. In practical terms, on the multi-observation environments Diagnosis and Bandit, EFE differentiates from reward-only planning on success at the two largest discount factors tested, $\\gamma \\in \\{0.99, 1.0\\}$, and not at $\\gamma \\in \\{0.90, 0.95\\}$, so the transition lies between $0.95$ and $0.99$ on this grid, and the 5-seed replication makes the significance of that transition a confirmed finding rather than a single-seed point estimate.",
+   "new": "On Diagnosis and Bandit, heavy discounting ($\\gamma{=}0.9$--$0.95$) renders both agents effectively myopic and erases EFE's advantage, because discounting truncates the effective horizon below the number of observations needed for disambiguation. Both agents observe the same number of times on Bandit (${\\sim}2$) and Diagnosis (${\\sim}6$) at these discount levels, and the residual success gaps are not statistically significant (Diagnosis diff $\\approx 0.04$pp, $p{=}0.96$, Bandit diff $\\approx -0.16$pp, $p{=}0.95$, Table~\\ref{tab:discount}). The transition between $\\gamma{=}0.95$ and $\\gamma{=}0.99$ is sharp, and the gaps at $\\gamma \\geq 0.99$ are significant after Holm correction. At $\\gamma{=}0.99$, EFE's success gap over Planning jumps to $+7.9$ pp on Diagnosis and $+22.4$ pp on Bandit (both $p<10^{-4}$), matching the undiscounted pattern ($+8.6$ pp Diagnosis, $+17.0$ pp Bandit at $\\gamma{=}1.0$, both $p<10^{-4}$). On this grid, EFE's advantage therefore requires a discount that preserves a sufficient effective horizon for recursive epistemic evaluation.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 70,
+   "rationale": "Removes history narration ('with 5-seed replication', 'a confirmed finding rather than a single-seed point estimate', which alludes to a superseded single-seed sweep), the overclaiming 'This confirms', and a closing 'In practical terms' sentence that restates the paragraph and app:interpretation. The significance is now tied to the Holm correction the table actually marks.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A19",
+   "category": "VERBOSE",
+   "old": "On Tiger, success falls at most $2.7$pp below the calibrated $99.6\\%$ for both EFE and Planning across the tested range of $-0.15$ to $+0.10$. The degradation pattern is asymmetric. For EFE and Planning, negative mismatch (underestimating accuracy, including exact calibration) leaves observation count and success unchanged (4.23 observations, 99.6\\% success at every level from $-0.15$ to $0.00$), whereas positive mismatch (overestimating accuracy) sharply reduces observation count (to 2.65) and lowers success to 96.9\\%. EFE and Planning give bit-identical rows at every mismatch level tested on Tiger (Table~\\ref{tab:misspec-tiger}), not merely statistically indistinguishable ones. With a single observation action, the belief-update dynamics driven by the agent's believed accuracy determine when committing becomes attractive, and information gain has no separate observation action to redirect toward. There is therefore no EFE-specific buffering effect to report here. This finding is specific to the tested environment and cannot be attributed to the epistemic term. The same asymmetric degradation appears in reward-only Planning, which has no information-gain term at all.",
+   "new": "On Tiger, success falls at most $2.7$pp below the calibrated $99.6\\%$ across the tested range of $-0.15$ to $+0.10$, and the pattern is asymmetric. Underestimating accuracy or calibrating exactly leaves behavior unchanged (4.23 observations, 99.6\\% success at every level from $-0.15$ to $0.00$), whereas overestimating it cuts observations to 2.65 and success to 96.9\\%. EFE and Planning give bit-identical rows at every tested level (Table~\\ref{tab:misspec-tiger}), not merely statistically indistinguishable ones. With a single observation action, the believed accuracy alone determines when committing becomes attractive, and information gain has no separate observation action to redirect toward. The study therefore shows no EFE-specific buffering on Tiger, since reward-only Planning, with no information-gain term, degrades identically.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 50,
+   "rationale": "Four sentences saying there is no EFE-specific effect become one. It also removes the confusing phrase 'negative mismatch (..., including exact calibration)'.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A20",
+   "category": "VERBOSE",
+   "old": "This is not a ``well-calibrated agent tests most, both directions of error reduce testing'' pattern. Perfect calibration ($\\pm 0.00$) ties with two levels of underestimation rather than uniquely maximizing testing, and only the most extreme underestimate tested ($-0.15$) drops to the low-testing level, matching every overestimate we tested. Overestimating accuracy (the agent believes tests are more informative than they truly are) makes each test look more decisive than it is, so the agent commits prematurely on insufficient evidence and lands in the low-testing, lower-success regime at every overestimate level tested. Underestimating accuracy makes each test look less informative than it is, but only past a threshold. Mild underestimation ($-0.05$, $-0.10$) does not visibly change behavior from perfect calibration, while severe underestimation ($-0.15$) triggers the same reduced-testing response as overestimation, producing a similar-looking success rate (88.7\\%) that is, as before, driven by fewer rather than more observations. Reward-only Planning",
+   "new": "Calibration therefore ties with two levels of underestimation rather than uniquely maximizing testing. Overestimating accuracy makes each test look more decisive than it is, so the agent commits prematurely on insufficient evidence at every overestimate tested. Mild underestimation ($-0.05$, $-0.10$) leaves behavior unchanged, while the most severe underestimate tested ($-0.15$) triggers the same reduced-testing response as overestimation. Reward-only Planning",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 89,
+   "rationale": "Restates the two-level membership already listed in the preceding two sentences. All mismatch levels and the observation and success values stay in that text and in the table.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "A21",
+   "category": "VERBOSE",
+   "old": "\\paragraph{Implications for learned models.} These results suggest that EFE-based agents can tolerate moderate model errors without catastrophic failure. In practice, observation models learned from data will have estimation error. The graceful degradation observed here indicates that approximate models suffice for effective EFE-driven information gathering, provided the model does not systematically overestimate sensor informativeness.",
+   "new": "\\paragraph{Implications for learned models.} Observation models learned from data will carry estimation error. On these two environments, mismatches up to $0.15$ change behavior in discrete steps without catastrophic failure, overestimating sensor informativeness is the more harmful direction, and reward-only Planning shows comparable sensitivity.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 10,
+   "rationale": "Removes the generalization 'approximate models suffice for effective EFE-driven information gathering', which two environments cannot support and which credits EFE for a robustness that Planning shares. What was measured is stated plainly.",
+   "labels_removed": [],
+   "refs_repointed": []
+  }
+ ],
+ "producer_changes": [],
+ "considered_and_kept": [
+  {
+   "passage": "Proof of Proposition~\\ref{prop:equivalence}",
+   "reason": "Load-bearing proof and already compact."
+  },
+  {
+   "passage": "Tiger/Diagnosis/Bandit/Tileworld full tables",
+   "reason": "These carry the full agent set, including Epistemic-only and Posterior-vote rows, which the main body cites. No row is superseded."
+  },
+  {
+   "passage": "Tileworld 6x6 caption: 'Epistemic-only commits immediately (0 scans) rather than exhausting the step cap'",
+   "reason": "Explains a result that could look like a bug, so it is kept."
+  },
+  {
+   "passage": "Scaling Analysis section (Diagnosis N=2..16 at H=2)",
+   "reason": "Nothing references this section, but it is the genuine negative finding behind the main body's claim that state-space size alone does not predict an advantage (EFE ties Planning at every N at H=2). Its prose is already compact and adds seed-level SEs that the table lacks. Suggest a \\ref from the main body only if that is wanted."
+  },
+  {
+   "passage": "Navigation Results section",
+   "reason": "A negative case that the main body cites (no epistemic agent beats the greedy mover). Only the interpretive spin is trimmed, in A11."
+  },
+  {
+   "passage": "PyMDP Consistency Check (weak-evidence disclosure)",
+   "reason": "The main body cites the check. Its weakness (it cannot separate the epistemic term from its absence) is kept verbatim in substance and only shortened, in A12."
+  },
+  {
+   "passage": "Supplementary Statistics: equal-variance pooled test, family sizes 108/84/18, excluded undefined tests 107/83, RockSample within-metric rule, discount and MCTS exceptions",
+   "reason": "Statistical protocol statements, which the brief does not allow to be removed."
+  },
+  {
+   "passage": "Cohen's d table (tab:effect_sizes)",
+   "reason": "app:core_details cites it. It reports pooled episode-level d, not seed-level d, so it complies with the statistics protocol."
+  },
+  {
+   "passage": "Near-optimality horizons: 'This is a deliberate deviation from the canonical five-seed protocol'",
+   "reason": "A protocol deviation disclosure, so it is kept."
+  },
+  {
+   "passage": "Discount table caption: 'lighter than Table~\\ref{tab:main}'s 5,000-episode battery, so small numeric differences ... are expected'",
+   "reason": "A disclosure that reconciles the numbers with the main table."
+  },
+  {
+   "passage": "Environment specs: 'Its per-instance tree depth was fixed a priori before the reported runs'",
+   "reason": "An analysis-design disclosure."
+  },
+  {
+   "passage": "Misspec Tiger caption: 'EFE and Planning rows are bit-identical at every level tested, not merely close, so no significance test applies'",
+   "reason": "A statistical protocol statement."
+  },
+  {
+   "passage": "Exploration Efficiency caption: Planning+IG uses the transferred myopic success-tuned weight, 'not the own-class tuning protocol'",
+   "reason": "A tuning-protocol disclosure, which is w*_succ provenance."
+  },
+  {
+   "passage": "Obs-scaling caption: 'InfoGain-Tuned is not part of this battery'",
+   "reason": "Explains a legend difference from Figure sweep that a referee would otherwise query."
+  }
+ ]
+}

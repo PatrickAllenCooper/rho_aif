@@ -53,15 +53,23 @@ DEFAULT_POMDPSOL = _ROOT / "tools" / "sarsop" / "src" / "pomdpsol"
 ENV_MARGINS = {"Tiger": 1.0, "Diagnosis": 1.0, "Bandit": 0.5}
 
 
-def per_seed_rewards(make_agent, env, seeds: Sequence[int], num_episodes: int) -> List[float]:
+def per_seed_rewards(make_agent, env, seeds: Sequence[int], num_episodes: int,
+                     episode_seeding: bool = False) -> List[float]:
+    """Per-seed mean reward. With episode_seeding, episode ep of seed s resets the
+    environment at s * 10000 + ep, so two policies face the same hidden states and the
+    same observation draws for as long as their actions agree."""
     from rho_aif.benchmark import run_otc_episode
 
     means = []
     for seed in seeds:
         np.random.seed(int(seed))
-        env.reset(seed=int(seed))
         agent = make_agent()
-        rewards = [run_otc_episode(agent, env)["total_reward"] for _ in range(num_episodes)]
+        if episode_seeding:
+            rewards = [run_otc_episode(agent, env, seed=int(seed) * 10_000 + ep)["total_reward"]
+                       for ep in range(num_episodes)]
+        else:
+            env.reset(seed=int(seed))
+            rewards = [run_otc_episode(agent, env)["total_reward"] for _ in range(num_episodes)]
         means.append(float(np.mean(rewards)))
     return means
 
@@ -74,6 +82,9 @@ def main() -> None:
     p.add_argument("--episodes", type=int, default=500)
     p.add_argument("--alpha", type=float, default=0.05)
     p.add_argument("--envs", nargs="*", default=["Tiger", "Diagnosis", "Bandit"])
+    p.add_argument("--episode-seeding", action="store_true",
+                   help="Seed every episode (seed * 10000 + episode) so both policies are "
+                        "evaluated on matched episodes.")
     p.add_argument(
         "--out", default=None,
         help="Output CSV path. Defaults to results/results_tost_sarsop.csv, the canonical "
@@ -101,13 +112,15 @@ def main() -> None:
         alphas = parse_policy(policy_path)
 
         sarsop_means = per_seed_rewards(
-            lambda: AlphaVectorAgent(obs_models, config, alphas), env, args.seeds, args.episodes
+            lambda: AlphaVectorAgent(obs_models, config, alphas), env, args.seeds, args.episodes,
+            episode_seeding=args.episode_seeding,
         )
         efe_means = per_seed_rewards(
             lambda: make_otc_agent("efe", env, planning_horizon=cfg.planning_horizon),
             env,
             args.seeds,
             args.episodes,
+            episode_seeding=args.episode_seeding,
         )
 
         margin = ENV_MARGINS[name]
@@ -123,6 +136,7 @@ def main() -> None:
                 "margin": margin,
                 "alpha": args.alpha,
                 "n_seeds": len(args.seeds),
+                "episode_seeding": bool(args.episode_seeding),
                 "episodes_per_seed": args.episodes,
                 "mean_EFE": float(np.mean(efe_means)),
                 "mean_SARSOP": float(np.mean(sarsop_means)),

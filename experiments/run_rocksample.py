@@ -21,7 +21,6 @@ from rho_aif.agents.rocksample_agents import (
     RockSampleGreedyAgent,
     RockSampleEFEAgent,
     RockSamplePlanningIGAgent,
-    RockSampleFlatMCAgent,
     RockSampleTreeSearchAgent,
 )
 from rho_aif.stats import cohens_d, holm_bonferroni, seed_level_ttest, seed_means
@@ -136,7 +135,6 @@ def run_rocksample_experiment(
     # and ignore it.
     agent_configs = [
         ("Greedy", lambda seed: RockSampleGreedyAgent(env)),
-        ("Flat-MC (1000)", lambda seed: RockSampleFlatMCAgent(env, num_simulations=1000)),
         (f"Planning (d={td})",
          lambda seed: RockSampleTreeSearchAgent(env, info_weight=0.0, max_depth=td)),
         (f"Plan+IG w=5 (d={td})",
@@ -284,19 +282,33 @@ def compute_rocksample_stats(all_episode_results, config_name):
                     "cohens_d_seed_level": seed_out["cohens_d"],
                 })
 
-    # Holm-Bonferroni is applied within metric, not pooled across metrics.
-    # Pooling Reward and Bad into one family made the correction stricter, and
-    # since the table's bolding rule treats a NON-rejection as a tie with the
-    # best row, a stricter family was the lenient direction for bolding. Each
-    # metric's pairwise comparisons form one family of C(A,2) tests.
-    for metric_name in {r["metric"] for r in rows}:
-        idx = [i for i, r in enumerate(rows) if r["metric"] == metric_name]
-        for i, sig in zip(idx, holm_bonferroni([rows[i]["p_pooled"] for i in idx])):
-            rows[i]["significant_hb_pooled"] = sig
-        for i, sig in zip(idx, holm_bonferroni([rows[i]["p_seed_level"] for i in idx])):
-            rows[i]["significant_hb_seed_level"] = sig
+    return apply_holm(pd.DataFrame(rows))
 
-    return pd.DataFrame(rows)
+
+def apply_holm(df):
+    """Holm-Bonferroni within (instance, metric), over every pairwise test
+    in that family.
+
+    Holm is applied within metric, not pooled across metrics. Pooling Reward
+    and Bad into one family made the correction stricter, and since the
+    table's bolding rule treats a NON-rejection as a tie with the best row, a
+    stricter family was the lenient direction for bolding. Each metric's
+    pairwise comparisons form one family of C(A,2) tests."""
+    df = df.copy()
+    for _, idx in df.groupby(["instance", "metric"], sort=False).groups.items():
+        for col, out in (("p_pooled", "significant_hb_pooled"),
+                         ("p_seed_level", "significant_hb_seed_level")):
+            df.loc[idx, out] = holm_bonferroni(df.loc[idx, col].tolist())
+    return df
+
+
+def refresh_stats(csv_paths):
+    """Recompute the Holm columns of committed *_stats.csv files from their
+    stored p-values. Runs no episodes."""
+    for path in csv_paths:
+        df = pd.read_csv(path, float_precision="round_trip")
+        apply_holm(df).to_csv(path, index=False)
+        print(f"refreshed Holm columns in {path}")
 
 
 # The paper's declared per-instance protocol: episodes per seed and seed set.
@@ -354,6 +366,9 @@ if __name__ == "__main__":
     import sys
 
     cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
+    if cmd == "--refresh-stats":
+        refresh_stats(sys.argv[2:])
+        sys.exit(0)
     with_pomcp = "--no-pomcp" not in sys.argv
     extra = headline_extra_agents() if with_pomcp else []
     if cmd == "depth-check":

@@ -1,0 +1,593 @@
+{
+ "proposals": [
+  {
+   "id": "X01",
+   "category": "DUPLICATE",
+   "old": "Planning+IG at $w{=}5$ and $w{=}10$ lets us check whether $w{=}1$ leaves performance on the table when a higher weight is allowed. On RS[5,3], $w{=}5$ is not significantly different from EFE ($w{=}1$) ($+16.41$ vs.\\ $+16.47$, seed-level Welch $p{=}0.74$), while $w{=}10$ is significantly worse ($+14.60$ vs.\\ $+16.47$, $p<10^{-8}$). Nothing is therefore gained by tuning beyond $w{=}1$ here, and pushing the weight too far past it actively hurts. On RS[7,4], EFE ($w{=}1$) outright beats both tuned weights ($+15.96$ vs.\\ $+14.56$ and $+14.27$, both $p<10^{-5}$). More checking here (Plan+IG's higher check counts) does buy more good rocks sampled, but not enough to pay for the extra steps it costs, so the untuned weight is better calibrated on this instance. On RS[7,8], the pattern is neither monotone in the weight nor a simple case of ``more checking helps''. $w{=}5$ (+23.76) and EFE (+21.85) are not significantly different ($p{=}0.09$ uncorrected), while $w{=}10$ (+20.55) is significantly worse than $w{=}5$ ($p{=}0.003$, significant under the per-metric Holm family). The intermediate tuned weight is therefore at worst tied with the untuned $w{=}1$ and reliably ahead of the more aggressive $w{=}10$. That heavier weight's extra checking (57.47 steps, 18.26 checks per episode, versus $w{=}5$'s 40.27/14.19) buys $0.54$ more good rocks per episode but spends $17.2$ more steps at the $-0.5$ per-step move cost to get them. The honest summary is that $w{=}1$ is not uniformly best on RockSample, and neither is any fixed direction of ``tune the weight higher''. $w{=}1$ leads the weighted family outright on RS[7,4] and is never significantly beaten within that family on RS[5,3] and RS[7,8]. Outside the family the picture changes. On RS[7,8] the standalone approach-then-check heuristic beats $w{=}1$ decisively ($+28.33$ vs.\\ $+21.85$, $p{=}4.6{\\times}10^{-4}$, significant after correction). POMCP at its frozen configuration trails EFE and both tuned Plan+IG weights significantly on the three smaller instances, beats reward-only Planning on RS[7,8] ($+15.07$ vs.\\ $+12.31$, $p{=}0.002$), and sits within sampling error of the entire family on RS[11,11] (seed-level Welch $p \\geq 0.36$, none significant after correction). The weight sweep bounds what tuning $w$ can buy, not what this instance admits.",
+   "new": "Planning+IG at $w{=}5$ and $w{=}10$ lets us check whether $w{=}1$ leaves performance on the table when a higher weight is allowed. Appendix~\\ref{app:rocksample_main_details} gives the per-instance comparisons of EFE with $w{=}5$, $w{=}10$, and the standalone heuristic, with their significance tests. Two further details come from the extended table. On RS[7,4], EFE ($w{=}1$) beats $w{=}10$ as well as $w{=}5$ ($+15.96$ vs.\\ $+14.27$ and $+14.56$, both $p<10^{-5}$), and the extra checking of the tuned weights buys more good rocks but not enough to pay for the extra steps. On RS[7,8], the heavier weight's extra checking (57.47 steps, 18.26 checks per episode, versus $w{=}5$'s 40.27/14.19) buys $0.54$ more good rocks per episode but spends $17.2$ more steps at the $-0.5$ per-step move cost to get them. POMCP at its frozen configuration trails EFE and both tuned Plan+IG weights significantly on the three smaller instances, beats reward-only Planning on RS[7,8] ($+15.07$ vs.\\ $+12.31$, $p{=}0.002$), and sits within sampling error of the entire family on RS[11,11] (seed-level Welch $p \\geq 0.36$, none significant after correction). The weight sweep bounds what tuning $w$ can buy, not what this instance admits.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 158,
+   "rationale": "The RS[5,3], RS[7,4], and RS[7,8] weight comparisons (16.47 vs 16.41 p=0.74, w=10 drop on RS[5,3], RS[7,4] EFE lead, RS[7,8] 21.85 vs 23.76 p=0.09 and w=10 20.55 p=0.003, heuristic 28.33 beating w=1 at p=4.6e-4) are stated twice, here and in app:rocksample_main_details (the copy the main body points to, which also carries the heuristic ties and the only-three-weights caveat). Keep that copy and retain here only what it lacks: the RS[7,4] w=10 value, the RS[7,8] steps/checks trade, and the POMCP-versus-family summary. Every retained number is from the extended table or the unchanged original sentences.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X02",
+   "category": "DUPLICATE",
+   "old": "The Greedy agent moves to rocks and samples them without checking quality first, incurring frequent bad-rock penalties ($1.51$--$5.52 \\pm 0.01$--$0.05$, seed-level SE, across the four instances). EFE moves toward uncertain rocks, checks them to resolve quality, then samples selectively, so bad samples stay low ($0.01$--$0.06 \\pm 0.001$--$0.013$, seed-level Welch $p<5{\\times}10^{-8}$ vs.\\ Greedy at every instance). RS[11,11] is exceptional in a different sense, where every tree-search agent, including Planning at $w{=}0$, converges to the same low-activity policy, discussed in Section~\\ref{sec:rocksample}. ",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 79,
+   "rationale": "The Greedy bad-rock contrast (EFE 0.01-0.06 vs Greedy, p<5e-8) is restated in app:rocksample_main_details (the Bad-column paragraph), and the RS[11,11] low-activity convergence is developed at length there and in the main body. Verified against results_rocksample_*_stats.csv that nothing load-bearing rests only here: the per-instance Bad counts remain in Table rocksample_extended. The following Flat-MC sentences in the same paragraph are left for the range-B scout and still read correctly as the paragraph opening.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X03",
+   "category": "DUPLICATE",
+   "old": "POMCP corroborates the mechanism from the other side. The heuristic profits from the far rocks because it walks up to each one before checking it, so that every check it spends is taken at close range where the check is accurate. A deeper POMCP tree gains the lookahead to plan a walk out to those rocks, but its in-tree check decisions are still taken from a distance, where accuracy is low. We read that from the behavioral trace in Appendix~\\ref{app:rocksample} rather than deriving it from the search procedure. At the deepest horizon we ran, the tree spends many times more checks per episode than its own rollout policy does and still collects fewer good rocks. Given horizon enough to reach the distant checks, its reward falls monotonically, from $+12.94$ at $H{=}10$ to $-54.78$ at $H{=}40$, because the tours it assembles from noisy distant checks do not pay (Appendix~\\ref{app:rocksample}). Both sides of the mechanism therefore point the same way. The heuristic walks up before checking and is bound by no depth, so it collects the slack. POMCP with a deeper horizon has the reach but still checks from a distance, so it does not. Reach alone, without walking up before checking, is not enough.",
+   "new": "POMCP corroborates the mechanism from the other side. A deeper POMCP tree gains the lookahead to plan a walk out to the distant rocks, but, on our reading of its behavioral trace (Appendix~\\ref{app:rocksample}), its in-tree checks are still taken from a distance where accuracy is low, and its reward falls monotonically from $+12.94$ at $H{=}10$ to $-54.78$ at $H{=}40$. Reach alone, without walking up before checking, is not enough.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 134,
+   "rationale": "Restates the RS[11,11] horizon diagnostic of app:rocksample (144 checks vs 11, 3.4 vs 5.2 good rocks, monotone decline) and the main-body RS[11,11] paragraph. Condensed to the mechanism and the endpoints, keeping the 'read from the behavioral trace rather than derived' qualification.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X04",
+   "category": "DUPLICATE",
+   "old": "\\paragraph{MCTS-EFE.} To disentangle EFE's information valuation from the planning mechanism, we implement MCTS-EFE, the UCB1 tree search of Appendix~\\ref{app:interpretation}, which uses EFE as the leaf heuristic rather than random rollouts. On Tiger at $H{=}10$, MCTS-EFE with 500 simulations achieves 97.7\\% success ($14$--$16$ ms per episode across the three horizons tested, \\texttt{results\\_\\allowbreak mcts\\_\\allowbreak efe.csv}), compared to POMCP's 88.1\\% at the same simulation count ($11$--$12$ ms per episode across horizons, simulation-matched, not compute-matched) and exact EFE's 99.9\\% at $H{=}6$ ($64$ ms per episode, both from the MCTS battery's own 200-episodes-per-seed protocol rather than Table~\\ref{tab:main}'s battery). In this configuration, the EFE-driven search, with exact per-node information gain as the in-tree observe reward, max-backup, exact commit-child values, and an EFE-greedy leaf, substantially outperforms POMCP's mean-backup search with semi-informed rollouts. The two solvers differ in more than the leaf, so the two components that distinguish this search from a UCT tree are ablated below.",
+   "new": "\\paragraph{MCTS-EFE.} To disentangle EFE's information valuation from the planning mechanism, we use MCTS-EFE, the UCB1 tree search defined in Appendix~\\ref{app:interpretation}, where its simulation-matched Tiger comparison against POMCP is reported. Exact EFE reaches $99.9\\%$ success on Tiger at $H{=}6$ ($64$ ms per episode) under the MCTS battery's own 200-episodes-per-seed protocol rather than Table~\\ref{tab:main}'s battery. The two solvers differ in more than the leaf, so the two components that distinguish this search from a UCT tree are ablated below.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 72,
+   "rationale": "The Tiger H=10 comparison (97.7% at 14-16 ms vs POMCP 88.1% at 11-12 ms, simulation-matched) and the component list are stated both here and in 'Approximate planning with MCTS-EFE', which carries the SEs and p=4.4e-6. Keep that copy and point to it. The compute-matched check that follows in this paragraph (with 97.7 +/- 0.5 and 88.1 +/- 0.2) is untouched, as is the simulation-matched disclosure there.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X05",
+   "category": "DUPLICATE",
+   "old": "The two solvers differ in more than the leaf, so an ablation narrows where that advantage comes from. Two of the components that distinguish this search from a UCT tree (Upper Confidence bounds applied to Trees, the standard UCB1 tree search) can be turned off independently, the in-tree information gain and the max-backup, and Table~\\ref{tab:mcts-ablation} runs all four combinations on Tiger, Diagnosis, and Tileworld-$6{\\times}6$. Neither component shows a detectable effect on success or reward at five seeds after Holm correction (Appendix~\\ref{app:pomcp}). What remains to carry the contribution is the EFE-greedy leaf rollout together with the exact belief representation and the exact commit-child values, which the ablation holds fixed. A commit child is the node reached by a commit action, and the search sets its value to the belief-expected commit reward computed directly from the belief instead of estimating it from sampled returns.",
+   "new": "An ablation of the two components that distinguish this search from a UCT tree, the in-tree information gain and the max-backup (Table~\\ref{tab:mcts-ablation}, Appendix~\\ref{app:pomcp}), finds neither detectably load-bearing at five seeds after Holm correction. What remains to carry the contribution is the EFE-greedy leaf rollout together with the exact belief representation and the exact commit-child values, which the ablation holds fixed. A commit child is the node reached by a commit action, and the search sets its value to the belief-expected commit reward computed directly from the belief instead of estimating it from sampled returns.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 48,
+   "rationale": "Duplicates the 'Component ablation' paragraph of app:pomcp (same table, same conclusion, same attribution). Keeps the one-sentence result and the commit-child definition, which appears only here.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X06",
+   "category": "DUPLICATE",
+   "old": "A natural objection is that the POMCP gap reflects an untuned exploration constant rather than the solver. The observe-then-commit POMCP runs with a single untuned UCB1 exploration constant per battery, and Appendix~\\ref{app:pomcp} sweeps that constant on Tiger, Diagnosis, and Tileworld-$6{\\times}6$ (Table~\\ref{tab:pomcp-sweep}). On Tiger the constant matters. At its best swept constant POMCP reaches $93.2\\% \\pm 0.5$pp success against $87.3$ to $89.0\\%$ at constants up to $10$, but it remains behind MCTS-EFE at its default constant on both metrics after Holm correction. The sweep also shows MCTS-EFE's default is not its own best, so the appendix compares the two solvers with each at a constant selected on tuning seeds disjoint from every evaluation seed, under a rule recorded before the runs reported here and written after an exploratory sweep on the canonical seeds had been inspected. At those constants, MCTS-EFE stays ahead on Tiger success ($98.2\\% \\pm 0.3$pp against $93.2\\% \\pm 0.5$pp, $p{=}0.0001$) and reward ($p{=}0.0005$), both surviving Holm correction within the appendix's six-test family, so tuning narrows the Tiger gap without removing it. Where the agent must choose among tests, tuning the constant leaves most of the gap in place. POMCP's selected configuration reaches $65.6\\% \\pm 1.4$pp on Diagnosis and $8.2\\% \\pm 0.6$pp on Tileworld-$6{\\times}6$ against MCTS-EFE's $94.7\\% \\pm 0.4$pp and $95.4\\% \\pm 0.6$pp, every comparison significant after Holm correction.\n\nA second objection is that the gap reflects POMCP's rollout policy. The comparison already avoids a pure-random-rollout strawman, since POMCP's semi-informed rollouts sample observations uniformly but end in a belief-optimal commit (Appendix~\\ref{app:pomcp}). Information-gain rollouts do not close the Diagnosis and Tileworld gap either. At $c{=}5$ they put Diagnosis at $66.8\\%$ against the uniform-rollout POMCP's $65.6$ at the same constant, not a significant difference, and Tileworld-$6{\\times}6$ at $8.2\\%$ against $2.6$, a difference that survives Holm correction on success but leaves POMCP more than eighty points behind. On Tiger they change nothing at all, since a single observation action makes the informed and uniform rollout policies identical. Richer domain knowledge or a learned value function in the rollout could narrow that gap.\n\nTaken together, the sweep and the rollout check show that the remaining gap is not a matter of the exploration constant or of the rollout policy. Where sensing is one repeated action and only its stopping time is in question, as on Tiger, tuning the constant narrows the difference without removing it. Where the agent must choose which of several tests to run, neither control removes more than a small part of the gap, which stays above twenty-five points on Diagnosis and above eighty points on Tileworld-$6{\\times}6$ at every swept configuration. What the evidence supports as the explanation is MCTS-EFE's joint configuration of EFE-greedy leaf evaluation over exact beliefs and exact commit-child values, since those three components were held fixed together in every run of the sweep, the rollout check, and the ablation. We therefore do not attribute the gap to directed observation selection in isolation. Separating the leaf evaluation from the exact belief and commit values would need a further matched-compute comparison that we have not run. The claim is not that EFE-based planning exceeds state-of-the-art POMDP solvers, but that the EFE objective supplies a principled, zero-tuning in-tree reward and leaf evaluation in place of hand-designed rollouts.",
+   "new": "Appendix~\\ref{app:pomcp} addresses the two natural objections, that the POMCP gap reflects an untuned exploration constant or POMCP's rollout policy (Table~\\ref{tab:pomcp-sweep}). Tuning the constant narrows the Tiger gap without removing it. With both solvers' constants selected on tuning seeds disjoint from every evaluation seed, under a rule recorded before the runs reported there and written after an exploratory sweep on the canonical seeds had been inspected, MCTS-EFE stays significantly ahead on Tiger success and reward. Where the agent must choose among tests, neither the constant nor information-gain rollouts removes more than a small part of the gap, which stays above twenty-five points on Diagnosis and above eighty points on Tileworld-$6{\\times}6$ at every swept configuration. Because the EFE-greedy leaf evaluation, exact beliefs, and exact commit-child values were held fixed together in the sweep, the rollout check, and the ablation, we attribute the gap to that joint configuration and not to directed observation selection in isolation. Separating them would need a further matched-compute comparison that we have not run. The claim is not that EFE-based planning exceeds state-of-the-art POMDP solvers, but that the EFE objective supplies a principled, zero-tuning in-tree reward and leaf evaluation in place of hand-designed rollouts.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 342,
+   "rationale": "Three paragraphs restating the 'Exploration constant and informed rollouts' paragraph of app:pomcp number for number (93.2 vs 87.3-89.0, 98.2 vs 93.2 p=0.0001, 65.6/8.2 vs 94.7/95.4, 66.8 vs 65.6, 8.2 vs 2.6), which is itself summarized in the main-body Discussion. Condensed to one paragraph that keeps the conclusions, the tuning-seed selection disclosure (rule written after an exploratory sweep), the attribution limit, the unrun control, and the scope claim. All numbers remain in app:pomcp and Table pomcp-sweep.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X07",
+   "category": "DUPLICATE",
+   "old": "\\subsection{Robustness to model misspecification}\nOur main results assume exact knowledge of the generative model. Appendix~\\ref{app:misspec} investigates robustness when the agent's believed observation accuracy differs from the true value, over mismatches from $-0.15$ to $+0.10$, where a negative mismatch means the agent believes the sensor to be less accurate than it is and a positive mismatch means the reverse. One question the analysis can answer is whether EFE's epistemic term buffers a misspecified sensor in a way that reward-only Planning does not. On Tiger, success stays close to its zero-mismatch value at every tested level, and EFE and Planning respond identically to every tested mismatch (Table~\\ref{tab:misspec-tiger}), so there is no measurable EFE-specific buffering effect on this environment. On Diagnosis, degradation is larger but graceful, and both agents' behavior steps between two plateaus rather than degrading smoothly with the mismatch magnitude, a higher one with more tests and higher success and a lower one with fewer tests and lower success. Changing the mismatch moves an agent between the plateaus rather than along a gradient (Table~\\ref{tab:misspec-diag}). Overestimating sensor accuracy (positive mismatch) is more harmful than underestimating it, because the agent commits prematurely on insufficient evidence.\n\n",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 192,
+   "rationale": "Third copy of the misspecification findings: app:misspec (tables plus full discussion) and the main-body Discussion ('EFE and reward-only Planning respond identically to every tested Tiger sensor mismatch ... Overestimating sensor accuracy can trigger premature commits (Appendix misspec)') both carry it, and the main body points to app:misspec directly. The subsection has no label.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X08",
+   "category": "DUPLICATE",
+   "old": "This appendix retains the detailed weight-transfer, near-optimality, model-mismatch, and tree-search analyses summarized in Section~\\ref{sec:discussion}.",
+   "new": "This appendix retains the detailed weight-transfer, near-optimality, and tree-search analyses summarized in Section~\\ref{sec:discussion}.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 1,
+   "rationale": "Depends on X07: keeps the appendix's opening roadmap accurate once the misspecification restatement is removed.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X09",
+   "category": "DUPLICATE",
+   "old": "The requirement for a sufficient planning horizon also has a discount-factor form. In the discount sweep (Appendix~\\ref{app:discount}, 5 seeds), the information-unit weight's advantage on the multi-observation environments appears at $\\gamma \\geq 0.99$ and not at the two lower values tested, and the transition is sharp. On Diagnosis ($N{=}4$), EFE's success advantage over Planning is significant at $\\gamma \\in \\{0.99, 1.0\\}$ and not statistically significant at $\\gamma \\in \\{0.95, 0.90\\}$ (Table~\\ref{tab:discount}). The mechanism is that discounting truncates the effective planning horizon below the number of observations needed for confident diagnosis, erasing EFE's advantage. On Tiger (single observation), EFE and Planning differ significantly only at the heaviest discounting tested ($\\gamma{=}0.90$) and are numerically identical at $\\gamma \\geq 0.95$. This is a meaningful practical limitation within the range swept. The sweep covers four discount factors on three environments, so it does not establish a general threshold, but it does show that applications whose time pressure mandates discounting as heavy as $\\gamma{=}0.95$ on Diagnosis-like problems should not expect EFE's epistemic drive to pay off.",
+   "new": "The requirement for a sufficient planning horizon also has a discount-factor form. In the discount sweep (Appendix~\\ref{app:discount}, Table~\\ref{tab:discount}), EFE's success advantage over Planning on Diagnosis and Bandit is significant at $\\gamma \\in \\{0.99, 1.0\\}$ and not at $\\gamma \\in \\{0.90, 0.95\\}$, because heavier discounting truncates the effective planning horizon below the number of observations needed for disambiguation. The sweep covers four discount factors on three environments, so it does not establish a general threshold, but it does show that applications whose time pressure mandates discounting as heavy as $\\gamma{=}0.95$ on Diagnosis-like problems should not expect EFE's epistemic drive to pay off.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 69,
+   "rationale": "Restates the 'Sensitivity to discounting' paragraph of app:discount (Diagnosis significant at 0.99/1.0 not at 0.95/0.90, the truncation mechanism, Tiger only at 0.90). Kept the pointer the main body relies on ('Appendix interpretation retains the detailed horizon, transfer, and discount comparisons'), the mechanism, and the practical-limitation statement unique to this copy. Checked against Table discount: Bandit's gap is also significant only at 0.99 and 1.0.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X10",
+   "category": "DUPLICATE",
+   "old": "Appendix~\\ref{app:discount} compares EFE with Planning, the reward-only planner of the same horizon, across discount factors, and Section~\\ref{sec:discussion} takes up the consequence. In this benchmark sweep, EFE's advantage on environments with several observation actions appeared only at $\\gamma \\geq 0.99$, consistent with heavier discounting truncating the effective horizon.",
+   "new": "Appendix~\\ref{app:discount} compares EFE with Planning, the reward-only planner of the same horizon, across discount factors.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 32,
+   "rationale": "The closing claim (advantage only at gamma >= 0.99, horizon truncation) is stated in app:discount and again in app:interpretation. Keep the pointer, drop the third restatement.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X11",
+   "category": "DUPLICATE",
+   "old": "This is the same trend reported for Bandit in Appendix~\\ref{app:interpretation}, where a one-step reading would lead one to expect the least from $w{=}1$ yet multi-step EFE performs well in practice. The two-state threshold formula does not apply to Bandit, so no threshold is computed for it.",
+   "new": "Stated as a failure rate, $w{=}1$ fails this test in about $21\\%$ of the random family even at $H{=}3$ and in $70\\%$ of it at $H{=}1$, and the criterion is lenient by construction, since the absolute floor of $0.5$ reward units does most of the work on environments whose reward range is small. The trend is qualitatively consistent with Bandit, where a loose low-asymmetry reading would lead one to expect the least from $w{=}1$ yet multi-step EFE at $H{=}2$ reaches $86.9\\%$ success (Table~\\ref{tab:main}), although the two-state threshold formula does not apply to Bandit and no threshold is computed for it.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": -54,
+   "rationale": "Receives the unique content of the app:interpretation near-optimality paragraphs (X12, X13): the 21%/70% failure rates and the lenience caveat. This also makes the main-body Discussion's pointer accurate: it cites Appendix nearopt_horizon for 'approximately 21% of that family fails', a figure currently stated only in app:interpretation. The Bandit link now states its content in place instead of pointing to the paragraph X13 removes. 70% = 100% - 30% pass rate at H=1.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X12",
+   "category": "DUPLICATE",
+   "old": "The proposition's two parts live at two horizons, Part (a)'s lower threshold at $H{=}1$ and Part (b)'s near-optimality interval at $H{=}2$. To ask what happens to the near-optimality of $w{=}1$ as the planning horizon varies, including beyond those two cases, Appendix~\\ref{app:nearopt_horizon} reports a Monte Carlo study over 100 randomly generated two-state environments at $H \\in \\{1, 2, 3\\}$ (Figure~\\ref{fig:nearopt_horizon}). This study uses a different, empirical criterion of near-optimality from the closed-form interval above. The interval is stated for the two-state case at $H{=}2$ only, whereas a reward-gap criterion, which asks how much reward $w{=}1$ gives up relative to the best weight found by grid search, can be applied at any horizon, and the study counts $w{=}1$ as near-optimal when that gap is at most $\\max(0.05|\\widehat R_{\\mathrm{best}}|,0.5)$, where $\\widehat R_{\\mathrm{best}}$ is the largest estimated mean reward on the grid and $0.5$ is measured in reward units. The near-optimality rate increases from 30\\% at $H{=}1$ to 58\\% at $H{=}2$ and 79\\% at $H{=}3$, consistent with multi-step planning widening the near-optimality basin, the region of environment parameters where $w{=}1$ passes this test. High-asymmetry environments ($\\alpha \\geq 10$) follow the same trend, rising from 26\\% to 53\\% to 79\\%. The failure rate, the fraction of environments where $w{=}1$ does not pass this test, is the more useful number for a practitioner and we state it directly. $w{=}1$ fails this near-optimality test in about $21\\%$ of the random family even at $H{=}3$, and in $70\\%$ of it at $H{=}1$. The criterion is also lenient by construction, since the absolute floor of $0.5$ reward units does most of the work on environments whose reward range is small.",
+   "new": "The proposition's two parts live at two horizons, Part (a)'s lower threshold at $H{=}1$ and Part (b)'s near-optimality interval at $H{=}2$. Appendix~\\ref{app:nearopt_horizon} asks what happens beyond them with a Monte Carlo study over 100 random two-state environments at $H \\in \\{1, 2, 3\\}$ (Figure~\\ref{fig:nearopt_horizon}), using an empirical reward-gap criterion rather than the closed-form interval. The fraction of environments in which $w{=}1$ passes that criterion rises from 30\\% at $H{=}1$ to 58\\% at $H{=}2$ and 79\\% at $H{=}3$, so about $21\\%$ still fail it at $H{=}3$.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 186,
+   "rationale": "Restates app:nearopt_horizon's design (100 environments, H in {1,2,3}), criterion max(0.05|R_best|, 0.5), and rates 30/58/79 and 26/53/79. Keep the full statement in app:nearopt_horizon (with the failure-rate and lenience sentences moved there by X11) and leave a short summary here.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X13",
+   "category": "DUPLICATE",
+   "old": "The widening with horizon of the basin in which $w{=}1$ passes this test is qualitatively consistent with what we observed on Bandit. Bandit's asymmetry is a contrast between two positive arm rewards (correct-arm reward $+10$ vs.\\ small-reward-arm $+1$) rather than the two-state $\\alpha{=}|R^-|/R^+$ ratio this section's formula assumes. The formula therefore does not apply to it directly and we do not report a numeric $\\alpha$ for it. Bandit, read loosely as a low-asymmetry case relative to the high-asymmetry environments above, is where the one-step analysis would lead one to expect the least from $w{=}1$, although we do not compute its threshold. Multi-step EFE at $H{=}2$ achieves $86.9\\%$ success on it (Table~\\ref{tab:main}), consistent with the aggregate direction of the random-environment study, where the fraction of environments in which $w{=}1$ meets that study's reward-gap near-optimality criterion rises from 30\\% at $H{=}1$ to 58\\% at $H{=}2$.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 143,
+   "rationale": "Third statement of the 30% to 58% rise, plus a Bandit caveat. Its content now sits in app:nearopt_horizon (X11). The next paragraph ('Many real-world decision problems have alpha >> 1 ... the multi-step study shows the near-optimality basin widening') still follows naturally from X12.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X14",
+   "category": "DUPLICATE",
+   "old": "Viewed in the success-reward plane (Figure~\\ref{fig:pareto}), the EFE agent sits inside the reward-maximizing tied bracket on three of the five swept environments and off it on two, while Planning under-explores and success-tuned Planning+IG over-explores. The regenerated sweep (\\texttt{results\\_\\allowbreak pareto\\_\\allowbreak sweep.csv}) makes the exceptions precise. Reward is exactly tied across a contiguous run of sampled grid weights on four environments, so the reward-maximizing weight is a tied bracket in the sense of Section~\\ref{subsec:formal_rho_equiv}. The weight $w{=}1$ lies inside that run on Tiger (every sampled weight from $0.01$ to $20$), Diagnosis (every sampled weight from $0.5$ to $20$), and Bandit ($1$ and $2$). On Testbed, $w{=}1$ falls outside the tied run of sampled weights from $0.01$ to $0.5$ and is a genuine frontier trade-off, buying $+6.4$pp success ($96.4\\%$ against $89.9\\%$) for $-0.11$ reward. On Tileworld, the one environment with a unique argmax, $w{=}1$ is Pareto-dominated outright, because $w{=}20$ attains both higher reward ($-18.95$ against $-21.53$) and higher success ($91.8\\%$ against $72.0\\%$). The untuned default is reward-competitive where the reward surface is flat in $w$. It is beaten on Testbed, where the tied bracket sits at the sweep's low-weight boundary and $w{=}0$ Planning matches it, and on Tileworld.",
+   "new": "Viewed in the success-reward plane (Figure~\\ref{fig:pareto}), Planning under-explores and success-tuned Planning+IG over-explores. Section~\\ref{sec:pareto} locates $w{=}1$ relative to the reward-maximizing tied brackets of the regenerated sweep (\\texttt{results\\_\\allowbreak pareto\\_\\allowbreak sweep.csv}), and Appendix~\\ref{app:pareto_details} interprets the full weight sweep.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 160,
+   "rationale": "The bracket-by-bracket Pareto reading (Tiger 0.01-20, Diagnosis 0.5-20, Bandit 1-2, Testbed +6.4pp for -0.11, Tileworld w=20 at -18.95/91.8% vs -21.53/72.0%) is stated in the main body's Section pareto and in app:pareto_details, the subsection the main body points to. Its two unique details (Testbed 96.4% vs 89.9%, exact ties on four environments) move to app:pareto_details via X16.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X15",
+   "category": "DUPLICATE",
+   "old": "Tiger, where EFE and Planning tie exactly, comes first, followed by the Epistemic-only ablation, then Diagnosis and Bandit, where EFE Pareto-dominates Planning, then the closest baseline that does not tie EFE. A panel-by-panel reading of the weight sweep of Section~\\ref{sec:pareto} then places the $w{=}1$ default against the best weight one could have chosen, and the subsection closes with effect sizes and the two statistical conventions under which those numbers are read.",
+   "new": "Tiger, where EFE and Planning tie exactly, comes first, then Diagnosis and Bandit, where EFE Pareto-dominates Planning, then the closest baseline that does not tie EFE, and the subsection closes with effect sizes and the two statistical conventions under which those numbers are read.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 27,
+   "rationale": "Depends on X14 and X17: updates the subsection's roadmap once the Epistemic-only and panel-by-panel Pareto paragraphs are removed.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X16",
+   "category": "DUPLICATE",
+   "old": "Appendix~\\ref{app:core_details} identifies the tied brackets and the two exceptions, and this subsection gives the full weight-sweep interpretation.",
+   "new": "Section~\\ref{sec:pareto} identifies the tied brackets, exact ties of mean reward across contiguous runs of sampled weights on four of the five environments, and the two exceptions. On Testbed $w{=}1$ lies outside the tied run from $0.01$ to $0.5$ and buys $+6.4$pp success ($96.4\\%$ against $89.9\\%$) for $-0.11$ reward, and on Tileworld $w{=}20$ Pareto-dominates it. This subsection gives the full weight-sweep interpretation.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": -44,
+   "rationale": "Depends on X14: repoints this sentence from app:core_details to Section pareto and absorbs the two details unique to the removed paragraph (96.4% vs 89.9% matches results_nat_canonical_check.csv's Testbed w=1 row and the removed text, and 'tied on four environments' matches the tab:alpha_eta caption).",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X17",
+   "category": "DUPLICATE",
+   "old": "The Epistemic-only ablation (Table~\\ref{tab:agents}) commits immediately rather than over-exploring. On Tiger, Diagnosis, and Bandit alike it takes zero observations and succeeds at each environment's chance level ($49.7\\%$, $24.7\\%$, and $24.7\\%$ respectively), and on Tileworld $6{\\times}6$ it likewise commits immediately and matches Myopic's chance-level performance exactly ($2.9\\%$, Appendix~\\ref{app:full_tables}). Pure information gain without reward alignment produces degenerate non-exploration here, not the catastrophic over-exploration a naive information-seeking ablation might suggest. Either way, the pragmatic term is essential.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 74,
+   "rationale": "Fourth statement of the Epistemic-only result: the main body ('commits immediately at chance-level success on all three core environments and Tileworld'), app:theory_agents (full mechanism plus Testbed exception), and the Tileworld table caption ('matching Myopic exactly') all carry it. The chance rates 49.7/24.7/24.7 and 2.9 remain in the full per-environment tables.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X18",
+   "category": "DUPLICATE",
+   "old": "On Diagnosis and Bandit, EFE Pareto-dominates same-horizon Planning, reaching substantially higher success with comparable or better reward and no weight search. On Diagnosis, EFE outperforms Planning in success rate ($97.2\\%$ against $88.8\\%$, $+8.3$ pp, seed-level Welch $p{=}4.0{\\times}10^{-8}$) while achieving better reward ($-1.37$ against $-2.57$, $p{=}0.002$). On Bandit it achieves both higher success ($86.9\\%$ against $71.0\\%$, $+15.9$ pp, $p{=}2.1{\\times}10^{-5}$) and higher reward ($+6.27$ against $+5.75$, $p{=}0.001$). Tuned Planning+IG, success-maximizing on the tuning grid at $w^*{=}50$ on Diagnosis and $w^*{=}20$ on Bandit, reaches near-ceiling success of $99.2\\%$ and $98.9\\%$. On Diagnosis that still costs substantial reward from over-exploration (13.16 tests, $-3.66$ reward). On Bandit the correctly tuned weight leaves reward much closer to Planning and EFE than a mistuned weight would suggest (9.57 inspections, $+5.11$ reward, positive and only modestly below EFE's $+6.27$). Against tuned Planning+IG as well as $w{=}0$ Planning, EFE is the competitive untuned trade-off rather than uniquely best on every metric.",
+   "new": "On Diagnosis and Bandit, EFE Pareto-dominates same-horizon Planning (Section~\\ref{sec:results} gives the success and reward comparisons with their seed-level tests). Tuned Planning+IG, success-maximizing on the tuning grid at $w^*{=}50$ on Diagnosis and $w^*{=}20$ on Bandit, reaches near-ceiling success of $99.2\\%$ and $98.9\\%$. On Diagnosis that still costs substantial reward from over-exploration (13.16 tests, $-3.66$ reward). On Bandit the correctly tuned weight leaves reward much closer to Planning and EFE than a mistuned weight would suggest (9.57 inspections, $+5.11$ reward, positive and only modestly below EFE's $+6.27$). Against tuned Planning+IG as well as $w{=}0$ Planning, EFE is the competitive untuned trade-off rather than uniquely best on every metric.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 46,
+   "rationale": "The EFE-versus-Planning numbers and p-values (97.2 vs 88.8, p=4.0e-8, -1.37 vs -2.57, p=0.002, 86.9 vs 71.0, p=2.1e-5, 6.27 vs 5.75, p=0.001) are stated verbatim in the main body's Core Environments paragraph. Replaced with a pointer, keeping the tuned-Planning+IG interpretation that only this copy gives.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X19",
+   "category": "DUPLICATE",
+   "old": "EFE fixes the exploration--exploitation weight at $w{=}1$ rather than eliminating it (Section~\\ref{subsec:formal_rho_equiv}). The Pareto analysis (Figure~\\ref{fig:pareto}) shows this weight sits inside the reward-maximizing tied bracket $w^*_{\\text{ret}}$ on three of the five swept environments, while the success-maximizing $w^*_{\\text{succ}}$ used for Planning+IG in the main tables lies at $10$--$50$. The gap between $w^*_{\\text{ret}}$ and $w^*_{\\text{succ}}$ has practical implications. $w{=}1$ is tuned to neither criterion. Its objective is reward plus information gain at weight one, and the fact that its measured reward sits with the reward-maximizing weights rather than with the success-maximizing ones on three of the five swept environments is an empirical finding of the sweep, not a design target. In safety-critical settings where near-certain accuracy is required, a higher weight may be appropriate, though such weights must still be tuned per-environment. EFE provides a principled starting point rather than a scale-free automatic calibration. Section~\\ref{sec:pareto} quantifies the accuracy-for-reward trade, which on Tiger and Diagnosis buys at most $1.8$pp of accuracy for a reward cost that arrives entirely at the single grid step to $w{=}50$. The weight's dependence on the reward scale and on the bit-versus-nat convention, with the per-environment consequences of the latter, is set out in the reward-to-nats calibration discussion in Appendix~\\ref{app:theory_setup}, and Section~\\ref{sec:pareto} reports the measured sweeps behind those consequences.",
+   "new": "EFE fixes the exploration--exploitation weight at $w{=}1$ rather than eliminating it (Section~\\ref{subsec:formal_rho_equiv}), and $w{=}1$ is tuned to neither the reward criterion $w^*_{\\text{ret}}$ nor the success criterion $w^*_{\\text{succ}}$ used for Planning+IG in the main tables. That its measured reward sits inside the reward-maximizing tied bracket on three of the five swept environments is an empirical finding of the Pareto sweep (Section~\\ref{sec:pareto}, Appendix~\\ref{app:pareto_details}), not a design target. Applications that require near-certain accuracy may warrant a higher weight, which must still be tuned per environment, so EFE provides a principled starting point rather than a scale-free automatic calibration. The weight's dependence on the reward scale and on the bit-versus-nat convention is set out in the reward-to-nats calibration discussion in Appendix~\\ref{app:theory_setup}.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 93,
+   "rationale": "Restates app:pareto_details and the main-body Pareto section (three of five, w*_succ at 10-50, at most 1.8pp at the single step to w=50). Keeps the w*_ret versus w*_succ distinction, the 'empirical finding, not a design target' point, and the pointers.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X20",
+   "category": "DUPLICATE",
+   "old": "The reward table shows that EFE vs.\\ Planning is negligible to none on Tiger, Diagnosis, and Bandit (exactly zero on Tiger, where EFE and Planning tie). Once both agents take enough informative actions, mean returns are similar, even though success rates differ. The success-rate rows isolate the axis where EFE improves most relative to Planning on Diagnosis and Bandit. Against over-exploring tuned alternatives (InfoGain-Tuned, Planning+IG), EFE shows medium reward effects on the Testbed ($d = 0.69$) and small effects on Bandit ($d \\approx 0.36$-$0.37$), reflecting the cost of over-exploration at Bandit's success-tuned weight of $w{=}20$.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 95,
+   "rationale": "The effect-size reading is given twice: here beneath Table effect_sizes and again in app:core_details ('Effect sizes clarify where the differences lie ...', negligible reward d, success d 0.33/0.40, largest tuned-baseline effect medium d=0.69 on Testbed). Keep the core_details copy, which also carries the Tileworld 8x8 d=1.13 context and the seed-level-d caveat. Bandit's d of 0.36-0.37 remains in the table.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X21",
+   "category": "DUPLICATE",
+   "old": "The six environments are Tiger, Diagnosis, Bandit, Tileworld, RockSample, and Structural Inspection, and they form a progression in what the agent must decide about sensing. Tiger has a single sensor, so the only question is whether to observe again. Diagnosis and Bandit add a choice among several sensors, so the agent must also decide which observation to buy. Tileworld makes that choice spatial, with sensors that each partition a grid. RockSample and Structural Inspection interleave sensing with navigation and exploitation, so the agent must additionally move to where information is available. Four of the six (Tiger, Diagnosis, Bandit, Tileworld) follow the observe-then-commit structure of Section~\\ref{sec:methodology}, in which a variable-length run of observation actions ends in a single terminal commit action and the hidden state never changes. The remaining two (RockSample and Structural Inspection) are factored observation POMDPs in the sense of Proposition~\\ref{prop:factored}. Their observation, navigation, and exploitation actions interleave within an episode, which is why the paper also calls them interleaved observe-act settings.",
+   "new": "Four of the six environments (Tiger, Diagnosis, Bandit, Tileworld) follow the observe-then-commit structure of Section~\\ref{sec:methodology}, in which a variable-length run of observation actions ends in a single terminal commit action and the hidden state never changes. The remaining two (RockSample and Structural Inspection) are factored observation POMDPs in the sense of Proposition~\\ref{prop:factored}. Their observation, navigation, and exploitation actions interleave within an episode, which is why the paper also calls them interleaved observe-act settings.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 90,
+   "rationale": "The sensing-progression narrative (one sensor, then a choice of sensors, then spatial partitions, then interleaving) restates the main body's Experiments paragraph ('The six main environments form a progression in sensing decisions ...') at greater length. Kept only the structural classification and the definition of 'interleaved observe-act settings'.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X22",
+   "category": "DUPLICATE",
+   "old": "All environments are implemented as Gymnasium \\citep{towers2024} environments with the standard \\texttt{reset}/\\texttt{step} API. ",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 13,
+   "rationale": "Stated again, with a gloss, in app:experimental_protocol ('all environments are implemented as Gymnasium \\citep{towers2024} environments, Gymnasium being a widely used Python interface ...'). towers2024 remains cited there.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X23",
+   "category": "DUPLICATE",
+   "old": "We do not have such a solver, so Section~\\ref{sec:cpomdp} benchmarks against a near-optimal constrained-POMDP reference on the three core observe-then-commit environments (Tiger, Diagnosis, and Bandit). The reference is built as a Lagrangian-penalized sweep. For each value of a penalty $\\lambda$ on a grid, the POMDP is re-solved by SARSOP, the offline point-based solver that already serves as this paper's near-optimal reference (Section~\\ref{sec:sarsop}), with every observation action charged an extra $\\lambda$. The reward and usage of the resulting policy are then estimated by Monte Carlo simulation. SARSOP is solved to precision $10^{-3}$, and the reference is a simulation estimate rather than a certified exact solution. Because a near-optimal reference is a feasible policy rather than a certified optimum, it can only estimate the constrained optimum from below, up to its own sampling error and the upward selection bias of taking a maximum over noisy sampled points, so any measured gap to it understates the gap to the optimum up to those two effects. The estimated optimality gap, the gap between the EFE agent at $w{=}1$ and this reference, is small, zero on Tiger and within Monte Carlo noise of zero on Bandit and Diagnosis.",
+   "new": "We do not have such a solver, so Section~\\ref{sec:cpomdp} benchmarks against a near-optimal Lagrangian-penalized SARSOP reference on the three core observe-then-commit environments (Tiger, Diagnosis, and Bandit), constructed in Appendix~\\ref{app:cpomdp_details}. Because that reference is a feasible policy rather than a certified optimum, it estimates the constrained optimum from below, up to its own sampling error and the upward selection bias of taking a maximum over noisy sampled points, so any measured gap to it understates the gap to the optimum up to those two effects.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 109,
+   "rationale": "The construction (penalty lambda per observation, SARSOP re-solve, precision 1e-3, Monte Carlo estimate) and the result (zero on Tiger, within noise on Bandit and Diagnosis) are given in full in app:cpomdp_details and in the main-body Section cpomdp. Kept the pointer and the direction-of-bias caveat, including the selection-bias clause, since that is the qualification a referee would look for here.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X24",
+   "category": "DUPLICATE",
+   "old": "and export the three benchmarks to the Cassandra \\texttt{.pomdp} format, the plain-text model file that offline POMDP solvers read, through a single export path that works for any of the three because it reads the same hidden-state, action-layout, and observation-model definitions the agents already use.",
+   "new": "and export the three benchmarks to the Cassandra \\texttt{.pomdp} format, the plain-text model file that offline POMDP solvers read, through the generic exporter of Appendix~\\ref{app:sarsop_build}.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 20,
+   "rationale": "The shared-definitions export path is described in app:sarsop_build ('exports any discrete observe-then-commit benchmark generically from the same hidden-state, action-layout, and observation-model definitions the agents already use'). Kept the format gloss and pointed to the build appendix.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X25",
+   "category": "DUPLICATE",
+   "old": "Table~\\ref{tab:w-atlas} aggregates the usage-curve range, implicit EFE budget $B_{\\mathrm{EFE}} = U(w{=}1)$, and two canonical-budget crossing brackets (Definition~\\ref{def:pi3}) for the eight benchmark instances whose usage curves were swept, generated by \\url{experiments/run_w_atlas.py} from the saved usage-curve CSVs of Sections~\\ref{sec:interleaved_budget} and~\\ref{sec:stairs}. Brackets are grid intervals by construction. The table implies no closed-form relationship between $B_{\\mathrm{EFE}}$ and environment parameters such as reward scale, state count, or horizon, and none should be inferred from it.",
+   "new": "Table~\\ref{tab:w-atlas} collects, for the eight benchmark instances whose usage curves we estimate, the usage range each curve spans from its floor to its ceiling, the implicit EFE budget $B_{\\mathrm{EFE}} = U(w{=}1)$, and two crossing brackets (Definition~\\ref{def:pi3}) at two canonical budgets. It is generated by \\url{experiments/run_w_atlas.py} from the usage curves of Sections~\\ref{sec:interleaved_budget} and~\\ref{sec:stairs} (\\texttt{results\\_\\allowbreak price\\_\\allowbreak usage\\_\\allowbreak curves.csv}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak interleaved\\_\\allowbreak curves.csv}). The two canonical budgets are placed inside each instance's own usage range, one a fixed fraction of that range up from its floor and one the same fraction down from its ceiling, so that every instance is bracketed at comparable relative positions on its curve. Brackets are grid intervals by construction. Read across instances, the table shows the implicit EFE budget at or near the floor of the usage range on some instances and part of the way up it on others. It is an atlas of measured operating points and implies no closed-form relationship between $B_{\\mathrm{EFE}}$ and environment parameters such as reward scale, state count, or horizon, and none should be inferred from it.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": -105,
+   "rationale": "The atlas is described twice, here with the table and again in Extended Budget Evidence's 'Where the Benchmarks Sit on Their Usage Curves' (same columns, same instances, same no-meta-model disclaimer). Merges the unique content of the second copy (the budget-placement rule, the CSV names, the cross-instance reading) into this one, which is the copy the main body cites (Appendix w_atlas). X26 then removes the second copy.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X26",
+   "category": "DUPLICATE",
+   "old": "\\subsection{Where the Benchmarks Sit on Their Usage Curves}\n\\label{sec:w_atlas}\n\nThe distractor result marks where the budget instrument stops, and the last piece of evidence in this section records where each benchmark sits on its own usage curve. Table~\\ref{tab:w-atlas} (Appendix~\\ref{app:w_atlas}) collects, for the eight benchmark instances whose usage curves we estimate, the usage range each curve spans from its floor to its ceiling, the implicit EFE budget $B_{\\mathrm{EFE}} = U(w{=}1)$, and two crossing brackets (Definition~\\ref{def:pi3}) at two canonical budgets, aggregating the usage curves of Sections~\\ref{sec:interleaved_budget} and~\\ref{sec:stairs} (\\texttt{results\\_\\allowbreak price\\_\\allowbreak usage\\_\\allowbreak curves.csv}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak interleaved\\_\\allowbreak curves.csv}). The two canonical budgets are placed inside each instance's own usage range, one a fixed fraction of that range up from its floor and one the same fraction down from its ceiling, so that every instance is bracketed at comparable relative positions on its curve. Read across instances, the table shows where the implicit EFE budget lands relative to each usage range, at or near the floor of the range on some instances and part of the way up it on others. This is an atlas of measured operating points, not a predictive meta-model relating $B_{\\mathrm{EFE}}$ to environment parameters (reward scale, state count, horizon).\n\n",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 197,
+   "rationale": "Depends on X25. Label sec:w_atlas has no \\ref, \\Cref, or \\cref in either master (checked by grep). Its content survives in app:w_atlas.",
+   "labels_removed": [
+    "sec:w_atlas"
+   ],
+   "refs_repointed": []
+  },
+  {
+   "id": "X27",
+   "category": "DUPLICATE",
+   "old": "This subsection tests the first corollary of Proposition~\\ref{prop:pi1}, that usage plotted against $w/\\alpha$ is one and the same curve at every reward scale. Here $\\alpha$ is the reward scale of Section~\\ref{sec:pi1}. On Diagnosis and Bandit we estimate the usage curve $U_\\alpha$ of Equation~\\ref{eq:pi1} at reward scales $\\alpha \\in \\{0.1, 1, 10\\}$. The weight grid at scale $\\alpha$ is the base grid multiplied by $\\alpha$, so each grid point at one scale has a partner with the same $w/\\alpha$ at the other two. The curves can be compared point by point. Figure~\\ref{fig:collapse} first shows how the Diagnosis usage curves shift along the raw weight axis as rewards and costs are rescaled, then shows how dividing the weight by the same scale restores their agreement. Every matched $w/\\alpha$ point coincides exactly across scales, bit-exact rather than merely within $2\\cdot\\mathrm{SE}$. The agreement can be exact rather than statistical because the pipeline seeds every episode's environment stream, so an agent that takes the same actions sees the same outcomes. The crossing bracket of budget $B{=}8$ in $w/\\alpha$ units likewise coincides across $\\alpha$ ($(0.141, 0.323]$ at every scale). We extend the check to Tiger and Tileworld-$6{\\times}6$ to avoid resting the headline claim on two environments (Table~\\ref{tab:collapse-breadth}).",
+   "new": "This subsection gives the protocol and breadth table behind Section~\\ref{sec:collapse}'s test of the first corollary of Proposition~\\ref{prop:pi1}, that usage plotted against $w/\\alpha$ is one and the same curve at every reward scale $\\alpha$. The weight grid at scale $\\alpha \\in \\{0.1, 1, 10\\}$ is the base grid multiplied by $\\alpha$, so each grid point at one scale has a partner with the same $w/\\alpha$ at the other two and the curves can be compared point by point. Table~\\ref{tab:collapse-breadth} extends the Diagnosis and Bandit check to Tiger and Tileworld-$6{\\times}6$.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 113,
+   "rationale": "Restates Section collapse (bit-exact agreement, seeded streams, Diagnosis bracket (0.141, 0.323] at B=8, the figure's two panels). Kept the matched-grid construction, which only this copy states, and the pointer to the breadth table.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X28",
+   "category": "DUPLICATE",
+   "old": "Every environment shows bit-exact collapse, and every crossing bracket coincides across scales down to floating-point noise ($\\le 10^{-15}$). This is the strongest form the check can take, and it is available only because environment streams are seeded per episode. The collapse CSVs are byte-identical under an absolute comparison tolerance in place of the relative one of Section~\\ref{sec:pi1}, which does not bind at any swept point. Tiger passes trivially. Instrumental listening already saturates usage (constant $4.37$ observations at every grid point) across the entire $w/\\alpha \\in [0,20]$ range tested, so the budget formulation has no usable dial in this window. Proposition~\\ref{prop:pi1} guarantees collapse of whatever curve there is, not that every environment has an informative curve to collapse.",
+   "new": "Every environment shows bit-exact collapse, and every crossing bracket coincides across scales down to floating-point noise ($\\le 10^{-15}$). This is the strongest form the check can take, and it is available only because environment streams are seeded per episode. Tiger passes trivially because instrumental listening already saturates usage across the tested range, so the budget formulation has no usable dial in this window. Proposition~\\ref{prop:pi1} guarantees collapse of whatever curve there is, not that every environment has an informative curve to collapse.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 36,
+   "rationale": "The absolute-tolerance byte-identity sentence and Tiger's constant 4.37 over w/alpha in [0,20] are stated in Section collapse. Kept the floating-point bound and the interpretation.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X29",
+   "category": "DUPLICATE",
+   "old": "Section~\\ref{sec:pi5} noted that a reward-scale change moves the count-budget crossing. Proposition~\\ref{prop:pi1} carries an offline count-budget bracket across a known reward-and-cost rescaling by multiplying it by the scale factor, but not across an unannounced one, so a deployed controller must then re-adapt online. That section left the speed of that re-adaptation to be measured. This subsection measures it across controller seeds and asks whether resetting the step-size clock after a detected shift makes it faster. The step-size clock is the decay clock of Section~\\ref{sec:pi5}. The setting is Diagnosis with target $B{=}8$, learning rate $\\eta_0{=}0.05$, decay $\\delta{=}0.02$, and a $\\times 10$ reward-and-cost rescale at episode~$200$ of a $400$-episode run, and we sweep $10$ independent controller seeds for each of two variants.",
+   "new": "This subsection specifies the two controller variants compared in Section~\\ref{sec:dual_multiseed} and reports the summaries behind that comparison. The setting is Diagnosis with target $B{=}8$, learning rate $\\eta_0{=}0.05$, decay $\\delta{=}0.02$, and a $\\times 10$ reward-and-cost rescale at episode~$200$ of a $400$-episode run, with $10$ independent controller seeds for each variant.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 70,
+   "rationale": "The motivation (a rescale moves the crossing, offline brackets cannot follow an unannounced rescale) is stated in Sections pi5 and dual_multiseed. The setting is kept verbatim.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X30",
+   "category": "DUPLICATE",
+   "old": "Resetting the step-size clock re-adapts roughly $3\\times$ faster than decay alone. The comparison of record uses one estimand for every seed, the restricted recovery time $\\min(T, 180)$, where $T$ is the post-rescale-only recovery time and $180$ is the last index at which the $20$-episode hold can still be checked inside the $200$ post-rescale episodes, with a seed that never completes the hold scored at $180$. On that estimand decay-only averages $157.3$ episodes and reset-on-shift $51.2$. Because the two variants share their ten controller seeds, the paired difference is $106.1$ episodes with a Student-$t$ $95\\%$ interval of $[96.8, 115.4]$. Every one of the ten paired differences is positive, the smallest being $89$ (",
+   "new": "Section~\\ref{sec:dual_multiseed} reports the comparison of record on the restricted recovery time $\\min(T, 180)$, where $180$ is the last index at which the $20$-episode hold can still be checked inside the $200$ post-rescale episodes and a seed that never completes the hold is scored at $180$. Every one of the ten paired differences is positive, the smallest being $89$ (",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 53,
+   "rationale": "157.3 vs 51.2, the paired difference 106.1, and its interval [96.8, 115.4] appear in Section dual_multiseed and in the figure caption. Kept the estimand definition, the smallest paired difference, and the CSV/JSON column references that follow.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X32",
+   "category": "DUPLICATE",
+   "old": "The held-out usage results answer the first question directly. At all twelve attainable budgets, the endpoint mixture meets its expected-usage target on the held-out seeds to within $0.13$ observations, with errors of $0.03$ to $0.08$ on Tiger, $0.02$ to $0.12$ on Diagnosis, and $0.09$ to $0.12$ on Bandit, each within one held-out standard error except at Bandit's gap budget, where the error of $0.09$ is about $1.3$ standard errors. The evaluated bracket endpoints and best feasible single member miss the targets by more. The bracket endpoints miss the budget by $0.3$ to $1.1$ observations on Tiger and by $0.2$ to $3.6$ elsewhere, and the best feasible single member, whose calibration usage is at most the budget by selection and whose held-out usage stays below the budget on all twelve rows here, a result rather than a guarantee, leaves $0.2$ to $4.7$ observations of it unspent. An expected budget is not a per-episode cap. The mixture's held-out mean usage exceeds $B$ on three of the twelve budgets, by at most $0.13$ observations. Such deviations are possible when targeting a population expectation with a finite sample. A designer who needs a hard per-episode cap needs a different mechanism.",
+   "new": "Section~\\ref{sec:budget_frontier} reports the held-out usage results. By environment, the endpoint mixture's usage errors at the attainable budgets are $0.03$ to $0.08$ observations on Tiger, $0.02$ to $0.12$ on Diagnosis, and $0.09$ to $0.12$ on Bandit.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 161,
+   "rationale": "Near-verbatim duplicate of the main-body usage paragraph in Section budget_frontier (within 0.13, the 1.3 SE Bandit exception, endpoints 0.3-1.1 and 0.2-3.6, feasible member 0.2-4.7, three overshoots of at most 0.13, not a per-episode cap). Kept only the per-environment error ranges, which are unique to this copy.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X33",
+   "category": "DUPLICATE",
+   "old": "A same-stream comparison, added after the results above had been inspected, therefore re-evaluated every sampled reference policy on the held-out seeds under the family's per-episode seeding, after checking that each saved policy reproduces the committed reference to $10^{-9}$ on the canonical stream, and recomputed the envelope there, which pairs each seed's family reward with a reference reward on the same episode seeds (the last two columns of Table~\\ref{tab:budget_frontier}, \\texttt{experiments/\\allowbreak run\\_\\allowbreak frontier\\_\\allowbreak reference\\_\\allowbreak heldout.py}, \\texttt{results\\_\\allowbreak budget\\_\\allowbreak frontier\\_\\allowbreak heldout\\_\\allowbreak reference.csv}). The reference support and mixture weights are fitted on these same held-out seed means and held fixed when computing the paired standard errors. The resulting intervals are nominal, pointwise plug-in summaries. They do not propagate support reselection, uncertainty in mixture weights or cap feasibility, or multiplicity across budgets. They describe this fitted comparison and do not establish coverage for the population constrained frontier. On that comparison the mixture falls short of the envelope with a nominal pointwise plug-in $95\\%$ $t$ interval that excludes zero on nine of the twelve attainable budgets, eight of the eleven distinct ones since Tiger's gap budget coincides with its $0.5$ budget. The shortfalls are $0.33$, $0.72$, and $1.03$ at Tiger's $0.25$, $0.5$, and $0.75$ budgets, $0.76$ and $1.10$ at Diagnosis's $0.5$ and $0.75$ budgets, and $0.57$, $1.32$, and $0.59$ at Bandit's $0.5$, $0.75$, and gap budgets, the largest being about a fifth of Bandit's reference reward. The intervals at the other three, Diagnosis's $0.25$ and gap budgets and Bandit's $0.25$ budget, include zero ($-0.03 \\pm 0.28$, $+0.00 \\pm 0.22$, and $-0.21 \\pm 0.12$). The Tiger shortfalls carry a rare-event caveat. Neither the family nor any reference policy in the envelope's support commits wrongly in its $500$ held-out Tiger episodes, so every per-seed reward there is $10$ minus the observation count and the paired Tiger gaps measure only the extra listening the family spends (\\texttt{results\\_\\allowbreak budget\\_\\allowbreak frontier.csv}, \\texttt{results\\_\\allowbreak cpomdp\\_\\allowbreak frontier\\_\\allowbreak heldout.csv}). A wrong commit costs $110$ reward units against a correct one, and the canonical stream records the reference committing wrongly at a rate of $0.6$ percent (success $0.994$, \\texttt{results\\_\\allowbreak cpomdp\\_\\allowbreak frontier.csv}), worth about $0.66$ in expected reward, nearly all of the $0.67$ difference between the reference's canonical and held-out rewards. In the extreme case where the reference erred at that rate and the family never did, the $0.25$ shortfall would reverse and the $0.5$ shortfall would nearly vanish, so on Tiger only the $0.75$ shortfall is robust to the rare event. Tiger's nominal excess at its smallest budget was therefore the stream effect, not a family reward above the reference. The same-stream envelope is still a maximum over noisy sampled points, so it removes the stream mismatch but not the envelope's selection bias, and the reference remains near-optimal and estimated rather than exact.",
+   "new": "Section~\\ref{sec:budget_frontier} describes the same-stream comparison, added after the results above had been inspected. It re-evaluates every sampled reference policy on the held-out seeds under the family's per-episode seeding, after checking that each saved policy reproduces the committed reference to $10^{-9}$ on the canonical stream, and that section states the nominal pointwise plug-in qualification of its paired intervals (the last two columns of Table~\\ref{tab:budget_frontier}, \\texttt{experiments/\\allowbreak run\\_\\allowbreak frontier\\_\\allowbreak reference\\_\\allowbreak heldout.py}, \\texttt{results\\_\\allowbreak budget\\_\\allowbreak frontier\\_\\allowbreak heldout\\_\\allowbreak reference.csv}). The three intervals that include zero are Diagnosis's $0.25$ and gap budgets and Bandit's $0.25$ budget ($-0.03 \\pm 0.28$, $+0.00 \\pm 0.22$, and $-0.21 \\pm 0.12$). For the Tiger rare-event qualification stated there, every held-out Tiger per-seed reward is $10$ minus the observation count (\\texttt{results\\_\\allowbreak budget\\_\\allowbreak frontier.csv}, \\texttt{results\\_\\allowbreak cpomdp\\_\\allowbreak frontier\\_\\allowbreak heldout.csv}), and the canonical stream's reference error rate of $0.6$ percent (success $0.994$, \\texttt{results\\_\\allowbreak cpomdp\\_\\allowbreak frontier.csv}) is worth about $0.66$ in expected reward, nearly all of the $0.67$ difference between the reference's canonical and held-out rewards. Tiger's nominal excess at its smallest budget was therefore the stream effect, not a family reward above the reference. The same-stream envelope is still a maximum over noisy sampled points, so it removes the stream mismatch but not the envelope's selection bias, and the reference remains near-optimal and estimated rather than exact.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 245,
+   "rationale": "The same-stream method, the plug-in qualification (does not propagate support reselection, mixture-weight or feasibility uncertainty, or multiplicity, no coverage claim), the 9-of-12 / 8-of-11 count, the per-budget shortfalls (also the table's paired-gap column), and the Tiger rare-event reversal argument are all stated in the main body's Section budget_frontier. Kept every artifact reference, the post hoc disclosure, the 1e-9 check, the including-zero rows, the 10-minus-count fact, the 0.67 stream difference, and the selection-bias caveat.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X34",
+   "category": "DUPLICATE",
+   "old": "The reading is therefore this. The procedure calibrates expected sensing usage within a fixed policy family, and it does that accurately on held-out data, at gap budgets and interior budgets alike, while declaring unattainable budgets. It does not solve the constrained problem~\\eqref{eq:budgeted} of maximizing reward subject to a usage cap, as Section~\\ref{sec:budget_theory} already stated, and this study puts a number on the difference. When a stated budget is a resource the designer wants spent, for coverage, monitoring, or verification reasons that the reward does not capture, the calibrated mixture spends it to within $0.13$ observations. When the budget is only an upper limit and reward is the objective, the best budget-feasible mixture over the grid, or the constrained reference's feasible envelope where one can be solved, is the right comparison, and the family's reward at the budget can fall short of both. The budget-first framing of this article is the first case. The second case is the constrained-POMDP problem, which this article does not claim to solve.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 167,
+   "rationale": "Duplicates the main body's closing paragraph of Section budget_frontier ('This study supports expected-usage calibration within the tested family ... If the requirement is only an upper limit and reward is the objective, the feasible mixture or constrained reference is the relevant comparator'). The not-a-CPOMDP-solver statement is also in Section budget_theory and app:theory_positioning.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X35",
+   "category": "DUPLICATE",
+   "old": "The design is as follows. The three core environments are calibrated on the canonical five seeds, $100$ episodes per seed, on the same $16$-point weight grid and at the same horizons as the shadow-price curves of Section~\\ref{sec:stairs}, recording usage and reward at every grid weight. Budgets are then set from each calibration curve's attainable range $[U_{\\min}, U_{\\max}]$ at $0.25$, $0.5$, and $0.75$ of the range, at the midpoint of the curve's largest jump (a gap budget that no single tested weight attains), and at half of $U_{\\min}$ (an unattainable budget, which the procedure must declare rather than approximate). Every selection is made on the calibration data alone.",
+   "new": "Section~\\ref{sec:budget_frontier} states the calibration protocol and the five budgets per environment. The gap budget, at the midpoint of the curve's largest jump, is one that no single tested weight attains, and the budget at half of $U_{\\min}$ is unattainable and must be declared rather than approximated.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 61,
+   "rationale": "The calibration protocol (canonical seeds, 100 episodes, 16-point grid, horizons of Section stairs, budgets at 0.25/0.5/0.75, gap midpoint, half of U_min, calibration-only selection) is stated in the main body. Kept the glosses of the two special budgets. The rest of the paragraph (LP comparators with their post hoc disclosure, held-out seeds, envelope values, Bandit last-crossing detail) is untouched.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X36",
+   "category": "DUPLICATE",
+   "old": "Relevance weighting also has a limit that matters here. At the two largest weights the relevance-weighted agent still runs $13.16$ task tests, the tests that are informative about the condition (every test except the distractor test), where the same agent at $w{=}10$ runs $9.77$. It has therefore stopped buying reward-irrelevant information and has not stopped over-buying reward-relevant information. A sensing budget sets a target for expected sensing usage, how many tests are run. Relevance weighting decides what those tests are about. Neither substitutes for the other, and this environment needs both.",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 91,
+   "rationale": "Duplicates the main body's Section distractor ('Relevance weighting does not solve over-observation. At the two largest weights the variant still buys 13.16 task-relevant tests against 9.77 at w=10 ... A sensing target and relevance weighting therefore address different design requirements').",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X37",
+   "category": "DUPLICATE",
+   "old": "Identifying $s_{\\mathrm{rel}}$ turns out to need no information the agent does not already hold. In the implementation, $s_{\\mathrm{rel}}$ is the reward-equivalence class of the state, defined as follows. Two states are reward-equivalent when every commit action pays the same in both, so no belief mass moved between them can change which commit action is optimal. Reward-equivalence groups the states into classes, and that grouping (the partition) is read directly off the commit reward matrix the agent is given (Section~\\ref{sec:methodology}). We implement the variant that way, as a partition into reward-equivalence classes with information gain scored on the class marginal, the belief over which class the state falls in. The classes play the role of $s_{\\mathrm{rel}}$ in the formula above. On \\texttt{DistractorDiagnosisEnv} the identification is concrete. The commit reward matrix has the same column for the two states that share a condition and differ only in the nuisance bit, and different columns for different conditions. The four reward-equivalence classes are therefore exactly the four conditions, and the class marginal is the condition marginal. Belief dynamics are untouched, since the finite-horizon lookahead (the continuation value the planner recurses over) always propagates the full joint posterior and only the term that scores information gain at each step changes. On an environment where no two states are reward-equivalent the variant reduces exactly to ordinary information gain.",
+   "new": "Identifying $s_{\\mathrm{rel}}$ needs no information the agent does not already hold. In the implementation, $s_{\\mathrm{rel}}$ is the reward-equivalence class of the state as defined in Section~\\ref{sec:distractor}, read directly off the commit reward matrix, and information gain is scored on the class marginal. On \\texttt{DistractorDiagnosisEnv} the commit reward matrix has the same column for the two states that share a condition and differ only in the nuisance bit, and different columns for different conditions, so the four classes are exactly the four conditions and the class marginal is the condition marginal. Belief dynamics are untouched, since the planner always propagates the full joint posterior and only the term that scores information gain changes, and on an environment where no two states are reward-equivalent the variant reduces exactly to ordinary information gain.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 92,
+   "rationale": "The reward-equivalence definition, its reading off the reward matrix, the four-classes-are-four-conditions identification, full-posterior propagation, and the reduction to ordinary IG are all in the main body's Section distractor. Kept the link to s_rel in the preceding formula and the reward-matrix column argument.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X38",
+   "category": "DUPLICATE",
+   "old": "EFE ($w{=}1$) is a competitive untuned trade-off rather than uniquely best. On $N{=}8$ ($|S|{=}256$), Planning wins reward ($-17.85$), while EFE achieves $91.1\\%$ accuracy ($-20.95 \\pm 0.30$), gaining $+18.0$pp accuracy over Planning ($73.0\\%$, seed-level Welch $p<10^{-10}$) at a moderate reward cost. Planning+IG ($w{=}5$) reaches $96.3\\%$ accuracy but at $-27.98$ reward, over-testing relative to reward. On $N{=}16$ ($|S|{=}65{,}536$), Planning posts the best mean reward ($-45.42$), with EFE a close second at $-45.80$. EFE's deficit is not significant (seed-level $p{=}0.57$), so the two reward cells are bolded together. Planning+IG ($w{=}5$) wins accuracy ($97.3\\%$) at substantial reward cost ($-54.74$, the worst of the three informed agents). That cost comes from extensive over-testing, $38.3 \\pm 0.05$ tests vs.\\ EFE's $28.1 \\pm 0.09$ (seed-level SE), roughly $36\\%$ more (seed-level Welch $p{=}1.7{\\times}10^{-11}$). EFE outperforms Planning by $+12.6$pp accuracy ($90.8\\%$ vs.\\ $78.2\\%$, seed-level $p<10^{-7}$) at a reward cost of only $0.39$ that is itself not significant, a far better accuracy-per-reward trade than Planning+IG's. The $N{=}16$ instance is the largest state space in our evaluation and shows that the factored belief tree search remains feasible at that size on this synthetic benchmark, with a known model and a hand-coded leaf rule. Validation on a deployed inspection problem is future work.",
+   "new": "Section~\\ref{sec:inspection} summarizes Table~\\ref{tab:inspection}. The seed-level tests behind that summary are as follows. On $N{=}8$, EFE's $+18.0$pp accuracy gain over Planning has seed-level Welch $p<10^{-10}$. On $N{=}16$, EFE's reward deficit to Planning ($-45.80$ against $-45.42$) is not significant ($p{=}0.57$), so the two reward cells are bolded together, EFE's $+12.6$pp accuracy gain over Planning has $p<10^{-7}$, and Planning+IG ($w{=}5$) runs $38.3 \\pm 0.05$ tests against EFE's $28.1 \\pm 0.09$ (seed-level SE), roughly $36\\%$ more (seed-level Welch $p{=}1.7{\\times}10^{-11}$).",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 126,
+   "rationale": "The Inspection outcomes (91.1 vs 73.0, -20.95 vs -17.85, 96.3 at -27.98, 90.8 vs 78.2, -45.80 vs -45.42, 97.3 at -54.74, 38.3 vs 28.1, synthetic-benchmark scope) are stated in the main body's Section inspection and in the table. Kept only the seed-level test results and the 36% figure, which appear only here.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X39",
+   "category": "DUPLICATE",
+   "old": "Whether that constant factor changes any reported result is settled directly in Appendix~\\ref{app:nat_canonical}, which runs the exactly nat-canonical agent of Proposition~\\ref{prop:equivalence}, $w{=}\\ln 2$ in the implementation's bit units, under the Pareto sweep protocol of Section~\\ref{sec:pareto} on all five swept environments (\\texttt{results\\_\\allowbreak nat\\_\\allowbreak canonical\\_\\allowbreak check.csv}). On Tiger, Diagnosis, Bandit, and Testbed it is bit-identical to the implemented $w{=}1$ agent in reward, success rate, and observation count. Where that sweep's mean reward is exactly tied across adjacent swept weights, its reward-maximizing weight is reported as the closed range of tied grid weights, the reward-maximizing tied bracket. On Tiger and Diagnosis both weights lie inside it, and on Bandit, whose bracket has grid endpoints $[1, 2]$ and so contains $w{=}1$ but not $0.69$, the directly run nat-canonical agent attains the bracket's tied reward. Tileworld is the one swept environment where the base changes the policy, and there $w{=}1$ remains Pareto-dominated by $w{=}20$ under either convention.",
+   "new": "Whether that constant factor changes any reported result is settled directly in Appendix~\\ref{app:nat_canonical}, which runs the exactly nat-canonical agent of Proposition~\\ref{prop:equivalence}, $w{=}\\ln 2$ in the implementation's bit units, under the Pareto sweep protocol of Section~\\ref{sec:pareto} on all five swept environments (\\texttt{results\\_\\allowbreak nat\\_\\allowbreak canonical\\_\\allowbreak check.csv}). Where that sweep's mean reward is exactly tied across adjacent swept weights, its reward-maximizing weight is reported as the closed range of tied grid weights, the reward-maximizing tied bracket. The nat-canonical agent is bit-identical to the implemented $w{=}1$ agent in reward, success rate, and observation count on Tiger, Diagnosis, Bandit, and Testbed. Tileworld is the one swept environment where the base changes the policy, and there $w{=}1$ remains Pareto-dominated by $w{=}20$ under either convention.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 34,
+   "rationale": "The per-environment bracket reading (Tiger and Diagnosis inside, Bandit's [1, 2] containing 1 but not 0.69) is given in app:nat_canonical. Kept the pointer, the CSV, the definition of the reward-maximizing tied bracket (used later in the appendix), and the two headline results.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X40",
+   "category": "DUPLICATE",
+   "old": "Testbed's exactly identical result carries one further remark. Proposition~\\ref{prop:nearopt} derives, for a two-observation horizon ($H{=}2$), a closed-form interval of near-optimal weights. On Testbed that interval's upper endpoint falls between the nat-denominated weight $w{=}1$ and the implemented bit-denominated agent's $1.44$ reward units per nat, a separation taken up in the discussion following Table~\\ref{tab:alpha_eta}. Under the sweep's $H{=}4$ protocol, however, the two agents behave identically, both scoring $0.37$ reward against the $0.48$ that the weights of the tied reward-maximizing bracket $[0.01, 0.5]$ achieve.",
+   "new": "On Testbed, Proposition~\\ref{prop:nearopt}'s $H{=}2$ interval separates the two conventions on paper (the discussion following Table~\\ref{tab:alpha_eta}), but under the sweep's $H{=}4$ protocol both agents score $0.37$ reward against the $0.48$ that the weights of the tied reward-maximizing bracket $[0.01, 0.5]$ achieve.",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 41,
+   "rationale": "The Testbed interval-versus-behavior point (w*_over near 1.01 between nat w=1 and 1.44, identical behavior at H=4) is developed in the Table alpha_eta discussion of app:theory_thresholds. Kept the numbers and the pointer.",
+   "labels_removed": [],
+   "refs_repointed": []
+  },
+  {
+   "id": "X41",
+   "category": "DUPLICATE",
+   "old": "Many real-world decision problems, including medical diagnosis, fault detection, and security screening, have asymmetric penalties ($|R^-|/|R^+| \\gg 1$), the regime in which the two-state interval analysis is most favorable to $w{=}1$. Within that regime, $w{=}1$ lies on the reward-maximizing plateau on Tiger and Diagnosis but is Pareto-dominated by $w{=}20$ on Tileworld (Section~\\ref{sec:pareto}).",
+   "new": "",
+   "old_lncs": null,
+   "new_lncs": null,
+   "lncs_count": 1,
+   "words_saved": 52,
+   "rationale": "Restated in app:interpretation ('Many real-world decision problems have alpha >> 1 ... the regime where the interval analysis is most favorable to w=1') and in the main-body Pareto section (Tiger/Diagnosis plateau, Tileworld dominated by w=20). The Testbed paragraph ends cleanly on 'In this regime, EFE assigns too much weight to information gain.'",
+   "labels_removed": [],
+   "refs_repointed": []
+  }
+ ],
+ "producer_changes": [],
+ "considered_and_kept": [
+  {
+   "passage": "Planning+IG at w=10 falls to +20.55 on RS[7,8] ... We ran only w in {5, 10} as tuned comparators on RockSample (app:rocksample_main_details)",
+   "reason": "Kept as the stronger RockSample weight-comparison copy. It carries the only-three-weights caveat and the heuristic ties, and the main body points to this subsection."
+  },
+  {
+   "passage": "Paragraph 'POMCP comparison', 'Simulation-budget scaling', 'Exploration constant and informed rollouts' in app:pomcp",
+   "reason": "Kept as the stronger copy of the POMCP and exploration-sweep evidence. The duplicates in app:interpretation are condensed instead (X05, X06). The fidelity-gap statements and the selection-rule disclosure are untouched."
+  },
+  {
+   "passage": "The approach also scales to multiple observation actions ... On Diagnosis (N=4, K=2 tests), MCTS-EFE at H=5 achieves 94.2%",
+   "reason": "Unique content (Diagnosis and Tileworld MCTS-EFE scaling) that is not stated in app:pomcp."
+  },
+  {
+   "passage": "Environment Specifications tables and the RockSample/Inspection closing paragraph",
+   "reason": "Complementary to the protocol appendix's prose descriptions rather than duplicated: the tables are the only place with per-environment H, gamma, and step caps, and the protocol's six RockSample differences point back to them."
+  },
+  {
+   "passage": "Per-environment paragraphs (Tiger, Diagnosis, Bandit, Tileworld, RockSample six differences, Inspection) in app:experimental_protocol",
+   "reason": "These expand the main-body summaries by design, and the main body explicitly points to them for the six RockSample differences. They are longer than their main-body counterparts, not restatements."
+  },
+  {
+   "passage": "The rest of the protocol concerns how results are aggregated and tested ... seed-level Welch t-tests ... Holm--Bonferroni",
+   "reason": "Statistical protocol statement. Never removed, even though the main body states it too."
+  },
+  {
+   "passage": "SARSOP TOST retrospective-margin disclosure and n=20 prospective seeds (app:sarsop_details)",
+   "reason": "Disclosure that is a property of the reported analysis. Kept even though the main body states it."
+  },
+  {
+   "passage": "Two statistical conventions govern how we read those numbers (seed-level versus pooled sign agreement, seed-level d inflation)",
+   "reason": "Statistical protocol statements. Kept."
+  },
+  {
+   "passage": "app:distractor (factorization guarantee) versus app:distractor_details and Section distractor",
+   "reason": "Different content (the unit-tested factorization proof) that is cross-referenced rather than duplicated."
+  },
+  {
+   "passage": "SARSOP build and export details (app:sarsop_build) versus app:sarsop_details",
+   "reason": "Only the export-path clause was duplicated (X24). The toolchain patches and unit tests are unique."
+  },
+  {
+   "passage": "Usage-onset corollary check (app:theory_budget_proofs, p=0.6, c=0.3, threshold 3.44) versus sec:prop2exp (p in {0.60, 0.58}, refined grid)",
+   "reason": "Two different checks, a unit test at 0.9x/1.2x the threshold and a refined-grid sweep on two instances, with one shared instance. Not a duplicate."
+  },
+  {
+   "passage": "Tileworld spatial scaling, partition sensitivity, and fixed w=100 disclosure (app:tileworld_details) versus main body Tileworld",
+   "reason": "The appendix is the detailed version the main body points to. The fixed-weight disclosure is kept. The overlap is summary-versus-detail, not duplication."
+  },
+  {
+   "passage": "The multi-seed result strengthens rather than merely replicates the single-trajectory workshop finding (app:dual_details)",
+   "reason": "Left for the range-C scout as review-history narration. It partly restates the main body, but a trim there would overlap their single-passage edit."
+  },
+  {
+   "passage": "The RockSample[7,8] reference calculation instead exposes a limitation (app:theory_positioning)",
+   "reason": "Not duplicated elsewhere. It is a FAILED-category candidate in range B and belongs to that scout. The main body cites it as a limitation, so it should be compressed rather than deleted."
+  },
+  {
+   "passage": "The reset-on-shift variant of the controller watches the usage of the most recent episodes (app:theory_controller)",
+   "reason": "Overlaps the main body and app:dual_details, but it is the proposition's scope statement, and a condensation saves only about 20 words. Kept."
+  },
+  {
+   "passage": "Against the reference envelope, the mixture's reward sits 0.14, 0.76, 1.05, and 0.10 below it ... (app:frontier_details cross-stream numbers)",
+   "reason": "Unique to the appendix. The main body says these direct comparisons are 'retained in Appendix frontier_details'."
+  }
+ ]
+}

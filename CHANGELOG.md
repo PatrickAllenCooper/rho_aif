@@ -3,6 +3,30 @@
 All notable changes to this project are documented here. Format loosely
 follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Removed
+
+- The flat one-ply Monte Carlo RockSample baseline (`Flat-MC (1000)`) is no
+  longer part of the `experiments/run_rocksample.py` roster, the committed
+  RockSample CSVs, or the RockSample tables. The `RockSampleFlatMCAgent`
+  class stays in the package.
+
+### Added
+
+- `experiments/run_tost_sarsop.py --episode-seeding` resets each episode at
+  `seed * 10000 + episode`, so both policies face matched episodes
+  (`results/results_tost_sarsop_episode_paired*.csv`).
+- `experiments/run_frontier_target_reference.py` solves SARSOP at subsidized
+  (negative) usage penalties and compares each budget-frontier mixture with
+  the best sampled reference mixture whose usage equals the target, on the
+  held-out and fresh streams. `--usage-matched` refits at realized usage
+  without episodes. The frontier table gains Target reference and Target gap
+  columns.
+- `experiments/run_rocksample.py --refresh-stats FILE...` recomputes the
+  within-metric Holm columns of committed RockSample stats files without
+  running episodes (`apply_holm`, `tests/test_rocksample_holm.py`).
+
 ## [2.1.0] - 2026-09-29
 
 A correctness release for the observe-then-commit POMCP baseline, found

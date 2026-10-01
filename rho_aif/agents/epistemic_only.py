@@ -24,8 +24,9 @@ class EpistemicOnlyAgent(BaseAgent):
     Ablation: recursive planning using only information gain, no reward signal.
 
     Observation actions are evaluated by their epistemic value (information
-    gain + recursive continuation). Commit actions have G = 0 (the agent
-    commits only when no observation action offers positive information gain).
+    gain + recursive continuation, net of the observation cost). Commit actions
+    have G = 0, so the agent commits once no observation sequence within the
+    horizon yields more information, in bits, than it costs.
     When committing, selects the highest-probability state.
     """
 
