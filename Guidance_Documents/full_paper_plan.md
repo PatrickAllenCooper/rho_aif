@@ -1730,6 +1730,8 @@ Main text (Section 6.6) and the SARSOP appendix were updated. The frontier appen
 - The episode-matching overstatement.
 - D12 (the CSV git stamp predating the producer) is fixed by committing the producer and restamping the two CSVs to that commit.
 
+**Fable re-review (2026-09-30): Accept, no required changes.** R1 is verified resolved, and every new number recomputes from its CSV. Fable restated its optional point. The declined sentence (appendix `app:pomcp`: "differs from this POMCP in its exact beliefs") does name POMCP, and the earlier decline wrongly read it as the UCT sentence. The code confirms Fable: `POMCPAgent` samples root states from the exact belief and updates path rollout beliefs by exact Bayes. "exact beliefs" is therefore dropped from that list in both masters ("its exact tree enumeration and its closed-form leaf and commit values"). The module docstring's "particle-based belief at each tree node" is replaced, because node particles are recorded but never read. Panel final: five Accepts.
+
 **Provenance restamp (D12).** The producer and its outputs were committed in `90928ac`. The `git_sha` column of `results_cpomdp_frontier_subsidy.csv` (69 rows) and `results_budget_frontier_target_reference.csv` (12 rows) was then rewritten from the pre-commit `445daf9` to `90928ac` by byte replacement, with no other byte changed. The usage-matched file carries no stamp, because it is derived without episodes from the stamped files.
 
 **Result.** JAIR 111 pp (references p38), LNCS 142 pp, zero overfull, zero undefined, `verify_claims` exits 0, 495 tests pass.

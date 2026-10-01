@@ -5,7 +5,8 @@ Implements Silver and Veness (2010) adapted to the observe-then-commit structure
 - UCB1 tree policy for action selection during tree traversal
 - Semi-informed rollout policy for leaf evaluation (uniform-random over
   observation actions, belief-optimal commit action at termination)
-- Particle-based belief representation at each tree node
+- Root states sampled from the exact Bayesian belief, and rollout beliefs
+  updated by exact Bayes along the simulated history (rollout_belief="path")
 - No state transitions during observation phase (state is fixed)
 """
 
