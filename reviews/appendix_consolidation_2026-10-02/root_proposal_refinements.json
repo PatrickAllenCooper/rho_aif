@@ -1,0 +1,16 @@
+[
+  {
+    "id": "early-01-core-table-consolidation",
+    "variant": "new",
+    "old": "For Table~\\ref{tab:main}'s ordered rows (Myopic, Planning, Planning+IG, EFE), the corresponding pooled reward SEs are",
+    "new": "The pooled reward SEs for Myopic, Planning, Planning+IG and EFE, in that order, are",
+    "reason": "Clearer ordered-SE sentence, avoiding a mechanical row-descriptor false positive."
+  },
+  {
+    "id": "early-12-pomcp",
+    "variant": "new",
+    "old": "c\\in\\{1,2,5,10,20,50,R\\}",
+    "new": "c\\in\\{1,\\allowbreak2,\\allowbreak5,\\allowbreak10,\\allowbreak20,\\allowbreak50,\\allowbreak R\\}",
+    "reason": "Permit natural inline-math line breaks in the narrower LNCS format."
+  }
+]

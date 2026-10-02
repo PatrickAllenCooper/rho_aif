@@ -1,0 +1,912 @@
+{
+  "scope": "First 15 article entries in listed order in JAIR volume 84 (2025), predetermined half of a full-volume 30-article census. Listing order is distinct from printed Article number.",
+  "volumeURL": "https://www.jair.org/index.php/jair/issue/view/1173",
+  "retrievedOn": "2026-10-02",
+  "measure": "Number of distinct physical PDF pages containing substantive lettered/numbered appendix content. Inclusive start/end pages; mixed reference/appendix pages count once. Excludes reference-only pages, main-text conclusions, external files, and reproducibility checklist-only pages. This is occupied pages, not fractional page-equivalent content length. Per-appendix ranges can overlap; totals use their union.",
+  "articles": [
+    {
+      "order": 1,
+      "title": "A Graphical Formalism for Reasoning about Substitution in Resource Transforming Procedures",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/18606",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/18606/27221",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/18606/27221/48723",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/01.pdf",
+      "totalPhysicalPDFPages": 45,
+      "pdfSHA256": "8e02ba486dce3ea553c9a3703d80c66ab26fbc6f18d1caacdce5a154844c3e45",
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalPagesOccupiedByAppendix": 0,
+      "mixedPageNotes": [],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 0,
+      "noAppendixEvidence": "Section 13 Conclusion and Future Work starts on p42; acknowledgments and References start on p43; references continue through p45, followed only by received/accepted dates.",
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [
+        {
+          "description": "code",
+          "url": "https://github.com/lukedickens/asp_recipe_graphs",
+          "evidencePhysicalPage": 24,
+          "includedInPDFMeasure": false
+        }
+      ],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. External supplementary/data/code materials are linked in the paper and excluded.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending."
+    },
+    {
+      "order": 2,
+      "title": "Robust Reward Design for Markov Decision Processes",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/19154",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/19154/27223",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/19154/27223/48762",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/02.pdf",
+      "totalPhysicalPDFPages": 46,
+      "pdfSHA256": "74747348241062e6e3bf6badb299985da026c7b9f729221926c1a44d396a7481",
+      "appendices": [
+        {
+          "label": "A",
+          "title": "Basic Results About MDPs",
+          "startPhysicalPage": 32,
+          "endPhysicalPage": 34,
+          "inclusiveOccupiedPages": 3,
+          "boundaryEvidence": {
+            "startPhysicalPage": 32,
+            "startHeading": "A      Basic Results About MDPs",
+            "endPhysicalPage": 34,
+            "endBoundary": "Next appendix B starts on p34; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "B",
+          "title": "Proofs on the Robustness to Nonunique Best Response",
+          "startPhysicalPage": 34,
+          "endPhysicalPage": 36,
+          "inclusiveOccupiedPages": 3,
+          "boundaryEvidence": {
+            "startPhysicalPage": 34,
+            "startHeading": "B      Proofs on the Robustness to Nonunique Best Response",
+            "endPhysicalPage": 36,
+            "endBoundary": "Next appendix C starts on p36; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "C",
+          "title": "Proofs on the Robustness to Bounded Rationality",
+          "startPhysicalPage": 36,
+          "endPhysicalPage": 39,
+          "inclusiveOccupiedPages": 4,
+          "boundaryEvidence": {
+            "startPhysicalPage": 36,
+            "startHeading": "C      Proofs on the Robustness to Bounded Rationality",
+            "endPhysicalPage": 39,
+            "endBoundary": "Next appendix D starts on p39; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "D",
+          "title": "Proofs on the Optimality of Deterministic Occupancy Measures",
+          "startPhysicalPage": 39,
+          "endPhysicalPage": 42,
+          "inclusiveOccupiedPages": 4,
+          "boundaryEvidence": {
+            "startPhysicalPage": 39,
+            "startHeading": "D     Proofs on the Optimality of Deterministic Occupancy Measures",
+            "endPhysicalPage": 42,
+            "endBoundary": "Next appendix E starts on p42; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "E",
+          "title": "Proofs of the Existence of Optimal Interior-point Allocation",
+          "startPhysicalPage": 42,
+          "endPhysicalPage": 46,
+          "inclusiveOccupiedPages": 5,
+          "boundaryEvidence": {
+            "startPhysicalPage": 42,
+            "startHeading": "E      Proofs of the Existence of Optimal Interior-point Allocation",
+            "endPhysicalPage": 46,
+            "endBoundary": "Appendix content continues to final physical PDF page 46, followed by received/accepted dates."
+          }
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          32,
+          46
+        ]
+      ],
+      "totalPagesOccupiedByAppendix": 15,
+      "mixedPageNotes": [
+        {
+          "page": 34,
+          "contents": "End of A and beginning of B"
+        },
+        {
+          "page": 36,
+          "contents": "End of B and beginning of C"
+        },
+        {
+          "page": 39,
+          "contents": "End of C and beginning of D"
+        },
+        {
+          "page": 42,
+          "contents": "End of D and beginning of E"
+        }
+      ],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 15,
+      "noAppendixEvidence": null,
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [
+        {
+          "description": "code",
+          "url": "https://github.com/fribuilder/robust-reward-design",
+          "evidencePhysicalPage": 20,
+          "includedInPDFMeasure": false
+        }
+      ],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. External supplementary/data/code materials are linked in the paper and excluded.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending. Boundary start/mixed pages additionally rendered and visually inspected."
+    },
+    {
+      "order": 3,
+      "title": "On Generating Monolithic and Model Reconciling Explanations in Probabilistic Scenarios",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/18820",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/18820/27225",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/18820/27225/48807",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/03.pdf",
+      "totalPhysicalPDFPages": 40,
+      "pdfSHA256": "0c46a0cccca2fd60e5d85e84921cda1e1b04c14731f4e16a83ee5e4b39b52a94",
+      "appendices": [
+        {
+          "label": "A",
+          "title": "Illustrative Example: Simple Package Delivery Problem",
+          "startPhysicalPage": 38,
+          "endPhysicalPage": 40,
+          "inclusiveOccupiedPages": 3,
+          "boundaryEvidence": {
+            "startPhysicalPage": 38,
+            "startHeading": "A      Illustrative Example: Simple Package Delivery Problem",
+            "endPhysicalPage": 40,
+            "endBoundary": "Appendix content continues to final physical PDF page 40, followed by received/accepted dates."
+          }
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          38,
+          40
+        ]
+      ],
+      "totalPagesOccupiedByAppendix": 3,
+      "mixedPageNotes": [
+        {
+          "page": 38,
+          "contents": "Final references and beginning of A"
+        }
+      ],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 3,
+      "noAppendixEvidence": null,
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [
+        {
+          "description": "code",
+          "url": "https://github.com/YODA-Lab/Probabilistic-Monolithic-Model-Reconciling-Explanations",
+          "evidencePhysicalPage": 24,
+          "includedInPDFMeasure": false
+        }
+      ],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. External supplementary/data/code materials are linked in the paper and excluded.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending. Boundary start/mixed pages additionally rendered and visually inspected."
+    },
+    {
+      "order": 4,
+      "title": "Optimal Decision Trees for Interpretable and Constrained Clustering",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/18144",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/18144/27224",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/18144/27224/48786",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/04.pdf",
+      "totalPhysicalPDFPages": 43,
+      "pdfSHA256": "d9713867d15230991c4810350880388f250a73b3d135e7ff80ac9dc0057fcea5",
+      "appendices": [
+        {
+          "label": "A",
+          "title": "Revised MIP Encoding of Decision Tree Clustering Baseline",
+          "startPhysicalPage": 40,
+          "endPhysicalPage": 43,
+          "inclusiveOccupiedPages": 4,
+          "boundaryEvidence": {
+            "startPhysicalPage": 40,
+            "startHeading": "A      Revised MIP Encoding of Decision Tree Clustering Baseline",
+            "endPhysicalPage": 43,
+            "endBoundary": "Appendix content continues to final physical PDF page 43, followed by received/accepted dates."
+          }
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          40,
+          43
+        ]
+      ],
+      "totalPagesOccupiedByAppendix": 4,
+      "mixedPageNotes": [
+        {
+          "page": 40,
+          "contents": "Final references and beginning of A"
+        }
+      ],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 4,
+      "noAppendixEvidence": null,
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. No explicit external supplementary/data/code materials found in the targeted supplement/link text scan; this is not a claim that none exist elsewhere.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending. Boundary start/mixed pages additionally rendered and visually inspected."
+    },
+    {
+      "order": 5,
+      "title": "Correct Explanations and How to Define Them: Properties and Metrics for Measuring Correctness of Three Forms of ML Model Input/Output Behaviour Explanations",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/18691",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/18691/27227",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/18691/27227/48994",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/05.pdf",
+      "totalPhysicalPDFPages": 41,
+      "pdfSHA256": "a96540df648a9f88cfebb0aeaf03b74f8af9205ad6831e46fe11aa1460e9fe59",
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalPagesOccupiedByAppendix": 0,
+      "mixedPageNotes": [],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 0,
+      "noAppendixEvidence": "Section 5 Conclusions starts on p34; acknowledgements on p36; References starts on p37, continues through p40; p41 has received/accepted dates only.",
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. No explicit external supplementary/data/code materials found in the targeted supplement/link text scan; this is not a claim that none exist elsewhere.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending."
+    },
+    {
+      "order": 6,
+      "title": "On a Simple Hedonic Game with Graph-Restricted Communication",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/14956",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/14956/27228",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/14956/27228/49291",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/06.pdf",
+      "totalPhysicalPDFPages": 23,
+      "pdfSHA256": "e8e6f4203a20879f94d0dcd34ba7484dad4d6a130f322db76706ea5279e5d383",
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalPagesOccupiedByAppendix": 0,
+      "mixedPageNotes": [],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 0,
+      "noAppendixEvidence": "Section 5 Conclusions and acknowledgements are on p21; References starts on p22 and continues through final p23.",
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. No explicit external supplementary/data/code materials found in the targeted supplement/link text scan; this is not a claim that none exist elsewhere.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending."
+    },
+    {
+      "order": 7,
+      "title": "Graph Collaborative Filtering Model Combining Time Factor and Attention Mechanism",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/18696",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/18696/27229",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/18696/27229/49388",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/07.pdf",
+      "totalPhysicalPDFPages": 15,
+      "pdfSHA256": "de0f0c5ea909ba493dc8eea77d00719f019dce42c84c73647bad3baaa399031b",
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalPagesOccupiedByAppendix": 0,
+      "mixedPageNotes": [],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 0,
+      "noAppendixEvidence": "Section 5 Conclusion, section 6 Acknowledgments, and References start on p13; references continue through final p15.",
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. No explicit external supplementary/data/code materials found in the targeted supplement/link text scan; this is not a claim that none exist elsewhere.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending."
+    },
+    {
+      "order": 8,
+      "title": "Thousands of AI Authors on the Future of AI",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/19087",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/19087/27230",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/19087/27230/49506",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/08.pdf",
+      "totalPhysicalPDFPages": 48,
+      "pdfSHA256": "c6bd3b39b305163e8a38524148cfb1ab67e4d0c4434b9a12527cb62e1c70da7c",
+      "appendices": [
+        {
+          "label": "A",
+          "title": "Details on Methods",
+          "startPhysicalPage": 21,
+          "endPhysicalPage": 26,
+          "inclusiveOccupiedPages": 6,
+          "boundaryEvidence": {
+            "startPhysicalPage": 21,
+            "startHeading": "A     Details on Methods",
+            "endPhysicalPage": 26,
+            "endBoundary": "Next appendix B starts on p26; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "B",
+          "title": "Full Descriptions of Milestones",
+          "startPhysicalPage": 26,
+          "endPhysicalPage": 31,
+          "inclusiveOccupiedPages": 6,
+          "boundaryEvidence": {
+            "startPhysicalPage": 26,
+            "startHeading": "B      Full Descriptions of Milestones",
+            "endPhysicalPage": 31,
+            "endBoundary": "Next appendix C starts on p31; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "C",
+          "title": "Additional Information on Participation Bias and Question-Level Response Bias",
+          "startPhysicalPage": 31,
+          "endPhysicalPage": 32,
+          "inclusiveOccupiedPages": 2,
+          "boundaryEvidence": {
+            "startPhysicalPage": 31,
+            "startHeading": "C   Additional Information on Participation Bias and Question-Level Response Bias",
+            "endPhysicalPage": 32,
+            "endBoundary": "Next appendix D starts on p33; current appendix ends on p32."
+          }
+        },
+        {
+          "label": "D",
+          "title": "Results Comparing Different Demographics",
+          "startPhysicalPage": 33,
+          "endPhysicalPage": 37,
+          "inclusiveOccupiedPages": 5,
+          "boundaryEvidence": {
+            "startPhysicalPage": 33,
+            "startHeading": "D Results Comparing Different Demographics",
+            "endPhysicalPage": 37,
+            "endBoundary": "Next appendix E starts on p38; current appendix ends on p37."
+          }
+        },
+        {
+          "label": "E",
+          "title": "Supplementary Figures and Results",
+          "startPhysicalPage": 38,
+          "endPhysicalPage": 47,
+          "inclusiveOccupiedPages": 10,
+          "boundaryEvidence": {
+            "startPhysicalPage": 38,
+            "startHeading": "E Supplementary Figures and Results",
+            "endPhysicalPage": 47,
+            "endBoundary": "Table E2 continues through p47; p48 begins F Reproducibility Checklist for JAIR, excluded from substantive appendix measure."
+          }
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          21,
+          47
+        ]
+      ],
+      "totalPagesOccupiedByAppendix": 27,
+      "mixedPageNotes": [
+        {
+          "page": 21,
+          "contents": "Final references and beginning of A"
+        },
+        {
+          "page": 26,
+          "contents": "A Figure A3 invitation letter and beginning of B"
+        },
+        {
+          "page": 31,
+          "contents": "Final part of B Table B1 and beginning of C"
+        }
+      ],
+      "excludedChecklistIntervals": [
+        {
+          "label": "F",
+          "title": "Reproducibility Checklist for JAIR",
+          "startPhysicalPage": 48,
+          "endPhysicalPage": 48,
+          "inclusiveOccupiedPages": 1
+        }
+      ],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 28,
+      "noAppendixEvidence": null,
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [
+        {
+          "description": "anonymized data and full survey questions",
+          "url": "https://osf.io/vmdny",
+          "evidencePhysicalPage": 17,
+          "includedInPDFMeasure": false
+        },
+        {
+          "description": "preregistration",
+          "url": "https://osf.io/8gzdr",
+          "evidencePhysicalPage": 21,
+          "includedInPDFMeasure": false
+        }
+      ],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. External supplementary/data/code materials are linked in the paper and excluded.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending. Boundary start/mixed pages additionally rendered and visually inspected."
+    },
+    {
+      "order": 9,
+      "title": "Finding Minimal Plan Reductions Using Classical Planning",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/19437",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/19437/27231",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/19437/27231/49509",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/09.pdf",
+      "totalPhysicalPDFPages": 35,
+      "pdfSHA256": "ce244729c6cbc2975b139e908047863b9271d533ce0b2e42c65580db9d14e937",
+      "appendices": [
+        {
+          "label": "A",
+          "title": "WPMaxSAT Formulation",
+          "startPhysicalPage": 34,
+          "endPhysicalPage": 35,
+          "inclusiveOccupiedPages": 2,
+          "boundaryEvidence": {
+            "startPhysicalPage": 34,
+            "startHeading": "A       WPMaxSAT Formulation",
+            "endPhysicalPage": 35,
+            "endBoundary": "Appendix content continues to final physical PDF page 35, followed by received/accepted dates."
+          }
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          34,
+          35
+        ]
+      ],
+      "totalPagesOccupiedByAppendix": 2,
+      "mixedPageNotes": [
+        {
+          "page": 34,
+          "contents": "Final references and beginning of A"
+        }
+      ],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 2,
+      "noAppendixEvidence": null,
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [
+        {
+          "description": "code and data",
+          "url": "https://doi.org/10.5281/zenodo.14065819",
+          "evidencePhysicalPage": 33,
+          "includedInPDFMeasure": false
+        }
+      ],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. External supplementary/data/code materials are linked in the paper and excluded.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending. Boundary start/mixed pages additionally rendered and visually inspected."
+    },
+    {
+      "order": 10,
+      "title": "Banal Deception and Human-AI Ecosystems: A Study of People’s Perceptions of LLM-generated Deceptive Behaviour",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/18724",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/18724/27232",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/18724/27232/49574",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/10.pdf",
+      "totalPhysicalPDFPages": 30,
+      "pdfSHA256": "6ff0a09a6a31137079eb087261fd482f4f69b53c19a71abc387c6d0fbd75115f",
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalPagesOccupiedByAppendix": 0,
+      "mixedPageNotes": [],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 0,
+      "noAppendixEvidence": "Section 6 Conclusion and acknowledgments are on p25; References starts on p26 and continues through final p30. Supplementary Material paragraph on p25 links an external OSF repository; it is not an in-PDF appendix.",
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [
+        {
+          "description": "study supplementary material: survey questions, interview protocols, codebooks",
+          "url": "https://osf.io/c7upq/",
+          "evidencePhysicalPage": 25,
+          "includedInPDFMeasure": false
+        }
+      ],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. External supplementary/data/code materials are linked in the paper and excluded.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending."
+    },
+    {
+      "order": 11,
+      "title": "Recency-Weighted Temporally-Segmented Ensemble for Time Series Modeling",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/17572",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/17572/27233",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/17572/27233/49794",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/11.pdf",
+      "totalPhysicalPDFPages": 41,
+      "pdfSHA256": "925b95590a838b9323e72dae68bd26a1980982f58dcb9175982d78e3748a16a4",
+      "appendices": [
+        {
+          "label": "A",
+          "title": "ReWTS Weight Fitting Derivation",
+          "startPhysicalPage": 31,
+          "endPhysicalPage": 32,
+          "inclusiveOccupiedPages": 2,
+          "boundaryEvidence": {
+            "startPhysicalPage": 31,
+            "startHeading": "A     ReWTS Weight Fitting Derivation",
+            "endPhysicalPage": 32,
+            "endBoundary": "Next appendix B starts on p33; current appendix ends on p32."
+          }
+        },
+        {
+          "label": "B",
+          "title": "Forecast on the Simulation Data",
+          "startPhysicalPage": 33,
+          "endPhysicalPage": 38,
+          "inclusiveOccupiedPages": 6,
+          "boundaryEvidence": {
+            "startPhysicalPage": 33,
+            "startHeading": "B     Forecast on the Simulation Data",
+            "endPhysicalPage": 38,
+            "endBoundary": "Next appendix C starts on p38; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "C",
+          "title": "Results on Drinking Water Treatment Plant",
+          "startPhysicalPage": 38,
+          "endPhysicalPage": 40,
+          "inclusiveOccupiedPages": 3,
+          "boundaryEvidence": {
+            "startPhysicalPage": 38,
+            "startHeading": "C       Results on Drinking Water Treatment Plant",
+            "endPhysicalPage": 40,
+            "endBoundary": "Next appendix D starts on p41; current appendix ends on p40."
+          }
+        },
+        {
+          "label": "D",
+          "title": "Result on ELEC2 Dataset with Chunk Length of Four Weeks",
+          "startPhysicalPage": 41,
+          "endPhysicalPage": 41,
+          "inclusiveOccupiedPages": 1,
+          "boundaryEvidence": {
+            "startPhysicalPage": 41,
+            "startHeading": "D    Result on ELEC2 Dataset with Chunk Length of Four Weeks",
+            "endPhysicalPage": 41,
+            "endBoundary": "Appendix content continues to final physical PDF page 41, followed by received/accepted dates."
+          }
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          31,
+          41
+        ]
+      ],
+      "totalPagesOccupiedByAppendix": 11,
+      "mixedPageNotes": [
+        {
+          "page": 31,
+          "contents": "Final references and beginning of A"
+        },
+        {
+          "page": 38,
+          "contents": "B Figure 20 and beginning of C"
+        }
+      ],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 11,
+      "noAppendixEvidence": null,
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [
+        {
+          "description": "code",
+          "url": "https://github.com/SINTEF/rewts",
+          "evidencePhysicalPage": 30,
+          "includedInPDFMeasure": false
+        }
+      ],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. External supplementary/data/code materials are linked in the paper and excluded.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending. Boundary start/mixed pages additionally rendered and visually inspected."
+    },
+    {
+      "order": 12,
+      "title": "Detecting Generative Model Inversion Attacks for Protecting Intellectual Property of Deep Neural Networks",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/19468",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/19468/27234",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/19468/27234/50049",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/12.pdf",
+      "totalPhysicalPDFPages": 13,
+      "pdfSHA256": "28c4b71cc29f0bb9bc5383ed58ccdf5427382b01d2e5e5fcbd46d340858ffd68",
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalPagesOccupiedByAppendix": 0,
+      "mixedPageNotes": [],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 0,
+      "noAppendixEvidence": "Section 7 Limitation and Future Work, section 8 Conclusion, and References occur on p12; references continue through final p13.",
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. No explicit external supplementary/data/code materials found in the targeted supplement/link text scan; this is not a claim that none exist elsewhere.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending."
+    },
+    {
+      "order": 13,
+      "title": "Reasoning over Streams of Events with Delayed Effects",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/17886",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/17886/27235",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/17886/27235/50084",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/13.pdf",
+      "totalPhysicalPDFPages": 37,
+      "pdfSHA256": "b125e9862e97abbf86b5791f75dd54fc55bb5fb8821dbb3f8bb40b300ede19a9",
+      "appendices": [
+        {
+          "label": "A",
+          "title": "Reasoning Algorithms",
+          "startPhysicalPage": 25,
+          "endPhysicalPage": 28,
+          "inclusiveOccupiedPages": 4,
+          "boundaryEvidence": {
+            "startPhysicalPage": 25,
+            "startHeading": "A     Reasoning Algorithms",
+            "endPhysicalPage": 28,
+            "endBoundary": "Next appendix B starts on p28; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "B",
+          "title": "Proofs of Correctness and Complexity",
+          "startPhysicalPage": 28,
+          "endPhysicalPage": 34,
+          "inclusiveOccupiedPages": 7,
+          "boundaryEvidence": {
+            "startPhysicalPage": 28,
+            "startHeading": "B       Proofs of Correctness and Complexity",
+            "endPhysicalPage": 34,
+            "endBoundary": "Next appendix C starts on p34; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "C",
+          "title": "Future Terminations",
+          "startPhysicalPage": 34,
+          "endPhysicalPage": 36,
+          "inclusiveOccupiedPages": 3,
+          "boundaryEvidence": {
+            "startPhysicalPage": 34,
+            "startHeading": "C       Future Terminations",
+            "endPhysicalPage": 36,
+            "endBoundary": "Next appendix D starts on p36; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "D",
+          "title": "Reproducing Our Experiments",
+          "startPhysicalPage": 36,
+          "endPhysicalPage": 37,
+          "inclusiveOccupiedPages": 2,
+          "boundaryEvidence": {
+            "startPhysicalPage": 36,
+            "startHeading": "D       Reproducing Our Experiments",
+            "endPhysicalPage": 37,
+            "endBoundary": "Appendix content continues to final physical PDF page 37, followed by received/accepted dates."
+          }
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          25,
+          37
+        ]
+      ],
+      "totalPagesOccupiedByAppendix": 13,
+      "mixedPageNotes": [
+        {
+          "page": 25,
+          "contents": "Final references, Appendix Outline, and beginning of A"
+        },
+        {
+          "page": 28,
+          "contents": "A Algorithm 5 and beginning of B"
+        },
+        {
+          "page": 34,
+          "contents": "End of B and beginning of C"
+        },
+        {
+          "page": 36,
+          "contents": "End of C and beginning of D"
+        }
+      ],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 13,
+      "noAppendixEvidence": null,
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [
+        {
+          "description": "code",
+          "url": "https://github.com/aartikis/rtec",
+          "evidencePhysicalPage": 17,
+          "includedInPDFMeasure": false
+        },
+        {
+          "description": "experiment Docker image/code",
+          "url": "https://github.com/Periklismant/rtec_experiments",
+          "evidencePhysicalPage": 36,
+          "includedInPDFMeasure": false
+        }
+      ],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. External supplementary/data/code materials are linked in the paper and excluded.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending. Boundary start/mixed pages additionally rendered and visually inspected."
+    },
+    {
+      "order": 14,
+      "title": "Causal Graphs and Fairness in Machine Learning: Addressing Practical Challenges in Causal Fairness Evaluation",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/19082",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/19082/27236",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/19082/27236/50089",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/14.pdf",
+      "totalPhysicalPDFPages": 34,
+      "pdfSHA256": "614f4c375235302dcbf132c74f31f31ecba125a9d027aabe9f3e1354374dd7ea",
+      "appendices": [
+        {
+          "label": "A",
+          "title": "Examples",
+          "startPhysicalPage": 30,
+          "endPhysicalPage": 32,
+          "inclusiveOccupiedPages": 3,
+          "boundaryEvidence": {
+            "startPhysicalPage": 30,
+            "startHeading": "A       Examples",
+            "endPhysicalPage": 32,
+            "endBoundary": "Next appendix B starts on p32; current appendix content also occupies that page."
+          }
+        },
+        {
+          "label": "B",
+          "title": "Additional DAGs",
+          "startPhysicalPage": 32,
+          "endPhysicalPage": 32,
+          "inclusiveOccupiedPages": 1,
+          "boundaryEvidence": {
+            "startPhysicalPage": 32,
+            "startHeading": "B       Additional DAGs",
+            "endPhysicalPage": 32,
+            "endBoundary": "Next appendix C starts on p33; current appendix ends on p32."
+          }
+        },
+        {
+          "label": "C",
+          "title": "Additional Results: Relative Change Ratio",
+          "startPhysicalPage": 33,
+          "endPhysicalPage": 34,
+          "inclusiveOccupiedPages": 2,
+          "boundaryEvidence": {
+            "startPhysicalPage": 33,
+            "startHeading": "C   Additional Results: Relative Change Ratio",
+            "endPhysicalPage": 34,
+            "endBoundary": "Appendix content continues to final physical PDF page 34, followed by received/accepted dates."
+          }
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          30,
+          34
+        ]
+      ],
+      "totalPagesOccupiedByAppendix": 5,
+      "mixedPageNotes": [
+        {
+          "page": 30,
+          "contents": "Final references and beginning of A"
+        },
+        {
+          "page": 32,
+          "contents": "End of A and beginning of B"
+        }
+      ],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 5,
+      "noAppendixEvidence": null,
+      "officialSeparateSupplementGalleys": [],
+      "externalMaterialsMentioned": [
+        {
+          "description": "implementation",
+          "url": "https://github.com/lea-cohausz/causalfair",
+          "evidencePhysicalPage": 3,
+          "includedInPDFMeasure": false
+        }
+      ],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. External supplementary/data/code materials are linked in the paper and excluded.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending. Boundary start/mixed pages additionally rendered and visually inspected."
+    },
+    {
+      "order": 15,
+      "title": "Generating Streamlining Constraints with Large Language Models",
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/18965",
+      "galleyURL": "https://www.jair.org/index.php/jair/article/view/18965/27237",
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/18965/27237/50093",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/a/15.pdf",
+      "totalPhysicalPDFPages": 20,
+      "pdfSHA256": "63675c2e2311377e1818406ab18027045cf69f1f3d5715a5ff8a74687ee4edde",
+      "appendices": [
+        {
+          "label": "A",
+          "title": "Streamliners",
+          "startPhysicalPage": 19,
+          "endPhysicalPage": 20,
+          "inclusiveOccupiedPages": 2,
+          "boundaryEvidence": {
+            "startPhysicalPage": 19,
+            "startHeading": "A    Streamliners",
+            "endPhysicalPage": 20,
+            "endBoundary": "Appendix content continues to final physical PDF page 20, followed by received/accepted dates."
+          }
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          19,
+          20
+        ]
+      ],
+      "totalPagesOccupiedByAppendix": 2,
+      "mixedPageNotes": [
+        {
+          "page": 19,
+          "contents": "Final references and beginning of A"
+        }
+      ],
+      "excludedChecklistIntervals": [],
+      "totalPagesOccupiedByLetteredAppendicesIncludingChecklist": 2,
+      "noAppendixEvidence": null,
+      "officialSeparateSupplementGalleys": [
+        {
+          "label": "Code",
+          "url": "https://www.jair.org/index.php/jair/article/view/18965/27238",
+          "includedInPDFMeasure": false
+        }
+      ],
+      "externalMaterialsMentioned": [
+        {
+          "description": "code, models, instances, prompts",
+          "url": "https://zenodo.org/doi/10.5281/zenodo.13331048",
+          "evidencePhysicalPage": 7,
+          "includedInPDFMeasure": false
+        }
+      ],
+      "onlineSupplementNote": "Article landing page and volume listing checked for separate galley files. No separate appendix PDF listed. Official Code galley is separate and excluded. External supplementary/data/code materials are linked in the paper and excluded.",
+      "measurementVerification": "pdfinfo physical-page count; pdftotext -layout full-document heading scan; manual reading of boundary page text and document ending. Boundary start/mixed pages additionally rendered and visually inspected."
+    }
+  ],
+  "summary": {
+    "nArticles": 15,
+    "nWithSubstantiveInPDFAppendices": 9,
+    "totalOccupiedAppendixPages": 82,
+    "meanAcrossAll15": 5.466666666666667,
+    "medianAcrossAll15": 2,
+    "meanConditionalOnAppendix": 9.11111111111111,
+    "medianConditionalOnAppendix": 5,
+    "minimum": 0,
+    "maximum": 27,
+    "countsInListedOrder": [
+      0,
+      15,
+      3,
+      4,
+      0,
+      0,
+      0,
+      27,
+      2,
+      0,
+      11,
+      0,
+      13,
+      5,
+      2
+    ],
+    "excludedChecklistPages": 1
+  }
+}

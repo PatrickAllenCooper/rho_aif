@@ -1,0 +1,114 @@
+[
+  {
+    "id": "early-02-supplementary-illustrations",
+    "variant": "new",
+    "old": "At low stakes, EFE's extra listening costs about $1.6$ reward relative to Planning.",
+    "new": "At penalty $1$, tuned myopic Info Gain earns about $1.6$ less reward than Planning.",
+    "reason": "CSV penalty1 gap is7.196-5.610=1.586 for tuned Info Gain, not EFE."
+  },
+  {
+    "id": "early-02-supplementary-illustrations",
+    "variant": "new",
+    "old": "uses 500 episodes per penalty and the five canonical seeds",
+    "new": "uses 100 episodes per seed over the five canonical seeds (500 total per penalty)",
+    "reason": "Make the total/per-seed distinction explicit from the provenance CSV."
+  },
+  {
+    "id": "early-02-supplementary-illustrations",
+    "variant": "new_lncs",
+    "old": "At low stakes, EFE's extra listening costs about $1.6$ reward relative to Planning.",
+    "new": "At penalty $1$, tuned myopic Info Gain earns about $1.6$ less reward than Planning.",
+    "reason": "CSV penalty1 gap is7.196-5.610=1.586 for tuned Info Gain, not EFE."
+  },
+  {
+    "id": "early-02-supplementary-illustrations",
+    "variant": "new_lncs",
+    "old": "uses 500 episodes per penalty and the five canonical seeds",
+    "new": "uses 100 episodes per seed over the five canonical seeds (500 total per penalty)",
+    "reason": "Make the total/per-seed distinction explicit from the provenance CSV."
+  },
+  {
+    "id": "early-12-pomcp",
+    "variant": "new",
+    "old": "tree enumeration, beliefs, leaf values, and commit values",
+    "new": "tree enumeration, leaf values, and commit values",
+    "reason": "POMCP also uses exact root and path beliefs, verified in pomcp.py."
+  },
+  {
+    "id": "early-02-supplementary-illustrations",
+    "variant": "new",
+    "old": "(500 episodes)",
+    "new": "(100 episodes per seed over five seeds)",
+    "reason": "Clarify the500-total showcase observation-menu protocol."
+  },
+  {
+    "id": "early-02-supplementary-illustrations",
+    "variant": "new",
+    "old": "uses 100 episodes per seed over the five canonical seeds (500 total per penalty)",
+    "new": "uses 100 episodes per seed over the five canonical seeds, giving 500 episodes per penalty",
+    "reason": "Avoid adjacent parentheticals while retaining total and per-seed counts."
+  },
+  {
+    "id": "early-02-supplementary-illustrations",
+    "variant": "new",
+    "old": "\\texttt{results\\_showcase\\_asymmetry.csv}",
+    "new": "\\texttt{results\\_\\allowbreak showcase\\_\\allowbreak asymmetry.csv}",
+    "reason": "Allow a long filename to wrap in LNCS."
+  },
+  {
+    "id": "early-02-supplementary-illustrations",
+    "variant": "new_lncs",
+    "old": "(500 episodes)",
+    "new": "(100 episodes per seed over five seeds)",
+    "reason": "Clarify the500-total showcase observation-menu protocol."
+  },
+  {
+    "id": "early-02-supplementary-illustrations",
+    "variant": "new_lncs",
+    "old": "uses 100 episodes per seed over the five canonical seeds (500 total per penalty)",
+    "new": "uses 100 episodes per seed over the five canonical seeds, giving 500 episodes per penalty",
+    "reason": "Avoid adjacent parentheticals while retaining total and per-seed counts."
+  },
+  {
+    "id": "early-02-supplementary-illustrations",
+    "variant": "new_lncs",
+    "old": "\\texttt{results\\_showcase\\_asymmetry.csv}",
+    "new": "\\texttt{results\\_\\allowbreak showcase\\_\\allowbreak asymmetry.csv}",
+    "reason": "Allow a long filename to wrap in LNCS."
+  },
+  {
+    "id": "late_pareto",
+    "variant": "new",
+    "old": "Testbed's maximizing run includes $0$",
+    "new": "Testbed's maximizing sampled weights run from $0.01$ to $0.5$",
+    "reason": "The Pareto grid excludes zero; retain the actual sampled plateau."
+  },
+  {
+    "id": "checklist_explanations",
+    "variant": "new",
+    "old": "reset each episode at $10^4s+i$.",
+    "new": "reset each episode at $10^4s+i$, for outer seed $s$ and episode index $i$.",
+    "reason": "Define the reproduction-rule symbols."
+  },
+  {
+    "id": "checklist_explanations",
+    "variant": "new",
+    "old": " Each of the Partially-marked items (theoretical assumptions and restrictions, proof completeness, and raw-data provenance) carries its own inline justification at that item.",
+    "new": "",
+    "reason": "Delete a redundant final sentence that orphaned two lines on an otherwise blank final page."
+  },
+  {
+    "id": "early-05-effect-size-matrix",
+    "variant": "new",
+    "old": "\\begin{tablebody}",
+    "new": "%% Numbers in this table are produced by experiments/run_supplementary.py\n\\begin{tablebody}",
+    "reason": "Restore original per-table producer provenance after transposing/consolidating rows."
+  },
+  {
+    "id": "early-08-discount-table",
+    "variant": "new",
+    "old": "\\begin{tablebody}",
+    "new": "%% Numbers in this table are produced by experiments/run_discount.py\n\\begin{tablebody}",
+    "reason": "Restore original per-table producer provenance after transposing/consolidating rows."
+  }
+]

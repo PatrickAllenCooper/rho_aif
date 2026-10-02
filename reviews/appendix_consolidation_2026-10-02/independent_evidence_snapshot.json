@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-02T19:07:44.291730+00:00",
+  "verdict": "ACCEPT",
+  "required_corrections_remaining": [],
+  "source_hashes": {
+    "full_paper_jair.tex": "a62650127b1914aebe7929ffe7d579c40759433873f6a704957b4739b4b2568a",
+    "full_paper.tex": "f777cdce6bd684eb9cb49587255bccd42bc2fcef60aa7427e23e553b8a88a60a"
+  },
+  "scope": "Independent empirical-integrity review of all 12 early and 18 late appendix proposal groups, current source, baseline and primary data/code. Rendered delivery QA is performed separately by root.",
+  "main_text_unchanged": {
+    "full_paper_jair.tex": true,
+    "full_paper.tex": true
+  },
+  "all_numeric_advisories_resolved": 94,
+  "scientific_corrections_found_and_verified": 3,
+  "result_or_experiment_code_changes": []
+}

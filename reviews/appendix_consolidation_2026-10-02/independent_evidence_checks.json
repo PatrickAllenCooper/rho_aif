@@ -1,0 +1,578 @@
+{
+  "asymmetry": {
+    "source": "results/results_showcase_asymmetry.csv",
+    "penalty": 1,
+    "planning_reward": 7.196,
+    "tuned_myopic_reward": 5.61,
+    "efe_reward": 6.988,
+    "planning_minus_tuned_ig": 1.5859999999999994,
+    "planning_minus_efe": 0.2079999999999993,
+    "episodes_per_seed": 100,
+    "seeds": 5,
+    "initial_claim_wrong_agent": true
+  },
+  "obs_scaling": {
+    "source": "results/results_showcase_obs_scaling.csv",
+    "episodes_per_seed": 100,
+    "n_seeds": 5,
+    "success_pairs": {
+      "1": [
+        21.6,
+        21.6
+      ],
+      "2": [
+        43.2,
+        43.8
+      ],
+      "3": [
+        96.0,
+        82.8
+      ]
+    }
+  },
+  "pareto": {
+    "source": "results/results_pareto_sweep.csv",
+    "bandit_w0_5_reward": 6.0466,
+    "testbed_max_reward": 0.48256000000000004,
+    "testbed_maximizing_grid_weights": [
+      0.01,
+      0.1,
+      0.5
+    ],
+    "grid": [
+      0.01,
+      0.1,
+      0.5,
+      1.0,
+      2.0,
+      5.0,
+      10.0,
+      20.0,
+      50.0,
+      100.0,
+      200.0
+    ]
+  },
+  "thresholds": {
+    "source": "results/results_thresholds.csv",
+    "testbed_upper_nats": 1.00777911207698,
+    "tileworld_upper_nats": 7.907198960080524,
+    "tileworld_weight20_in_nats": 28.85390081777927
+  },
+  "ablation": {
+    "source": "results/results_mcts_efe_ablation_stats.csv",
+    "p": 0.0013564590999689118,
+    "holm_significant": "True"
+  },
+  "dual": {
+    "source": "results/results_price_dual_multiseed_metrics.csv",
+    "decay": {
+      "readapt": [
+        154.77777777777777,
+        142.6876781652032,
+        166.86787739035233
+      ],
+      "readapt_restricted": [
+        157.3,
+        145.40987180706432,
+        169.1901281929357
+      ],
+      "pre_steady_err": [
+        0.09999999999999962,
+        0.05145948771043532,
+        0.14854051228956391
+      ],
+      "post_steady_err": [
+        0.39199999999999974,
+        0.11796112652074708,
+        0.6660388734792524
+      ],
+      "recovered": 9
+    },
+    "reset": {
+      "readapt": [
+        51.2,
+        46.132558655714135,
+        56.26744134428587
+      ],
+      "readapt_restricted": [
+        51.2,
+        46.132558655714135,
+        56.26744134428587
+      ],
+      "pre_steady_err": [
+        0.09999999999999962,
+        0.05145948771043532,
+        0.14854051228956391
+      ],
+      "post_steady_err": [
+        0.05999999999999957,
+        0.024454823737170978,
+        0.09554517626282816
+      ],
+      "recovered": 10
+    },
+    "paired_restricted": {
+      "mean": 106.1,
+      "min": 89.0,
+      "ci": [
+        96.77014421060109,
+        115.4298557893989
+      ]
+    },
+    "post_error_reset_vs_decay": {
+      "tie": 4,
+      "better": 5,
+      "worse": 1
+    }
+  },
+  "cpomdp": {
+    "source": "results/results_cpomdp_baseline.csv",
+    "weights": {
+      "Tiger": 0.0,
+      "Diagnosis": 0.447213595499958,
+      "Bandit": 1.069448800053393
+    },
+    "gaps": {
+      "Tiger": 0.0,
+      "Diagnosis": -0.041333333333333444,
+      "Bandit": -0.005333333333333634
+    },
+    "plateaus_source": "results/results_price_usage_curves.csv",
+    "sampled_plateaus": {
+      "Tiger": {
+        "bounds": [
+          0.0,
+          19.306977288832496
+        ],
+        "usage": 4.368
+      },
+      "Diagnosis": {
+        "bounds": [
+          0.31622776601683794,
+          19.306977288832496
+        ],
+        "usage": 9.772
+      },
+      "Bandit": {
+        "bounds": [
+          0.7196856730011522,
+          1.6378937069540647
+        ],
+        "usage": 5.108
+      }
+    }
+  },
+  "partition": {
+    "source": "results/results_partition_sensitivity_6x6.csv",
+    "modes": {
+      "bitwise": {
+        "welch_reward_p": 0.8501058415479349,
+        "efe_scans": 14.757,
+        "planning_scans": 15.565,
+        "decimal_half_up_scans": [
+          "14.76",
+          "15.57"
+        ]
+      },
+      "random": {
+        "welch_reward_p": 0.24336271556704842,
+        "efe_scans": 12.968,
+        "planning_scans": 13.379,
+        "decimal_half_up_scans": [
+          "12.97",
+          "13.38"
+        ]
+      },
+      "overlapping": {
+        "welch_reward_p": 0.9016395010746909,
+        "efe_scans": 2.628,
+        "planning_scans": 2.695,
+        "decimal_half_up_scans": [
+          "2.63",
+          "2.70"
+        ]
+      }
+    }
+  },
+  "rocksample": {
+    "sources": [
+      "results/results_rocksample_11x11.csv",
+      "results/results_rocksample_efe_diagnostic.csv"
+    ],
+    "heuristic_reward": 28.658,
+    "heuristic_good": 5.216,
+    "diagnostic_efe_reward": 16.895,
+    "diagnostic_efe_reward_decimal_half_up": "16.90"
+  },
+  "discount": {
+    "source": "results/results_discount.csv",
+    "rows": [
+      {
+        "env": "Tiger",
+        "gamma": "0.9",
+        "success_pct": [
+          99.6,
+          96.88
+        ],
+        "gap_pp": 2.72,
+        "obs": [
+          4.2336,
+          2.6536
+        ],
+        "reward": [
+          5.3264,
+          3.9144
+        ]
+      },
+      {
+        "env": "Tiger",
+        "gamma": "0.95",
+        "success_pct": [
+          99.6,
+          99.6
+        ],
+        "gap_pp": 0.0,
+        "obs": [
+          4.2336,
+          4.2336
+        ],
+        "reward": [
+          5.3264,
+          5.3264
+        ]
+      },
+      {
+        "env": "Tiger",
+        "gamma": "0.99",
+        "success_pct": [
+          99.6,
+          99.6
+        ],
+        "gap_pp": 0.0,
+        "obs": [
+          4.2336,
+          4.2336
+        ],
+        "reward": [
+          5.3264,
+          5.3264
+        ]
+      },
+      {
+        "env": "Tiger",
+        "gamma": "1.0",
+        "success_pct": [
+          99.6,
+          99.6
+        ],
+        "gap_pp": 0.0,
+        "obs": [
+          4.2336,
+          4.2336
+        ],
+        "reward": [
+          5.3264,
+          5.3264
+        ]
+      },
+      {
+        "env": "Diagnosis",
+        "gamma": "0.9",
+        "success_pct": [
+          88.75999999999999,
+          88.72
+        ],
+        "gap_pp": 0.039999999999995595,
+        "obs": [
+          5.8328,
+          5.856
+        ],
+        "reward": [
+          -2.5768,
+          -2.624
+        ]
+      },
+      {
+        "env": "Diagnosis",
+        "gamma": "0.95",
+        "success_pct": [
+          88.75999999999999,
+          88.72
+        ],
+        "gap_pp": 0.039999999999995595,
+        "obs": [
+          5.8328,
+          5.856
+        ],
+        "reward": [
+          -2.5768,
+          -2.624
+        ]
+      },
+      {
+        "env": "Diagnosis",
+        "gamma": "0.99",
+        "success_pct": [
+          97.48,
+          89.56
+        ],
+        "gap_pp": 7.920000000000005,
+        "obs": [
+          9.6736,
+          5.8856
+        ],
+        "reward": [
+          -1.1856,
+          -2.1496
+        ]
+      },
+      {
+        "env": "Diagnosis",
+        "gamma": "1.0",
+        "success_pct": [
+          97.36,
+          88.75999999999999
+        ],
+        "gap_pp": 8.600000000000009,
+        "obs": [
+          9.6784,
+          5.8472
+        ],
+        "reward": [
+          -1.2624,
+          -2.5912
+        ]
+      },
+      {
+        "env": "Bandit",
+        "gamma": "0.9",
+        "success_pct": [
+          61.88,
+          62.03999999999999
+        ],
+        "gap_pp": -0.15999999999999348,
+        "obs": [
+          2.0424,
+          2.04
+        ],
+        "reward": [
+          5.548,
+          5.5636
+        ]
+      },
+      {
+        "env": "Bandit",
+        "gamma": "0.95",
+        "success_pct": [
+          61.88,
+          62.03999999999999
+        ],
+        "gap_pp": -0.15999999999999348,
+        "obs": [
+          2.0424,
+          2.04
+        ],
+        "reward": [
+          5.548,
+          5.5636
+        ]
+      },
+      {
+        "env": "Bandit",
+        "gamma": "0.99",
+        "success_pct": [
+          86.92,
+          64.48
+        ],
+        "gap_pp": 22.439999999999994,
+        "obs": [
+          5.1616,
+          2.378
+        ],
+        "reward": [
+          6.242,
+          5.6142
+        ]
+      },
+      {
+        "env": "Bandit",
+        "gamma": "1.0",
+        "success_pct": [
+          86.92,
+          69.88
+        ],
+        "gap_pp": 17.04,
+        "obs": [
+          5.1616,
+          3.2424
+        ],
+        "reward": [
+          6.242,
+          5.668
+        ]
+      }
+    ]
+  },
+  "core_pooled_ses": {
+    "Tiger": {
+      "Myopic": "0.55",
+      "Planning": "0.12",
+      "Planning+IG": "0.06",
+      "EFE": "0.12",
+      "additional_rows": [
+        {
+          "": "InfoGain-Tuned",
+          "mean_observations": "4.198",
+          "success_rate": "0.9944",
+          "mean_reward": "5.186",
+          "se_reward_pooled": "0.11925888143027336"
+        },
+        {
+          "": "EpistemicOnly",
+          "mean_observations": "0.0",
+          "success_rate": "0.4972",
+          "mean_reward": "-45.308",
+          "se_reward_pooled": "0.7778052630318208"
+        },
+        {
+          "": "Thompson",
+          "mean_observations": "2.6448",
+          "success_rate": "0.9676",
+          "mean_reward": "3.7912",
+          "se_reward_pooled": "0.2759244833500645"
+        }
+      ]
+    },
+    "Diagnosis": {
+      "Myopic": "0.41",
+      "Planning": "0.27",
+      "Planning+IG": "0.10",
+      "EFE": "0.15",
+      "additional_rows": [
+        {
+          "": "InfoGain-Tuned",
+          "mean_observations": "13.1932",
+          "success_rate": "0.9936",
+          "mean_reward": "-3.5772",
+          "se_reward_pooled": "0.09487469647909287"
+        },
+        {
+          "": "EpistemicOnly",
+          "mean_observations": "0.0",
+          "success_rate": "0.2474",
+          "mean_reward": "-35.156",
+          "se_reward_pooled": "0.3661408646955431"
+        },
+        {
+          "": "Thompson",
+          "mean_observations": "5.832",
+          "success_rate": "0.8842",
+          "mean_reward": "-2.78",
+          "se_reward_pooled": "0.2735986842073624"
+        }
+      ]
+    },
+    "Bandit": {
+      "Myopic": "0.06",
+      "Planning": "0.06",
+      "Planning+IG": "0.04",
+      "EFE": "0.05",
+      "additional_rows": [
+        {
+          "": "InfoGain-Tuned",
+          "mean_observations": "9.5442",
+          "success_rate": "0.9884",
+          "mean_reward": "5.1235",
+          "se_reward_pooled": "0.040762722553823606"
+        },
+        {
+          "": "EpistemicOnly",
+          "mean_observations": "0.0",
+          "success_rate": "0.2474",
+          "mean_reward": "3.2266",
+          "se_reward_pooled": "0.05492112970433147"
+        },
+        {
+          "": "Thompson",
+          "mean_observations": "5.0118",
+          "success_rate": "0.8696",
+          "mean_reward": "6.3205",
+          "se_reward_pooled": "0.04739204521858072"
+        }
+      ]
+    }
+  },
+  "effect_sizes": {
+    "Tiger": [
+      "0.44",
+      "-0.00",
+      "-0.00",
+      "0.14",
+      "0.09",
+      "-0.00"
+    ],
+    "Testbed": [
+      "-0.07",
+      "-0.18",
+      "0.69",
+      "0.69",
+      "-0.18",
+      "0.26"
+    ],
+    "Diagnosis": [
+      "0.55",
+      "0.08",
+      "0.25",
+      "0.25",
+      "0.09",
+      "0.33"
+    ],
+    "Bandit": [
+      "0.18",
+      "0.14",
+      "0.36",
+      "0.37",
+      "-0.01",
+      "0.40"
+    ]
+  },
+  "target_reference": {
+    "source": "results/results_budget_frontier_target_reference.csv",
+    "negative_intervals": {
+      "heldout": [
+        {
+          "env": "Diagnosis",
+          "kind": "interior_0.5",
+          "budget": 9.534
+        },
+        {
+          "env": "Bandit",
+          "kind": "gap",
+          "budget": 4.712
+        }
+      ],
+      "fresh": [
+        {
+          "env": "Diagnosis",
+          "kind": "interior_0.25",
+          "budget": 7.718999999999999
+        },
+        {
+          "env": "Bandit",
+          "kind": "gap",
+          "budget": 4.712
+        }
+      ]
+    },
+    "usage_matched_source": "results/results_budget_frontier_target_reference_usage_matched.csv"
+  },
+  "source_hashes": {
+    "full_paper_jair.tex": "a62650127b1914aebe7929ffe7d579c40759433873f6a704957b4739b4b2568a",
+    "full_paper.tex": "f777cdce6bd684eb9cb49587255bccd42bc2fcef60aa7427e23e553b8a88a60a"
+  },
+  "main_text_unchanged": {
+    "full_paper_jair.tex": true,
+    "full_paper.tex": true
+  }
+}

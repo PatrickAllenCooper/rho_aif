@@ -5,6 +5,15 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Consolidated appendices reduce JAIR from 108 to 80 pages and LNCS from
+  136 to 101. Main text, empirical records, bibliography and all proof
+  statements are preserved. Seven redundant figures remain in the repo.
+  Both independent audits accept after verified corrections; 540 tests
+  and the isolated 32-file Overleaf build pass. The complete prior version
+  is frozen at `paper/legacy/2026-10-02_pre_appendix_consolidation/`.
+
 ### Removed
 
 - The flat one-ply Monte Carlo RockSample baseline (`Flat-MC (1000)`) is no

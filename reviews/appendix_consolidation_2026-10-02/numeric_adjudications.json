@@ -1,0 +1,1157 @@
+{
+  "scope": "All numeric advisory occurrences in claims_initial.txt, including58 near-CSV mismatches and36 unresolved-number messages; mirrored masters counted separately.",
+  "count": 94,
+  "initial_invalid_numeric_claim_occurrences": 2,
+  "evidence_file": "independent_evidence_checks.json",
+  "records": [
+    {
+      "id": 1,
+      "initial_advisory": "- paper/full_paper_jair.tex: 1.6 not found at that precision in results_showcase_asymmetry.csv \u2014 \u2026es $200$ and $500$. At low stakes, EFE's extra listening costs about $1.6$ reward relati\u2026",
+      "value": "1.6",
+      "evidence_group": "asymmetry",
+      "sources": [
+        "results/results_showcase_asymmetry.csv"
+      ],
+      "status_at_initial_review": "initial_claim_required_correction",
+      "resolution": "Initial number belongs to Planning minus tuned myopic Info Gain, not EFE. Required actor correction is recorded in the review.",
+      "final_status": "verified_after_actor_correction"
+    },
+    {
+      "id": 2,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.5 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026irect check matters on Bandit, where the nearest lower swept weight, $0.5$, scores $6.05\u2026",
+      "value": "0.5",
+      "evidence_group": "pareto",
+      "sources": [
+        "results/results_pareto_sweep.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Pareto grid, Bandit reward at weight 0.5, or Testbed maximum/plateau, rather than nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 3,
+      "initial_advisory": "- paper/full_paper_jair.tex: 6.05 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026tters on Bandit, where the nearest lower swept weight, $0.5$, scores $6.05$ rather than $\u2026",
+      "value": "6.05",
+      "evidence_group": "pareto",
+      "sources": [
+        "results/results_pareto_sweep.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Pareto grid, Bandit reward at weight 0.5, or Testbed maximum/plateau, rather than nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 4,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.48 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026than $6.24$. Both conventions remain below Testbed's sampled maximum $0.48$.\u2026",
+      "value": "0.48",
+      "evidence_group": "pareto",
+      "sources": [
+        "results/results_pareto_sweep.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Pareto grid, Bandit reward at weight 0.5, or Testbed maximum/plateau, rather than nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 5,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.0014 not found at that precision in results_mcts_efe_ablation.csv \u2014 \u2026icantly, from $3.73$ to $3.48$ without in-tree information gain ($p{=}0.0014$). Five seeds \u2026",
+      "value": "0.0014",
+      "evidence_group": "ablation",
+      "sources": [
+        "results/results_mcts_efe_ablation_stats.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "p=0.0013564590999689118 rounds to 0.0014; corresponding Holm flag true.",
+      "final_status": "verified"
+    },
+    {
+      "id": 6,
+      "initial_advisory": "- paper/full_paper_jair.tex: 1.01 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026the longer-horizon sweep. Testbed's upper threshold is approximately $1.01$ reward units \u2026",
+      "value": "1.01",
+      "evidence_group": "thresholds",
+      "sources": [
+        "results/results_thresholds.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Threshold column or conversion 20/log(2), unrelated to nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 7,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.5 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026k.csv}) and both over-observe relative to $w^*_{\\mathrm{ret}}\\in[0.01,0.5]$. On Tiger an\u2026",
+      "value": "0.5",
+      "evidence_group": "pareto",
+      "sources": [
+        "results/results_pareto_sweep.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Pareto grid, Bandit reward at weight 0.5, or Testbed maximum/plateau, rather than nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 8,
+      "initial_advisory": "- paper/full_paper_jair.tex: 28.9 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026at extrapolation: its unique sampled optimum is $w=20$ in bit units ($28.9$ per nat), abo\u2026",
+      "value": "28.9",
+      "evidence_group": "thresholds",
+      "sources": [
+        "results/results_thresholds.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Threshold column or conversion 20/log(2), unrelated to nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 9,
+      "initial_advisory": "- paper/full_paper_jair.tex: 7.91 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026$ in bit units ($28.9$ per nat), above the heuristic upper threshold $7.91$, and $w=1$ is\u2026",
+      "value": "7.91",
+      "evidence_group": "thresholds",
+      "sources": [
+        "results/results_thresholds.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Threshold column or conversion 20/log(2), unrelated to nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 10,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.06 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026Over the fixed final steady-state block, $|U-B|$ is $0.06$ with CI $[0.0\u2026",
+      "value": "0.06",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 11,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.024 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026Over the fixed final steady-state block, $|U-B|$ is $0.06$ with CI $[0.024,0.096]$ under \u2026",
+      "value": "0.024",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 12,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.096 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026the fixed final steady-state block, $|U-B|$ is $0.06$ with CI $[0.024,0.096]$ under reset \u2026",
+      "value": "0.096",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 13,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.39 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026ate block, $|U-B|$ is $0.06$ with CI $[0.024,0.096]$ under reset and $0.39$ with $[0.118,\u2026",
+      "value": "0.39",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 14,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.118 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026U-B|$ is $0.06$ with CI $[0.024,0.096]$ under reset and $0.39$ with $[0.118,0.666]$ under \u2026",
+      "value": "0.118",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 15,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.666 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026is $0.06$ with CI $[0.024,0.096]$ under reset and $0.39$ with $[0.118,0.666]$ under decay.\u2026",
+      "value": "0.666",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 16,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.051 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026ith $[0.118,0.666]$ under decay. Before the shift it is $0.10$ with $[0.051,0.149]$ for bo\u2026",
+      "value": "0.051",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 17,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.149 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u20260.118,0.666]$ under decay. Before the shift it is $0.10$ with $[0.051,0.149]$ for both. Th\u2026",
+      "value": "0.149",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 18,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.45 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026The actually evaluated usage-matched Planning+IG weights are $0.00$, $0.45$ and $1.07$. T\u2026",
+      "value": "0.45",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 19,
+      "initial_advisory": "- paper/full_paper_jair.tex: 1.07 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026y evaluated usage-matched Planning+IG weights are $0.00$, $0.45$ and $1.07$. They lie on \u2026",
+      "value": "1.07",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 20,
+      "initial_advisory": "- paper/full_paper_jair.tex: 19.3 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026are $0.00$, $0.45$ and $1.07$. They lie on sampled usage plateaus $[0,19.3]$, $[0.316,19.\u2026",
+      "value": "19.3",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 21,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.316 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026, $0.45$ and $1.07$. They lie on sampled usage plateaus $[0,19.3]$, $[0.316,19.3]$ and $[0\u2026",
+      "value": "0.316",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 22,
+      "initial_advisory": "- paper/full_paper_jair.tex: 19.3 not found at that precision in results_cpomdp_frontier.csv \u2014 \u20265$ and $1.07$. They lie on sampled usage plateaus $[0,19.3]$, $[0.316,19.3]$ and $[0.72,1\u2026",
+      "value": "19.3",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 23,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.72 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026. They lie on sampled usage plateaus $[0,19.3]$, $[0.316,19.3]$ and $[0.72,1.64]$ contain\u2026",
+      "value": "0.72",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 24,
+      "initial_advisory": "- paper/full_paper_jair.tex: 1.64 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026y lie on sampled usage plateaus $[0,19.3]$, $[0.316,19.3]$ and $[0.72,1.64]$ containing $\u2026",
+      "value": "1.64",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 25,
+      "initial_advisory": "- paper/full_paper_jair.tex: 0.24 not found at that precision in results_partition_sensitivity_6x6.csv \u2014 \u2026uccess. The largest reward gap, under random partitions, has Welch $p=0.24$. EFE's scan c\u2026",
+      "value": "0.24",
+      "evidence_group": "partition",
+      "sources": [
+        "results/results_partition_sensitivity_6x6.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Welch p independently reconstructed from five-seed means/SEs, or conventional decimal half-up rounding of 15.565/2.695.",
+      "final_status": "verified"
+    },
+    {
+      "id": 26,
+      "initial_advisory": "- paper/full_paper_jair.tex: 15.57 not found at that precision in results_partition_sensitivity_6x6.csv \u2014 \u2026 has Welch $p=0.24$. EFE's scan counts are lower in all three ($14.76/15.57$, $12.97/13.38\u2026",
+      "value": "15.57",
+      "evidence_group": "partition",
+      "sources": [
+        "results/results_partition_sensitivity_6x6.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Welch p independently reconstructed from five-seed means/SEs, or conventional decimal half-up rounding of 15.565/2.695.",
+      "final_status": "verified"
+    },
+    {
+      "id": 27,
+      "initial_advisory": "- paper/full_paper_jair.tex: 2.70 not found at that precision in results_partition_sensitivity_6x6.csv \u2014 \u2026an counts are lower in all three ($14.76/15.57$, $12.97/13.38$, $2.63/2.70$). Absolute pe\u2026",
+      "value": "2.70",
+      "evidence_group": "partition",
+      "sources": [
+        "results/results_partition_sensitivity_6x6.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Welch p independently reconstructed from five-seed means/SEs, or conventional decimal half-up rounding of 15.565/2.695.",
+      "final_status": "verified"
+    },
+    {
+      "id": 28,
+      "initial_advisory": "- paper/full_paper_jair.tex: 28.66 not found at that precision in results_rocksample_11x11_depth3_check.csv \u2014 \u202611,11], Planning and EFE both earn $13.23$ while the heuristic earns $28.66\\pm0.83$. A dep\u2026",
+      "value": "28.66",
+      "evidence_group": "rocksample",
+      "sources": [
+        "results/results_rocksample_11x11.csv",
+        "results/results_rocksample_efe_diagnostic.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Standalone heuristic 28.658 reward/5.216 good in standard archive; matched EFE 16.895 rounds to 16.90 under decimal half-up.",
+      "final_status": "verified"
+    },
+    {
+      "id": 29,
+      "initial_advisory": "- paper/full_paper_jair.tex: 5.22 not found at that precision in results_rocksample_11x11_depth3_check.csv \u2014 \u2026_\\allowbreak depth3\\_\\allowbreak check.csv}). The heuristic collects $5.22$ good rocks ag\u2026",
+      "value": "5.22",
+      "evidence_group": "rocksample",
+      "sources": [
+        "results/results_rocksample_11x11.csv",
+        "results/results_rocksample_efe_diagnostic.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Standalone heuristic 28.658 reward/5.216 good in standard archive; matched EFE 16.895 rounds to 16.90 under decimal half-up.",
+      "final_status": "verified"
+    },
+    {
+      "id": 30,
+      "initial_advisory": "- paper/full_paper.tex: 1.6 not found at that precision in results_showcase_asymmetry.csv \u2014 \u2026es $200$ and $500$. At low stakes, EFE's extra listening costs about $1.6$ reward relati\u2026",
+      "value": "1.6",
+      "evidence_group": "asymmetry",
+      "sources": [
+        "results/results_showcase_asymmetry.csv"
+      ],
+      "status_at_initial_review": "initial_claim_required_correction",
+      "resolution": "Initial number belongs to Planning minus tuned myopic Info Gain, not EFE. Required actor correction is recorded in the review.",
+      "final_status": "verified_after_actor_correction"
+    },
+    {
+      "id": 31,
+      "initial_advisory": "- paper/full_paper.tex: 0.5 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026irect check matters on Bandit, where the nearest lower swept weight, $0.5$, scores $6.05\u2026",
+      "value": "0.5",
+      "evidence_group": "pareto",
+      "sources": [
+        "results/results_pareto_sweep.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Pareto grid, Bandit reward at weight 0.5, or Testbed maximum/plateau, rather than nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 32,
+      "initial_advisory": "- paper/full_paper.tex: 6.05 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026tters on Bandit, where the nearest lower swept weight, $0.5$, scores $6.05$ rather than $\u2026",
+      "value": "6.05",
+      "evidence_group": "pareto",
+      "sources": [
+        "results/results_pareto_sweep.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Pareto grid, Bandit reward at weight 0.5, or Testbed maximum/plateau, rather than nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 33,
+      "initial_advisory": "- paper/full_paper.tex: 0.48 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026than $6.24$. Both conventions remain below Testbed's sampled maximum $0.48$.\u2026",
+      "value": "0.48",
+      "evidence_group": "pareto",
+      "sources": [
+        "results/results_pareto_sweep.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Pareto grid, Bandit reward at weight 0.5, or Testbed maximum/plateau, rather than nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 34,
+      "initial_advisory": "- paper/full_paper.tex: 0.0014 not found at that precision in results_mcts_efe_ablation.csv \u2014 \u2026icantly, from $3.73$ to $3.48$ without in-tree information gain ($p{=}0.0014$). Five seeds \u2026",
+      "value": "0.0014",
+      "evidence_group": "ablation",
+      "sources": [
+        "results/results_mcts_efe_ablation_stats.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "p=0.0013564590999689118 rounds to 0.0014; corresponding Holm flag true.",
+      "final_status": "verified"
+    },
+    {
+      "id": 35,
+      "initial_advisory": "- paper/full_paper.tex: 1.01 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026the longer-horizon sweep. Testbed's upper threshold is approximately $1.01$ reward units \u2026",
+      "value": "1.01",
+      "evidence_group": "thresholds",
+      "sources": [
+        "results/results_thresholds.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Threshold column or conversion 20/log(2), unrelated to nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 36,
+      "initial_advisory": "- paper/full_paper.tex: 0.5 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026k.csv}) and both over-observe relative to $w^*_{\\mathrm{ret}}\\in[0.01,0.5]$. On Tiger an\u2026",
+      "value": "0.5",
+      "evidence_group": "pareto",
+      "sources": [
+        "results/results_pareto_sweep.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Pareto grid, Bandit reward at weight 0.5, or Testbed maximum/plateau, rather than nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 37,
+      "initial_advisory": "- paper/full_paper.tex: 28.9 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026at extrapolation: its unique sampled optimum is $w=20$ in bit units ($28.9$ per nat), abo\u2026",
+      "value": "28.9",
+      "evidence_group": "thresholds",
+      "sources": [
+        "results/results_thresholds.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Threshold column or conversion 20/log(2), unrelated to nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 38,
+      "initial_advisory": "- paper/full_paper.tex: 7.91 not found at that precision in results_nat_canonical_check.csv \u2014 \u2026$ in bit units ($28.9$ per nat), above the heuristic upper threshold $7.91$, and $w=1$ is\u2026",
+      "value": "7.91",
+      "evidence_group": "thresholds",
+      "sources": [
+        "results/results_thresholds.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Threshold column or conversion 20/log(2), unrelated to nearest nat-check CSV.",
+      "final_status": "verified"
+    },
+    {
+      "id": 39,
+      "initial_advisory": "- paper/full_paper.tex: 0.06 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026Over the fixed final steady-state block, $|U-B|$ is $0.06$ with CI $[0.0\u2026",
+      "value": "0.06",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 40,
+      "initial_advisory": "- paper/full_paper.tex: 0.024 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026Over the fixed final steady-state block, $|U-B|$ is $0.06$ with CI $[0.024,0.096]$ under \u2026",
+      "value": "0.024",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 41,
+      "initial_advisory": "- paper/full_paper.tex: 0.096 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026the fixed final steady-state block, $|U-B|$ is $0.06$ with CI $[0.024,0.096]$ under reset \u2026",
+      "value": "0.096",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 42,
+      "initial_advisory": "- paper/full_paper.tex: 0.39 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026ate block, $|U-B|$ is $0.06$ with CI $[0.024,0.096]$ under reset and $0.39$ with $[0.118,\u2026",
+      "value": "0.39",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 43,
+      "initial_advisory": "- paper/full_paper.tex: 0.118 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026U-B|$ is $0.06$ with CI $[0.024,0.096]$ under reset and $0.39$ with $[0.118,0.666]$ under \u2026",
+      "value": "0.118",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 44,
+      "initial_advisory": "- paper/full_paper.tex: 0.666 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026is $0.06$ with CI $[0.024,0.096]$ under reset and $0.39$ with $[0.118,0.666]$ under decay.\u2026",
+      "value": "0.666",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 45,
+      "initial_advisory": "- paper/full_paper.tex: 0.051 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u2026ith $[0.118,0.666]$ under decay. Before the shift it is $0.10$ with $[0.051,0.149]$ for bo\u2026",
+      "value": "0.051",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 46,
+      "initial_advisory": "- paper/full_paper.tex: 0.149 not found at that precision in results_price_dual_multiseed_metrics.csv \u2014 \u20260.118,0.666]$ under decay. Before the shift it is $0.10$ with $[0.051,0.149]$ for both. Th\u2026",
+      "value": "0.149",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 47,
+      "initial_advisory": "- paper/full_paper.tex: 0.45 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026The actually evaluated usage-matched Planning+IG weights are $0.00$, $0.45$ and $1.07$. T\u2026",
+      "value": "0.45",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 48,
+      "initial_advisory": "- paper/full_paper.tex: 1.07 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026y evaluated usage-matched Planning+IG weights are $0.00$, $0.45$ and $1.07$. They lie on \u2026",
+      "value": "1.07",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 49,
+      "initial_advisory": "- paper/full_paper.tex: 19.3 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026are $0.00$, $0.45$ and $1.07$. They lie on sampled usage plateaus $[0,19.3]$, $[0.316,19.\u2026",
+      "value": "19.3",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 50,
+      "initial_advisory": "- paper/full_paper.tex: 0.316 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026, $0.45$ and $1.07$. They lie on sampled usage plateaus $[0,19.3]$, $[0.316,19.3]$ and $[0\u2026",
+      "value": "0.316",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 51,
+      "initial_advisory": "- paper/full_paper.tex: 19.3 not found at that precision in results_cpomdp_frontier.csv \u2014 \u20265$ and $1.07$. They lie on sampled usage plateaus $[0,19.3]$, $[0.316,19.3]$ and $[0.72,1\u2026",
+      "value": "19.3",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 52,
+      "initial_advisory": "- paper/full_paper.tex: 0.72 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026. They lie on sampled usage plateaus $[0,19.3]$, $[0.316,19.3]$ and $[0.72,1.64]$ contain\u2026",
+      "value": "0.72",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 53,
+      "initial_advisory": "- paper/full_paper.tex: 1.64 not found at that precision in results_cpomdp_frontier.csv \u2014 \u2026y lie on sampled usage plateaus $[0,19.3]$, $[0.316,19.3]$ and $[0.72,1.64]$ containing $\u2026",
+      "value": "1.64",
+      "evidence_group": "cpomdp",
+      "sources": [
+        "results/results_cpomdp_baseline.csv",
+        "results/results_price_usage_curves.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Selected weights are in baseline CSV; finite-grid plateau endpoints in usage curves, not reference frontier.",
+      "final_status": "verified"
+    },
+    {
+      "id": 54,
+      "initial_advisory": "- paper/full_paper.tex: 0.24 not found at that precision in results_partition_sensitivity_6x6.csv \u2014 \u2026uccess. The largest reward gap, under random partitions, has Welch $p=0.24$. EFE's scan c\u2026",
+      "value": "0.24",
+      "evidence_group": "partition",
+      "sources": [
+        "results/results_partition_sensitivity_6x6.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Welch p independently reconstructed from five-seed means/SEs, or conventional decimal half-up rounding of 15.565/2.695.",
+      "final_status": "verified"
+    },
+    {
+      "id": 55,
+      "initial_advisory": "- paper/full_paper.tex: 15.57 not found at that precision in results_partition_sensitivity_6x6.csv \u2014 \u2026 has Welch $p=0.24$. EFE's scan counts are lower in all three ($14.76/15.57$, $12.97/13.38\u2026",
+      "value": "15.57",
+      "evidence_group": "partition",
+      "sources": [
+        "results/results_partition_sensitivity_6x6.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Welch p independently reconstructed from five-seed means/SEs, or conventional decimal half-up rounding of 15.565/2.695.",
+      "final_status": "verified"
+    },
+    {
+      "id": 56,
+      "initial_advisory": "- paper/full_paper.tex: 2.70 not found at that precision in results_partition_sensitivity_6x6.csv \u2014 \u2026an counts are lower in all three ($14.76/15.57$, $12.97/13.38$, $2.63/2.70$). Absolute pe\u2026",
+      "value": "2.70",
+      "evidence_group": "partition",
+      "sources": [
+        "results/results_partition_sensitivity_6x6.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Welch p independently reconstructed from five-seed means/SEs, or conventional decimal half-up rounding of 15.565/2.695.",
+      "final_status": "verified"
+    },
+    {
+      "id": 57,
+      "initial_advisory": "- paper/full_paper.tex: 28.66 not found at that precision in results_rocksample_11x11_depth3_check.csv \u2014 \u202611,11], Planning and EFE both earn $13.23$ while the heuristic earns $28.66\\pm0.83$. A dep\u2026",
+      "value": "28.66",
+      "evidence_group": "rocksample",
+      "sources": [
+        "results/results_rocksample_11x11.csv",
+        "results/results_rocksample_efe_diagnostic.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Standalone heuristic 28.658 reward/5.216 good in standard archive; matched EFE 16.895 rounds to 16.90 under decimal half-up.",
+      "final_status": "verified"
+    },
+    {
+      "id": 58,
+      "initial_advisory": "- paper/full_paper.tex: 5.22 not found at that precision in results_rocksample_11x11_depth3_check.csv \u2014 \u2026_\\allowbreak depth3\\_\\allowbreak check.csv}). The heuristic collects $5.22$ good rocks ag\u2026",
+      "value": "5.22",
+      "evidence_group": "rocksample",
+      "sources": [
+        "results/results_rocksample_11x11.csv",
+        "results/results_rocksample_efe_diagnostic.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Standalone heuristic 28.658 reward/5.216 good in standard archive; matched EFE 16.895 rounds to 16.90 under decimal half-up.",
+      "final_status": "verified"
+    },
+    {
+      "id": 59,
+      "initial_advisory": "- paper/full_paper_jair.tex: 99.6 not found in any results/*.csv and no CSV named nearby \u2014 \u2026Tiger & $0.90$ & $4.23/2.65$ & $99.6/96.9$ & $5.33/\u2026",
+      "value": "99.6",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 60,
+      "initial_advisory": "- paper/full_paper_jair.tex: 96.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026Tiger & $0.90$ & $4.23/2.65$ & $99.6/96.9$ & $5.33/3.91$\u2026",
+      "value": "96.9",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 61,
+      "initial_advisory": "- paper/full_paper_jair.tex: 99.6 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $0.95,0.99,1$ & $4.23/4.23$ & $99.6/99.6$ & $5.33/\u2026",
+      "value": "99.6",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 62,
+      "initial_advisory": "- paper/full_paper_jair.tex: 99.6 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $0.95,0.99,1$ & $4.23/4.23$ & $99.6/99.6$ & $5.33/5.33$\u2026",
+      "value": "99.6",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 63,
+      "initial_advisory": "- paper/full_paper_jair.tex: 88.8 not found in any results/*.csv and no CSV named nearby \u2014 \u2026Diagnosis & $0.90,0.95$ & $5.83/5.86$ & $88.8/88.7$ & $-2.58\u2026",
+      "value": "88.8",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 64,
+      "initial_advisory": "- paper/full_paper_jair.tex: 88.7 not found in any results/*.csv and no CSV named nearby \u2014 \u2026Diagnosis & $0.90,0.95$ & $5.83/5.86$ & $88.8/88.7$ & $-2.58/-2.6\u2026",
+      "value": "88.7",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 65,
+      "initial_advisory": "- paper/full_paper_jair.tex: 89.6 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $0.99$ & $9.67/5.89$ & $97.5/89.6$ & $-1.19/-2.1\u2026",
+      "value": "89.6",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 66,
+      "initial_advisory": "- paper/full_paper_jair.tex: 88.8 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $1.00$ & $9.68/5.85$ & $97.4/88.8$ & $-1.26/-2.5\u2026",
+      "value": "88.8",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 67,
+      "initial_advisory": "- paper/full_paper_jair.tex: 61.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026Bandit & $0.90,0.95$ & $2.04/2.04$ & $61.9/62.0$ & $5.55/\u2026",
+      "value": "61.9",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 68,
+      "initial_advisory": "- paper/full_paper_jair.tex: 86.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $0.99$ & $5.16/2.38$ & $86.9/64.5$ & $6.24/\u2026",
+      "value": "86.9",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 69,
+      "initial_advisory": "- paper/full_paper_jair.tex: 86.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $1.00$ & $5.16/3.24$ & $86.9/69.9$ & $6.24/\u2026",
+      "value": "86.9",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 70,
+      "initial_advisory": "- paper/full_paper_jair.tex: 69.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $1.00$ & $5.16/3.24$ & $86.9/69.9$ & $6.24/5.67$\u2026",
+      "value": "69.9",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 71,
+      "initial_advisory": "- paper/full_paper_jair.tex: 16.90 not found in any results/*.csv and no CSV named nearby \u2014 \u20265,3] diagnostic's matched five-seed, 100-episode protocol, EFE earns $16.90\\pm0.45$ at $1.\u2026",
+      "value": "16.90",
+      "evidence_group": "rocksample",
+      "sources": [
+        "results/results_rocksample_11x11.csv",
+        "results/results_rocksample_efe_diagnostic.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Standalone heuristic 28.658 reward/5.216 good in standard archive; matched EFE 16.895 rounds to 16.90 under decimal half-up.",
+      "final_status": "verified"
+    },
+    {
+      "id": 72,
+      "initial_advisory": "- paper/full_paper_jair.tex: 157.3 not found in any results/*.csv and no CSV named nearby \u2014 \u2026ce without completing the required hold. Thus its restricted mean of $157.3$ is a lower bo\u2026",
+      "value": "157.3",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 73,
+      "initial_advisory": "- paper/full_paper_jair.tex: 154.8 not found in any results/*.csv and no CSV named nearby \u2014 \u2026ation bound. Among the nine recovered seeds, the descriptive mean is $154.8$ with normal-a\u2026",
+      "value": "154.8",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 74,
+      "initial_advisory": "- paper/full_paper_jair.tex: 142.7 not found in any results/*.csv and no CSV named nearby \u2014 \u2026the descriptive mean is $154.8$ with normal-approximation $95\\%$ CI $[142.7,166.9]$. Every\u2026",
+      "value": "142.7",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 75,
+      "initial_advisory": "- paper/full_paper_jair.tex: 166.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026scriptive mean is $154.8$ with normal-approximation $95\\%$ CI $[142.7,166.9]$. Every reset\u2026",
+      "value": "166.9",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 76,
+      "initial_advisory": "- paper/full_paper_jair.tex: 56.3 not found in any results/*.csv and no CSV named nearby \u2014 \u2026 Every reset run triggers once and recovers, giving $51.2$ and $[46.1,56.3]$. These separ\u2026",
+      "value": "56.3",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 77,
+      "initial_advisory": "- paper/full_paper.tex: 99.6 not found in any results/*.csv and no CSV named nearby \u2014 \u2026Tiger & $0.90$ & $4.23/2.65$ & $99.6/96.9$ & $5.33/\u2026",
+      "value": "99.6",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 78,
+      "initial_advisory": "- paper/full_paper.tex: 96.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026Tiger & $0.90$ & $4.23/2.65$ & $99.6/96.9$ & $5.33/3.91$\u2026",
+      "value": "96.9",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 79,
+      "initial_advisory": "- paper/full_paper.tex: 99.6 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $0.95,0.99,1$ & $4.23/4.23$ & $99.6/99.6$ & $5.33/\u2026",
+      "value": "99.6",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 80,
+      "initial_advisory": "- paper/full_paper.tex: 99.6 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $0.95,0.99,1$ & $4.23/4.23$ & $99.6/99.6$ & $5.33/5.33$\u2026",
+      "value": "99.6",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 81,
+      "initial_advisory": "- paper/full_paper.tex: 88.8 not found in any results/*.csv and no CSV named nearby \u2014 \u2026Diagnosis & $0.90,0.95$ & $5.83/5.86$ & $88.8/88.7$ & $-2.58\u2026",
+      "value": "88.8",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 82,
+      "initial_advisory": "- paper/full_paper.tex: 88.7 not found in any results/*.csv and no CSV named nearby \u2014 \u2026Diagnosis & $0.90,0.95$ & $5.83/5.86$ & $88.8/88.7$ & $-2.58/-2.6\u2026",
+      "value": "88.7",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 83,
+      "initial_advisory": "- paper/full_paper.tex: 89.6 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $0.99$ & $9.67/5.89$ & $97.5/89.6$ & $-1.19/-2.1\u2026",
+      "value": "89.6",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 84,
+      "initial_advisory": "- paper/full_paper.tex: 88.8 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $1.00$ & $9.68/5.85$ & $97.4/88.8$ & $-1.26/-2.5\u2026",
+      "value": "88.8",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 85,
+      "initial_advisory": "- paper/full_paper.tex: 61.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026Bandit & $0.90,0.95$ & $2.04/2.04$ & $61.9/62.0$ & $5.55/\u2026",
+      "value": "61.9",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 86,
+      "initial_advisory": "- paper/full_paper.tex: 86.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $0.99$ & $5.16/2.38$ & $86.9/64.5$ & $6.24/\u2026",
+      "value": "86.9",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 87,
+      "initial_advisory": "- paper/full_paper.tex: 86.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $1.00$ & $5.16/3.24$ & $86.9/69.9$ & $6.24/\u2026",
+      "value": "86.9",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 88,
+      "initial_advisory": "- paper/full_paper.tex: 69.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026& $1.00$ & $5.16/3.24$ & $86.9/69.9$ & $6.24/5.67$\u2026",
+      "value": "69.9",
+      "evidence_group": "discount",
+      "sources": [
+        "results/results_discount.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Paired success columns convert probabilities to percent and round to one decimal; raw gaps retain pre-rounding subtraction.",
+      "final_status": "verified"
+    },
+    {
+      "id": 89,
+      "initial_advisory": "- paper/full_paper.tex: 16.90 not found in any results/*.csv and no CSV named nearby \u2014 \u20265,3] diagnostic's matched five-seed, 100-episode protocol, EFE earns $16.90\\pm0.45$ at $1.\u2026",
+      "value": "16.90",
+      "evidence_group": "rocksample",
+      "sources": [
+        "results/results_rocksample_11x11.csv",
+        "results/results_rocksample_efe_diagnostic.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Standalone heuristic 28.658 reward/5.216 good in standard archive; matched EFE 16.895 rounds to 16.90 under decimal half-up.",
+      "final_status": "verified"
+    },
+    {
+      "id": 90,
+      "initial_advisory": "- paper/full_paper.tex: 157.3 not found in any results/*.csv and no CSV named nearby \u2014 \u2026ce without completing the required hold. Thus its restricted mean of $157.3$ is a lower bo\u2026",
+      "value": "157.3",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 91,
+      "initial_advisory": "- paper/full_paper.tex: 154.8 not found in any results/*.csv and no CSV named nearby \u2014 \u2026ation bound. Among the nine recovered seeds, the descriptive mean is $154.8$ with normal-a\u2026",
+      "value": "154.8",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 92,
+      "initial_advisory": "- paper/full_paper.tex: 142.7 not found in any results/*.csv and no CSV named nearby \u2014 \u2026the descriptive mean is $154.8$ with normal-approximation $95\\%$ CI $[142.7,166.9]$. Every\u2026",
+      "value": "142.7",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 93,
+      "initial_advisory": "- paper/full_paper.tex: 166.9 not found in any results/*.csv and no CSV named nearby \u2014 \u2026scriptive mean is $154.8$ with normal-approximation $95\\%$ CI $[142.7,166.9]$. Every reset\u2026",
+      "value": "166.9",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    },
+    {
+      "id": 94,
+      "initial_advisory": "- paper/full_paper.tex: 56.3 not found in any results/*.csv and no CSV named nearby \u2014 \u2026 Every reset run triggers once and recovers, giving $51.2$ and $[46.1,56.3]$. These separ\u2026",
+      "value": "56.3",
+      "evidence_group": "dual",
+      "sources": [
+        "results/results_price_dual_multiseed_metrics.csv"
+      ],
+      "status_at_initial_review": "verified",
+      "resolution": "Independently recomputed across-seed means and normal 95% intervals; conditional recovery uses 9 decay/10 reset seeds and restricted mean uses all 10.",
+      "final_status": "verified"
+    }
+  ],
+  "all_final_advisories_resolved": true
+}

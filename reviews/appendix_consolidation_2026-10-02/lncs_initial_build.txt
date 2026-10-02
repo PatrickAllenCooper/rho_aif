@@ -1,0 +1,69 @@
+note: Running TeX ...
+warning: full_paper.tex:58: Underfull \vbox (badness 3417) has occurred while \output is active
+warning: full_paper.tex:97: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:370: Underfull \hbox (badness 1152) in paragraph at lines 367--370
+warning: full_paper.tex:437: Underfull \hbox (badness 1852) in paragraph at lines 436--437
+warning: full_paper.tex:474: Underfull \hbox (badness 1418) in paragraph at lines 473--474
+warning: full_paper.tex:474: Underfull \hbox (badness 1286) in paragraph at lines 473--474
+warning: full_paper.tex:555: Underfull \vbox (badness 1102) has occurred while \output is active
+warning: full_paper.tex:730: Underfull \vbox (badness 5316) has occurred while \output is active
+warning: full_paper.tex:1181: Underfull \hbox (badness 1874) in paragraph at lines 1180--1181
+warning: full_paper.tex:1181: Underfull \hbox (badness 1107) in paragraph at lines 1180--1181
+warning: full_paper.tex:1270: Underfull \hbox (badness 6944) in paragraph at lines 1269--1270
+warning: full_paper.tex:1414: Underfull \hbox (badness 1173) in paragraph at lines 1413--1414
+warning: full_paper.tex:1704: Overfull \hbox (5.78348pt too wide) in paragraph at lines 1703--1704
+warning: full_paper.tex:1722: Underfull \hbox (badness 1132) in paragraph at lines 1721--1722
+warning: full_paper.tex:1736: Underfull \hbox (badness 10000) in paragraph at lines 1735--1736
+warning: full_paper.tex:1818: Underfull \hbox (badness 1117) in paragraph at lines 1817--1818
+warning: full_paper.tex:1966: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2102: Underfull \hbox (badness 1406) in paragraph at lines 2101--2102
+warning: full_paper.tex:2111: Underfull \hbox (badness 1147) in paragraph at lines 2110--2111
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1418) in paragraph at lines 5--5
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1024) in paragraph at lines 5--5
+note: Rerunning TeX because "full_paper.aux" changed ...
+warning: full_paper.tex:58: Underfull \vbox (badness 3417) has occurred while \output is active
+warning: full_paper.tex:97: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:370: Underfull \hbox (badness 1152) in paragraph at lines 367--370
+warning: full_paper.tex:437: Underfull \hbox (badness 1852) in paragraph at lines 436--437
+warning: full_paper.tex:474: Underfull \hbox (badness 1418) in paragraph at lines 473--474
+warning: full_paper.tex:474: Underfull \hbox (badness 1286) in paragraph at lines 473--474
+warning: full_paper.tex:566: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:1181: Underfull \hbox (badness 1874) in paragraph at lines 1180--1181
+warning: full_paper.tex:1181: Underfull \hbox (badness 1107) in paragraph at lines 1180--1181
+warning: full_paper.tex:1270: Underfull \hbox (badness 6944) in paragraph at lines 1269--1270
+warning: full_paper.tex:1414: Underfull \hbox (badness 1173) in paragraph at lines 1413--1414
+warning: full_paper.tex:1704: Overfull \hbox (5.78348pt too wide) in paragraph at lines 1703--1704
+warning: full_paper.tex:1722: Underfull \hbox (badness 1132) in paragraph at lines 1721--1722
+warning: full_paper.tex:1736: Underfull \hbox (badness 10000) in paragraph at lines 1735--1736
+warning: full_paper.tex:1818: Underfull \hbox (badness 1117) in paragraph at lines 1817--1818
+warning: full_paper.tex:1966: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2102: Underfull \hbox (badness 1406) in paragraph at lines 2101--2102
+warning: full_paper.tex:2111: Underfull \hbox (badness 1147) in paragraph at lines 2110--2111
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1418) in paragraph at lines 5--5
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1024) in paragraph at lines 5--5
+note: Rerunning TeX because "full_paper.aux" changed ...
+warning: full_paper.tex:58: Underfull \vbox (badness 3417) has occurred while \output is active
+warning: full_paper.tex:97: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:370: Underfull \hbox (badness 1152) in paragraph at lines 367--370
+warning: full_paper.tex:437: Underfull \hbox (badness 1852) in paragraph at lines 436--437
+warning: full_paper.tex:474: Underfull \hbox (badness 1418) in paragraph at lines 473--474
+warning: full_paper.tex:474: Underfull \hbox (badness 1286) in paragraph at lines 473--474
+warning: full_paper.tex:566: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:1181: Underfull \hbox (badness 1874) in paragraph at lines 1180--1181
+warning: full_paper.tex:1181: Underfull \hbox (badness 1107) in paragraph at lines 1180--1181
+warning: full_paper.tex:1270: Underfull \hbox (badness 6944) in paragraph at lines 1269--1270
+warning: full_paper.tex:1414: Underfull \hbox (badness 1173) in paragraph at lines 1413--1414
+warning: full_paper.tex:1704: Overfull \hbox (5.78348pt too wide) in paragraph at lines 1703--1704
+warning: full_paper.tex:1722: Underfull \hbox (badness 1132) in paragraph at lines 1721--1722
+warning: full_paper.tex:1736: Underfull \hbox (badness 10000) in paragraph at lines 1735--1736
+warning: full_paper.tex:1818: Underfull \hbox (badness 1117) in paragraph at lines 1817--1818
+warning: full_paper.tex:1966: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2102: Underfull \hbox (badness 1406) in paragraph at lines 2101--2102
+warning: full_paper.tex:2111: Underfull \hbox (badness 1147) in paragraph at lines 2110--2111
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1418) in paragraph at lines 5--5
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1024) in paragraph at lines 5--5
+warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
+note: Running xdvipdfmx ...
+note: Writing `full_paper.pdf` (737.5078125 KiB)
+note: Writing `full_paper.log` (24.71484375 KiB)
+note: Skipped writing 2 intermediate files (use --keep-intermediates to keep them)

@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-02",
+  "baseline": "c5125abf3f4467271a414661ccca4741645d9161",
+  "source_sha256": {
+    "paper/full_paper_jair.tex": "a62650127b1914aebe7929ffe7d579c40759433873f6a704957b4739b4b2568a",
+    "paper/full_paper.tex": "f777cdce6bd684eb9cb49587255bccd42bc2fcef60aa7427e23e553b8a88a60a"
+  },
+  "structural_checks": {
+    "paper/full_paper_jair.tex": {
+      "main_prefix_byte_identical": true,
+      "proof_count_before": 6,
+      "proof_count_after": 6,
+      "changed_proof_indices_zero_based": [
+        3
+      ],
+      "otc_schematic_retained": true
+    },
+    "paper/full_paper.tex": {
+      "main_prefix_byte_identical": true,
+      "proof_count_before": 6,
+      "proof_count_after": 6,
+      "changed_proof_indices_zero_based": [
+        3
+      ],
+      "otc_schematic_retained": true
+    }
+  },
+  "legacy_hashes_match": {
+    "full_paper_jair.tex": true,
+    "full_paper.tex": true,
+    "full_paper_jair.pdf": true,
+    "full_paper.pdf": true,
+    "full_paper_jair.bib": true,
+    "rho_aif_jair_overleaf_2026-09-28.zip": true
+  },
+  "verdict": "ACCEPT",
+  "required_revisions": [],
+  "pdf_sha256": {
+    "paper/full_paper_jair.pdf": "2115da07825e839bdba0e0235a687a35d7dec923a1b06160d373cc5068cb3286",
+    "paper/full_paper.pdf": "4ce73cb7d6c51d476c64d96f8a348be014fc5df6dbc9c2f2d530568b24fd418f"
+  },
+  "jair_final_pages": 80,
+  "lncs_final_pages": 101,
+  "visual_qa": {
+    "jair_math_pages": [
+      56,
+      58,
+      59,
+      62
+    ],
+    "jair_checklist_final_pages": [
+      78,
+      79,
+      80
+    ],
+    "critical_visual_defects": []
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "full_paper_jair.tex": {
+    "baseline_sha256": "99d85005390f091fbacb56fe136a538f8502850184be717d15b2b486ecfd6e07",
+    "proposed_sha256": "ec9e46d231ca291ed51a496e0cf83c19f1ee1ebf40aafa56b07f2491a0081934",
+    "removed_labels": [
+      "fig:dual_feedback",
+      "fig:otc_loop",
+      "tab:taxonomy"
+    ],
+    "remaining_references_to_removed_labels": {
+      "fig:dual_feedback": [],
+      "fig:otc_loop": [],
+      "tab:taxonomy": []
+    },
+    "environment_counts": {
+      "proof": 6,
+      "proposition": 6,
+      "example": 1,
+      "remark": 1,
+      "figure": 23,
+      "table": 27
+    }
+  },
+  "full_paper.tex": {
+    "baseline_sha256": "7e9e0c8b58dd6d16fd502aa8dfbec0dc7d652446e894927782298feb6b10a655",
+    "proposed_sha256": "162f53e09167a9cd46bb3e864c4c7ff5e5466bce92ab53c88ef44f798ede7ab5",
+    "removed_labels": [
+      "fig:dual_feedback",
+      "fig:otc_loop",
+      "tab:taxonomy"
+    ],
+    "remaining_references_to_removed_labels": {
+      "fig:dual_feedback": [],
+      "fig:otc_loop": [],
+      "tab:taxonomy": []
+    },
+    "environment_counts": {
+      "proof": 6,
+      "proposition": 6,
+      "example": 1,
+      "remark": 1,
+      "figure": 23,
+      "table": 27
+    }
+  }
+}

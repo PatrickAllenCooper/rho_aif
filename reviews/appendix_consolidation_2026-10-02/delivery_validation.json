@@ -1,0 +1,43 @@
+{
+  "artifact_sha256": {
+    "paper/full_paper_jair.tex": "a62650127b1914aebe7929ffe7d579c40759433873f6a704957b4739b4b2568a",
+    "paper/full_paper.tex": "f777cdce6bd684eb9cb49587255bccd42bc2fcef60aa7427e23e553b8a88a60a",
+    "paper/full_paper_jair.pdf": "2115da07825e839bdba0e0235a687a35d7dec923a1b06160d373cc5068cb3286",
+    "paper/full_paper.pdf": "4ce73cb7d6c51d476c64d96f8a348be014fc5df6dbc9c2f2d530568b24fd418f",
+    "paper/rho_aif_jair_overleaf_2026-09-28.zip": "b2ade17223287306a471ba834392aa2ea43fce593b5af4cc16673a603f8658c1"
+  },
+  "full_paper_jair": {
+    "pages": 80,
+    "reference_start_pages": [
+      33
+    ],
+    "figures": 18,
+    "tables": 24,
+    "critical_diagnostics": []
+  },
+  "full_paper": {
+    "pages": 101,
+    "reference_start_pages": [],
+    "figures": 18,
+    "tables": 24,
+    "critical_diagnostics": []
+  },
+  "legacy_manifest_sha256": "11ff7152c38a0b9e617f4c47fe3db466a2600772db108b90f63d09262489e5d2",
+  "legacy_assets_unchanged": true,
+  "page_reduction_vs_archived": {
+    "full_paper_jair": 28,
+    "full_paper": 35
+  },
+  "pre_appendix_text_unchanged": {
+    "full_paper_jair.tex": true,
+    "full_paper.tex": true
+  },
+  "overleaf": {
+    "files": 32,
+    "figures": 18,
+    "tables": 9,
+    "fresh_compile": true,
+    "identical_pdf_text": true,
+    "pdf_sha256": "aa5a5f7083bd740f75ab9cd49a062875dc7e1ad193d3d03ff2357e4852f3a443"
+  }
+}

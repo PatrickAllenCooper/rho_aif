@@ -1,0 +1,58 @@
+{
+  "archived_files_unchanged": true,
+  "manuscripts": {
+    "full_paper_jair.tex": {
+      "sha256": "a62650127b1914aebe7929ffe7d579c40759433873f6a704957b4739b4b2568a",
+      "main_text_unchanged": true,
+      "sensor_protocol_unchanged": true,
+      "external_table_inputs_unchanged": true,
+      "proofs": 6,
+      "changed_proof_ordinal": [
+        4
+      ],
+      "figures_before": 25,
+      "figures_after": 18,
+      "removed_figures_still_archived": [
+        "figures/fig_asymmetry_sweep.pdf",
+        "figures/fig_belief_heatmap.pdf",
+        "figures/fig_dual_feedback.pdf",
+        "figures/fig_efe_trajectory.pdf",
+        "figures/fig_efficiency_curves.pdf",
+        "figures/fig_obs_scaling.pdf",
+        "figures/fig_reward_scaling.pdf"
+      ],
+      "inline_tables_before": 28,
+      "inline_tables_after": 24
+    },
+    "full_paper.tex": {
+      "sha256": "f777cdce6bd684eb9cb49587255bccd42bc2fcef60aa7427e23e553b8a88a60a",
+      "main_text_unchanged": true,
+      "sensor_protocol_unchanged": true,
+      "external_table_inputs_unchanged": true,
+      "proofs": 6,
+      "changed_proof_ordinal": [
+        4
+      ],
+      "figures_before": 25,
+      "figures_after": 18,
+      "removed_figures_still_archived": [
+        "figures/fig_asymmetry_sweep.pdf",
+        "figures/fig_belief_heatmap.pdf",
+        "figures/fig_dual_feedback.pdf",
+        "figures/fig_efe_trajectory.pdf",
+        "figures/fig_efficiency_curves.pdf",
+        "figures/fig_obs_scaling.pdf",
+        "figures/fig_reward_scaling.pdf"
+      ],
+      "inline_tables_before": 28,
+      "inline_tables_after": 24
+    }
+  },
+  "jair_bibliography": {
+    "entries": 72,
+    "cited": 72,
+    "missing": [],
+    "unused": []
+  },
+  "empirical_data_code_tests_and_bibliography_unchanged": true
+}

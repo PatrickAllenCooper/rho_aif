@@ -1,0 +1,749 @@
+{
+  "volume": 84,
+  "year": 2025,
+  "issueURL": "https://www.jair.org/index.php/jair/issue/view/1173",
+  "measurementDate": "2026-10-02",
+  "sampleDefinition": "Positions 16 through 30 in the official volume Articles list, fixed before inspecting appendix lengths. Masthead excluded. Complements agent A positions 1–15.",
+  "measure": "Number of distinct physical PDF pages occupied by appendix content, inclusive of mixed boundary pages. Separate appendices sharing a page do not double-count. Reference-only, main-body conclusion, and metadata-only pages excluded. Separate Online Appendices galley excluded.",
+  "records": [
+    {
+      "position": 16,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/18086",
+      "title": "On the Equivalence between Logic Programs and Bipolar Argumentation Frameworks",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/18086/27239",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/18086/27239/50162",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/16.pdf",
+      "totalPhysicalPDFPages": 43,
+      "appendices": [
+        {
+          "label": "A",
+          "heading": "Proofs of Theorems",
+          "startPhysicalPage": 29,
+          "endPhysicalPage": 42,
+          "inclusiveOccupiedPages": 14
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          29,
+          42
+        ]
+      ],
+      "totalAppendixPages": 14,
+      "referencePhysicalPageSpan": [
+        28,
+        29
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "References and Appendix A share physical p29. Appendix content ends with the proof of Theorem 28 on p42. Physical p43 contains only receipt/acceptance metadata and the running header/footer, so it is excluded.",
+      "metadataOnlyPagesExcluded": [
+        43
+      ],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "676dcae3f08bf586169ad57330cc1ee57559825fff5d750fe2474c45fecc3264"
+    },
+    {
+      "position": 17,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/19393",
+      "title": "Regret Analysis for Randomized Gaussian Process Upper Confidence Bound",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/19393/27240",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/19393/27240/50347",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/17.pdf",
+      "totalPhysicalPDFPages": 33,
+      "appendices": [
+        {
+          "label": "A",
+          "heading": "Proofs for Expected Regret Bounds of IRGP-UCB",
+          "startPhysicalPage": 18,
+          "endPhysicalPage": 23,
+          "inclusiveOccupiedPages": 6
+        },
+        {
+          "label": "B",
+          "heading": "Proofs for Conditional Expected Regret Bounds of IRGP-UCB",
+          "startPhysicalPage": 23,
+          "endPhysicalPage": 27,
+          "inclusiveOccupiedPages": 5
+        },
+        {
+          "label": "C",
+          "heading": "Proofs for High-Probability Regret Bounds of IRGP-UCB",
+          "startPhysicalPage": 27,
+          "endPhysicalPage": 28,
+          "inclusiveOccupiedPages": 2
+        },
+        {
+          "label": "D",
+          "heading": "Proof for Expected Regret Bound of GP-UCB with Constant Confidence Parameter",
+          "startPhysicalPage": 29,
+          "endPhysicalPage": 31,
+          "inclusiveOccupiedPages": 3
+        },
+        {
+          "label": "E",
+          "heading": "Auxiliary Lemmas",
+          "startPhysicalPage": 31,
+          "endPhysicalPage": 33,
+          "inclusiveOccupiedPages": 3
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          18,
+          33
+        ]
+      ],
+      "totalAppendixPages": 16,
+      "referencePhysicalPageSpan": [
+        16,
+        18
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "References and Appendix A share p18; p18 includes the appendix heading and introductory sentence, so it counts. A/B share p23, B/C share p27, D/E share p31. Appendix E ends on p33 with a chi-squared tail inequality; receipt metadata follows on the same page.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "29ad84110b10e347c97f187937286a2ab078fea1ce3259bf1244404718f1c3b4"
+    },
+    {
+      "position": 18,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/16158",
+      "title": "Improving Label Error Detection and Elimination with Uncertainty Quantification",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/16158/27241",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/16158/27241/50420",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/18.pdf",
+      "totalPhysicalPDFPages": 26,
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalAppendixPages": 0,
+      "referencePhysicalPageSpan": [
+        24,
+        26
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "No appendix heading, lettered appendix section, or appendix content found. Discussion and Conclusion runs through p24 (including Limitations); References starts p24 and continues through p26.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "a1867fb8882ddc2873ef1bb75e9901209f01ab24d2fac46c2ec8270639240d77"
+    },
+    {
+      "position": 19,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/17602",
+      "title": "Trustworthy Transfer Learning: A Survey",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/17602/27243",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/17602/27243/50480",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/19.pdf",
+      "totalPhysicalPDFPages": 59,
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalAppendixPages": 0,
+      "referencePhysicalPageSpan": [
+        39,
+        59
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "No appendix found. Conclusion and References share p39; all subsequent pages through p59 are bibliography. This is a survey.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "survey",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "c5e295daf9e15976b2624cfbc72db22a225b949c87f852115ec697117a439066"
+    },
+    {
+      "position": 20,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/19358",
+      "title": "Prioritised Planning: Completeness, Optimality, and Complexity",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/19358/27244",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/19358/27244/50483",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/20.pdf",
+      "totalPhysicalPDFPages": 47,
+      "appendices": [
+        {
+          "label": "A",
+          "heading": "Complexity Proofs",
+          "startPhysicalPage": 30,
+          "endPhysicalPage": 39,
+          "inclusiveOccupiedPages": 10
+        },
+        {
+          "label": "B",
+          "heading": "Extended Results",
+          "startPhysicalPage": 40,
+          "endPhysicalPage": 47,
+          "inclusiveOccupiedPages": 8
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          30,
+          47
+        ]
+      ],
+      "totalAppendixPages": 18,
+      "referencePhysicalPageSpan": [
+        29,
+        30
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "References and Appendix A share p30. Appendix B starts at the top of p40; p39 contains the end of Appendix A. Final p47 includes Figure 22 and receipt metadata.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "667a91852a1de98cc81a40a3e4e62c95e3e4c0eea72a2ec414baf2a981df3803"
+    },
+    {
+      "position": 21,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/19649",
+      "title": "Scaling Safe Policy Improvement: Monte Carlo Tree Search and Policy Iteration Strategies",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/19649/27245",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/19649/27245/50486",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/21.pdf",
+      "totalPhysicalPDFPages": 55,
+      "appendices": [
+        {
+          "label": "A",
+          "heading": "Theoretical Analysis: Full Version",
+          "startPhysicalPage": 39,
+          "endPhysicalPage": 51,
+          "inclusiveOccupiedPages": 13
+        },
+        {
+          "label": "B",
+          "heading": "Details about Safe Policy Improvement",
+          "startPhysicalPage": 51,
+          "endPhysicalPage": 51,
+          "inclusiveOccupiedPages": 1
+        },
+        {
+          "label": "C",
+          "heading": "Supplementary Material About the Methodology",
+          "startPhysicalPage": 51,
+          "endPhysicalPage": 55,
+          "inclusiveOccupiedPages": 5
+        },
+        {
+          "label": "D",
+          "heading": "Experimental Setup",
+          "startPhysicalPage": 55,
+          "endPhysicalPage": 55,
+          "inclusiveOccupiedPages": 1
+        },
+        {
+          "label": "E",
+          "heading": "Source Code",
+          "startPhysicalPage": 55,
+          "endPhysicalPage": 55,
+          "inclusiveOccupiedPages": 1
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          39,
+          55
+        ]
+      ],
+      "totalAppendixPages": 17,
+      "referencePhysicalPageSpan": [
+        37,
+        39
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "References and Appendix A share p39. Appendix A ends above B on p51; B and C also begin on p51. C continues via hyperparameter tables through p55, followed by D and E on p55. E links source code and is included because it is explicitly an appendix section.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "bba7c806c390638a20914c73da8d5f8ada7ca6c2ae142857e63018203a2ae53f"
+    },
+    {
+      "position": 22,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/17469",
+      "title": "Mechanisms of Symbol Processing for In-Context Learning in Transformer Networks",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/17469/27246",
+          "label": "PDF"
+        },
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/17469/27247",
+          "label": "Online Appendices"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/17469/27246/50939",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/22.pdf",
+      "totalPhysicalPDFPages": 69,
+      "appendices": [
+        {
+          "label": "A",
+          "heading": "A Walk-Through of the Symbolic Computation Implicit in the Swap Task",
+          "startPhysicalPage": 55,
+          "endPhysicalPage": 59,
+          "inclusiveOccupiedPages": 5
+        },
+        {
+          "label": "B",
+          "heading": "PSL and QKVL Programs for Templatic Parsing and Generation with the ParGen Algorithm",
+          "startPhysicalPage": 60,
+          "endPhysicalPage": 61,
+          "inclusiveOccupiedPages": 2
+        },
+        {
+          "label": "C",
+          "heading": "Further Related Work",
+          "startPhysicalPage": 62,
+          "endPhysicalPage": 64,
+          "inclusiveOccupiedPages": 3
+        },
+        {
+          "label": "D",
+          "heading": "Templatic Generation Task (TGT) Grammar",
+          "startPhysicalPage": 64,
+          "endPhysicalPage": 64,
+          "inclusiveOccupiedPages": 1
+        },
+        {
+          "label": "E",
+          "heading": "PSL Grammar",
+          "startPhysicalPage": 64,
+          "endPhysicalPage": 65,
+          "inclusiveOccupiedPages": 2
+        },
+        {
+          "label": "F",
+          "heading": "DAT Operation",
+          "startPhysicalPage": 65,
+          "endPhysicalPage": 67,
+          "inclusiveOccupiedPages": 3
+        },
+        {
+          "label": "G",
+          "heading": "TGT Testing Prompt Prefix",
+          "startPhysicalPage": 67,
+          "endPhysicalPage": 67,
+          "inclusiveOccupiedPages": 1
+        },
+        {
+          "label": "H",
+          "heading": "LLM Testing Details",
+          "startPhysicalPage": 67,
+          "endPhysicalPage": 69,
+          "inclusiveOccupiedPages": 3
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          55,
+          69
+        ]
+      ],
+      "totalAppendixPages": 15,
+      "referencePhysicalPageSpan": [
+        52,
+        55
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "References and Appendix A share p55. A ends p59; B begins at the top of p60 and ends p61; C begins at the top of p62. C/D/E share p64; E/F share p65; F/G/H share p67. Final p69 contains H results tables and receipt metadata. The separate Online Appendices galley is excluded from this in-PDF measurement.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": true,
+      "onlineAppendixURLs": [
+        "https://www.jair.org/index.php/jair/article/view/17469/27247"
+      ],
+      "externalSupplementNote": "Separate Online Appendices galley exists and is excluded.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "e36d8671e80dec0d9ccf61d2edce35f1e695689990ea5a4f5b5b6f888237b372",
+      "separateOnlineAppendixMeasurement": {
+        "pdfURL": "https://www.jair.org/index.php/jair/article/download/17469/27247/50940",
+        "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/method/22_online_appendices.pdf",
+        "totalPhysicalPDFPages": 25,
+        "substantiveAppendixPhysicalPageIntervals": [
+          [
+            3,
+            24
+          ]
+        ],
+        "substantiveAppendixPages": 22,
+        "excludedPages": {
+          "cover": [
+            1
+          ],
+          "tableOfContents": [
+            2
+          ],
+          "referencesOnly": [
+            25
+          ]
+        },
+        "verification": "Independently visually checked by method audit agent; preserved as separate sensitivity and not added to totalAppendixPages."
+      }
+    },
+    {
+      "position": 23,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/17116",
+      "title": "Towards a Robust Persistence Diagram via Data-dependent Kernel",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/17116/27248",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/17116/27248/51294",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/23.pdf",
+      "totalPhysicalPDFPages": 41,
+      "appendices": [
+        {
+          "label": "A",
+          "heading": "Proofs",
+          "startPhysicalPage": 26,
+          "endPhysicalPage": 34,
+          "inclusiveOccupiedPages": 9
+        },
+        {
+          "label": "B",
+          "heading": "Additional Experiments",
+          "startPhysicalPage": 34,
+          "endPhysicalPage": 38,
+          "inclusiveOccupiedPages": 5
+        },
+        {
+          "label": "C",
+          "heading": "Uniform Manifold Approximation and Projection for Dimension Reduction (UMAP)",
+          "startPhysicalPage": 38,
+          "endPhysicalPage": 41,
+          "inclusiveOccupiedPages": 4
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          26,
+          41
+        ]
+      ],
+      "totalAppendixPages": 16,
+      "referencePhysicalPageSpan": [
+        24,
+        26
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "References and Appendix A share p26. A/B share p34; B/C share p38. Final p41 has the remainder of the UMAP discussion/assumption and receipt metadata.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "f588c36bf6f721845591720f73d1dc0123e1ba5e79d065680137e6d78644f72b"
+    },
+    {
+      "position": 24,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/17286",
+      "title": "Implicit Safe Set Algorithm for Provably Safe Reinforcement Learning",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/17286/27249",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/17286/27249/51298",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/24.pdf",
+      "totalPhysicalPDFPages": 44,
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalAppendixPages": 0,
+      "referencePhysicalPageSpan": [
+        42,
+        44
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "No appendix found. Numbered theoretical and experimental sections 4–8 are main-body sections before section 9 Conclusion and Future Work on p42. References starts p42 and continues through final p44.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "9825435239b0fecbe7a7982a4ee9d1daeda31326ec3d4918bb089ad7518e2a7b"
+    },
+    {
+      "position": 25,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/19798",
+      "title": "Monitoring Teams of AI Agents",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/19798/27250",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/19798/27250/51302",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/25.pdf",
+      "totalPhysicalPDFPages": 28,
+      "appendices": [
+        {
+          "label": "A",
+          "heading": "Proofs",
+          "startPhysicalPage": 23,
+          "endPhysicalPage": 28,
+          "inclusiveOccupiedPages": 6
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          23,
+          28
+        ]
+      ],
+      "totalAppendixPages": 6,
+      "referencePhysicalPageSpan": [
+        22,
+        23
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "References and Appendix A share p23. Final p28 concludes a proof with equation (64), followed by receipt metadata.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "2633a709a8dd3549f6b59c325d27fa5f23b16ec3b76251ef198aea6268c44b4f"
+    },
+    {
+      "position": 26,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/20161",
+      "title": "EPINN: Enhanced Physics-Informed Neural Network for Solving Continuous Integral Equations",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/20161/27251",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/20161/27251/51305",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/26.pdf",
+      "totalPhysicalPDFPages": 46,
+      "appendices": [
+        {
+          "label": "A",
+          "heading": "Two-Dimensional Linear Volterra Integral Equation",
+          "startPhysicalPage": 39,
+          "endPhysicalPage": 40,
+          "inclusiveOccupiedPages": 2
+        },
+        {
+          "label": "B",
+          "heading": "Four-Dimensional Linear Fredholm Integral Equation",
+          "startPhysicalPage": 40,
+          "endPhysicalPage": 41,
+          "inclusiveOccupiedPages": 2
+        },
+        {
+          "label": "C",
+          "heading": "Two-Dimensional Linear Volterra-Fredholm Integral Equation",
+          "startPhysicalPage": 41,
+          "endPhysicalPage": 43,
+          "inclusiveOccupiedPages": 3
+        },
+        {
+          "label": "D",
+          "heading": "Two-Dimensional Nonlinear Fredholm Integral Equation",
+          "startPhysicalPage": 43,
+          "endPhysicalPage": 44,
+          "inclusiveOccupiedPages": 2
+        },
+        {
+          "label": "E",
+          "heading": "Two-Dimensional Nonlinear Volterra Integral Equation",
+          "startPhysicalPage": 44,
+          "endPhysicalPage": 45,
+          "inclusiveOccupiedPages": 2
+        },
+        {
+          "label": "F",
+          "heading": "Hyperparameter Sensitivity and Tuning Guidance",
+          "startPhysicalPage": 45,
+          "endPhysicalPage": 46,
+          "inclusiveOccupiedPages": 2
+        }
+      ],
+      "appendixPhysicalPageIntervals": [
+        [
+          39,
+          46
+        ]
+      ],
+      "totalAppendixPages": 8,
+      "referencePhysicalPageSpan": [
+        37,
+        39
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "References and Appendix A share p39. Appendix figures occupy shared transition pages: A/B p40, B/C p41, C/D p43, D/E p44, E/F p45. Final p46 contains Appendix F tuning guidance and receipt metadata.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "a9d735c3daf07d465d780ec8f66f60dd378aba8e2ebc8b1d24cb8d86ce8dcb9a"
+    },
+    {
+      "position": 27,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/19533",
+      "title": "Combining Constraint Programming and Machine Learning: From Current Progress to Future Opportunities",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/19533/27252",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/19533/27252/51690",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/27.pdf",
+      "totalPhysicalPDFPages": 52,
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalAppendixPages": 0,
+      "referencePhysicalPageSpan": [
+        41,
+        52
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "No appendix found. Main-body Conclusion starts p40; References starts p41 and continues through p52. This is a survey/review; a citation title contains A Case Study, which is not a section heading.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "survey",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "e4b3022f5d0dfd6d972777417d24afdeeb78a5cdeb7ff44876d998822f947c1e"
+    },
+    {
+      "position": 28,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/18675",
+      "title": "Agentic Large Language Models, a Survey",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/18675/27253",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/18675/27253/51691",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/28.pdf",
+      "totalPhysicalPDFPages": 74,
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalAppendixPages": 0,
+      "referencePhysicalPageSpan": [
+        52,
+        74
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "No appendix found. Section 5 General Discussion and Research Agenda ends p51, followed by Acknowledgements and References on p52. References continue through p74. This is a survey.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "survey",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "59be455f653a7cd23e72a3157d13db44f89452502430cd9e706a5b0f41a41084"
+    },
+    {
+      "position": 29,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/17970",
+      "title": "Viewpoint: The Future of Human-Centric Explainable Artificial Intelligence (XAI) is not Post-Hoc Explanations",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/17970/27222",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/17970/27222/48761",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/29.pdf",
+      "totalPhysicalPDFPages": 7,
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalAppendixPages": 0,
+      "referencePhysicalPageSpan": [
+        5,
+        7
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "No appendix found. Section 5 Conclusion and References start p5; bibliography continues through p7. This is explicitly a Viewpoint.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "viewpoint",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "1a9eb8a142012dc94239547d78d751033ede07eedecb99ab42d7be0e5affcede"
+    },
+    {
+      "position": 30,
+      "articleURL": "https://www.jair.org/index.php/jair/article/view/20808",
+      "title": "Probabilistically Tightened Linear Relaxation-based Perturbation Analysis for Neural Network Verification",
+      "galleys": [
+        {
+          "url": "https://www.jair.org/index.php/jair/article/view/20808/27254",
+          "label": "PDF"
+        }
+      ],
+      "pdfURL": "https://www.jair.org/index.php/jair/article/download/20808/27254/51694",
+      "localPDF": "/Users/pat/code/rho_aif/tmp/jair_appendix_length_2026-10-02/b/30.pdf",
+      "totalPhysicalPDFPages": 34,
+      "appendices": [],
+      "appendixPhysicalPageIntervals": [],
+      "totalAppendixPages": 0,
+      "referencePhysicalPageSpan": [
+        32,
+        34
+      ],
+      "boundaryEvidenceAndMixedPageNotes": "No appendix found. Sections 6 Assumptions and Limitations and 7 Conclusion appear on p32, followed by References through p34.",
+      "metadataOnlyPagesExcluded": [],
+      "onlineAppendicesPresentInIssueListing": false,
+      "onlineAppendixURLs": [],
+      "externalSupplementNote": "No separate Online Appendices/supplement galley listed on the official volume page; this does not rule out external code/data links.",
+      "articleTypeForSensitivity": "research",
+      "verification": "Official PDF downloaded with curl; physical page total from pdfinfo; section headings and adjacent page contents inspected in pdftotext -layout. All page numbers are 1-based physical PDF indices.",
+      "pdfSHA256": "8a3ec0525acc9beabf65a4959166eeb149e9bb8d1c6460e2262794010447d81f"
+    }
+  ],
+  "summary": {
+    "articleCount": 15,
+    "papersWithAppendix": 8,
+    "appendixPagesSum": 110,
+    "meanAcrossAll15": 7.333333333333333,
+    "meanAmong8WithAppendices": 13.75
+  }
+}

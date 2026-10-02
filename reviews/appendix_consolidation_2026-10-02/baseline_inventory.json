@@ -1,0 +1,283 @@
+{
+  "source_commit": "c5125abf3f4467271a414661ccca4741645d9161",
+  "jair_pages": 108,
+  "appendix_start_page": 36,
+  "main_reference_start": 33,
+  "sections": [
+    {
+      "title": "Proof of Proposition~\\ref{prop:equivalence}",
+      "label": "app:proof",
+      "page": 36,
+      "source_word_tokens_without_alt_text": 177,
+      "figures": 0,
+      "tables": 0,
+      "inputs": [],
+      "start_to_next_start_pages": 0
+    },
+    {
+      "title": "Full Per-Environment Results",
+      "label": "app:full_tables",
+      "page": 36,
+      "source_word_tokens_without_alt_text": 811,
+      "figures": 0,
+      "tables": 5,
+      "inputs": [],
+      "start_to_next_start_pages": 3
+    },
+    {
+      "title": "Two-State Testbed",
+      "label": "app:testbed",
+      "page": 39,
+      "source_word_tokens_without_alt_text": 298,
+      "figures": 0,
+      "tables": 1,
+      "inputs": [],
+      "start_to_next_start_pages": 0
+    },
+    {
+      "title": "Supplementary Figures",
+      "label": "app:supp_figs",
+      "page": 39,
+      "source_word_tokens_without_alt_text": 790,
+      "figures": 6,
+      "tables": 0,
+      "inputs": [],
+      "start_to_next_start_pages": 5
+    },
+    {
+      "title": "Environment Specifications",
+      "label": "app:envs",
+      "page": 44,
+      "source_word_tokens_without_alt_text": 822,
+      "figures": 0,
+      "tables": 2,
+      "inputs": [],
+      "start_to_next_start_pages": 1
+    },
+    {
+      "title": "Navigation Results",
+      "label": "app:navigation",
+      "page": 45,
+      "source_word_tokens_without_alt_text": 404,
+      "figures": 0,
+      "tables": 1,
+      "inputs": [],
+      "start_to_next_start_pages": 1
+    },
+    {
+      "title": "Scaling Analysis",
+      "label": "app:scaling",
+      "page": 46,
+      "source_word_tokens_without_alt_text": 327,
+      "figures": 0,
+      "tables": 1,
+      "inputs": [],
+      "start_to_next_start_pages": 1
+    },
+    {
+      "title": "PyMDP Consistency Check",
+      "label": "app:pymdp",
+      "page": 47,
+      "source_word_tokens_without_alt_text": 111,
+      "figures": 0,
+      "tables": 0,
+      "inputs": [],
+      "start_to_next_start_pages": 0
+    },
+    {
+      "title": "Supplementary Statistics",
+      "label": "app:stats",
+      "page": 47,
+      "source_word_tokens_without_alt_text": 624,
+      "figures": 0,
+      "tables": 1,
+      "inputs": [],
+      "start_to_next_start_pages": 2
+    },
+    {
+      "title": "Near-Optimality across Planning Horizons",
+      "label": "app:nearopt_horizon",
+      "page": 49,
+      "source_word_tokens_without_alt_text": 407,
+      "figures": 1,
+      "tables": 0,
+      "inputs": [
+        "tables/horizon_map.tex"
+      ],
+      "start_to_next_start_pages": 1
+    },
+    {
+      "title": "Discount Factor Sensitivity",
+      "label": "app:discount",
+      "page": 50,
+      "source_word_tokens_without_alt_text": 527,
+      "figures": 0,
+      "tables": 1,
+      "inputs": [],
+      "start_to_next_start_pages": 1
+    },
+    {
+      "title": "Model Misspecification Sensitivity",
+      "label": "app:misspec",
+      "page": 51,
+      "source_word_tokens_without_alt_text": 638,
+      "figures": 0,
+      "tables": 2,
+      "inputs": [],
+      "start_to_next_start_pages": 2
+    },
+    {
+      "title": "RockSample as an Interleaved Observe-Act Setting (Extended)",
+      "label": "app:rocksample",
+      "page": 53,
+      "source_word_tokens_without_alt_text": 1469,
+      "figures": 0,
+      "tables": 0,
+      "inputs": [
+        "tables/rocksample_extended.tex"
+      ],
+      "start_to_next_start_pages": 2
+    },
+    {
+      "title": "IDS Baseline (Observe-then-Commit)",
+      "label": "app:ids",
+      "page": 55,
+      "source_word_tokens_without_alt_text": 526,
+      "figures": 0,
+      "tables": 1,
+      "inputs": [],
+      "start_to_next_start_pages": 1
+    },
+    {
+      "title": "Proper-Scoring Calibration",
+      "label": "app:calibration",
+      "page": 56,
+      "source_word_tokens_without_alt_text": 240,
+      "figures": 0,
+      "tables": 0,
+      "inputs": [
+        "tables/calibration_table.tex"
+      ],
+      "start_to_next_start_pages": 1
+    },
+    {
+      "title": "Per-Test Value-of-Information Audit Trail",
+      "label": "app:audit",
+      "page": 57,
+      "source_word_tokens_without_alt_text": 123,
+      "figures": 0,
+      "tables": 0,
+      "inputs": [
+        "tables/audit_case_study.tex"
+      ],
+      "start_to_next_start_pages": 1
+    },
+    {
+      "title": "Reward-Rescaling Invariance",
+      "label": "app:reward_scaling",
+      "page": 58,
+      "source_word_tokens_without_alt_text": 344,
+      "figures": 1,
+      "tables": 1,
+      "inputs": [],
+      "start_to_next_start_pages": 1
+    },
+    {
+      "title": "Information Base and the Nat-Canonical Agent",
+      "label": "app:nat_canonical",
+      "page": 59,
+      "source_word_tokens_without_alt_text": 379,
+      "figures": 0,
+      "tables": 0,
+      "inputs": [],
+      "start_to_next_start_pages": 0
+    },
+    {
+      "title": "POMCP Baseline Comparison",
+      "label": "app:pomcp",
+      "page": 59,
+      "source_word_tokens_without_alt_text": 2219,
+      "figures": 0,
+      "tables": 1,
+      "inputs": [
+        "tables/mcts_ablation.tex",
+        "tables/pomcp_exploration_sweep.tex"
+      ],
+      "start_to_next_start_pages": 6
+    },
+    {
+      "title": "Budgeted $\\rho$-POMDP Supplementary Details",
+      "label": "app:budget_supp",
+      "page": 65,
+      "source_word_tokens_without_alt_text": 571,
+      "figures": 0,
+      "tables": 0,
+      "inputs": [
+        "tables/w_atlas.tex"
+      ],
+      "start_to_next_start_pages": 1
+    },
+    {
+      "title": "Methodological and Budget-Theory Details",
+      "label": "app:theory_details",
+      "page": 66,
+      "source_word_tokens_without_alt_text": 6112,
+      "figures": 3,
+      "tables": 2,
+      "inputs": [],
+      "start_to_next_start_pages": 11
+    },
+    {
+      "title": "Extended Experimental Specifications and Protocols",
+      "label": "app:experimental_protocol",
+      "page": 77,
+      "source_word_tokens_without_alt_text": 1776,
+      "figures": 0,
+      "tables": 0,
+      "inputs": [],
+      "start_to_next_start_pages": 3
+    },
+    {
+      "title": "Extended Budget Evidence",
+      "label": "app:extended_budget_evidence",
+      "page": 80,
+      "source_word_tokens_without_alt_text": 7696,
+      "figures": 3,
+      "tables": 3,
+      "inputs": [
+        "tables/budget_frontier.tex"
+      ],
+      "start_to_next_start_pages": 14
+    },
+    {
+      "title": "Extended EFE Comparisons",
+      "label": "app:extended_efe_results",
+      "page": 94,
+      "source_word_tokens_without_alt_text": 3901,
+      "figures": 1,
+      "tables": 1,
+      "inputs": [],
+      "start_to_next_start_pages": 6
+    },
+    {
+      "title": "Additional Interpretation and Tree-Search Controls",
+      "label": "app:interpretation",
+      "page": 100,
+      "source_word_tokens_without_alt_text": 2014,
+      "figures": 0,
+      "tables": 1,
+      "inputs": [],
+      "start_to_next_start_pages": 4
+    },
+    {
+      "title": "Reproducibility Checklist for JAIR",
+      "label": "app:repro",
+      "page": 104,
+      "source_word_tokens_without_alt_text": 2344,
+      "figures": 0,
+      "tables": 0,
+      "inputs": [],
+      "start_to_next_start_pages": 5
+    }
+  ]
+}
