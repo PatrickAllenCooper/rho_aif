@@ -1791,3 +1791,10 @@ The behavioural signature says how. POMCP takes 7.5 steps and collects 0.68 good
 `no_budget_aware_horizon` is bit-identical to the frozen row on RS[5,3], as expected: at H=10 the 55-step cap is never approached, so the flag is a no-op on this instance. It is not a no-op on RS[11,11].
 
 The Holm-Bonferroni correction over this family flags 61 of 182 comparisons significant with 9 NaN cells present. Under the pre-fix helper those NaNs could have truncated the step-down (9.17.5); the corrected helper excludes them from the family instead.
+
+
+### 9.17.60 — Public sensor data and further concision (2026-10-01, in progress)
+
+Pat requested additional experiments addressing application/significance concerns alongside a shorter, clearer paper, and chose a public dataset. The accepted `7b954ce` sources, PDFs, and Overleaf ZIP are frozen under `paper/legacy/2026-10-01_pre_external_study/`. Independent design review selected UCI Gas Sensor Array Drift (ID 224). The protocol `experiments/protocols/gas_sensor_2026-10-01.md` and machine-readable parameters are committed before calibration or held-out evaluation. It fixes researcher-set targets 2, 4, and 8 sensor accesses, training-only categorical likelihoods, matched direct-penalty and fixed-count baselines, conditional selection-aware bootstrap, and frozen later-batch transfer. It makes no deployment or physical energy claim. All work is local CPU only.
+
+Acceptance criteria: reproducible primary-data lineage, no held-out selection, actual-record replay with one acquisition per sensor, all targets and failures reported, calibration-selection uncertainty, independently audited implementation/results and mirrored manuscript edits, clean builds and tests, refreshed standalone Overleaf ZIP. Statistical success is not required. Two independent editorial agents are proposing main-text moves and genuine appendix cuts. Stage verdict: HOLD while implementation, evaluation, revision, and independent review are pending.

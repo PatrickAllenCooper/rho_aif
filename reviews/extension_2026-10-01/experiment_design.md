@@ -1,0 +1,96 @@
+# Proposed real-data sensor-acquisition study
+
+Design recommendation, 2026-10-01. This document was written before downloading data for performance analysis or evaluating any policy. The parent task should freeze the final protocol and commit its hash before the evaluation partitions are used. All computation is local CPU work. No GPU allocation is warranted.
+
+## Recommendation and contribution
+
+Use the UCI Gas Sensor Array Drift Dataset, ID 224. Reconstruct each case as sixteen acquisitions, each revealing the eight recorded descriptors from one physical sensor. Fit a discrete observation model on training cases, select information weights and policy mixtures on calibration cases, and replay the frozen policies on unseen recorded cases. Declare expected sensor-access targets **B = {2, 4, 8}** before observing any usage curves. Retain unattainable targets in the results.
+
+This adds real observations, learned likelihoods, independently fixed targets, and a later-period stress test to the existing synthetic known-model evidence. It does not make the method a new general constrained optimizer. Its strongest possible contribution is to show when calibration transfers from a fitted model and when it fails under measured shift, while measuring the reward cost against a direct usage-penalty family. A negative result remains informative.
+
+These targets are researcher-defined benchmark requirements. They are not obtained from a stakeholder, an operating installation, calibration endpoints, or a desired result. An acquisition means access to an already recorded sensor vector. This retrospective masking experiment neither switches sensors off nor measures energy, money, latency, safety, or deployment outcomes. All sixteen sensors originally operated together. The static class is preserved by access to a stored record, so the experiment does not extend the theory to destructive sensing or dynamical control.
+
+## Source-grounded choice and alternatives
+
+UCI documents 13,910 cases, six gas classes, sixteen sensors, and eight consecutive descriptors per sensor. Its ten batches preserve coarse collection periods. Batch 10 contains a documented correction from October 2013. Download ID 224 rather than the distinct concentration-augmented ID 270. The source describes the measurements and sensor-block ordering directly, so no grouping is inferred from feature correlations. Archive the downloaded ZIP, source URL, retrieval timestamp, SHA256, file-level hashes, and readme. [UCI dataset 224](https://archive.ics.uci.edu/dataset/224/gas+sensor+array+drift+dataset), [dataset DOI](https://doi.org/10.24432/C5RP6W).
+
+Two alternatives were considered. The hydraulic test-rig dataset supplies physical sensor rates and could support a communication-volume proxy, but its repeated load cycles and partly derived channels introduce additional split and attribution work. The smartphone activity dataset supplies subject identities and a ready subject-disjoint test split, but its two physical instruments offer a much smaller acquisition problem than sixteen sensor groups. Neither is needed for the smallest credible extension. [Hydraulic source](https://archive.ics.uci.edu/dataset/447/condition+monitoring+of+hydraulic+systems), [smartphone source](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones).
+
+A relevant caution is easily misattributed: Dennler et al.'s finding that baseline drift predicts gas identity concerns the separate 72-sensor wind-tunnel archive, not UCI ID 224. It does not prove a defect in the chosen data. It does motivate the later-batch evaluation and narrow interpretation of random within-period splits. The chosen archive has coarse batches rather than enough metadata to certify trial independence or eliminate every collection confound. [Dennler et al., primary publisher text, Section 2](https://www.sciencedirect.com/science/article/am/pii/S0925400522003100).
+
+## Frozen data partitions
+
+Use batches 1–6 for the within-period study. Within each `(batch, class)` stratum, use a single deterministic permutation with master seed `20261001` to allocate approximately 60% model training, 20% policy calibration, and 20% locked evaluation. Use integer floor counts for training and calibration, with the remainder for evaluation. Record every row as `(source SHA256, batch, original line number)`, not a transient dataframe index. Report actual partition counts after parsing rather than relying on rounded percentages.
+
+Before assigning partitions, group exact duplicate 128-feature vectors within batches 1–6 and keep each duplicate group wholly within one partition. Apply a deterministic, documented stratified group assignment if duplicates exist. Identical feature vectors with inconsistent labels remain one group and are flagged. Do not drop difficult cases or rebalance classes after outcomes are available. Exact duplicate vectors crossing from batches 1–6 to batches 7–10 are flagged and excluded from the main later-period summaries, with their number and an inclusive sensitivity result disclosed. These are label-blind integrity operations, not model selection.
+
+All of batches 7–10 are the locked temporal stress set. Report each batch separately and an equal-batch average as a descriptive summary. Do not pool them into the within-period test, recalibrate on their labels, or select the most favorable later batch. Their different class proportions are part of the shift. Also report balanced accuracy and per-class usage to expose composition effects. A prior adjusted to later test labels is not allowed.
+
+The random held-out split tests unseen cases from represented collection periods, not an unseen instrument or collection campaign. The later batches test frozen transfer over collection time. Neither split supports an assertion of independent deployment sites. The one trained model is one training realization.
+
+## Learned model and acquisition policy
+
+The complete learned model is intentionally small enough to audit. For each of the sixteen eight-dimensional sensor blocks, fit a separate `StandardScaler` and `KMeans(n_clusters=8, n_init=10, max_iter=300, random_state=20261001 + sensor_index)` on training rows only. Apply the frozen transformation and nearest-centroid map to calibration/evaluation rows. A constant descriptor receives scale one. Do not fit global normalization or quantizers using calibration or later cases. Store scaler parameters, centroids, library versions, and the encoded row-level data.
+
+Fit six class priors and sixteen class-conditional categorical likelihood tables, with additive smoothing alpha = 1 for each of eight outcomes and alpha = 1 for each class prior. This is a learned categorical naive-Bayes observation model. It assumes sensors are conditionally independent given gas identity, which real sensors need not satisfy. No observation is sampled from this model during evaluation. An action returns that held-out case's actual quantized sensor record. Model likelihoods serve only belief updates and planning. Report predictive log loss and Brier score for the no-sensing and full-sensing classifier so overconfidence is visible.
+
+Fix terminal reward to 1 for the correct gas class and 0 otherwise, with base acquisition cost c = 0.02 reward units per sensor. Thus realized return is correctness minus 0.02 times the sensor count. The cost is a benchmark trade-off scale, not a measured device expense. Report accuracy and usage separately, so conclusions do not rely on this arbitrary reward conversion.
+
+Use receding one-observation lookahead, equivalent to `planning_horizon=1` in the existing `PlanningInfoGainAgent` convention. At posterior b and unobserved sensor j, compare stopping value `max_y b(y)` with
+
+```
+Q_w(j,b) = -0.02 + w I_b(Y; Z_j)
+           + sum_z p(z | b, j) max_y b(y | z, j).
+```
+
+Information is measured in bits. Observe the maximizing sensor only on strict improvement over stopping. Ties favor stopping, then the lowest sensor index. Update the posterior using its actual observed category and replan. Each sensor can be acquired once only. Stop after at most sixteen acquisitions. Observed-sensor masking is essential: the existing generic observation agents permit repeated draws and cannot be used unchanged. A fresh draw from the learned likelihood would turn the evaluation back into a synthetic experiment.
+
+Freeze the nonnegative information-weight grid to `sorted(unique([0, log(2), 1] + 2.0 ** arange(-8, 9)))`. No adaptive grid expansion based on held-out data. Report nonmonotonicity, unbracketed targets, and below-range targets without replacing their budgets. Select the existing last-crossing bracket and its endpoint probability on calibration rows only. A mixture is drawn once per case, then that endpoint policy runs for the whole case. Audit the bit/nat convention by reporting both w = 1 bit-unit and w = ln(2) nat-canonical choices.
+
+Do not claim this shallow configuration tests long-horizon planning. It targets the calibration mechanism while allowing an exact, matched-depth direct comparator and inexpensive uncertainty analysis. Stronger observation models and deeper planners would be follow-up work, not silently tuned rescue variants.
+
+## Baselines and estimands
+
+All model-based policies share the same trained likelihoods, priors, quantization, horizon, action mask, tie rules, cases, and terminal prediction rule.
+
+1. **Direct usage-penalty family.** Set the information term to zero and replace 0.02 by the effective penalty `0.02 + lambda`. Freeze `lambda = sorted(unique([0, -0.02] + [s * 2.0 ** k for s in [-1, 1] for k in range(-10, 2)]))`. Negative effective penalties are explicit acquisition subsidies needed to span equality targets, not claims about real costs. Compute each candidate's calibration accuracy, base return, and sensor count. Fit the reward-maximizing equality mixture using `rho_aif.budget.lp_mixture(..., equality=True)` and freeze its support and probabilities. The cap-constrained mixture is a secondary result. Report infeasibility and realized test usage rather than assuming the fitted mixture remains exactly matched on test cases.
+2. **Best equality mixture within the information-weight grid.** This separates the crossing rule from the capabilities of its own sampled family. The cap mixture is secondary. Do not label any sampled mixture a globally optimal constrained policy.
+3. **Fixed-count greedy information acquisition.** At each step choose the largest model conditional information gain and stop after exactly B acquisitions for B = 2, 4, 8. This supplies an elementary, usage-exact alternative with the same learned model and actual observations. It tests whether finding an information weight improves anything over directly counting acquisitions. It is a model-based greedy-CMI comparator, not a reproduction of a neural AFA method.
+4. **Fixed-order acquisition.** Rank sensors once using training-only prior mutual information, break ties by sensor index, and acquire the first B. This tests the value of adapting the sensor order to each case.
+5. **Anchors.** Zero sensors, all sixteen sensors, w = 0, w = 1, and w = ln(2). Do not treat the all-sensor learned classifier as a true-label oracle or upper bound on accuracy, since model misspecification can make additional evidence harmful.
+
+The primary mechanism is adjacent to greedy conditional-information AFA, an established idea rather than a new claim here. Recent work also addresses nongreedy acquisition and learned conditional models, so this study must not be sold as state-of-the-art AFA benchmarking. [Covert et al., ICML 2023](https://proceedings.mlr.press/v202/covert23a.html), [Valancius et al., ICML 2024](https://proceedings.mlr.press/v235/valancius24a.html).
+
+Evaluate endpoint components separately on every actual case and combine their contributions analytically for expected mixture accuracy, return, and usage. This Rao–Blackwellized estimate is the primary estimand for a randomized episode-level policy. Also archive one seeded mixture realization per target as an implementation check, using policy randomness separate from the split seed. Do not count repeated endpoint/mixture evaluations as new independent cases.
+
+## Predeclared questions and uncertainty
+
+**H1, usage transfer.** For each B, is the within-period expected usage error `E[N] - B` within ±0.5 sensor accesses? This margin is a research accuracy tolerance fixed here, not an application tolerance. Report all targets and require simultaneous interval containment to call all three targets calibrated. If the calibration family cannot bracket B, H1 fails for that target rather than disappearing from the denominator. Compare canonical-weight usage errors descriptively on the same cases.
+
+**H2, decision trade-off.** At each target, estimate the crossing mixture's accuracy and base-return differences from the fitted direct equality mixture and from fixed-count greedy information acquisition. Pair by actual case. A negative interval is evidence of a shortfall under the tested configuration. An interval overlapping zero is not evidence of equivalence. No superiority or near-optimality assertion is predeclared. Report the paired usage difference beside each accuracy gap, because frozen mixtures need not remain usage-matched on test cases. The cap comparator answers a separate question and may leave the budget slack.
+
+**H3, shift sensitivity.** Replay every selected policy unchanged on batches 7–10. Report each later batch's usage error, accuracy, log loss, and reference gap. The question is whether the calibration relation transfers and how errors evolve, not whether a stationary theorem guarantees tracking. This is descriptive stress evidence, with no multiplicity-adjusted claim of an inevitable deterioration trend.
+
+Use 2,000 paired bootstrap replicates of calibration and test rows, resampling within the original batch/class strata. For each replicate, recompute bracket selection, q, and all fitted reference LP supports using cached calibration outcomes, then evaluate those reselected policies on the resampled test records. This includes calibration-selection uncertainty conditional on the frozen trained model. Cache all candidate policies on the locked test only after the predeclaration is committed, solely for this fixed analysis. Do not use their test results to revise the grid or select a winner. Archive the rate of infeasible/unbracketed bootstrap replicates rather than conditioning those failures away.
+
+For H1 use Bonferroni-adjusted 98.333% two-sided bootstrap intervals for three targets, which gives a nominal simultaneous 95% family. For H2 report paired nominal 95% intervals and apply Holm correction over the six primary accuracy comparisons if inferential p-values are reported. Treat return gaps and cap comparisons as secondary. Avoid adding unsupported significance tests solely for every descriptive metric.
+
+These are case-resampling intervals under exchangeability within the represented strata. They do not include retraining, new-device variation, unknown dependence among laboratory trials, or between-batch population uncertainty. Explicitly label them conditional on the trained model. Separate stratification by true class for inference preserves the evaluation composition and does not expose labels to the deployed policy. Do not describe bootstrap replicates as training seeds or independent experiments.
+
+## CPU estimate, bounded smoke, and integrity checks
+
+First run the parser and tests on a tiny hand-constructed fixture and a training-only smoke set of at most 128 rows. No calibration/test performance output is permitted before the protocol is frozen. Model fitting uses only 16 small eight-dimensional clusterers. One policy episode performs at most 136 candidate-sensor evaluations, each over 8 outcomes and 6 classes. Vectorizing outcomes and classes makes the operation count small, but Python loop overhead must be measured rather than assumed.
+
+Bound the initial smoke to 120 seconds wall time and one CPU process, with numerical-library thread pools limited to one. Measure parser time, clusterer fitting time, episodes/second, candidate evaluations/second, and peak resident memory. Extrapolate from the actual number of candidate policies and rows. A reasonable planning envelope is 1–4 CPU core-hours and below 2 GB RAM after parsing, not a measured promise. If the estimate exceeds four core-hours, vectorize/cache before a full run or explicitly revise the compute envelope before evaluation. Do not shorten the grid or discard policies based on observed performance.
+
+Report separate timestamps for download/CPU preparation, model fit, calibration, locked evaluation, bootstrap, and final outputs. Check progress and memory early, retain intermediate outputs, and avoid duplicate runs. No GPUs are required or requested. The time/memory report should distinguish measured smoke use, extrapolation, and realized totals.
+
+Meaningful tests should check sensor block indexing, train-only fitted transforms, disjoint row/group identities, valid likelihood row sums, no repeated acquisitions, posterior normalization, use of the actual held-out row, zero/all-sensor endpoints, terminal reward, matched-depth direct scoring, analytical versus seeded mixture expectation, impossible-budget behavior, and bootstrap reselection. Hand-computable two-class/two-sensor fixtures should verify the action ranking rather than merely echoing implementation code.
+
+## Required artifacts and reporting budget
+
+Archive a protocol JSON/hash, dataset manifest, split manifest, encoded records or reconstructible transforms, trained model parameters, all candidate calibration outcomes, all locked-test candidate outcomes used for the fixed bootstrap, policy selection records, and final summaries. Every per-case record should include row ID, batch, true class, method/grid parameter, ordered acquired sensor IDs, observed categories, final posterior, prediction, correctness, usage, base return, and runtime. Store endpoint mixture supports/probabilities and both analytical expected metrics and the separately seeded realization. Include code revision, dependency versions, thread limits, and CPU metadata.
+
+A compact main-text addition can be one plot with accuracy/usage and later-batch transfer panels plus one small target table. Put the precise protocol and per-case archive in a concise appendix/repository artifact. The manuscript should state a single bounded finding based on the measured outcomes. It must preserve the interpretation that this is retrospective sensor access with a misspecified learned model and researcher-set requirements.
+
+Recommended acceptance criterion for the work itself: trustworthy lineage, locked selections, all three targets retained, matched direct baselines, paired uncertainty with calibration reselection, and explicit failures. Statistical success of H1 or improvement over a comparator is not required to complete or report the study.
