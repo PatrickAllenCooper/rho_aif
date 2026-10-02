@@ -1,0 +1,356 @@
+{
+  "reviewer": "oct01_prose_appendix",
+  "scope": "All JAIR appendices and corresponding LNCS parts, including generated-table captions. Read-only manuscript review.",
+  "source_sha256": {
+    "paper/full_paper_jair.tex": "c2b94f519e103a538c61256e398e96a05168bcfd20851c8cfe6da3cd680de362",
+    "paper/full_paper.tex": "1166b8a19a47c8c8850b56b5f6cfc317b123f2def6f930575f0dd5219e446d29"
+  },
+  "proposals": [
+    {
+      "id": "PA01",
+      "category": "source-consistency",
+      "location": "app:full_tables opening",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "This appendix reports the full agent set for Tiger, Diagnosis, Bandit, and the two Tileworld grids, one table per environment.",
+      "new": "This appendix reports the per-environment results for Tiger, Diagnosis, Bandit, and the two Tileworld grids, omitting the duplicate rows identified in Appendix~\\ref{app:core_details}.",
+      "rationale": "Avoids promising every agent row when the manuscript explicitly says the tables omit duplicate untuned Info Gain and Tiger pymdp-AIF rows. The later appendix already specifies exactly which rows are omitted.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 900,
+        "paper/full_paper.tex": 1213
+      }
+    },
+    {
+      "id": "PA02",
+      "category": "prose",
+      "location": "app:testbed table caption",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "Bold marks the best value in the success and reward columns, with exact ties bold together.",
+      "new": "Bold marks the best value in the success and reward columns, with exact ties bolded together.",
+      "rationale": "Repairs a grammatical omission without changing the bolding rule.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1007,
+        "paper/full_paper.tex": 1320
+      }
+    },
+    {
+      "id": "PA03",
+      "category": "prose",
+      "location": "app:obs_scaling discussion",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "EFE and Planning are bit-identical at $K{=}1$ and within seed-level sampling error at $K{=}2$ ($43.2\\%$ against $43.8\\%$ success, the multi-test evidence at that scale being carried by the main Diagnosis battery of Section~\\ref{sec:results}).",
+      "new": "EFE and Planning are bit-identical at $K{=}1$ and within seed-level sampling error at $K{=}2$ ($43.2\\%$ against $43.8\\%$ success). Evidence of a gap with two tests comes from the main Diagnosis battery of Section~\\ref{sec:results}.",
+      "rationale": "Separates the parenthetical qualification and states what the cited battery contributes. All values and the cross-reference are preserved.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1063,
+        "paper/full_paper.tex": 1373
+      }
+    },
+    {
+      "id": "PA04",
+      "category": "prose",
+      "location": "fig:tw_belief Description",
+      "files": [
+        "paper/full_paper_jair.tex"
+      ],
+      "old": "with each of these panel's titles also reporting",
+      "new": "with each panel's title also reporting",
+      "rationale": "Corrects a plural possessive construction in the accessibility description.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1086
+      }
+    },
+    {
+      "id": "PA05",
+      "category": "prose",
+      "location": "app:navigation opening",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "Information arrives as a side effect of translation, and greedy progress toward the belief mode already provides correlated evidence.",
+      "new": "Information arrives as a side effect of movement, and greedy progress toward the belief mode already provides correlated evidence.",
+      "rationale": "Uses the ordinary term for the move actions the paragraph has just introduced.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1180,
+        "paper/full_paper.tex": 1486
+      }
+    },
+    {
+      "id": "PA06",
+      "category": "prose",
+      "location": "app:stats uncertainty explanation",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "The main-text table (Table~\\ref{tab:main}) reports the seed-level SE as the primary uncertainty measure, since each answers a different question (episode-level precision versus between-seed replicability) and neither alone is a strict superset of the other.",
+      "new": "The main-text table (Table~\\ref{tab:main}) reports the seed-level SE as the primary uncertainty measure. Pooled episode-level and seed-level SE describe different sources of variation, episode-level precision and between-seed replicability, so neither replaces the other.",
+      "rationale": "Supplies the missing antecedent of “each” and replaces the awkward set-theoretic “strict superset” metaphor while retaining the distinction between uncertainty summaries.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1255,
+        "paper/full_paper.tex": 1561
+      }
+    },
+    {
+      "id": "PA07",
+      "category": "prose",
+      "location": "app:nearopt_horizon agreement definition",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "Following the producing script, an environment agrees when $w{=}1$ is near-optimal at $H{=}1$ and at some deeper horizon, or at neither, which holds for 44 of the 100.",
+      "new": "Following the producing script, we classify an environment as agreeing across horizons when $w{=}1$ is near-optimal at $H{=}1$ and at some deeper horizon, or at neither. This holds for 44 of the 100 environments.",
+      "rationale": "Makes agreement a classification rather than an action by an environment, and separates the count from the definition.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1317,
+        "paper/full_paper.tex": 1622
+      }
+    },
+    {
+      "id": "PA08",
+      "category": "prose",
+      "location": "app:rocksample opening comparison",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "RS[11,11] is exceptional in a different sense, where every tree-search agent, including Planning at $w{=}0$, converges to the same low-activity policy, discussed in Section~\\ref{sec:rocksample}.",
+      "new": "On RS[11,11], every tree-search agent, including Planning at $w{=}0$, instead converges to the same low-activity policy, discussed in Section~\\ref{sec:rocksample}.",
+      "rationale": "Removes the awkward “exceptional in a different sense, where” construction without changing the comparison.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1444,
+        "paper/full_paper.tex": 1749
+      }
+    },
+    {
+      "id": "PA09",
+      "category": "prose",
+      "location": "app:rocksample POMCP implementation",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "Three departures in the search procedure itself remain, all keyed to fully observable quantities (the belief representation and depth-cap leaf value are separate implementation choices, disclosed and sensitivity-checked below).",
+      "new": "The search procedure makes three departures, all keyed to fully observable quantities. The belief representation and depth-cap leaf value are separate implementation choices, disclosed and sensitivity-checked below.",
+      "rationale": "Separates the important implementation qualification from the introduction to the three departures.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1446,
+        "paper/full_paper.tex": 1751
+      }
+    },
+    {
+      "id": "PA10",
+      "category": "prose",
+      "location": "app:calibration reference description",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "for the three OTC environments where its belief is small enough to reach near-optimal convergence in reasonable time.",
+      "new": "for the three OTC environments whose small state spaces allow near-optimal convergence in reasonable time.",
+      "rationale": "Replaces “its belief is small enough,” whose referent and meaning are unclear, with the state-space limitation described by the following sentence.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1505,
+        "paper/full_paper.tex": 1810
+      }
+    },
+    {
+      "id": "PA11",
+      "category": "prose",
+      "location": "app:pomcp table caption opening",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "POMCP comparison config (5{,}000 total episodes across 5 per-run seeds $\\{42,\\allowbreak 123,\\allowbreak 456,\\allowbreak 789,\\allowbreak 1024\\}$ for Tiger/Diagnosis/Bandit and 1{,}000 for Tileworld, matching the main-table protocol on those three environments, and EFE/Planning here are re-run inside the POMCP harness rather than sourced from Table~\\ref{tab:main}, which they reproduce exactly).",
+      "new": "POMCP comparison (5{,}000 total episodes across 5 per-run seeds $\\{42,\\allowbreak 123,\\allowbreak 456,\\allowbreak 789,\\allowbreak 1024\\}$ for Tiger/Diagnosis/Bandit and 1{,}000 for Tileworld). The protocol matches the main table on the three core environments. EFE and Planning are evaluated inside the POMCP harness and reproduce Table~\\ref{tab:main} exactly.",
+      "rationale": "Breaks a long parenthesis into three sentences and removes the informal “config,” preserving episode counts, seed list, protocol match, and independent evaluation statement.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1567,
+        "paper/full_paper.tex": 1871
+      }
+    },
+    {
+      "id": "PA12",
+      "category": "prose",
+      "location": "app:pomcp component ablation",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "Neither switchable component shows a detectable effect. No variant differs from the reported configuration on success or reward on any of the three environments after Holm correction within metric.",
+      "new": "Neither switchable component shows a detectable effect on success or reward. No variant differs from the reported configuration on either metric on any of the three environments after Holm correction within metric.",
+      "rationale": "Scopes the first sentence to the two outcomes actually tested there, so it does not appear contradicted by the significant observation-count change in the next sentence.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1601,
+        "paper/full_paper.tex": 1905
+      }
+    },
+    {
+      "id": "PA13",
+      "category": "source-consistency",
+      "location": "app:pomcp exploration sweep notation",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "a symbol distinct from the observation cost $c$ of Proposition~\\ref{prop:nearopt}.",
+      "new": "a quantity distinct from the observation cost $c$ of Proposition~\\ref{prop:nearopt}.",
+      "rationale": "Both quantities use the same printed symbol c. The intended distinction is between quantities, not symbols.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1605,
+        "paper/full_paper.tex": 1909
+      }
+    },
+    {
+      "id": "PA14",
+      "category": "prose",
+      "location": "app:theory_controller projection scope",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "No reported iterate exceeded $3.1$, more than an order of magnitude below $w_{\\max}$, so the upper projection never bound, but it is in force.",
+      "new": "No reported iterate exceeded $3.1$, more than an order of magnitude below $w_{\\max}$, so the upper bound was never reached, although the projection remained in force.",
+      "rationale": "Replaces the awkward verb “bound” with a clear statement of the same observed fact and safeguard.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1770,
+        "paper/full_paper.tex": 2074
+      }
+    },
+    {
+      "id": "PA15",
+      "category": "prose",
+      "location": "app:sarsop_details n=20 motivation",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "Five seeds is thin.",
+      "new": "The five-seed sample is small.",
+      "rationale": "Uses a natural, precise description of the sample-size motivation without changing the prospective-study disclosure that follows.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1902,
+        "paper/full_paper.tex": 2206
+      }
+    },
+    {
+      "id": "PA16",
+      "category": "source-consistency",
+      "location": "app:frontier_details target reference versus sensitivity",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "The two remaining held-out shortfalls are Diagnosis at $B{=}9.53$ and Bandit's gap budget.",
+      "new": "In the predeclared comparison at $B$, the two held-out shortfalls are Diagnosis at $B{=}9.53$ and Bandit's gap budget.",
+      "rationale": "The preceding sentence concerns the post hoc realized-usage sensitivity, where the held-out Bandit interval includes zero. Explicitly returns the reader to the predeclared target-at-B comparison without changing its result.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1938,
+        "paper/full_paper.tex": 2242
+      }
+    },
+    {
+      "id": "PA17",
+      "category": "prose",
+      "location": "app:inspection_details N=16 results",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "On $N{=}16$, EFE's reward deficit to Planning ($-45.80$ against $-45.42$) is not significant ($p{=}0.57$), so the two reward cells are bolded together, EFE's $+12.6$pp accuracy gain over Planning has $p<10^{-7}$, and Planning+IG ($w{=}5$) runs $38.3 \\pm 0.05$ tests against EFE's $28.1 \\pm 0.09$ (seed-level SE), roughly $36\\%$ more (seed-level Welch $p{=}1.7{\\times}10^{-11}$).",
+      "new": "On $N{=}16$, EFE's reward deficit to Planning ($-45.80$ against $-45.42$) is not significant ($p{=}0.57$), so the two reward cells are bolded together. EFE's $+12.6$pp accuracy gain over Planning has $p<10^{-7}$. Planning+IG ($w{=}5$) runs $38.3 \\pm 0.05$ tests against EFE's $28.1 \\pm 0.09$ (seed-level SE), roughly $36\\%$ more (seed-level Welch $p{=}1.7{\\times}10^{-11}$).",
+      "rationale": "Separates reward, accuracy, and sensing-count results into readable sentences, preserving every numerical value and statistical qualifier.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 2086,
+        "paper/full_paper.tex": 2390
+      }
+    },
+    {
+      "id": "PA18",
+      "category": "prose",
+      "location": "app:core_details effect-size interpretation",
+      "files": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "old": "Effect sizes clarify where the differences lie, read on the conventional bands that Table~\\ref{tab:effect_sizes} lists.",
+      "new": "Effect sizes clarify where the differences lie, using the conventional interpretation bands listed in Table~\\ref{tab:effect_sizes}.",
+      "rationale": "Removes the dangling and unnatural “read on” construction.",
+      "line_numbers": {
+        "paper/full_paper_jair.tex": 1985,
+        "paper/full_paper.tex": 2289
+      }
+    }
+  ],
+  "substantive_findings_in": "reviews/polish_2026-10-01/prose_appendix_review.md",
+  "notes": [
+    "No acceptance verdict is issued at this editorial stage.",
+    "No master, generated table, producer, numerical result, bibliography, or guidance ledger was edited.",
+    "All proposed old strings occur exactly once in each targeted master at the recorded snapshot.",
+    "The shared appendix prose is identical across masters after ignoring JAIR Description lines and figure widths.",
+    "PA16 is a one-sentence span and does not overlap the separate evidence auditor’s Tiger stream-scope edits."
+  ],
+  "separate_source_consistency_findings": [
+    {
+      "id": "PA-S01",
+      "category": "generated-caption-criterion",
+      "finding": "The horizon-map caption describes distance from a weight, but the implemented criterion compares estimated rewards. Its max(5%, 0.5) shorthand also mixes a relative percentage and an absolute amount without defining the reference scale.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1307 defines max(0.05|R_best|,0.5) with R_best the largest estimated grid mean reward.",
+        "experiments/run_nearopt_horizon.py:97–98 computes threshold = max(0.05 * abs(best_reward), 0.5) and near_opt = gap <= threshold."
+      ],
+      "replacements": [
+        {
+          "file": "paper/tables/horizon_map.tex",
+          "old": " where $w{=}1$ is near-optimal (within $\\max(5\\%, 0.5)$ of the\n reward-optimal weight), stratified by each sampled regime axis and",
+          "new": " where $w{=}1$ is near-optimal: its estimated reward gap from the best grid weight\n is at most $\\max(0.05|\\widehat R_{\\mathrm{best}}|,0.5)$ reward units, where\n $\\widehat R_{\\mathrm{best}}$ is the largest estimated grid reward. Results are\n stratified by each sampled regime axis and",
+          "line_number": 5,
+          "producer_note": "Correct the producer and regenerate or mirror the caption only. Do not change result CSV values."
+        },
+        {
+          "file": "experiments/build_horizon_map.py",
+          "old": "        \" where $w{=}1$ is near-optimal (within $\\\\max(5\\\\%, 0.5)$ of the\",\n        \" reward-optimal weight), stratified by each sampled regime axis and\",",
+          "new": "        \" where $w{=}1$ is near-optimal: its estimated reward gap from the best grid weight\",\n        \" is at most $\\\\max(0.05|\\\\widehat R_{\\\\mathrm{best}}|,0.5)$ reward units, where\",\n        \" $\\\\widehat R_{\\\\mathrm{best}}$ is the largest estimated grid reward. Results are\",\n        \" stratified by each sampled regime axis and\",",
+          "line_number": 131,
+          "producer_note": "Correct the producer and regenerate or mirror the caption only. Do not change result CSV values."
+        }
+      ]
+    },
+    {
+      "id": "PA-S02",
+      "category": "generated-caption-notation",
+      "finding": "The atlas caption names a bracket w*(B), whereas Definition PI-3 reserves w*(B) for the population crossing threshold.",
+      "evidence": [
+        "paper/full_paper_jair.tex:379 defines w*(B) := w^dagger(B) and separately defines (w_lo,w_hi].",
+        "experiments/run_w_atlas.py:163 generates the inconsistent wording in paper/tables/w_atlas.tex."
+      ],
+      "replacements": [
+        {
+          "file": "paper/tables/w_atlas.tex",
+          "old": " brackets $w^*(B)$ at two canonical budgets per instance. Each bracket",
+          "new": " brackets estimating $w^*(B)$ at two canonical budgets per instance. Each bracket",
+          "line_number": 7,
+          "producer_note": "Correct the producer and regenerate or mirror the caption only. Do not change result CSV values."
+        },
+        {
+          "file": "experiments/run_w_atlas.py",
+          "old": "        \" brackets $w^*(B)$ at two canonical budgets per instance. Each bracket\",",
+          "new": "        \" brackets estimating $w^*(B)$ at two canonical budgets per instance. Each bracket\",",
+          "line_number": 163,
+          "producer_note": "Correct the producer and regenerate or mirror the caption only. Do not change result CSV values."
+        }
+      ]
+    }
+  ]
+}

@@ -160,7 +160,7 @@ def main() -> None:
         "\\caption{Atlas of operational sensing budgets across benchmark instances, giving the",
         " usage range of the Planning+IG family, the implicit EFE budget",
         " $B_{\\mathrm{EFE}} = U(w{=}1)$ (mean $\\pm$ SE over seeds), and crossing",
-        " brackets $w^*(B)$ at two canonical budgets per instance. Each bracket",
+        " brackets estimating $w^*(B)$ at two canonical budgets per instance. Each bracket",
         " estimates a single crossing threshold from the finite weight grid",
         " (Definition~\\ref{def:pi3}). No closed-form meta-model is implied.}",
         "\\label{tab:w-atlas}",

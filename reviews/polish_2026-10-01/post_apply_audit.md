@@ -1,0 +1,46 @@
+# Adversarial post-application audit, 2026-10-01
+
+This is an audit of the applied editing batch, not an acceptance review. Baseline: `748052634026b2a5cf9e0c9fef64975b0e6fd682` (Git HEAD during the audit). The audit covered both current masters, the two changed generated tables, their producers, and all 104 entries in `applied_changes.json`, including the follow-up scope fixes and explicit appendix barriers.
+
+## Findings and disposition
+
+1. **Resolved: RS[11,11] did not support “the same low-activity policy”.** PA08 preserved an inherited overstatement. The extended table gives Planning/EFE 2.50 steps and 1.00 checks, the two higher-weight policies 3.09 steps and 1.56 checks, and POMCP 3.28 steps and 1.60 checks. I reported the issue before finishing this audit. Both masters now say that all tree-search agents “follow low-activity policies”. The revised text matches the table without asserting identical policies.
+2. **Resolved review-artifact rationale: Inspection does have navigation.** The M12 narrowing to RockSample remains a true, conservative sentence, but the explanation that Inspection lacks navigation is false. `inspection.py` defines four movement actions at lines 93–94 and applies them at lines 171–173. `inspection_agents.py` evaluates move actions at lines 155–178. `budget.py` routes Inspection usage evaluation through the same Inspection agent and episode runner at lines 198–202. The parent was notified. The false comment in `apply_polish.py` is now corrected to state that Inspection also implements navigation. I re-read the corrected comment. No further manuscript change is required.
+
+3. **Resolved final referee correction: Satsangi equivalence scope.** The frozen masters now state the cited POMDP-IR/rho-POMDP equivalence for piecewise-linear convex belief rewards and explicitly do not invoke it for Planning+IG's concave expected-information-gain reward. This removes the overbroad inference that Planning+IG stands in for both formulations by that theorem. The parent and independent referee checked the PWLC restriction against Springer Section 4.1. This delta audit checked the new sentence against their recorded finding and the manuscript's existing concavity discussion, without claiming a second independent publisher-source check. The exact replacement appears once in each master and introduces no new empirical or mathematical result.
+4. **Resolved final referee correction: checking causality.** The EFE-versus-Greedy bad-rock comparison retains its numerical outcomes and test, but no longer concludes that the information-gain term drives checking behavior. The comparator does not isolate that cause, and the displayed reward-only Planning rows also avoid bad rocks. The narrowed sentence reports the supported comparison without a causal attribution.
+
+A final delta check reconstructed both the previously audited and final masters from the baseline and manifest. The two referee replacements are the only manuscript changes since the earlier audit hashes. Across those two final replacements, numerical literals, citation keys, labels, and inline mathematics are unchanged. The final source hashes below were independently recomputed.
+
+I found no unresolved scientific or editorial regression in the audited manuscript and generated-table contents after the RS[11,11] and final referee corrections. This conclusion is limited to the changed batch and the targeted evidence checks below.
+
+## Checks actually performed
+
+- Independently replayed every guarded replacement from Git HEAD, including the two structural barrier insertions. The replay exactly equals all six current files, and each current SHA-256 equals the manifest. This excludes unrecorded changes within those files.
+- Citation-key multisets and label multisets are unchanged in both masters. The only additional reference is `app:core_details` in each master, and that label exists. All equation, align, and gather environments remain byte-identical. All table bodies embedded in the masters remain byte-identical.
+- The two generated tables are byte-identical to HEAD from `\label` through the end. Their changed captions exactly match the static strings emitted by the respective producer scripts. AST comparison after normalizing string constants finds no changed computational logic in either producer.
+- No numerical literal was removed from either master. Each adds one plain `1` in the scoped hero description. Across replacement-local inline mathematics, the ordinary edits only add the existing threshold symbol and explicit occurrences of `B`. The horizon caption replaces the ambiguous `max(5%, 0.5)` wording with `max(0.05|R_best|,0.5)` in reward units. That formula matches `run_nearopt_horizon.py:93–98` and independently reproduces all 300 stored `near_optimal` classifications. The agreement definition reproduces 44 of 100 environments.
+- No result CSV or bibliography source changed. The AI-use statement is byte-identical. Existing post hoc, retrospective, and non-blind disclosure phrases are retained. No edited passage adds a prose semicolon or rhetorical emphasis.
+- Verified the target-reference scope against `run_frontier_target_reference.py:130–144`: the equality LP is fitted to held-out usage/reward, and its same weights multiply both held-out and fresh per-seed reward arrays. The revised abstract and main text correctly distinguish fitting from frozen replay. The committed interval columns independently give two shortfalls among eleven distinct budgets on each stream, with Diagnosis changing from the middle target to the lowest target and only Bandit's gap target recurring.
+- Verified the usage-matched Tiger qualification against its CSV. The four held-out mean gaps are numerical zeros (about `3.6e-16` to `1.1e-15`), whereas fresh means are approximately `-0.0452`, `0.0379`, `-0.0201`, and `0.0379`. Thus “every held-out Tiger mean gap” is correctly scoped. The held-out Bandit gap upper endpoint is `0.001416...`, consistent with the retained `+0.001` text.
+- Verified the POMCP edits against the implementation and runners. The terminal leaf uses the sampled state's maximum commit reward, while rollouts use the belief-expected commit reward. The main comparison and exploration sweep set `vary_agent_seed=True`; the MCTS comparison and compute-matched runner omit it and use the agent's fixed default seed. The simulation-budget wording now distinguishes exact planners from the simulation-matched Monte Carlo comparison.
+- Verified both follow-up scientific scope repairs. Equal action cost is now stated as sufficient for a fixed count/cost conversion, avoiding the previous necessity claim. The main Discussion's no-detectable-effect statement is explicitly limited to success and reward, consistent with the appendix's separately detected observation-count effect.
+- Verified the appendix barrier change structurally. Every appendix `\section{...}` has one immediately preceding `\FloatBarrier`: 26 in JAIR and 25 in LNCS. Section and subsection headings, their order, and all labels are unchanged. The global `\section` redefinition is removed. This preserves the intended barrier placement while retaining the class command. I did not claim rendered-layout equivalence from source alone.
+- Ran `.venv/bin/python tools/review_pipeline/verify_claims.py`: exit 0, no hard failures. It emitted 84 nearby-CSV numeric review diagnostics. The numerical literals in those paragraphs are unchanged by the prose batch. I checked the changed frontier interpretations and horizon criterion directly as above. I did not treat exit 0 as blanket verification of all existing quantitative claims or independently resolve every old nearby-CSV diagnostic.
+
+The parent is running the builds. I did not launch a competing build or certify page count, rendered spacing, package completeness, or acceptance. Build products such as `.bbl` were changing during compilation and are outside this source audit's hashes.
+
+## Exact audited hashes
+
+- `paper/full_paper_jair.tex`: `73f6ee1feb9bf2202bc141dadf52ae557816a8934ecfa0db47a1836b07b4a44c`
+- `paper/full_paper.tex`: `25a9eaa30eac01e354775cd33f8018685dc171cc932e5f5e5fc1ba6a0aeb0a44`
+- `paper/tables/horizon_map.tex`: `91ef07bfbe589e74b10a6ef0ffe896f70dad4e4890951de73bfafb33cff9f543`
+- `experiments/build_horizon_map.py`: `b169748d1ed12c6f106bec0d1e203c3f3f2e9d5879c0c88c6f93b671777b0768`
+- `paper/tables/w_atlas.tex`: `93a9efc95e575fe40094be3c4bf6aa386ce272ddfeae87a302046610b66a9536`
+- `experiments/run_w_atlas.py`: `5ee6c1cfa20d87655dcc53365fdaeaff42529bb24a4fda6f891a31e4560c2a08`
+- `reviews/polish_2026-10-01/applied_changes.json`: `6b80dd9ed950f6c1ba2dff467a22e87bfdaa428d01bf61174cde417270a52c73`
+- `reviews/polish_2026-10-01/apply_polish.py`: `a5a0410d2cd118ac9ceb09a992d9d5eea33fb27f304026ed0c58d444fc331b45`
+- `results/results_nearopt_horizon.csv`: `09e0fc357a0d3fef920efaf1a98c9f63eeb527eefc5cd1f2ff7e12f759623e5c`
+- `results/results_budget_frontier_target_reference.csv`: `f18ad35cafd020b3c93e720f446e6414bb471bde8697d22b04f5560ebb588840`
+- `results/results_budget_frontier_target_reference_usage_matched.csv`: `11a6221ebc83c946e95dcfd53e2e319b2404ac93348a98a82432f76e980a9e39`
+- `paper/tables/rocksample_extended.tex`: `f18575a634b898ed5224dbe9336156a3452a08daeaface978c47c0e6aec91a67`

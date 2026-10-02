@@ -54,8 +54,8 @@ Fable found two real defects in the observe-then-commit POMCP baseline (`rho_aif
 
 - **Construction:** subsidized SARSOP policies, combined by an equality-constrained LP so the reference's usage equals B.
 - **Shortfalls:** 2 of 11, on both held-out and fresh seeds (previously 8 of 11 against the cap reference). Only Bandit's gap budget recurs.
-- **Cap shortfalls explained:** seven of the eight were at slack budgets, so they mostly measured the cost of spending the target.
-- **Post hoc sensitivity:** `--usage-matched` matches the reference to realized usage. It makes Tiger's gaps zero and Bandit's held-out recurrence marginal.
+- **Cap shortfalls explained:** six of the eight held-out shortfalls were at slack budgets. Seven of the eleven distinct budgets were slack. **Correction, 2026-10-01:** the original brief conflated those counts; the manuscript already stated the seven-budget fact correctly.
+- **Post hoc sensitivity:** `--usage-matched` matches the reference to realized held-out usage and replays the fitted reference on fresh seeds. It makes Tiger's held-out mean gaps zero and Bandit's held-out recurrence marginal. **Correction, 2026-10-01:** the fresh Tiger mean gaps are not zero, and fresh realized reference usage need not equal the fitting target.
 - **Locations:** the abstract, the Introduction, Section 6.9, the frontier table (new Target reference and Target gap columns), and the frontier appendix.
 
 ## 6. Smaller referee fixes (9.17.58)

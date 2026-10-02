@@ -1,0 +1,23 @@
+# Appendix prose review, 2026-10-01
+
+This is an editorial review, not an acceptance assessment. No manuscript master, figure, table, producer, numerical-result file, bibliography, or guidance ledger was changed.
+
+The review covers every appendix in `paper/full_paper_jair.tex`, the corresponding appendices in `paper/full_paper.tex`, the JAIR-only reproducibility checklist, and the eight generated appendix-table captions. Shared appendix prose is identical across the two masters after ignoring JAIR accessibility descriptions and format-specific figure widths. The review followed `AGENTS.md` and `Guidance_Documents/polish_brief_2026-10-01.md`, with the recent work recorded in the project ledgers used for context.
+
+The accompanying `prose_appendix_proposals.json` contains 18 exact, guarded proposals. Seventeen target both masters and one corrects the JAIR-only accessibility description. Each old span occurs exactly once in each targeted file. Most changes correct grammar or divide overloaded sentences. Three repair small local inconsistencies: the promise of a full agent roster despite disclosed duplicate-row omissions (PA01), the claim that two uses of the same symbol are distinct symbols (PA13), and the missing return to the predeclared target-at-B comparison after a post hoc sensitivity analysis (PA16).
+
+The proposals preserve numerical results, all formulae and proof assumptions, retrospective and non-blind disclosures, and the AI-use statement. They introduce no prose semicolons or rhetorical emphasis. I have not proposed changes to the theorem proofs or the detailed statistical study-design disclosures merely to shorten them. The checklist's bold responses, table emphasis, and proof-part labels are structural formatting rather than rhetorical emphasis.
+
+## Separate source-consistency findings
+
+**PA-S01, horizon-map caption.** The generated caption at `paper/tables/horizon_map.tex:5` describes being within a tolerance of a reward-optimal weight. The criterion is actually an estimated reward difference from the best grid weight. Its shorthand `max(5%, 0.5)` also leaves the relative-versus-absolute units unclear. The full appendix correctly defines `max(0.05|R_best|, 0.5)` reward units, and `experiments/run_nearopt_horizon.py:97–98` implements exactly that threshold. Exact replacements are supplied for both the caption and its producer, `experiments/build_horizon_map.py:131`. They change no table values or measured result.
+
+**PA-S02, atlas caption.** `paper/tables/w_atlas.tex:7` calls the crossing brackets `w*(B)`. Definition PI-3 reserves `w*(B)` for the population crossing threshold. The proposed wording is “brackets estimating `w*(B)`.” Exact replacements are supplied for that caption and `experiments/run_w_atlas.py:163`.
+
+**RockSample comparison-scope concern, referred to the evidence auditor.** At `paper/full_paper_jair.tex:2068`, the manuscript says that because every weighted-family agent shares the phantom leaf travel cost, within-family comparisons are “unaffected.” The code establishes that the leaf charge is shared, not that its removal would leave policies or comparisons unchanged. `rho_aif/agents/rocksample_agents.py:548–550` charges a distance-dependent trip to the east edge at the leaf. Immediate exit is valued without that trip at lines 568–569. The information-weight term enters the competing check value at line 625, so the common leaf approximation can interact with different weights rather than cancel as a single action-independent constant. `rho_aif/environments/rocksample.py:122–123` grants the exit payoff without a position check. The adjacent manuscript statement that the result is conditional on this leaf rule should remain. Root has asked the evidence auditor to verify the scope claim independently. No experiment was run here, and no claim about the empirical effect of removing the charge is made.
+
+**Tiger stream scope, handled separately.** Root's evidence auditor is correcting the scope of “Every Tiger gap becomes zero” and “every Tiger policy here earns 10 minus its usage.” PA16 touches only the later sentence introducing the two predeclared target-at-B shortfalls, so the replacement spans do not overlap.
+
+## Verification and limits
+
+All proposal spans and generated-caption spans were checked for exact uniqueness in the recorded source snapshot. No numerical result was recomputed because this review does not change results. The normal claim checker and rendered-PDF check should run after root applies the selected combined batch. Longer technical paragraphs remain in the proof and statistical appendices where shortening them would risk losing qualifications or disclosure. No acceptance verdict is issued.

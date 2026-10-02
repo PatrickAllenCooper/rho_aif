@@ -1,0 +1,320 @@
+{
+  "review_type": "Sentence-level editorial review, not acceptance assessment",
+  "scope": "JAIR abstract through acknowledgments, checked against the LNCS main text",
+  "source_sha256": {
+    "paper/full_paper_jair.tex": "c2b94f519e103a538c61256e398e96a05168bcfd20851c8cfe6da3cd680de362",
+    "paper/full_paper.tex": "1166b8a19a47c8c8850b56b5f6cfc317b123f2def6f930575f0dd5219e446d29"
+  },
+  "master_divergence": "Abstract section labels, hero figure filename, checklist pointer, and acknowledgments environment differ as expected. Introduction through conclusion has no other prose divergence.",
+  "proposals": [
+    {
+      "id": "M02",
+      "section": "Methodology: Proposition 3 definitions",
+      "category": "editorial",
+      "old": "Define the reward asymmetry ratio $\\alpha = |R^-|/R^+$ and the informativeness ratio $\\eta = I_{\\max}/c$ where $I_{\\max} = \\ln 2 - H_{\\text{post}}(p)$ is the maximum expected information gain in nats, with $H_{\\text{post}}(p) = -p \\ln p - (1-p)\\ln(1-p)$ the entropy in nats of the post-observation belief $(p, 1-p)$, so that $I_{\\max}$ is the uniform prior's entropy $\\ln 2$ less the entropy that one observation of accuracy $p$ leaves behind.",
+      "new": "Define the reward asymmetry ratio $\\alpha = |R^-|/R^+$ and the informativeness ratio $\\eta = I_{\\max}/c$. Here $I_{\\max} = \\ln 2 - H_{\\text{post}}(p)$ is the maximum expected information gain in nats, and $H_{\\text{post}}(p) = -p \\ln p - (1-p)\\ln(1-p)$ is the entropy in nats of the post-observation belief $(p, 1-p)$. Thus $I_{\\max}$ is the uniform prior's entropy $\\ln 2$ less the entropy remaining after one observation of accuracy $p$.",
+      "rationale": "Splits a long chain of definitions into three sentences without changing any symbol, formula, unit, or interpretation.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 230,
+        "paper/full_paper.tex": 196
+      }
+    },
+    {
+      "id": "M03",
+      "section": "Methodology: Proposition 3 interpretation",
+      "category": "editorial",
+      "old": "The reading is sign-conditional.",
+      "new": "The interpretation depends on the sign of $w^*_{\\mathrm{thresh}}$.",
+      "rationale": "Replaces an opaque phrase with the exact quantity whose sign controls the next two cases.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 245,
+        "paper/full_paper.tex": 211
+      }
+    },
+    {
+      "id": "M04",
+      "section": "Budget theory: crossing-bracket definition",
+      "category": "editorial",
+      "old": "Its lower endpoint is the largest grid weight with $U(w_{\\mathrm{lo}}) < B$ and its upper endpoint is the first subsequent grid weight with $U(w_{\\mathrm{hi}}) \\geq B$, so the bracket straddles the budget on the grid whenever a grid point at or above $B$ follows the last grid weight with usage below $B$, and its closed enclosure $[w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$ contains the threshold whenever the curve has no crossing of $B$ that the grid fails to resolve, between grid weights or beyond the last one (a curve whose final grid point falls back below $B$ would instead yield a non-straddling fallback flagged as such even though its threshold can exist, a shape no swept curve exhibits).",
+      "new": "Its lower endpoint is the largest grid weight with $U(w_{\\mathrm{lo}}) < B$ and its upper endpoint is the first subsequent grid weight with $U(w_{\\mathrm{hi}}) \\geq B$. The bracket therefore straddles the budget on the grid whenever a grid point at or above $B$ follows the last grid weight with usage below $B$. Its closed enclosure $[w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$ contains the threshold whenever the curve has no crossing of $B$ that the grid fails to resolve, between grid weights or beyond the last one. A curve whose final grid point falls back below $B$ would instead yield a non-straddling fallback flagged as such even though its threshold can exist. No swept curve exhibits that shape.",
+      "rationale": "Separates endpoint definitions, the grid-straddling condition, the no-missed-crossing condition, and the fallback caveat. Every condition is retained.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 379,
+        "paper/full_paper.tex": 345
+      }
+    },
+    {
+      "id": "M05",
+      "section": "Experiments: budget protocol",
+      "category": "editorial",
+      "old": "The budget battery generally uses $100$ episodes per seed and evaluation cell, where a cell is one weight at one seed.",
+      "new": "The budget battery generally uses $100$ episodes per evaluation cell, with each cell defined by one weight and one seed.",
+      "rationale": "Removes the redundant per-seed modifier because the sentence already defines each cell as one weight at one seed.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 490,
+        "paper/full_paper.tex": 456
+      }
+    },
+    {
+      "id": "M06",
+      "section": "Cost-denominated budgets: test partitions",
+      "category": "editorial",
+      "old": "Recall from Section~\\ref{sec:experiments} that each Diagnosis test reports, noisily, which side of its own fixed split of the hidden conditions the true condition lies on, and that the two tests use different splits. The two tests are equally accurate, but because their splits differ, how much each reveals depends on how the current belief is spread across its split.",
+      "new": "Each Diagnosis test noisily reports which side of its fixed partition contains the true condition, and the two tests use different partitions (Section~\\ref{sec:experiments}). Although the tests are equally accurate, the information each reveals depends on the current belief over its partition.",
+      "rationale": "Replaces a heavily nested description with direct sentences while retaining the fixed, differing partitions and belief dependence.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 534,
+        "paper/full_paper.tex": 500
+      }
+    },
+    {
+      "id": "M07",
+      "section": "Cost-denominated budgets: measured step",
+      "category": "editorial",
+      "old": "What the swept curves show is a step. The mean cost paid per test, $U_{\\mathrm{cost}}(w)/U_{\\mathrm{count}}(w)$, holds at $1.26$ from $w{=}0$ through $w{=}10$ and rises to $1.37$ and then $1.41$ only at the two largest weights, the same two weights at which the number of tests also jumps (Figure~\\ref{fig:costbudget}), a $12.0\\%$ spread relative to the grid-mean cost per test.",
+      "new": "The swept curves show a step in mean cost per test, $U_{\\mathrm{cost}}(w)/U_{\\mathrm{count}}(w)$. It holds at $1.26$ from $w{=}0$ through $w{=}10$ and rises to $1.37$ and then $1.41$ only at the two largest weights, where the number of tests also jumps (Figure~\\ref{fig:costbudget}). The spread is $12.0\\%$ relative to the grid-mean cost per test.",
+      "rationale": "Divides the observation, its numerical description, and the spread normalization into separate sentences. All values and the figure reference remain.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 534,
+        "paper/full_paper.tex": 500
+      }
+    },
+    {
+      "id": "M08",
+      "section": "Cost-denominated budgets: interpretation",
+      "category": "editorial",
+      "old": "While information gain is weighted lightly, the price holds the agent to its low-weight test mix, and once $w$ is large enough to buy extra tests, test choice is driven more by what a test reveals at the current belief than by its price, which on this variant means using the expensive test more often.",
+      "new": "While information gain is weighted lightly, test prices keep the agent at its low-weight test mix. Once $w$ is large enough to buy extra tests, test choice depends more on what a test reveals at the current belief than on its price. On this variant, that means using the expensive test more often.",
+      "rationale": "Splits a three-clause sentence and makes clear that price refers to the test cost. The preceding sentence explicitly marking this as interpretation remains untouched.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 534,
+        "paper/full_paper.tex": 500
+      }
+    },
+    {
+      "id": "M09",
+      "section": "Cost-denominated budgets: pairing rule",
+      "category": "editorial",
+      "old": "Whether the two denominations also select different weights at a given budget is a separate question, and answering it requires a rule for pairing a count budget with a cost budget.",
+      "new": "Testing whether the two denominations select different weights requires a rule for pairing a count budget with a cost budget.",
+      "rationale": "Removes a roundabout introduction while preserving why a pairing rule is necessary.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 536,
+        "paper/full_paper.tex": 502
+      }
+    },
+    {
+      "id": "M10",
+      "section": "Cost-denominated budgets: matched brackets",
+      "category": "editorial",
+      "old": "At the two comparable operating points we solve for, however, they happen to land in the same crossing bracket at this grid's resolution.",
+      "new": "At both tested operating points, the paired budgets select the same crossing bracket at this grid's resolution.",
+      "rationale": "Replaces ambiguous pronouns and conversational phrasing with the actual objects being compared. The preceding pairing definition remains.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 536,
+        "paper/full_paper.tex": 502
+      }
+    },
+    {
+      "id": "M11",
+      "section": "Cost-denominated budgets: constant conversion",
+      "category": "editorial",
+      "old": "If that multiplier were the same at every weight, the pairing rule would make the two crossings coincide exactly, because a budget at a given fractional height of the count curve and the budget at the same fractional height of the cost curve would then be one and the same budget written in two units. The two curves would then cross them at the same weight.",
+      "new": "If that multiplier were constant across weights, the pairing rule would express the same budget in two units. The two curves would then cross their paired budgets at the same weight.",
+      "rationale": "Removes a repeated explanation of the already-defined fractional-height pairing while retaining its conditional conclusion.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 538,
+        "paper/full_paper.tex": 504
+      }
+    },
+    {
+      "id": "M12",
+      "section": "Interleaved settings: motivation",
+      "category": "editorial",
+      "old": "We now estimate usage curves and shadow prices in settings where sensing and acting alternate within an episode, the interleaved observe-act settings of Section~\\ref{sec:rocksample} and Section~\\ref{sec:inspection}. The extension is needed because Proposition~\\ref{prop:factored}'s factored-observation class admits navigation actions between observations, so that sensing and acting can alternate, whereas the observe-then-commit environments above separate observation from commitment by construction and so cannot exercise that case.",
+      "new": "We now estimate usage curves and shadow prices in the interleaved observe-act settings of Sections~\\ref{sec:rocksample} and~\\ref{sec:inspection}, where sensing and acting alternate within an episode. These settings exercise Proposition~\\ref{prop:factored}'s allowance for navigation between observations. The observe-then-commit environments above cannot exercise that case because they separate observation from commitment by construction.",
+      "rationale": "Reduces repeated descriptions of interleaving and separates the motivation from the contrast with the preceding environments.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 551,
+        "paper/full_paper.tex": 517
+      }
+    },
+    {
+      "id": "M13",
+      "section": "Shadow-price staircases: bootstrap grammar",
+      "category": "editorial",
+      "old": "We measured that directly. Resampling the five seeds with replacement $2000$ times and re-solving each of the $25$ budgets of Figure~\\ref{fig:stairs} on the resampled curve (\\texttt{run\\_\\allowbreak bracket\\_\\allowbreak stability.py}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability.csv}, with the count of every bracket outcome in \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability\\_\\allowbreak counts.csv}), the reported bracket is recovered in every resample at $19$ budgets and in at least $99$ percent of resamples at $21$.",
+      "new": "We measured bracket-selection stability by resampling the five seeds with replacement $2000$ times and re-solving each of the $25$ budgets of Figure~\\ref{fig:stairs} on each resampled curve (\\texttt{run\\_\\allowbreak bracket\\_\\allowbreak stability.py}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability.csv}, with the count of every bracket outcome in \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability\\_\\allowbreak counts.csv}). The reported bracket is recovered in every resample at $19$ budgets and in at least $99$ percent of resamples at $21$.",
+      "rationale": "Fixes a dangling participle: the authors resample seeds, whereas the original grammar assigns that action to the reported bracket. Keeps all numerical findings and archive references.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 568,
+        "paper/full_paper.tex": 534
+      }
+    },
+    {
+      "id": "M14",
+      "section": "Shadow-price staircases: bootstrap alternatives",
+      "category": "editorial",
+      "old": "In every disagreeing resample but one, the alternative is a neighbouring step of the staircase or, at Tiger's lowest and highest budgets, which lie about one standard error of usage from the two ends of its usage range, no bracket at all.",
+      "new": "In all but one disagreeing resample, the alternative is a neighbouring step of the staircase or, at Tiger's lowest and highest budgets, no bracket at all. Those two Tiger budgets lie about one standard error of usage from the corresponding ends of its usage range.",
+      "rationale": "Moves an embedded explanation after the result so the alternatives can be read without interruption.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 568,
+        "paper/full_paper.tex": 534
+      }
+    },
+    {
+      "id": "M15",
+      "section": "Held-out targets: cap slackness",
+      "category": "editorial",
+      "old": "At seven budgets, every Tiger target, Bandit's three interior targets, and Diagnosis's largest, the cap is slack and the reference is the unpenalized SARSOP policy, the estimated unconstrained reward optimum.",
+      "new": "The cap is slack at seven budgets: every Tiger target, Bandit's three interior targets, and Diagnosis's largest. At these budgets, the reference is the unpenalized SARSOP policy, the estimated unconstrained reward optimum.",
+      "rationale": "Removes a long comma-delimited interruption between subject and predicate. Retains the estimated qualification.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 678,
+        "paper/full_paper.tex": 644
+      }
+    },
+    {
+      "id": "M16",
+      "section": "Core results: tuning disclosure",
+      "category": "editorial",
+      "old": "A separate sweep selects constants on tuning seeds under a rule recorded before the runs reported here and written after an exploratory sweep on the canonical seeds had been inspected.",
+      "new": "A separate sweep selects constants on tuning seeds. The selection rule was written after inspection of an exploratory sweep on the canonical seeds and was recorded before the runs reported here.",
+      "rationale": "Makes the chronological disclosure easy to follow. Preserves that canonical-seed exploration preceded the rule and that the rule preceded the reported runs.",
+      "occurrences": {
+        "paper/full_paper_jair.tex": 1,
+        "paper/full_paper.tex": 1
+      },
+      "source_lines": {
+        "paper/full_paper_jair.tex": 752,
+        "paper/full_paper.tex": 718
+      }
+    }
+  ],
+  "separate_flags": [
+    {
+      "id": "F01",
+      "location": "Figure 1 accessibility description",
+      "old": "and a single labeled point on the same curve, the weight that active inference derives on its own, shown as forced by a theorem rather than chosen by hand, and shown sitting outside the particular bracket drawn here rather than coinciding with it.",
+      "evidence": "This says the weight follows from active inference on its own. The adjacent caption scopes the identity to the stated reward-based objective and log scoring. The Reward and information units paragraph explicitly says assumption (i) fixes an exchange rate rather than deriving one and distinguishes the empirical bit convention.",
+      "recommendation": "Root explicitly requested a scoped replacement after this issue was flagged. This calibrates accessibility prose to the existing theorem and caption, without altering the result or figure data.",
+      "source_lines": {
+        "paper/full_paper_jair.tex": 104,
+        "paper/full_paper.tex": 70
+      },
+      "proposed_new": "and a single labeled point on the same curve, the information-unit anchor at w equals 1 under the stated reward-based EFE objective and reward--information convention. That point sits outside the particular crossing bracket drawn here."
+    },
+    {
+      "id": "F02",
+      "location": "Cost-Denominated Budgets opening",
+      "old": "and that the two denominations agree only when every observation action costs the same.",
+      "evidence": "Equal costs give a fixed multiplicative conversion, not necessarily numerical equality. The earlier Solving for the Shadow Price subsection says \"differ by a fixed conversion\". The following cost-budget paragraph itself shows a constant ratio over a subrange despite heterogeneous costs.",
+      "recommendation": "If addressed, state the sufficient equal-cost condition without asserting that heterogeneous costs preclude every fixed conversion.",
+      "source_lines": {
+        "paper/full_paper_jair.tex": 532,
+        "paper/full_paper.tex": 498
+      },
+      "proposed_new": "and that equal-cost observation actions give a fixed conversion between the two."
+    },
+    {
+      "id": "F03",
+      "location": "Reward-Irrelevant Sensing appendix pointer",
+      "old": "corrected comparison family",
+      "evidence": "This adjective describes correction history without contributing to the current statistical method.",
+      "recommendation": "Optional no-history cleanup: remove only \"corrected\" and retain the comparison-family scope.",
+      "source_lines": {
+        "paper/full_paper_jair.tex": 695,
+        "paper/full_paper.tex": 661
+      },
+      "proposed_new": "comparison family"
+    },
+    {
+      "id": "F04",
+      "location": "Introduction prior-publication disclosure",
+      "old": "We also revise the workshop version's claim that the advantage grows with state-space size and observation-action count, which RockSample[11,11] does not support.",
+      "evidence": "This explicitly compares with an accepted prior publication, unlike a history of unpublished fixes. It may be needed for transparent journal-extension disclosure.",
+      "recommendation": "Leave unchanged unless the parent determines that the no-history request also covers prior-publication corrections. The current negative finding is foregrounded elsewhere.",
+      "source_lines": {
+        "paper/full_paper_jair.tex": 123,
+        "paper/full_paper.tex": 89
+      }
+    },
+    {
+      "id": "F05",
+      "location": "Abstract reference scope",
+      "old": "Against the best mixture of sampled reference policies that meets the same target, nominal pointwise paired intervals show reward shortfalls on two of eleven distinct budgets on held-out seeds and again on fresh seeds, and only Bandit's gap-budget shortfall recurs.",
+      "evidence": "The parent evidence auditor reports that the equality-constrained mixture is fitted on held-out data and frozen for fresh-seed replay. The frozen mixture need not attain B on fresh seeds. A readability-only split was deliberately withheld so it would not preserve this implication.",
+      "recommendation": "Root/evidence reviewer should supply the final source-grounded replacement that distinguishes fitting from frozen replay. Main-text \"Against it, intervals exclude zero ... again on ten fresh seeds\" in the frontier paragraph should be checked at the same time.",
+      "source_lines": {
+        "paper/full_paper_jair.tex": 81,
+        "paper/full_paper.tex": 50
+      }
+    }
+  ],
+  "validation": {
+    "each_old_text_occurs_once_in_each_master": true,
+    "no_masters_edited": true,
+    "no_new_prose_semicolons": true,
+    "no_rhetorical_emphasis_added": true,
+    "numeric_results_unchanged_by_proposals": true,
+    "build_and_page_check": "Not run because this agent only proposes edits. Parent must build final masters and confirm main text <=40 pages after any application.",
+    "literal_numeric_token_multisets_preserved": true
+  }
+}

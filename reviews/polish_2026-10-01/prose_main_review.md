@@ -1,0 +1,11 @@
+# Main-text prose review, 2026-10-01
+
+Reviewed the JAIR abstract through acknowledgments and checked the corresponding LNCS text. This is an editorial review, not an acceptance assessment. The manuscripts already have clear framing and carefully scoped claims. No wholesale rewrite is warranted.
+
+`prose_main_proposals.json` contains 15 exact sentence-level replacements. The strongest gains are the split definitions in Proposition 3 (M02), the split crossing-bracket conditions (M04), the dangling-participle repair in the seed-bootstrap description (M13), and the clearer bootstrap alternatives (M14). The remaining suggestions address long sentences and unclear pronouns, chiefly in the cost-budget subsection. Net whitespace-word change is -84 per master. Every original string occurs exactly once in each master, and every editorial replacement preserves the multiset of literal numerical tokens. No formula, result, test, table, citation key, or cross-reference target is changed. No semicolon or rhetorical emphasis is added.
+
+Five separate flags distinguish editorial judgment from scientific calibration. F01 supplies an exact replacement for the hero figure description's overstatement that the information-unit weight is derived without a convention. F02 clarifies count-to-cost conversion without asserting a false necessary condition. F03 identifies the dispensable history adjective “corrected”. F04 recommends preserving the prior-publication disclosure rather than automatically treating it as unpublished error history. F05 leaves the held-out-fitted versus fresh-seed-replayed reference wording to the parent and evidence auditor, so that fix is not duplicated by a readability-only edit.
+
+The abstract section labels, hero graphic filename, checklist pointer, and acknowledgments environments differ as expected between masters. I found no other main-body prose divergence. The post hoc, retrospective, and non-blind disclosures, target-versus-cap distinction, and AI-use statement remain intact.
+
+No master, result artifact, bibliography, or guidance ledger was edited. No build was run by this agent. The integrating agent should verify the final mirrored batch, run `verify_claims.py`, and check the rebuilt JAIR main body remains within 40 pages. The proposed word reduction is not itself a page-count verification.

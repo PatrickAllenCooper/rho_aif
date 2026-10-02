@@ -1,0 +1,135 @@
+[
+  {
+    "id": "E1a",
+    "category": "required_scope",
+    "old": "Against the best mixture of sampled reference policies that meets the same target, nominal pointwise paired intervals show reward shortfalls on two of eleven distinct budgets on held-out seeds and again on fresh seeds, and only Bandit's gap-budget shortfall recurs.",
+    "new": "Against the best mixture of sampled reference policies fitted to the same target on held-out seeds, nominal pointwise paired intervals show reward shortfalls on two of eleven distinct budgets. Replaying those fitted mixtures on fresh seeds gives two shortfalls again, and only Bandit's gap-budget shortfall recurs.",
+    "reason": "Fresh reference weights are frozen from held-out fitting, not optimized or constrained to fresh usage B.",
+    "targets": [
+      "paper/full_paper_jair.tex",
+      "paper/full_paper.tex"
+    ],
+    "matches_at_write": {
+      "paper/full_paper_jair.tex": 1,
+      "paper/full_paper.tex": 1
+    }
+  },
+  {
+    "id": "E1b",
+    "category": "required_scope",
+    "old": "Against it, intervals exclude zero at two of eleven distinct budgets on the held-out seeds and again on ten fresh seeds, none of them slack.",
+    "new": "Against it, intervals exclude zero at two of eleven distinct budgets on the held-out seeds. Replaying the held-out-fitted mixtures on ten fresh seeds again gives two shortfalls, all at budgets whose held-out cap reference binds. Fresh realized usage need not equal $B$.",
+    "reason": "The same held-out-fitted policy mixtures are replayed on fresh seeds; all fresh reference usages differ from B.",
+    "targets": [
+      "paper/full_paper_jair.tex",
+      "paper/full_paper.tex"
+    ],
+    "matches_at_write": {
+      "paper/full_paper_jair.tex": 1,
+      "paper/full_paper.tex": 1
+    }
+  },
+  {
+    "id": "E2a",
+    "category": "required_scope",
+    "old": "Because every Tiger policy here earns $10$ minus its usage, Tiger's target gaps equal the mixture's usage shortfall below $B$ and measure no reward efficiency.",
+    "new": "On the held-out seeds, the Tiger family and reference-support policies earn $10$ minus their usage, so the held-out target gaps equal the mixture's usage shortfall below $B$ and measure no reward efficiency.",
+    "reason": "Fresh Tiger policies incur wrong commits, so the reward-usage identity is confined to held-out support.",
+    "targets": [
+      "paper/full_paper_jair.tex",
+      "paper/full_paper.tex"
+    ],
+    "matches_at_write": {
+      "paper/full_paper_jair.tex": 1,
+      "paper/full_paper.tex": 1
+    }
+  },
+  {
+    "id": "E2b",
+    "category": "required_scope",
+    "old": "Every Tiger gap becomes zero, Diagnosis still falls short",
+    "new": "Every held-out Tiger mean gap becomes zero, Diagnosis still falls short",
+    "reason": "Held-out aggregate means become zero; fresh means and per-seed gaps do not.",
+    "targets": [
+      "paper/full_paper_jair.tex",
+      "paper/full_paper.tex"
+    ],
+    "matches_at_write": {
+      "paper/full_paper_jair.tex": 1,
+      "paper/full_paper.tex": 1
+    }
+  },
+  {
+    "id": "E3",
+    "category": "required_scope",
+    "old": "The two remaining held-out shortfalls are Diagnosis",
+    "new": "In the predeclared comparison at $B$, the two held-out shortfalls are Diagnosis",
+    "reason": "Return explicitly from the usage-matched sensitivity, which has only one held-out shortfall.",
+    "targets": [
+      "paper/full_paper_jair.tex",
+      "paper/full_paper.tex"
+    ],
+    "matches_at_write": {
+      "paper/full_paper_jair.tex": 1,
+      "paper/full_paper.tex": 1
+    }
+  },
+  {
+    "id": "E4",
+    "category": "required_scope",
+    "old": "Every agent in the family shares the phantom cost identically, so within-family comparisons are unaffected.",
+    "new": "Every agent in the family uses this same leaf rule, so the reported comparisons are conditional on it.",
+    "reason": "The leaf cost varies with branch position and beliefs and is not an action-independent offset.",
+    "targets": [
+      "paper/full_paper_jair.tex",
+      "paper/full_paper.tex"
+    ],
+    "matches_at_write": {
+      "paper/full_paper_jair.tex": 1,
+      "paper/full_paper.tex": 1
+    }
+  },
+  {
+    "id": "E5",
+    "category": "implementation_calibration",
+    "old": "Both are favorable or neutral to POMCP on these small instances.",
+    "new": "The first gives an optimistic terminal value, and the second replaces a sampled payoff by its conditional expectation. Their effects on the resulting policy are not isolated here.",
+    "reason": "Value optimism and conditional expected payoff do not prove favorable executed-policy effects.",
+    "targets": [
+      "paper/full_paper_jair.tex",
+      "paper/full_paper.tex"
+    ],
+    "matches_at_write": {
+      "paper/full_paper_jair.tex": 1,
+      "paper/full_paper.tex": 1
+    }
+  },
+  {
+    "id": "E6",
+    "category": "implementation_calibration",
+    "old": "The comparison is simulation-matched, not compute-matched, the same distinction drawn for the MCTS-EFE comparison below.",
+    "new": "This comparison fixes POMCP's simulation budgets without matching computation to exact EFE or Planning. The MCTS-EFE comparison below separately matches simulation counts between the two Monte Carlo planners.",
+    "reason": "Exact EFE and Planning enumerate trees and have no matched simulation count.",
+    "targets": [
+      "paper/full_paper_jair.tex",
+      "paper/full_paper.tex"
+    ],
+    "matches_at_write": {
+      "paper/full_paper_jair.tex": 1,
+      "paper/full_paper.tex": 1
+    }
+  },
+  {
+    "id": "E7",
+    "category": "implementation_calibration",
+    "old": "POMCP's internal random stream (particle sampling and rollouts) is seeded per-run from the same outer seed as the environment (Appendix~\\ref{app:pomcp}), rather than from a fixed constant.",
+    "new": "POMCP's internal random stream (particle sampling and rollouts) is seeded per run from the outer environment seed in the main comparison and exploration sweep. The MCTS-EFE and compute-matched batteries use a fixed internal planner seed (Appendix~\\ref{app:pomcp}).",
+    "reason": "Reconcile checklist with explicit appendix exception and producer vary_agent_seed settings.",
+    "targets": [
+      "paper/full_paper_jair.tex"
+    ],
+    "matches_at_write": {
+      "paper/full_paper_jair.tex": 1
+    }
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-01",
+  "archive": "paper/rho_aif_jair_overleaf_2026-09-28.zip",
+  "archive_sha256": "bb6457fedb8e6b62cc6af7da518e8a0107ef200d1fa38a7c9bfb2ce663ca1a07",
+  "archive_members": 39,
+  "figures": 25,
+  "tables": 9,
+  "fresh_extracted_compile_exit": 0,
+  "fresh_extracted_pdf_text_matches_canonical": true,
+  "jair_pages": 111,
+  "jair_references_start_page": 38,
+  "lncs_pages": 141,
+  "log_checks_each_master_and_package": {
+    "overfull": 0,
+    "missing_characters": 0,
+    "undefined_references_or_citations": 0
+  },
+  "artifacts": {
+    "paper/full_paper_jair.tex": "73f6ee1feb9bf2202bc141dadf52ae557816a8934ecfa0db47a1836b07b4a44c",
+    "paper/full_paper.tex": "25a9eaa30eac01e354775cd33f8018685dc171cc932e5f5e5fc1ba6a0aeb0a44",
+    "paper/full_paper_jair.pdf": "a63cb602275dbb91673990f7360bc3589d4a9606c88e37eab66455e36a7f31ce",
+    "paper/full_paper.pdf": "da69c94d4ec811a5ae8c3348e82bdb69b8f276cf81dad8ff522be9868bdda349",
+    "paper/tables/horizon_map.tex": "91ef07bfbe589e74b10a6ef0ffe896f70dad4e4890951de73bfafb33cff9f543",
+    "paper/tables/w_atlas.tex": "93a9efc95e575fe40094be3c4bf6aa386ce272ddfeae87a302046610b66a9536"
+  },
+  "validation_scope": "Local fresh extracted build, not a hosted Overleaf compilation or journal submission."
+}

@@ -2,8 +2,10 @@
 \begin{table}[t]
 \centering
 \caption{Horizon map, the fraction of randomly generated two-state environments
- where $w{=}1$ is near-optimal (within $\max(5\%, 0.5)$ of the
- reward-optimal weight), stratified by each sampled regime axis and
+ where $w{=}1$ is near-optimal: its estimated reward gap from the best grid weight
+ is at most $\max(0.05|\widehat R_{\mathrm{best}}|,0.5)$ reward units, where
+ $\widehat R_{\mathrm{best}}$ is the largest estimated grid reward. Results are
+ stratified by each sampled regime axis and
  planning horizon $H$. Same 100 environments as Figure~\ref{fig:nearopt_horizon}
  (Appendix~\ref{app:nearopt_horizon}). This is an empirical boundary map, not an
  adaptive-submodularity guarantee.}

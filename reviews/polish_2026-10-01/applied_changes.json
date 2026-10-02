@@ -1,0 +1,635 @@
+{
+  "baseline": "748052634026b2a5cf9e0c9fef64975b0e6fd682",
+  "changes": [
+    {
+      "id": "M02",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Define the reward asymmetry ratio $\\alpha = |R^-|/R^+$ and the informativeness ratio $\\eta = I_{\\max}/c$ where $I_{\\max} = \\ln 2 - H_{\\text{post}}(p)$ is the maximum expected information gain in nats, with $H_{\\text{post}}(p) = -p \\ln p - (1-p)\\ln(1-p)$ the entropy in nats of the post-observation belief $(p, 1-p)$, so that $I_{\\max}$ is the uniform prior's entropy $\\ln 2$ less the entropy that one observation of accuracy $p$ leaves behind.",
+      "new": "Define the reward asymmetry ratio $\\alpha = |R^-|/R^+$ and the informativeness ratio $\\eta = I_{\\max}/c$. Here $I_{\\max} = \\ln 2 - H_{\\text{post}}(p)$ is the maximum expected information gain in nats, and $H_{\\text{post}}(p) = -p \\ln p - (1-p)\\ln(1-p)$ is the entropy in nats of the post-observation belief $(p, 1-p)$. Thus $I_{\\max}$ is the uniform prior's entropy $\\ln 2$ less the entropy remaining after one observation of accuracy $p$."
+    },
+    {
+      "id": "M02",
+      "file": "paper/full_paper.tex",
+      "old": "Define the reward asymmetry ratio $\\alpha = |R^-|/R^+$ and the informativeness ratio $\\eta = I_{\\max}/c$ where $I_{\\max} = \\ln 2 - H_{\\text{post}}(p)$ is the maximum expected information gain in nats, with $H_{\\text{post}}(p) = -p \\ln p - (1-p)\\ln(1-p)$ the entropy in nats of the post-observation belief $(p, 1-p)$, so that $I_{\\max}$ is the uniform prior's entropy $\\ln 2$ less the entropy that one observation of accuracy $p$ leaves behind.",
+      "new": "Define the reward asymmetry ratio $\\alpha = |R^-|/R^+$ and the informativeness ratio $\\eta = I_{\\max}/c$. Here $I_{\\max} = \\ln 2 - H_{\\text{post}}(p)$ is the maximum expected information gain in nats, and $H_{\\text{post}}(p) = -p \\ln p - (1-p)\\ln(1-p)$ is the entropy in nats of the post-observation belief $(p, 1-p)$. Thus $I_{\\max}$ is the uniform prior's entropy $\\ln 2$ less the entropy remaining after one observation of accuracy $p$."
+    },
+    {
+      "id": "M03",
+      "file": "paper/full_paper_jair.tex",
+      "old": "The reading is sign-conditional.",
+      "new": "The interpretation depends on the sign of $w^*_{\\mathrm{thresh}}$."
+    },
+    {
+      "id": "M03",
+      "file": "paper/full_paper.tex",
+      "old": "The reading is sign-conditional.",
+      "new": "The interpretation depends on the sign of $w^*_{\\mathrm{thresh}}$."
+    },
+    {
+      "id": "M04",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Its lower endpoint is the largest grid weight with $U(w_{\\mathrm{lo}}) < B$ and its upper endpoint is the first subsequent grid weight with $U(w_{\\mathrm{hi}}) \\geq B$, so the bracket straddles the budget on the grid whenever a grid point at or above $B$ follows the last grid weight with usage below $B$, and its closed enclosure $[w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$ contains the threshold whenever the curve has no crossing of $B$ that the grid fails to resolve, between grid weights or beyond the last one (a curve whose final grid point falls back below $B$ would instead yield a non-straddling fallback flagged as such even though its threshold can exist, a shape no swept curve exhibits).",
+      "new": "Its lower endpoint is the largest grid weight with $U(w_{\\mathrm{lo}}) < B$ and its upper endpoint is the first subsequent grid weight with $U(w_{\\mathrm{hi}}) \\geq B$. The bracket therefore straddles the budget on the grid whenever a grid point at or above $B$ follows the last grid weight with usage below $B$. Its closed enclosure $[w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$ contains the threshold whenever the curve has no crossing of $B$ that the grid fails to resolve, between grid weights or beyond the last one. A curve whose final grid point falls back below $B$ would instead yield a non-straddling fallback flagged as such even though its threshold can exist. No swept curve exhibits that shape."
+    },
+    {
+      "id": "M04",
+      "file": "paper/full_paper.tex",
+      "old": "Its lower endpoint is the largest grid weight with $U(w_{\\mathrm{lo}}) < B$ and its upper endpoint is the first subsequent grid weight with $U(w_{\\mathrm{hi}}) \\geq B$, so the bracket straddles the budget on the grid whenever a grid point at or above $B$ follows the last grid weight with usage below $B$, and its closed enclosure $[w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$ contains the threshold whenever the curve has no crossing of $B$ that the grid fails to resolve, between grid weights or beyond the last one (a curve whose final grid point falls back below $B$ would instead yield a non-straddling fallback flagged as such even though its threshold can exist, a shape no swept curve exhibits).",
+      "new": "Its lower endpoint is the largest grid weight with $U(w_{\\mathrm{lo}}) < B$ and its upper endpoint is the first subsequent grid weight with $U(w_{\\mathrm{hi}}) \\geq B$. The bracket therefore straddles the budget on the grid whenever a grid point at or above $B$ follows the last grid weight with usage below $B$. Its closed enclosure $[w_{\\mathrm{lo}}, w_{\\mathrm{hi}}]$ contains the threshold whenever the curve has no crossing of $B$ that the grid fails to resolve, between grid weights or beyond the last one. A curve whose final grid point falls back below $B$ would instead yield a non-straddling fallback flagged as such even though its threshold can exist. No swept curve exhibits that shape."
+    },
+    {
+      "id": "M05",
+      "file": "paper/full_paper_jair.tex",
+      "old": "The budget battery generally uses $100$ episodes per seed and evaluation cell, where a cell is one weight at one seed.",
+      "new": "The budget battery generally uses $100$ episodes per evaluation cell, with each cell defined by one weight and one seed."
+    },
+    {
+      "id": "M05",
+      "file": "paper/full_paper.tex",
+      "old": "The budget battery generally uses $100$ episodes per seed and evaluation cell, where a cell is one weight at one seed.",
+      "new": "The budget battery generally uses $100$ episodes per evaluation cell, with each cell defined by one weight and one seed."
+    },
+    {
+      "id": "M06",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Recall from Section~\\ref{sec:experiments} that each Diagnosis test reports, noisily, which side of its own fixed split of the hidden conditions the true condition lies on, and that the two tests use different splits. The two tests are equally accurate, but because their splits differ, how much each reveals depends on how the current belief is spread across its split.",
+      "new": "Each Diagnosis test noisily reports which side of its fixed partition contains the true condition, and the two tests use different partitions (Section~\\ref{sec:experiments}). Although the tests are equally accurate, the information each reveals depends on the current belief over its partition."
+    },
+    {
+      "id": "M06",
+      "file": "paper/full_paper.tex",
+      "old": "Recall from Section~\\ref{sec:experiments} that each Diagnosis test reports, noisily, which side of its own fixed split of the hidden conditions the true condition lies on, and that the two tests use different splits. The two tests are equally accurate, but because their splits differ, how much each reveals depends on how the current belief is spread across its split.",
+      "new": "Each Diagnosis test noisily reports which side of its fixed partition contains the true condition, and the two tests use different partitions (Section~\\ref{sec:experiments}). Although the tests are equally accurate, the information each reveals depends on the current belief over its partition."
+    },
+    {
+      "id": "M07",
+      "file": "paper/full_paper_jair.tex",
+      "old": "What the swept curves show is a step. The mean cost paid per test, $U_{\\mathrm{cost}}(w)/U_{\\mathrm{count}}(w)$, holds at $1.26$ from $w{=}0$ through $w{=}10$ and rises to $1.37$ and then $1.41$ only at the two largest weights, the same two weights at which the number of tests also jumps (Figure~\\ref{fig:costbudget}), a $12.0\\%$ spread relative to the grid-mean cost per test.",
+      "new": "The swept curves show a step in mean cost per test, $U_{\\mathrm{cost}}(w)/U_{\\mathrm{count}}(w)$. It holds at $1.26$ from $w{=}0$ through $w{=}10$ and rises to $1.37$ and then $1.41$ only at the two largest weights, where the number of tests also jumps (Figure~\\ref{fig:costbudget}). The spread is $12.0\\%$ relative to the grid-mean cost per test."
+    },
+    {
+      "id": "M07",
+      "file": "paper/full_paper.tex",
+      "old": "What the swept curves show is a step. The mean cost paid per test, $U_{\\mathrm{cost}}(w)/U_{\\mathrm{count}}(w)$, holds at $1.26$ from $w{=}0$ through $w{=}10$ and rises to $1.37$ and then $1.41$ only at the two largest weights, the same two weights at which the number of tests also jumps (Figure~\\ref{fig:costbudget}), a $12.0\\%$ spread relative to the grid-mean cost per test.",
+      "new": "The swept curves show a step in mean cost per test, $U_{\\mathrm{cost}}(w)/U_{\\mathrm{count}}(w)$. It holds at $1.26$ from $w{=}0$ through $w{=}10$ and rises to $1.37$ and then $1.41$ only at the two largest weights, where the number of tests also jumps (Figure~\\ref{fig:costbudget}). The spread is $12.0\\%$ relative to the grid-mean cost per test."
+    },
+    {
+      "id": "M08",
+      "file": "paper/full_paper_jair.tex",
+      "old": "While information gain is weighted lightly, the price holds the agent to its low-weight test mix, and once $w$ is large enough to buy extra tests, test choice is driven more by what a test reveals at the current belief than by its price, which on this variant means using the expensive test more often.",
+      "new": "While information gain is weighted lightly, test prices keep the agent at its low-weight test mix. Once $w$ is large enough to buy extra tests, test choice depends more on what a test reveals at the current belief than on its price. On this variant, that means using the expensive test more often."
+    },
+    {
+      "id": "M08",
+      "file": "paper/full_paper.tex",
+      "old": "While information gain is weighted lightly, the price holds the agent to its low-weight test mix, and once $w$ is large enough to buy extra tests, test choice is driven more by what a test reveals at the current belief than by its price, which on this variant means using the expensive test more often.",
+      "new": "While information gain is weighted lightly, test prices keep the agent at its low-weight test mix. Once $w$ is large enough to buy extra tests, test choice depends more on what a test reveals at the current belief than on its price. On this variant, that means using the expensive test more often."
+    },
+    {
+      "id": "M09",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Whether the two denominations also select different weights at a given budget is a separate question, and answering it requires a rule for pairing a count budget with a cost budget.",
+      "new": "Testing whether the two denominations select different weights requires a rule for pairing a count budget with a cost budget."
+    },
+    {
+      "id": "M09",
+      "file": "paper/full_paper.tex",
+      "old": "Whether the two denominations also select different weights at a given budget is a separate question, and answering it requires a rule for pairing a count budget with a cost budget.",
+      "new": "Testing whether the two denominations select different weights requires a rule for pairing a count budget with a cost budget."
+    },
+    {
+      "id": "M10",
+      "file": "paper/full_paper_jair.tex",
+      "old": "At the two comparable operating points we solve for, however, they happen to land in the same crossing bracket at this grid's resolution.",
+      "new": "At both tested operating points, the paired budgets select the same crossing bracket at this grid's resolution."
+    },
+    {
+      "id": "M10",
+      "file": "paper/full_paper.tex",
+      "old": "At the two comparable operating points we solve for, however, they happen to land in the same crossing bracket at this grid's resolution.",
+      "new": "At both tested operating points, the paired budgets select the same crossing bracket at this grid's resolution."
+    },
+    {
+      "id": "M11",
+      "file": "paper/full_paper_jair.tex",
+      "old": "If that multiplier were the same at every weight, the pairing rule would make the two crossings coincide exactly, because a budget at a given fractional height of the count curve and the budget at the same fractional height of the cost curve would then be one and the same budget written in two units. The two curves would then cross them at the same weight.",
+      "new": "If that multiplier were constant across weights, the pairing rule would express the same budget in two units. The two curves would then cross their paired budgets at the same weight."
+    },
+    {
+      "id": "M11",
+      "file": "paper/full_paper.tex",
+      "old": "If that multiplier were the same at every weight, the pairing rule would make the two crossings coincide exactly, because a budget at a given fractional height of the count curve and the budget at the same fractional height of the cost curve would then be one and the same budget written in two units. The two curves would then cross them at the same weight.",
+      "new": "If that multiplier were constant across weights, the pairing rule would express the same budget in two units. The two curves would then cross their paired budgets at the same weight."
+    },
+    {
+      "id": "M12",
+      "file": "paper/full_paper_jair.tex",
+      "old": "We now estimate usage curves and shadow prices in settings where sensing and acting alternate within an episode, the interleaved observe-act settings of Section~\\ref{sec:rocksample} and Section~\\ref{sec:inspection}. The extension is needed because Proposition~\\ref{prop:factored}'s factored-observation class admits navigation actions between observations, so that sensing and acting can alternate, whereas the observe-then-commit environments above separate observation from commitment by construction and so cannot exercise that case.",
+      "new": "We now estimate usage curves and shadow prices in the interleaved observe-act settings of Sections~\\ref{sec:rocksample} and~\\ref{sec:inspection}, where sensing and acting alternate within an episode. RockSample also exercises the navigation between observations admitted by Proposition~\\ref{prop:factored}. The observe-then-commit environments above cannot exercise that case because they separate observation from commitment by construction."
+    },
+    {
+      "id": "M12",
+      "file": "paper/full_paper.tex",
+      "old": "We now estimate usage curves and shadow prices in settings where sensing and acting alternate within an episode, the interleaved observe-act settings of Section~\\ref{sec:rocksample} and Section~\\ref{sec:inspection}. The extension is needed because Proposition~\\ref{prop:factored}'s factored-observation class admits navigation actions between observations, so that sensing and acting can alternate, whereas the observe-then-commit environments above separate observation from commitment by construction and so cannot exercise that case.",
+      "new": "We now estimate usage curves and shadow prices in the interleaved observe-act settings of Sections~\\ref{sec:rocksample} and~\\ref{sec:inspection}, where sensing and acting alternate within an episode. RockSample also exercises the navigation between observations admitted by Proposition~\\ref{prop:factored}. The observe-then-commit environments above cannot exercise that case because they separate observation from commitment by construction."
+    },
+    {
+      "id": "M13",
+      "file": "paper/full_paper_jair.tex",
+      "old": "We measured that directly. Resampling the five seeds with replacement $2000$ times and re-solving each of the $25$ budgets of Figure~\\ref{fig:stairs} on the resampled curve (\\texttt{run\\_\\allowbreak bracket\\_\\allowbreak stability.py}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability.csv}, with the count of every bracket outcome in \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability\\_\\allowbreak counts.csv}), the reported bracket is recovered in every resample at $19$ budgets and in at least $99$ percent of resamples at $21$.",
+      "new": "We measured bracket-selection stability by resampling the five seeds with replacement $2000$ times and re-solving each of the $25$ budgets of Figure~\\ref{fig:stairs} on each resampled curve (\\texttt{run\\_\\allowbreak bracket\\_\\allowbreak stability.py}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability.csv}, with the count of every bracket outcome in \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability\\_\\allowbreak counts.csv}). The reported bracket is recovered in every resample at $19$ budgets and in at least $99$ percent of resamples at $21$."
+    },
+    {
+      "id": "M13",
+      "file": "paper/full_paper.tex",
+      "old": "We measured that directly. Resampling the five seeds with replacement $2000$ times and re-solving each of the $25$ budgets of Figure~\\ref{fig:stairs} on the resampled curve (\\texttt{run\\_\\allowbreak bracket\\_\\allowbreak stability.py}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability.csv}, with the count of every bracket outcome in \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability\\_\\allowbreak counts.csv}), the reported bracket is recovered in every resample at $19$ budgets and in at least $99$ percent of resamples at $21$.",
+      "new": "We measured bracket-selection stability by resampling the five seeds with replacement $2000$ times and re-solving each of the $25$ budgets of Figure~\\ref{fig:stairs} on each resampled curve (\\texttt{run\\_\\allowbreak bracket\\_\\allowbreak stability.py}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability.csv}, with the count of every bracket outcome in \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability\\_\\allowbreak counts.csv}). The reported bracket is recovered in every resample at $19$ budgets and in at least $99$ percent of resamples at $21$."
+    },
+    {
+      "id": "M14",
+      "file": "paper/full_paper_jair.tex",
+      "old": "In every disagreeing resample but one, the alternative is a neighbouring step of the staircase or, at Tiger's lowest and highest budgets, which lie about one standard error of usage from the two ends of its usage range, no bracket at all.",
+      "new": "In all but one disagreeing resample, the alternative is a neighbouring step of the staircase or, at Tiger's lowest and highest budgets, no bracket at all. Those two Tiger budgets lie about one standard error of usage from the corresponding ends of its usage range."
+    },
+    {
+      "id": "M14",
+      "file": "paper/full_paper.tex",
+      "old": "In every disagreeing resample but one, the alternative is a neighbouring step of the staircase or, at Tiger's lowest and highest budgets, which lie about one standard error of usage from the two ends of its usage range, no bracket at all.",
+      "new": "In all but one disagreeing resample, the alternative is a neighbouring step of the staircase or, at Tiger's lowest and highest budgets, no bracket at all. Those two Tiger budgets lie about one standard error of usage from the corresponding ends of its usage range."
+    },
+    {
+      "id": "M15",
+      "file": "paper/full_paper_jair.tex",
+      "old": "At seven budgets, every Tiger target, Bandit's three interior targets, and Diagnosis's largest, the cap is slack and the reference is the unpenalized SARSOP policy, the estimated unconstrained reward optimum.",
+      "new": "The cap is slack at seven budgets: every Tiger target, Bandit's three interior targets, and Diagnosis's largest. At these budgets, the reference is the unpenalized SARSOP policy, the estimated unconstrained reward optimum."
+    },
+    {
+      "id": "M15",
+      "file": "paper/full_paper.tex",
+      "old": "At seven budgets, every Tiger target, Bandit's three interior targets, and Diagnosis's largest, the cap is slack and the reference is the unpenalized SARSOP policy, the estimated unconstrained reward optimum.",
+      "new": "The cap is slack at seven budgets: every Tiger target, Bandit's three interior targets, and Diagnosis's largest. At these budgets, the reference is the unpenalized SARSOP policy, the estimated unconstrained reward optimum."
+    },
+    {
+      "id": "M16",
+      "file": "paper/full_paper_jair.tex",
+      "old": "A separate sweep selects constants on tuning seeds under a rule recorded before the runs reported here and written after an exploratory sweep on the canonical seeds had been inspected.",
+      "new": "A separate sweep selects constants on tuning seeds. The selection rule was written after inspection of an exploratory sweep on the canonical seeds and was recorded before the runs reported here."
+    },
+    {
+      "id": "M16",
+      "file": "paper/full_paper.tex",
+      "old": "A separate sweep selects constants on tuning seeds under a rule recorded before the runs reported here and written after an exploratory sweep on the canonical seeds had been inspected.",
+      "new": "A separate sweep selects constants on tuning seeds. The selection rule was written after inspection of an exploratory sweep on the canonical seeds and was recorded before the runs reported here."
+    },
+    {
+      "id": "PA01",
+      "file": "paper/full_paper_jair.tex",
+      "old": "This appendix reports the full agent set for Tiger, Diagnosis, Bandit, and the two Tileworld grids, one table per environment.",
+      "new": "This appendix reports the per-environment results for Tiger, Diagnosis, Bandit, and the two Tileworld grids, omitting the duplicate rows identified in Appendix~\\ref{app:core_details}."
+    },
+    {
+      "id": "PA01",
+      "file": "paper/full_paper.tex",
+      "old": "This appendix reports the full agent set for Tiger, Diagnosis, Bandit, and the two Tileworld grids, one table per environment.",
+      "new": "This appendix reports the per-environment results for Tiger, Diagnosis, Bandit, and the two Tileworld grids, omitting the duplicate rows identified in Appendix~\\ref{app:core_details}."
+    },
+    {
+      "id": "PA02",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Bold marks the best value in the success and reward columns, with exact ties bold together.",
+      "new": "Bold marks the best value in the success and reward columns, with exact ties bolded together."
+    },
+    {
+      "id": "PA02",
+      "file": "paper/full_paper.tex",
+      "old": "Bold marks the best value in the success and reward columns, with exact ties bold together.",
+      "new": "Bold marks the best value in the success and reward columns, with exact ties bolded together."
+    },
+    {
+      "id": "PA03",
+      "file": "paper/full_paper_jair.tex",
+      "old": "EFE and Planning are bit-identical at $K{=}1$ and within seed-level sampling error at $K{=}2$ ($43.2\\%$ against $43.8\\%$ success, the multi-test evidence at that scale being carried by the main Diagnosis battery of Section~\\ref{sec:results}).",
+      "new": "EFE and Planning are bit-identical at $K{=}1$ and within seed-level sampling error at $K{=}2$ ($43.2\\%$ against $43.8\\%$ success). Evidence of a gap with two tests comes from the main Diagnosis battery of Section~\\ref{sec:results}."
+    },
+    {
+      "id": "PA03",
+      "file": "paper/full_paper.tex",
+      "old": "EFE and Planning are bit-identical at $K{=}1$ and within seed-level sampling error at $K{=}2$ ($43.2\\%$ against $43.8\\%$ success, the multi-test evidence at that scale being carried by the main Diagnosis battery of Section~\\ref{sec:results}).",
+      "new": "EFE and Planning are bit-identical at $K{=}1$ and within seed-level sampling error at $K{=}2$ ($43.2\\%$ against $43.8\\%$ success). Evidence of a gap with two tests comes from the main Diagnosis battery of Section~\\ref{sec:results}."
+    },
+    {
+      "id": "PA04",
+      "file": "paper/full_paper_jair.tex",
+      "old": "with each of these panel's titles also reporting",
+      "new": "with each panel's title also reporting"
+    },
+    {
+      "id": "PA05",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Information arrives as a side effect of translation, and greedy progress toward the belief mode already provides correlated evidence.",
+      "new": "Information arrives as a side effect of movement, and greedy progress toward the belief mode already provides correlated evidence."
+    },
+    {
+      "id": "PA05",
+      "file": "paper/full_paper.tex",
+      "old": "Information arrives as a side effect of translation, and greedy progress toward the belief mode already provides correlated evidence.",
+      "new": "Information arrives as a side effect of movement, and greedy progress toward the belief mode already provides correlated evidence."
+    },
+    {
+      "id": "PA06",
+      "file": "paper/full_paper_jair.tex",
+      "old": "The main-text table (Table~\\ref{tab:main}) reports the seed-level SE as the primary uncertainty measure, since each answers a different question (episode-level precision versus between-seed replicability) and neither alone is a strict superset of the other.",
+      "new": "The main-text table (Table~\\ref{tab:main}) reports the seed-level SE as the primary uncertainty measure. Pooled episode-level and seed-level SE describe different sources of variation, episode-level precision and between-seed replicability, so neither replaces the other."
+    },
+    {
+      "id": "PA06",
+      "file": "paper/full_paper.tex",
+      "old": "The main-text table (Table~\\ref{tab:main}) reports the seed-level SE as the primary uncertainty measure, since each answers a different question (episode-level precision versus between-seed replicability) and neither alone is a strict superset of the other.",
+      "new": "The main-text table (Table~\\ref{tab:main}) reports the seed-level SE as the primary uncertainty measure. Pooled episode-level and seed-level SE describe different sources of variation, episode-level precision and between-seed replicability, so neither replaces the other."
+    },
+    {
+      "id": "PA07",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Following the producing script, an environment agrees when $w{=}1$ is near-optimal at $H{=}1$ and at some deeper horizon, or at neither, which holds for 44 of the 100.",
+      "new": "Following the producing script, we classify an environment as agreeing across horizons when $w{=}1$ is near-optimal at $H{=}1$ and at some deeper horizon, or at neither. This holds for 44 of the 100 environments."
+    },
+    {
+      "id": "PA07",
+      "file": "paper/full_paper.tex",
+      "old": "Following the producing script, an environment agrees when $w{=}1$ is near-optimal at $H{=}1$ and at some deeper horizon, or at neither, which holds for 44 of the 100.",
+      "new": "Following the producing script, we classify an environment as agreeing across horizons when $w{=}1$ is near-optimal at $H{=}1$ and at some deeper horizon, or at neither. This holds for 44 of the 100 environments."
+    },
+    {
+      "id": "PA08",
+      "file": "paper/full_paper_jair.tex",
+      "old": "RS[11,11] is exceptional in a different sense, where every tree-search agent, including Planning at $w{=}0$, converges to the same low-activity policy, discussed in Section~\\ref{sec:rocksample}.",
+      "new": "On RS[11,11], every tree-search agent, including Planning at $w{=}0$, instead converges to the same low-activity policy, discussed in Section~\\ref{sec:rocksample}."
+    },
+    {
+      "id": "PA08",
+      "file": "paper/full_paper.tex",
+      "old": "RS[11,11] is exceptional in a different sense, where every tree-search agent, including Planning at $w{=}0$, converges to the same low-activity policy, discussed in Section~\\ref{sec:rocksample}.",
+      "new": "On RS[11,11], every tree-search agent, including Planning at $w{=}0$, instead converges to the same low-activity policy, discussed in Section~\\ref{sec:rocksample}."
+    },
+    {
+      "id": "PA09",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Three departures in the search procedure itself remain, all keyed to fully observable quantities (the belief representation and depth-cap leaf value are separate implementation choices, disclosed and sensitivity-checked below).",
+      "new": "The search procedure makes three departures, all keyed to fully observable quantities. The belief representation and depth-cap leaf value are separate implementation choices, disclosed and sensitivity-checked below."
+    },
+    {
+      "id": "PA09",
+      "file": "paper/full_paper.tex",
+      "old": "Three departures in the search procedure itself remain, all keyed to fully observable quantities (the belief representation and depth-cap leaf value are separate implementation choices, disclosed and sensitivity-checked below).",
+      "new": "The search procedure makes three departures, all keyed to fully observable quantities. The belief representation and depth-cap leaf value are separate implementation choices, disclosed and sensitivity-checked below."
+    },
+    {
+      "id": "PA10",
+      "file": "paper/full_paper_jair.tex",
+      "old": "for the three OTC environments where its belief is small enough to reach near-optimal convergence in reasonable time.",
+      "new": "for the three OTC environments whose small state spaces allow near-optimal convergence in reasonable time."
+    },
+    {
+      "id": "PA10",
+      "file": "paper/full_paper.tex",
+      "old": "for the three OTC environments where its belief is small enough to reach near-optimal convergence in reasonable time.",
+      "new": "for the three OTC environments whose small state spaces allow near-optimal convergence in reasonable time."
+    },
+    {
+      "id": "PA11",
+      "file": "paper/full_paper_jair.tex",
+      "old": "POMCP comparison config (5{,}000 total episodes across 5 per-run seeds $\\{42,\\allowbreak 123,\\allowbreak 456,\\allowbreak 789,\\allowbreak 1024\\}$ for Tiger/Diagnosis/Bandit and 1{,}000 for Tileworld, matching the main-table protocol on those three environments, and EFE/Planning here are re-run inside the POMCP harness rather than sourced from Table~\\ref{tab:main}, which they reproduce exactly).",
+      "new": "POMCP comparison (5{,}000 total episodes across 5 per-run seeds $\\{42,\\allowbreak 123,\\allowbreak 456,\\allowbreak 789,\\allowbreak 1024\\}$ for Tiger/Diagnosis/Bandit and 1{,}000 for Tileworld). The protocol matches the main table on the three core environments. EFE and Planning are evaluated inside the POMCP harness and reproduce Table~\\ref{tab:main} exactly."
+    },
+    {
+      "id": "PA11",
+      "file": "paper/full_paper.tex",
+      "old": "POMCP comparison config (5{,}000 total episodes across 5 per-run seeds $\\{42,\\allowbreak 123,\\allowbreak 456,\\allowbreak 789,\\allowbreak 1024\\}$ for Tiger/Diagnosis/Bandit and 1{,}000 for Tileworld, matching the main-table protocol on those three environments, and EFE/Planning here are re-run inside the POMCP harness rather than sourced from Table~\\ref{tab:main}, which they reproduce exactly).",
+      "new": "POMCP comparison (5{,}000 total episodes across 5 per-run seeds $\\{42,\\allowbreak 123,\\allowbreak 456,\\allowbreak 789,\\allowbreak 1024\\}$ for Tiger/Diagnosis/Bandit and 1{,}000 for Tileworld). The protocol matches the main table on the three core environments. EFE and Planning are evaluated inside the POMCP harness and reproduce Table~\\ref{tab:main} exactly."
+    },
+    {
+      "id": "PA12",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Neither switchable component shows a detectable effect. No variant differs from the reported configuration on success or reward on any of the three environments after Holm correction within metric.",
+      "new": "Neither switchable component shows a detectable effect on success or reward. No variant differs from the reported configuration on either metric on any of the three environments after Holm correction within metric."
+    },
+    {
+      "id": "PA12",
+      "file": "paper/full_paper.tex",
+      "old": "Neither switchable component shows a detectable effect. No variant differs from the reported configuration on success or reward on any of the three environments after Holm correction within metric.",
+      "new": "Neither switchable component shows a detectable effect on success or reward. No variant differs from the reported configuration on either metric on any of the three environments after Holm correction within metric."
+    },
+    {
+      "id": "PA13",
+      "file": "paper/full_paper_jair.tex",
+      "old": "a symbol distinct from the observation cost $c$ of Proposition~\\ref{prop:nearopt}.",
+      "new": "a quantity distinct from the observation cost $c$ of Proposition~\\ref{prop:nearopt}."
+    },
+    {
+      "id": "PA13",
+      "file": "paper/full_paper.tex",
+      "old": "a symbol distinct from the observation cost $c$ of Proposition~\\ref{prop:nearopt}.",
+      "new": "a quantity distinct from the observation cost $c$ of Proposition~\\ref{prop:nearopt}."
+    },
+    {
+      "id": "PA14",
+      "file": "paper/full_paper_jair.tex",
+      "old": "No reported iterate exceeded $3.1$, more than an order of magnitude below $w_{\\max}$, so the upper projection never bound, but it is in force.",
+      "new": "No reported iterate exceeded $3.1$, more than an order of magnitude below $w_{\\max}$, so the upper bound was never reached, although the projection remained in force."
+    },
+    {
+      "id": "PA14",
+      "file": "paper/full_paper.tex",
+      "old": "No reported iterate exceeded $3.1$, more than an order of magnitude below $w_{\\max}$, so the upper projection never bound, but it is in force.",
+      "new": "No reported iterate exceeded $3.1$, more than an order of magnitude below $w_{\\max}$, so the upper bound was never reached, although the projection remained in force."
+    },
+    {
+      "id": "PA15",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Five seeds is thin.",
+      "new": "The five-seed sample is small."
+    },
+    {
+      "id": "PA15",
+      "file": "paper/full_paper.tex",
+      "old": "Five seeds is thin.",
+      "new": "The five-seed sample is small."
+    },
+    {
+      "id": "PA16",
+      "file": "paper/full_paper_jair.tex",
+      "old": "The two remaining held-out shortfalls are Diagnosis at $B{=}9.53$ and Bandit's gap budget.",
+      "new": "In the predeclared comparison at $B$, the two held-out shortfalls are Diagnosis at $B{=}9.53$ and Bandit's gap budget."
+    },
+    {
+      "id": "PA16",
+      "file": "paper/full_paper.tex",
+      "old": "The two remaining held-out shortfalls are Diagnosis at $B{=}9.53$ and Bandit's gap budget.",
+      "new": "In the predeclared comparison at $B$, the two held-out shortfalls are Diagnosis at $B{=}9.53$ and Bandit's gap budget."
+    },
+    {
+      "id": "PA17",
+      "file": "paper/full_paper_jair.tex",
+      "old": "On $N{=}16$, EFE's reward deficit to Planning ($-45.80$ against $-45.42$) is not significant ($p{=}0.57$), so the two reward cells are bolded together, EFE's $+12.6$pp accuracy gain over Planning has $p<10^{-7}$, and Planning+IG ($w{=}5$) runs $38.3 \\pm 0.05$ tests against EFE's $28.1 \\pm 0.09$ (seed-level SE), roughly $36\\%$ more (seed-level Welch $p{=}1.7{\\times}10^{-11}$).",
+      "new": "On $N{=}16$, EFE's reward deficit to Planning ($-45.80$ against $-45.42$) is not significant ($p{=}0.57$), so the two reward cells are bolded together. EFE's $+12.6$pp accuracy gain over Planning has $p<10^{-7}$. Planning+IG ($w{=}5$) runs $38.3 \\pm 0.05$ tests against EFE's $28.1 \\pm 0.09$ (seed-level SE), roughly $36\\%$ more (seed-level Welch $p{=}1.7{\\times}10^{-11}$)."
+    },
+    {
+      "id": "PA17",
+      "file": "paper/full_paper.tex",
+      "old": "On $N{=}16$, EFE's reward deficit to Planning ($-45.80$ against $-45.42$) is not significant ($p{=}0.57$), so the two reward cells are bolded together, EFE's $+12.6$pp accuracy gain over Planning has $p<10^{-7}$, and Planning+IG ($w{=}5$) runs $38.3 \\pm 0.05$ tests against EFE's $28.1 \\pm 0.09$ (seed-level SE), roughly $36\\%$ more (seed-level Welch $p{=}1.7{\\times}10^{-11}$).",
+      "new": "On $N{=}16$, EFE's reward deficit to Planning ($-45.80$ against $-45.42$) is not significant ($p{=}0.57$), so the two reward cells are bolded together. EFE's $+12.6$pp accuracy gain over Planning has $p<10^{-7}$. Planning+IG ($w{=}5$) runs $38.3 \\pm 0.05$ tests against EFE's $28.1 \\pm 0.09$ (seed-level SE), roughly $36\\%$ more (seed-level Welch $p{=}1.7{\\times}10^{-11}$)."
+    },
+    {
+      "id": "PA18",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Effect sizes clarify where the differences lie, read on the conventional bands that Table~\\ref{tab:effect_sizes} lists.",
+      "new": "Effect sizes clarify where the differences lie, using the conventional interpretation bands listed in Table~\\ref{tab:effect_sizes}."
+    },
+    {
+      "id": "PA18",
+      "file": "paper/full_paper.tex",
+      "old": "Effect sizes clarify where the differences lie, read on the conventional bands that Table~\\ref{tab:effect_sizes} lists.",
+      "new": "Effect sizes clarify where the differences lie, using the conventional interpretation bands listed in Table~\\ref{tab:effect_sizes}."
+    },
+    {
+      "id": "F01",
+      "file": "paper/full_paper_jair.tex",
+      "old": "and a single labeled point on the same curve, the weight that active inference derives on its own, shown as forced by a theorem rather than chosen by hand, and shown sitting outside the particular bracket drawn here rather than coinciding with it.",
+      "new": "and a single labeled point on the same curve, the information-unit anchor at w equals 1 under the stated reward-based EFE objective and reward--information convention. That point sits outside the particular crossing bracket drawn here."
+    },
+    {
+      "id": "F01",
+      "file": "paper/full_paper.tex",
+      "old": "and a single labeled point on the same curve, the weight that active inference derives on its own, shown as forced by a theorem rather than chosen by hand, and shown sitting outside the particular bracket drawn here rather than coinciding with it.",
+      "new": "and a single labeled point on the same curve, the information-unit anchor at w equals 1 under the stated reward-based EFE objective and reward--information convention. That point sits outside the particular crossing bracket drawn here."
+    },
+    {
+      "id": "F02",
+      "file": "paper/full_paper_jair.tex",
+      "old": "and that the two denominations agree only when every observation action costs the same.",
+      "new": "and that equal-cost observation actions give a fixed conversion between the two."
+    },
+    {
+      "id": "F02",
+      "file": "paper/full_paper.tex",
+      "old": "and that the two denominations agree only when every observation action costs the same.",
+      "new": "and that equal-cost observation actions give a fixed conversion between the two."
+    },
+    {
+      "id": "F03",
+      "file": "paper/full_paper_jair.tex",
+      "old": "corrected comparison family",
+      "new": "comparison family"
+    },
+    {
+      "id": "F03",
+      "file": "paper/full_paper.tex",
+      "old": "corrected comparison family",
+      "new": "comparison family"
+    },
+    {
+      "id": "E1a",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Against the best mixture of sampled reference policies that meets the same target, nominal pointwise paired intervals show reward shortfalls on two of eleven distinct budgets on held-out seeds and again on fresh seeds, and only Bandit's gap-budget shortfall recurs.",
+      "new": "Against the best mixture of sampled reference policies fitted to the same target on held-out seeds, nominal pointwise paired intervals show reward shortfalls on two of eleven distinct budgets. Replaying those fitted mixtures on fresh seeds gives two shortfalls again, and only Bandit's gap-budget shortfall recurs."
+    },
+    {
+      "id": "E1a",
+      "file": "paper/full_paper.tex",
+      "old": "Against the best mixture of sampled reference policies that meets the same target, nominal pointwise paired intervals show reward shortfalls on two of eleven distinct budgets on held-out seeds and again on fresh seeds, and only Bandit's gap-budget shortfall recurs.",
+      "new": "Against the best mixture of sampled reference policies fitted to the same target on held-out seeds, nominal pointwise paired intervals show reward shortfalls on two of eleven distinct budgets. Replaying those fitted mixtures on fresh seeds gives two shortfalls again, and only Bandit's gap-budget shortfall recurs."
+    },
+    {
+      "id": "E1b",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Against it, intervals exclude zero at two of eleven distinct budgets on the held-out seeds and again on ten fresh seeds, none of them slack.",
+      "new": "Against it, intervals exclude zero at two of eleven distinct budgets on the held-out seeds. Replaying the held-out-fitted mixtures on ten fresh seeds again gives two shortfalls, all at budgets whose held-out cap reference binds. Fresh realized usage need not equal $B$."
+    },
+    {
+      "id": "E1b",
+      "file": "paper/full_paper.tex",
+      "old": "Against it, intervals exclude zero at two of eleven distinct budgets on the held-out seeds and again on ten fresh seeds, none of them slack.",
+      "new": "Against it, intervals exclude zero at two of eleven distinct budgets on the held-out seeds. Replaying the held-out-fitted mixtures on ten fresh seeds again gives two shortfalls, all at budgets whose held-out cap reference binds. Fresh realized usage need not equal $B$."
+    },
+    {
+      "id": "E2a",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Because every Tiger policy here earns $10$ minus its usage, Tiger's target gaps equal the mixture's usage shortfall below $B$ and measure no reward efficiency.",
+      "new": "On the held-out seeds, the Tiger family and reference-support policies earn $10$ minus their usage, so the held-out target gaps equal the mixture's usage shortfall below $B$ and measure no reward efficiency."
+    },
+    {
+      "id": "E2a",
+      "file": "paper/full_paper.tex",
+      "old": "Because every Tiger policy here earns $10$ minus its usage, Tiger's target gaps equal the mixture's usage shortfall below $B$ and measure no reward efficiency.",
+      "new": "On the held-out seeds, the Tiger family and reference-support policies earn $10$ minus their usage, so the held-out target gaps equal the mixture's usage shortfall below $B$ and measure no reward efficiency."
+    },
+    {
+      "id": "E2b",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Every Tiger gap becomes zero, Diagnosis still falls short",
+      "new": "Every held-out Tiger mean gap becomes zero, Diagnosis still falls short"
+    },
+    {
+      "id": "E2b",
+      "file": "paper/full_paper.tex",
+      "old": "Every Tiger gap becomes zero, Diagnosis still falls short",
+      "new": "Every held-out Tiger mean gap becomes zero, Diagnosis still falls short"
+    },
+    {
+      "id": "E4",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Every agent in the family shares the phantom cost identically, so within-family comparisons are unaffected.",
+      "new": "Every agent in the family uses this same leaf rule, so the reported comparisons are conditional on it."
+    },
+    {
+      "id": "E4",
+      "file": "paper/full_paper.tex",
+      "old": "Every agent in the family shares the phantom cost identically, so within-family comparisons are unaffected.",
+      "new": "Every agent in the family uses this same leaf rule, so the reported comparisons are conditional on it."
+    },
+    {
+      "id": "E5",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Both are favorable or neutral to POMCP on these small instances.",
+      "new": "The first gives an optimistic terminal value, and the second replaces a sampled payoff by its conditional expectation. Their effects on the resulting policy are not isolated here."
+    },
+    {
+      "id": "E5",
+      "file": "paper/full_paper.tex",
+      "old": "Both are favorable or neutral to POMCP on these small instances.",
+      "new": "The first gives an optimistic terminal value, and the second replaces a sampled payoff by its conditional expectation. Their effects on the resulting policy are not isolated here."
+    },
+    {
+      "id": "E6",
+      "file": "paper/full_paper_jair.tex",
+      "old": "The comparison is simulation-matched, not compute-matched, the same distinction drawn for the MCTS-EFE comparison below.",
+      "new": "This comparison fixes POMCP's simulation budgets without matching computation to exact EFE or Planning. The MCTS-EFE comparison below separately matches simulation counts between the two Monte Carlo planners."
+    },
+    {
+      "id": "E6",
+      "file": "paper/full_paper.tex",
+      "old": "The comparison is simulation-matched, not compute-matched, the same distinction drawn for the MCTS-EFE comparison below.",
+      "new": "This comparison fixes POMCP's simulation budgets without matching computation to exact EFE or Planning. The MCTS-EFE comparison below separately matches simulation counts between the two Monte Carlo planners."
+    },
+    {
+      "id": "E7",
+      "file": "paper/full_paper_jair.tex",
+      "old": "POMCP's internal random stream (particle sampling and rollouts) is seeded per-run from the same outer seed as the environment (Appendix~\\ref{app:pomcp}), rather than from a fixed constant.",
+      "new": "POMCP's internal random stream (particle sampling and rollouts) is seeded per run from the outer environment seed in the main comparison and exploration sweep. The MCTS-EFE and compute-matched batteries use a fixed internal planner seed (Appendix~\\ref{app:pomcp})."
+    },
+    {
+      "id": "PA-S01",
+      "file": "paper/tables/horizon_map.tex",
+      "old": " where $w{=}1$ is near-optimal (within $\\max(5\\%, 0.5)$ of the\n reward-optimal weight), stratified by each sampled regime axis and",
+      "new": " where $w{=}1$ is near-optimal: its estimated reward gap from the best grid weight\n is at most $\\max(0.05|\\widehat R_{\\mathrm{best}}|,0.5)$ reward units, where\n $\\widehat R_{\\mathrm{best}}$ is the largest estimated grid reward. Results are\n stratified by each sampled regime axis and"
+    },
+    {
+      "id": "PA-S01",
+      "file": "experiments/build_horizon_map.py",
+      "old": "        \" where $w{=}1$ is near-optimal (within $\\\\max(5\\\\%, 0.5)$ of the\",\n        \" reward-optimal weight), stratified by each sampled regime axis and\",",
+      "new": "        \" where $w{=}1$ is near-optimal: its estimated reward gap from the best grid weight\",\n        \" is at most $\\\\max(0.05|\\\\widehat R_{\\\\mathrm{best}}|,0.5)$ reward units, where\",\n        \" $\\\\widehat R_{\\\\mathrm{best}}$ is the largest estimated grid reward. Results are\",\n        \" stratified by each sampled regime axis and\","
+    },
+    {
+      "id": "PA-S02",
+      "file": "paper/tables/w_atlas.tex",
+      "old": " brackets $w^*(B)$ at two canonical budgets per instance. Each bracket",
+      "new": " brackets estimating $w^*(B)$ at two canonical budgets per instance. Each bracket"
+    },
+    {
+      "id": "PA-S02",
+      "file": "experiments/run_w_atlas.py",
+      "old": "        \" brackets $w^*(B)$ at two canonical budgets per instance. Each bracket\",",
+      "new": "        \" brackets estimating $w^*(B)$ at two canonical budgets per instance. Each bracket\","
+    },
+    {
+      "id": "REFEREE-SATSANGI-SCOPE",
+      "file": "paper/full_paper_jair.tex",
+      "old": "Planning+IG is also this article's instance of a construction that two lines of prior work share, namely POMDPs with information rewards (POMDP-IR) and $\\rho$-POMDPs with an information-gain reward \\citep{spaan2015,araya2010}. \\citet{satsangi2018} show that these two formulations are equivalent, so Planning+IG stands in for both.",
+      "new": "Planning+IG represents the explicit-information-reward approach associated with POMDPs with information rewards (POMDP-IR) and $\\rho$-POMDPs \\citep{spaan2015,araya2010}. \\citet{satsangi2018} establish equivalence between the two formulations for piecewise-linear convex belief rewards. We do not invoke that equivalence for Planning+IG's concave expected-IG reward."
+    },
+    {
+      "id": "REFEREE-CHECKING-CAUSALITY",
+      "file": "paper/full_paper_jair.tex",
+      "old": "at every instance, so the information gain term drives checking behavior.",
+      "new": "at every instance."
+    },
+    {
+      "id": "AUDIT-UNIT-CONVERSION",
+      "file": "paper/full_paper_jair.tex",
+      "old": "They differ by a fixed conversion only when all sensing actions share a cost",
+      "new": "When all sensing actions share a cost, the two differ by a fixed conversion"
+    },
+    {
+      "id": "AUDIT-ROCKSAMPLE-POLICIES",
+      "file": "paper/full_paper_jair.tex",
+      "old": "On RS[11,11], every tree-search agent, including Planning at $w{=}0$, instead converges to the same low-activity policy, discussed in Section~\\ref{sec:rocksample}.",
+      "new": "On RS[11,11], all tree-search agents, including Planning at $w{=}0$, instead follow low-activity policies, discussed in Section~\\ref{sec:rocksample}."
+    },
+    {
+      "id": "AUDIT-ABLATION-METRICS",
+      "file": "paper/full_paper_jair.tex",
+      "old": "The ablation finds no detectable effect of either in-tree information gain or max-backup at five seeds after multiplicity correction.",
+      "new": "The ablation finds no detectable effect of either in-tree information gain or max-backup on success or reward at five seeds after multiplicity correction."
+    },
+    {
+      "id": "BUILD-SECTION-COMMAND",
+      "file": "paper/full_paper_jair.tex",
+      "old": "\\let\\appendixsection\\section\n\\renewcommand{\\section}{\\FloatBarrier\\appendixsection}",
+      "new": "% Explicit appendix float barriers preserve the class's section command."
+    },
+    {
+      "id": "BUILD-APPENDIX-BARRIERS",
+      "file": "paper/full_paper_jair.tex",
+      "sections": 26
+    },
+    {
+      "id": "REFEREE-SATSANGI-SCOPE",
+      "file": "paper/full_paper.tex",
+      "old": "Planning+IG is also this article's instance of a construction that two lines of prior work share, namely POMDPs with information rewards (POMDP-IR) and $\\rho$-POMDPs with an information-gain reward \\citep{spaan2015,araya2010}. \\citet{satsangi2018} show that these two formulations are equivalent, so Planning+IG stands in for both.",
+      "new": "Planning+IG represents the explicit-information-reward approach associated with POMDPs with information rewards (POMDP-IR) and $\\rho$-POMDPs \\citep{spaan2015,araya2010}. \\citet{satsangi2018} establish equivalence between the two formulations for piecewise-linear convex belief rewards. We do not invoke that equivalence for Planning+IG's concave expected-IG reward."
+    },
+    {
+      "id": "REFEREE-CHECKING-CAUSALITY",
+      "file": "paper/full_paper.tex",
+      "old": "at every instance, so the information gain term drives checking behavior.",
+      "new": "at every instance."
+    },
+    {
+      "id": "AUDIT-UNIT-CONVERSION",
+      "file": "paper/full_paper.tex",
+      "old": "They differ by a fixed conversion only when all sensing actions share a cost",
+      "new": "When all sensing actions share a cost, the two differ by a fixed conversion"
+    },
+    {
+      "id": "AUDIT-ROCKSAMPLE-POLICIES",
+      "file": "paper/full_paper.tex",
+      "old": "On RS[11,11], every tree-search agent, including Planning at $w{=}0$, instead converges to the same low-activity policy, discussed in Section~\\ref{sec:rocksample}.",
+      "new": "On RS[11,11], all tree-search agents, including Planning at $w{=}0$, instead follow low-activity policies, discussed in Section~\\ref{sec:rocksample}."
+    },
+    {
+      "id": "AUDIT-ABLATION-METRICS",
+      "file": "paper/full_paper.tex",
+      "old": "The ablation finds no detectable effect of either in-tree information gain or max-backup at five seeds after multiplicity correction.",
+      "new": "The ablation finds no detectable effect of either in-tree information gain or max-backup on success or reward at five seeds after multiplicity correction."
+    },
+    {
+      "id": "BUILD-SECTION-COMMAND",
+      "file": "paper/full_paper.tex",
+      "old": "\\let\\appendixsection\\section\n\\renewcommand{\\section}{\\FloatBarrier\\appendixsection}",
+      "new": "% Explicit appendix float barriers preserve the class's section command."
+    },
+    {
+      "id": "BUILD-APPENDIX-BARRIERS",
+      "file": "paper/full_paper.tex",
+      "sections": 25
+    }
+  ],
+  "sha256": {
+    "paper/full_paper_jair.tex": "73f6ee1feb9bf2202bc141dadf52ae557816a8934ecfa0db47a1836b07b4a44c",
+    "paper/full_paper.tex": "25a9eaa30eac01e354775cd33f8018685dc171cc932e5f5e5fc1ba6a0aeb0a44",
+    "paper/tables/horizon_map.tex": "91ef07bfbe589e74b10a6ef0ffe896f70dad4e4890951de73bfafb33cff9f543",
+    "experiments/build_horizon_map.py": "b169748d1ed12c6f106bec0d1e203c3f3f2e9d5879c0c88c6f93b671777b0768",
+    "paper/tables/w_atlas.tex": "93a9efc95e575fe40094be3c4bf6aa386ce272ddfeae87a302046610b66a9536",
+    "experiments/run_w_atlas.py": "5ee6c1cfa20d87655dcc53365fdaeaff42529bb24a4fda6f891a31e4560c2a08"
+  }
+}
