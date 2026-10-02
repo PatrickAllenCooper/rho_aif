@@ -1,0 +1,159 @@
+{
+  "removed_labels": [
+    "app:core_details",
+    "app:cost_details",
+    "app:dual_details",
+    "app:inspection_details",
+    "app:pareto_details",
+    "app:scale_details",
+    "fig:costbudget",
+    "fig:interleaved",
+    "fig:prop2",
+    "fig:tw_comparison",
+    "sec:prop2exp",
+    "tab:collapse-breadth",
+    "tab:cpomdp",
+    "tab:sarsop",
+    "tab:tileworld",
+    "tab:transfer",
+    "tab:budget_frontier"
+  ],
+  "external_references": [
+    {
+      "line": 352,
+      "labels": [
+        "tab:collapse-breadth"
+      ],
+      "text": "All reported endpoint mixtures have straddling brackets. Tiger's $B=4$ in Table~\\ref{tab:collapse-breadth} and the below-range targets of Sections~\\ref{sec:budget_frontier} and~\\ref{sec:real_sensor} are explicitly unbracketed. The attainable range need not begin at $U(0)$: usage is nonmonotone, and on Tileworld-$6{\\times}6$ it falls from $15.64$ at $w=0$ to $14.75$ at $w=1$ (Section~\\ref{sec:tileworld}). Positive $U(0)$ reflects instrumental sensing under the planner's model, while belief saturation and the episode cap limit usage at large weights."
+    },
+    {
+      "line": 470,
+      "labels": [
+        "app:scale_details",
+        "tab:collapse-breadth"
+      ],
+      "text": "The normalized grid bracket is $(0.141,0.323]$ for Diagnosis at $B{=}8$, $(3.84,8.76]$ for Bandit at $B{=}8$, and $(5.80,20.0]$ for Tileworld at $B{=}15$, unchanged across scales. Tiger is a necessary negative control. Its usage is constant at $4.37$ across the tested normalized range $[0,20]$, so collapse is trivial and $B{=}4$ is unbracketed. Equivariance preserves a curve but does not ensure that it offers a useful sensing dial. Table~\\ref{tab:collapse-breadth} and Appendix~\\ref{app:scale_details} give the complete breadth check."
+    },
+    {
+      "line": 483,
+      "labels": [
+        "app:dual_details"
+      ],
+      "text": "We compare the projected decaying-step controller with its reset-on-shift extension on Diagnosis at target $B{=}8$. Both use $\\eta_0{=}0.05$, decay $\\delta{=}0.02$, and a tenfold reward-and-cost rescale at episode $200$ of a $400$-episode run. Ten shared controller seeds support a paired comparison. The extension watches a $20$-episode usage window. Once the step has decayed below half its initial value, a deviation exceeding both three window standard errors and $0.5$ observations restarts its decay clock. Appendix~\\ref{app:dual_details} specifies the detector and steady-state summaries."
+    },
+    {
+      "line": 502,
+      "labels": [
+        "app:cost_details",
+        "fig:costbudget"
+      ],
+      "text": "The tested budget pairs nevertheless select the same grid brackets: count/cost targets $8.86/11.50$ give $(10,31.6]$, and $13.71/19.20$ give $(31.6,100]$. Each pair is placed at the same fractional height within its curve's sampled usage range, from the smallest to the largest mean on the grid, with end margins to ensure a crossing. This is not a fixed conversion between count and cost. The observed change in cost per test is insufficient to separate these paired crossings at this grid resolution. Figure~\\ref{fig:costbudget} and Appendix~\\ref{app:cost_details} retain the full curves and pairing rule."
+    },
+    {
+      "line": 507,
+      "labels": [
+        "fig:interleaved"
+      ],
+      "text": "Usage calibration also applies to the interleaved agents of Sections~\\ref{sec:rocksample} and~\\ref{sec:inspection}, counting check/test actions as sensing. Their sampled usage ranges are $[3.00,8.83]$ on RockSample[5,3], $[2.00,14.54]$ on RockSample[7,4], and $[22.38,58.56]$ on Inspection-$N=16$. Four budgets per instance are placed inside these ranges. Figure~\\ref{fig:interleaved} and Appendix~\\ref{app:interleaved_details} give the brackets, uncertainty and complete grid/episode protocols."
+    },
+    {
+      "line": 514,
+      "labels": [
+        "tab:collapse-breadth"
+      ],
+      "text": "The observe-then-commit domains and the smaller Inspection instance now receive the same treatment as the interleaved instances. Figure~\\ref{fig:stairs} reports grid estimates of $w^*(B)$ over identifiable budgets inside $[U_{\\min}, U_{\\max}]$ for Tiger, Diagnosis, Bandit, Tileworld-$6{\\times}6$, and Inspection-$N{=}8$, where $U_{\\min}$ and $U_{\\max}$ are the endpoints of each curve's usage range (Section~\\ref{sec:cost_budget}). An identifiable budget is one placed strictly inside that range by the rule of that section, evenly spaced with the end margins specified in Appendix~\\ref{app:interleaved_details}, so that the grid brackets it. The monotonicity at issue is that of the underlying usage curve $U(w)$ from which each staircase is read off, taken between consecutive sampled grid weights. On Tiger, Diagnosis, and Inspection that curve is nondecreasing between every pair of consecutive grid weights. On Bandit and Tileworld it is not, showing local non-monotonicity from discrete policy switches, the first of the two obstacles noted after Proposition~\\ref{prop:pi2}. We report crossing brackets and usage standard errors for every domain (Definition~\\ref{def:pi3}). The standard error attached to a bracket is that of usage at a fixed weight, and the bracket's width is set by the grid, so neither says how often a different sample of seeds would select a different bracket. We measured bracket-selection stability by resampling the five seeds with replacement $2000$ times and re-solving each of the $25$ budgets of Figure~\\ref{fig:stairs} on each resampled curve (\\texttt{run\\_\\allowbreak bracket\\_\\allowbreak stability.py}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability.csv}, with the count of every bracket outcome in \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability\\_\\allowbreak counts.csv}). The reported bracket is recovered in every resample at $19$ budgets and in at least $99$ percent of resamples at $21$. The lowest agreement is $0.789$, at Inspection's lowest budget. In all but one disagreeing resample, the alternative is a neighbouring step of the staircase or, at Tiger's lowest and highest budgets, no bracket at all. Those two Tiger budgets lie about one standard error of usage from the corresponding ends of its usage range. On Bandit and Tileworld a budget can be crossed more than once, and the reported bracket estimates the last crossing by the convention that definition adopts, so it names one threshold at grid resolution rather than displaying the reversals. Bandit's budget $B{=}5.87$ is the one tested case. Usage first reaches it at $w{=}0.139$ ($6.19$ observations), falls back to $5.11$ at $w{=}0.72$, and reaches it for the last time inside the reported bracket $(1.64, 3.73]$ (\\texttt{results\\_\\allowbreak price\\_\\allowbreak shadow\\_\\allowbreak curves.csv}), which does not show the earlier crossing. Tiger's price is weakly identified, consistent with Table~\\ref{tab:collapse-breadth}, in the sense that the budget pins the price down only loosely. Instrumental listening already saturates most of the usage range at $w{=}0$, so the curve is flat at its floor across the low-weight range and rises in a single step at high weight. Every tested budget lands in that one step's bracket."
+    },
+    {
+      "line": 527,
+      "labels": [
+        "tab:sarsop"
+      ],
+      "text": "To determine whether $w{=}1$ is reward-competitive at its natural operating point, we compare EFE with SARSOP \\citep{kurniawati2008} on Tiger, Diagnosis, and Bandit. The original APPL solver is built from source, each environment is exported through a common model path, and the solve uses precision $10^{-3}$ at $\\gamma{=}0.999$. The returned alpha-vector policy is evaluated in the same simulator as EFE at five seeds and $500$ episodes per seed (Table~\\ref{tab:sarsop}). SARSOP is a near-optimal reference, not a certified exact solution to the reported Monte Carlo comparison. Build and export details appear in Appendix~\\ref{app:sarsop_build}."
+    },
+    {
+      "line": 531,
+      "labels": [
+        "tab:sarsop"
+      ],
+      "text": "A predeclared twenty-seed check also reseeds every episode, matching hidden states and observation draws while actions agree. It retains equivalence, with paired reward differences $+0.11\\pm0.09$ on Diagnosis and $+0.04\\pm0.03$ on Bandit (seed-level SE). Tiger's policies act identically. Table~\\ref{tab:sarsop} and Appendix~\\ref{app:sarsop_details} give the numerical tests, intervals and archives. These results establish equivalence within the stated margins on these three environments, not universal near-optimality of $w=1$."
+    },
+    {
+      "line": 540,
+      "labels": [
+        "tab:cpomdp"
+      ],
+      "text": "At EFE's endogenous usage, the cap does not bind on any of the three environments, and estimated reward gaps are small relative to their standard errors (Table~\\ref{tab:cpomdp}, Appendix~\\ref{app:cpomdp_details}). The evaluated usage-matched Planning+IG weights also give the same rewards as EFE. This is a measured plateau, not an extension of Proposition~\\ref{prop:equivalence} to arbitrary weights. The next study instead uses calibration-derived targets. No comparable constrained reference is available for the larger RockSample or Inspection instances."
+    },
+    {
+      "line": 555,
+      "labels": [
+        "tab:budget_frontier"
+      ],
+      "text": "\\caption{Endpoint-mixture calibration on held-out seeds, $100$ episodes per seed over five seeds. $B$ is the calibration-derived expected-use target. $U$ and $R$ are held-out mixture usage and reward. All $\\pm$ values are seed-level SE. The cap gap is mixture reward minus the same-stream cap-reference envelope, and the target gap is mixture reward minus the best sampled reference mixture whose usage equals $B$, each with seed-level SE. Reference supports and weights are fitted on those same seed means and held fixed for the SE, so intervals derived from these columns are nominal pointwise plug-in summaries, as qualified in the text. Tiger's gap row duplicates its middle target. All three below-range targets are declared unattainable. Complete within-family and reference comparisons appear in Table~\\ref{tab:budget_frontier}.}"
+    },
+    {
+      "line": 641,
+      "labels": [
+        "sec:prop2exp"
+      ],
+      "text": "Positive-threshold two-state instances place the observed onset within one refined grid step, $3\\%$, above the closed-form threshold, while standard negative-threshold instances observe already at $w{=}0$ (Appendix~\\ref{sec:prop2exp}). The atlas collects the implicit $w{=}1$ budgets and two grid brackets per instance from the measured curves (Appendix~\\ref{app:w_atlas}). These are measured operating points, not a universal predictive formula for the price."
+    },
+    {
+      "line": 683,
+      "labels": [
+        "app:core_details"
+      ],
+      "text": "Two baselines limit any attribution of these outcomes solely to explicit information gain. Posterior-vote, which draws states from the belief and votes over their optimal actions without an information term, is not significantly different from EFE on any Bandit metric. Its reward is nominally higher, $6.32$ against $6.27$ ($p=0.58$). It also beats EFE on Testbed, but performs worse on Diagnosis and Tiger. The Epistemic-only ablation commits immediately at chance-level success on all three core environments and Tileworld. The units force this outcome, since in bits no observation there yields as much information as it costs. Full baselines, pooled effect sizes, and seed-level tests appear in Appendices~\\ref{app:full_tables}, \\ref{app:stats}, and~\\ref{app:core_details}. Reward effects against Planning are small at the episode level on Diagnosis and Bandit despite statistically detectable mean differences. We do not interpret the mechanically inflated effect sizes computed from only five seed means."
+    },
+    {
+      "line": 702,
+      "labels": [
+        "app:pareto_details"
+      ],
+      "text": "Success reaches its maximum at the upper grid endpoint $200$ on all five environments, although it dips from $w{=}0.5$ to $w{=}1$ on Bandit and Tileworld. The reward cost need not grow smoothly. On Tiger and Diagnosis, the tested weights from $1$ up to the point below $50$ leave reward unchanged, and the step to $50$ incurs the measured cost. The grid does not exclude a cheaper untested intermediate policy. The advantage of $w{=}1$ here is that it selects a useful default without environment-specific search under the stated reward convention. It does not remove dependence on units, promise best accuracy, or replace calibration when a particular sensing target is required. Appendix~\\ref{app:pareto_details} retains the detailed trade-offs, and Appendix~\\ref{app:nat_canonical} compares the implementation's bit-unit default with the exactly nat-canonical weight."
+    },
+    {
+      "line": 707,
+      "labels": [
+        "fig:tw_comparison",
+        "tab:tileworld"
+      ],
+      "text": "Tileworld shows why horizon and observation structure must accompany a scaling claim. At $6{\\times}6$ and $H{=}2$, EFE and Planning are not significantly different in reward ($-21.53$ against $-21.39$, $p=0.82$) or success ($72.0\\%$ against $73.8\\%$, $p=0.17$). EFE uses fewer scans, $14.75$ against $15.64$ ($p=8.8{\\times}10^{-5}$). These are failures to reject reward and success differences, not TOST equivalence. The success-tuned $w{=}50$ agent reaches $97.3\\%$ accuracy but uses $32.25$ scans and earns lower reward. Table~\\ref{tab:tileworld} and Figure~\\ref{fig:tw_comparison} retain the full comparison and an illustrative trajectory in Appendix~\\ref{app:tileworld_details}."
+    },
+    {
+      "line": 731,
+      "labels": [
+        "app:inspection_details"
+      ],
+      "text": "Inspection makes the reward-accuracy trade-off explicit. At $N{=}8$, EFE improves accuracy from Planning's $73.0\\%$ to $91.1\\%$ while reward falls from $-17.85$ to $-20.95$. At $N{=}16$, it improves accuracy from $78.2\\%$ to $90.8\\%$, with reward $-45.80$ against $-45.42$, a non-significant difference ($p=0.57$). The $w{=}5$ agent attains higher accuracy, $97.3\\%$, but uses $38.3$ tests against EFE's $28.1$ and earns $-54.74$. These results demonstrate feasible factored search on a synthetic known-model problem with a hand-coded leaf rule. They do not validate industrial deployment or show that EFE uniquely optimizes either reward or accuracy. Table~\\ref{tab:inspection} reports both instances, with the qualified two-state interpretation in Appendix~\\ref{app:inspection_details}."
+    },
+    {
+      "line": 766,
+      "labels": [
+        "tab:transfer"
+      ],
+      "text": "The recursive EFE identity fixes $w=1$ after reward and information units are declared. That weight belongs to the level set of $U(1)$, but need not equal its crossing threshold. Its usefulness is empirical: it lies in the reward-maximizing run of sampled weights on three of five swept environments and is beaten on two. In the sampled random two-state family, approximately $21\\%$ fail the study's chosen reward-gap criterion even at $H=3$ (Appendix~\\ref{app:nearopt_horizon}). Larger weights can buy greater success at a reward cost, and transfer at the top of the grid can be costly (Table~\\ref{tab:transfer}). Reward, success and usage therefore require separate evaluation."
+    },
+    {
+      "line": 942,
+      "labels": [
+        "fig:tw_comparison"
+      ],
+      "text": "\\paragraph{Trajectory diagnostics.} Illustrative Tiger traces commit when commit value exceeds recursive observe value, without a separate stopping rule. Selected Diagnosis traces all commit correctly, after $14$ observations for Planning, $29$ for EFE, and $32$ for tuned Info Gain. They were not selected to represent typical lengths. A separate 300-episode Diagnosis visualization ($N{=}8$, $K{=}3$) places EFE's observation-survival curve between Planning's and Planning+IG's. Entropy and cumulative-reward curves condition on episodes still running and display episode-level SE. That visualization transfers the myopic Info Gain weight selected on 100 tuning episodes to Planning+IG, unlike the main tables' own-class tuning. These diagnostic plots remain in \\texttt{figures/fig\\_efe\\_trajectory.pdf}, \\texttt{fig\\_belief\\_heatmap.pdf}, and \\texttt{fig\\_efficiency\\_curves.pdf}. Tileworld's three-agent trace is Figure~\\ref{fig:tw_comparison}."
+    },
+    {
+      "line": 1582,
+      "labels": [
+        "sec:prop2exp"
+      ],
+      "text": "\\texttt{TestProp2OnsetExact} in \\url{tests/test_budget.py} checks the onset with the implemented $H=1$ planner over complete receding-horizon episodes. It therefore asserts zero usage below the threshold and at least one observation above it, rather than the one-shot proof's exact usage of one. For a Testbed with $p=0.6$, $c=0.3$ and rewards $\\pm1$, the threshold is approximately $3.44$ in bit units. The test uses weights $0.9$ and $1.2$ times that threshold. Appendix~\\ref{sec:prop2exp} gives refined-grid checks on two instances."
+    },
+    {
+      "line": 1619,
+      "labels": [
+        "tab:sarsop"
+      ],
+      "text": "Sections~\\ref{sec:experiments} and Appendix~\\ref{app:envs} specify the environments, episode counts and statistical protocol. Battery-specific counts and seeding differ, so estimates are not interchangeable. For example, Tiger EFE uses $4.20$ observations in Table~\\ref{tab:main} and $4.32$ in Table~\\ref{tab:sarsop}. All simulators use the Gymnasium Python interface \\citep{towers2024}."
+    }
+  ]
+}

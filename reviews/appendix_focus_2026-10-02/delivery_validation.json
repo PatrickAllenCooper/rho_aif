@@ -1,0 +1,99 @@
+{
+  "verified_utc": "2026-10-02T20:00:42.067974+00:00",
+  "archives": {
+    "2026-10-02_pre_appendix_consolidation": {
+      "all_listed_assets_unchanged": true,
+      "manifest_sha256": "11ff7152c38a0b9e617f4c47fe3db466a2600772db108b90f63d09262489e5d2"
+    },
+    "2026-10-02_pre_claim_focused_appendices": {
+      "all_listed_assets_unchanged": true,
+      "manifest_sha256": "72b73e386ff6f515ed6e1e87c6359cc9218ee1d891f0356be4a8d340fc72b827"
+    }
+  },
+  "sources": {
+    "full_paper_jair": {
+      "pages": 52,
+      "source_sha256": "22bda90c6403a2d54bf91aef3b87b9071d1e6683ddd69b79e39c00204e113a6d",
+      "pdf_sha256": "2e2680fb5694886362277ff9a52ce092f7c16eab6bd88f1b1e6d549e44b1f90f",
+      "reference_heading_pages": [
+        33
+      ],
+      "proof_count": 6,
+      "all_proofs_byte_identical": true,
+      "controller_proof_byte_identical": true,
+      "public_sensor_protocol_byte_identical": true,
+      "preamble_and_typography_byte_identical": true,
+      "duplicate_labels": [],
+      "missing_references": [],
+      "critical_diagnostics": [],
+      "figures": 11,
+      "tables_including_inputs": 6
+    },
+    "full_paper": {
+      "pages": 65,
+      "source_sha256": "58034a6fd6d4505ca346ebf8966995d773b7d8513f2e572afe65bae20f241d08",
+      "pdf_sha256": "12de61b8621743407b9283c11eaaa1b0dbcaaebf96e2e9505b86f664c1efcbd8",
+      "reference_heading_pages": [],
+      "proof_count": 6,
+      "all_proofs_byte_identical": true,
+      "controller_proof_byte_identical": true,
+      "public_sensor_protocol_byte_identical": true,
+      "preamble_and_typography_byte_identical": true,
+      "duplicate_labels": [],
+      "missing_references": [],
+      "critical_diagnostics": [],
+      "figures": 11,
+      "tables_including_inputs": 6
+    }
+  },
+  "review_freeze": {
+    "theory": "ACCEPT",
+    "evidence": "ACCEPT",
+    "final_reviewed_source_hashes_match": true,
+    "only_post_visual_review_edit": "Two trailing spaces removed per master",
+    "administrative_freeze_confirmation": true,
+    "required_revisions_remaining": [],
+    "pdf_text_unchanged_after_whitespace_cleanup": true
+  },
+  "scientific_appendices_identical_between_masters": true,
+  "checklist": {
+    "questions_and_verdicts_unchanged": true,
+    "questions": 26,
+    "partially": 3
+  },
+  "jair_scientific_appendix": {
+    "first_occupied_page": 35,
+    "last_occupied_page": 49,
+    "occupied_pages": 15,
+    "baseline_occupied_pages": 42,
+    "note": "Page 35 is shared with references; page 49 is shared with the checklist. Checklist-only pages excluded."
+  },
+  "bibliography": {
+    "entries": 69,
+    "all_cited": true,
+    "missing": [],
+    "sha256": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592"
+  },
+  "experiment_scope": {
+    "result_data_and_package_implementation_unchanged": true,
+    "changed_experiment_files": [
+      "experiments/build_rocksample_tables.py"
+    ],
+    "change": "RockSample caption destination only"
+  },
+  "rocksample_table_cells_unchanged": true,
+  "previously_included_assets_retained": true,
+  "overleaf": {
+    "files": 17,
+    "figures": 11,
+    "table_inputs": 1,
+    "fresh_compile": true,
+    "identical_pdf_text": true,
+    "sha256": "d78b41c3f58f9b85b2f3dbdf9ffebb670f9fca6d2af5b67b7b1b2e2285b7a76e",
+    "fresh_pdf_sha256": "1f05cfe74048e55077653a17224f51a351a2e86a1c9949ae788afe8a6aa7c23f"
+  },
+  "page_reduction_vs_archived": {
+    "jair": 28,
+    "lncs": 36
+  }
+}

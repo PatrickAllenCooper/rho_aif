@@ -1,0 +1,201 @@
+{
+  "reviewer": "independent theory/editorial",
+  "captured_utc": "2026-10-02T19:41:52.372168+00:00",
+  "baseline": {
+    "full_paper_jair.tex": {
+      "path": "/Users/pat/code/rho_aif/paper/legacy/2026-10-02_pre_claim_focused_appendices/full_paper_jair.tex",
+      "sha256": "a62650127b1914aebe7929ffe7d579c40759433873f6a704957b4739b4b2568a",
+      "bytes": 278768
+    },
+    "full_paper.tex": {
+      "path": "/Users/pat/code/rho_aif/paper/legacy/2026-10-02_pre_claim_focused_appendices/full_paper.tex",
+      "sha256": "f777cdce6bd684eb9cb49587255bccd42bc2fcef60aa7427e23e553b8a88a60a",
+      "bytes": 279145
+    }
+  },
+  "comparisons": {
+    "full_paper_jair.tex": {
+      "proof_count_current": 6,
+      "proof_count_baseline": 6,
+      "all_proof_environments_byte_identical": true,
+      "proof_sha256": [
+        "5ffa637e90046bf75c3c48d488fb4b93957dfefe8643c9734bd2b3303836e75c",
+        "ee8b30f13a7d0f1c0f4ff0ff6a6ac4fc47004d8b8926a89eaf3e4a09e66ffcc6",
+        "2e86222021d24caf33b815ab0c914614e2acf2dc787e837a557aba89b4b29b0b",
+        "e249f546414a2c90442c94055128d8b87a94e0b610bc766f4954eb8f988aa1a8",
+        "4ae2270cb66cf99c5bd7218ab73587be7089338c841ba3a7aefa8979abe1eef6",
+        "966fa3cbe622bbe4ed1db749ad4a381a7c2aef4e6febc3b66bbdbf46f813f802"
+      ],
+      "public_sensor_protocol_byte_identical": true,
+      "controller_proof_byte_identical": true,
+      "controller_proof_sha256": "91e522138d981f8773a2c096c28ba161752604bc454b371b309378115e9831c9"
+    },
+    "full_paper.tex": {
+      "proof_count_current": 6,
+      "proof_count_baseline": 6,
+      "all_proof_environments_byte_identical": true,
+      "proof_sha256": [
+        "5ffa637e90046bf75c3c48d488fb4b93957dfefe8643c9734bd2b3303836e75c",
+        "ee8b30f13a7d0f1c0f4ff0ff6a6ac4fc47004d8b8926a89eaf3e4a09e66ffcc6",
+        "2e86222021d24caf33b815ab0c914614e2acf2dc787e837a557aba89b4b29b0b",
+        "e249f546414a2c90442c94055128d8b87a94e0b610bc766f4954eb8f988aa1a8",
+        "4ae2270cb66cf99c5bd7218ab73587be7089338c841ba3a7aefa8979abe1eef6",
+        "966fa3cbe622bbe4ed1db749ad4a381a7c2aef4e6febc3b66bbdbf46f813f802"
+      ],
+      "public_sensor_protocol_byte_identical": true,
+      "controller_proof_byte_identical": true,
+      "controller_proof_sha256": "91e522138d981f8773a2c096c28ba161752604bc454b371b309378115e9831c9"
+    },
+    "twins": {
+      "main_byte_identical_after_hero_filename_normalization": false,
+      "scientific_appendices_byte_identical": true,
+      "main_differences_explained": [
+        "JAIR-specific hero filename",
+        "JAIR checklist pointer vs LNCS prose pointer to JAIR checklist",
+        "JAIR sensor-figure accessibility description omitted in LNCS (Description is a no-op)"
+      ]
+    },
+    "checklist": {
+      "question_and_verdict_pairs_identical": true,
+      "question_count": 26,
+      "partial_count": 3
+    }
+  },
+  "initial_reviewed_files": {
+    "full_paper_jair.tex": {
+      "path": "/Users/pat/code/rho_aif/paper/full_paper_jair.tex",
+      "sha256": "583cc9a29169373da5d7221a3975e2bb521e4e5e6a79ace676410c44db50b1b6",
+      "bytes": 199611
+    },
+    "full_paper.tex": {
+      "path": "/Users/pat/code/rho_aif/paper/full_paper.tex",
+      "sha256": "a342da6a58846070b3401c253a2378b2479140a781ff34fbf0f9c87928ee16ae",
+      "bytes": 201304
+    },
+    "full_paper_jair.pdf": {
+      "path": "/Users/pat/code/rho_aif/paper/full_paper_jair.pdf",
+      "sha256": "d62f9a9308382bdce98c51b745c5c8675d01cab3e7480e60608fc950e183325e",
+      "bytes": 1083534
+    },
+    "full_paper.pdf": {
+      "path": "/Users/pat/code/rho_aif/paper/full_paper.pdf",
+      "sha256": "606e4d9d8a70fb8ba385df1f23fe5337d9757f0f57890a262828bd51b34e1c21",
+      "bytes": 534466
+    },
+    "full_paper_jair.bib": {
+      "path": "/Users/pat/code/rho_aif/paper/full_paper_jair.bib",
+      "sha256": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592",
+      "bytes": 20507
+    }
+  },
+  "final_reviewed_files": {
+    "full_paper_jair.tex": {
+      "path": "/Users/pat/code/rho_aif/paper/full_paper_jair.tex",
+      "sha256": "5efeacb8ad298239224d00ac2f8b8b63a36c0c43c8c668d47a770a9a63b8a1d6",
+      "bytes": 200351
+    },
+    "full_paper.tex": {
+      "path": "/Users/pat/code/rho_aif/paper/full_paper.tex",
+      "sha256": "5aa416969a7c353fb7df686ab637ac5f77ba757adfa418ce20b811bb97872f91",
+      "bytes": 202044
+    },
+    "full_paper_jair.pdf": {
+      "path": "/Users/pat/code/rho_aif/paper/full_paper_jair.pdf",
+      "sha256": "2d3647daa3399aaa318988f2e2f250b3ea4e55167a069212d7b753f16c202775",
+      "bytes": 1084192
+    },
+    "full_paper.pdf": {
+      "path": "/Users/pat/code/rho_aif/paper/full_paper.pdf",
+      "sha256": "48db18915800963ab551db860b3ca54f89d49711fb9f3ab4142eb57fae159666",
+      "bytes": 534191
+    },
+    "full_paper_jair.bib": {
+      "path": "/Users/pat/code/rho_aif/paper/full_paper_jair.bib",
+      "sha256": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592",
+      "bytes": 20507
+    },
+    "tables/rocksample_main.tex": {
+      "path": "/Users/pat/code/rho_aif/paper/tables/rocksample_main.tex",
+      "sha256": "46265e1aa92e750fcff5ea72dd37a5588adc43253c9d4200adb3a121aa408690",
+      "bytes": 3141
+    }
+  },
+  "final_verified_utc": "2026-10-02T19:47:08.093156+00:00",
+  "visual_review": {
+    "jair_pdf_pages": 52,
+    "jair_scientific_appendix_first_page": 35,
+    "jair_checklist_first_page": 49,
+    "jair_scientific_appendix_occupied_page_count": 15,
+    "jair_inspected_pages": [
+      35,
+      41,
+      42,
+      43,
+      44,
+      46,
+      49,
+      50,
+      51,
+      52
+    ],
+    "lncs_pdf_pages": 65,
+    "lncs_inspected_pages": [
+      54,
+      55,
+      58
+    ],
+    "result": "Legible, no clipping or overlapping equations/text. Ordinary LNCS float interruption of threshold proposition across pages54\u201355 is nonblocking."
+  },
+  "verdict": "ACCEPT",
+  "required_findings_remaining": [],
+  "final_source_freeze_confirmation": {
+    "verified_utc": "2026-10-02T19:58:41.559873+00:00",
+    "sources": {
+      "full_paper_jair.tex": {
+        "prior_reviewed_sha256": "5efeacb8ad298239224d00ac2f8b8b63a36c0c43c8c668d47a770a9a63b8a1d6",
+        "final_sha256": "22bda90c6403a2d54bf91aef3b87b9071d1e6683ddd69b79e39c00204e113a6d",
+        "changes": [
+          {
+            "line": 516,
+            "removed_characters": 1,
+            "old_trailing_space_count": 1,
+            "new_trailing_space_count": 0
+          },
+          {
+            "line": 518,
+            "removed_characters": 1,
+            "old_trailing_space_count": 1,
+            "new_trailing_space_count": 0
+          }
+        ],
+        "only_trailing_whitespace_changed": true
+      },
+      "full_paper.tex": {
+        "prior_reviewed_sha256": "5aa416969a7c353fb7df686ab637ac5f77ba757adfa418ce20b811bb97872f91",
+        "final_sha256": "58034a6fd6d4505ca346ebf8966995d773b7d8513f2e572afe65bae20f241d08",
+        "changes": [
+          {
+            "line": 482,
+            "removed_characters": 1,
+            "old_trailing_space_count": 1,
+            "new_trailing_space_count": 0
+          },
+          {
+            "line": 484,
+            "removed_characters": 1,
+            "old_trailing_space_count": 1,
+            "new_trailing_space_count": 0
+          }
+        ],
+        "only_trailing_whitespace_changed": true
+      }
+    },
+    "verdict": "ACCEPT",
+    "required_findings_remaining": [],
+    "pdf_hashes_retained_from_independent_visual_review": {
+      "full_paper_jair.pdf": "2d3647daa3399aaa318988f2e2f250b3ea4e55167a069212d7b753f16c202775",
+      "full_paper.pdf": "48db18915800963ab551db860b3ca54f89d49711fb9f3ab4142eb57fae159666"
+    },
+    "note": "The source-only whitespace freeze does not claim a new independent PDF review. Reviewed PDF hashes are preserved."
+  }
+}

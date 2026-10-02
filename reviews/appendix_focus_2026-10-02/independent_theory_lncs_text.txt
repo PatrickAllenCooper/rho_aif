@@ -1,0 +1,3212 @@
+ Pricing the Sensing Budget in ρ-POMDPs,
+with Expected Free Energy as the Canonical
+             Information Weight
+
+                 Patrick Cooper and Alvaro Velasquez
+
+   Department of Computer Science, University of Colorado Boulder,
+                       Boulder, CO, USA
+        {patrick.cooper,alvaro.velasquez}@colorado.edu
+
+
+
+
+ Abstract. Information-gain utilities make sensing valuable directly, but
+ introduce a weight that is usually tuned per task. An engineer may in-
+ stead need to specify expected sensing usage. We calibrate the informa-
+ tion weight of a ρ-POMDP policy family to a sensing target and identify
+ the role of Expected Free Energy (EFE) within that family. We deﬁne an
+ operational shadow price as a crossing threshold of the usage curve, dis-
+ tinguish it from a ﬁnite-grid bracket, and construct an endpoint mixture
+ for targets inside usage gaps. We prove scale equivariance of the receding-
+ horizon planner and stationary convergence of a projected controller un-
+ der stated conditions. Minimizing the speciﬁed recursive, reward-based
+ EFE objective is equivalent to maximizing reward plus information gain
+ at w = 1 for observe-then-commit problems and hidden-state-preserving
+ actions in a factored extension. The reward–information identiﬁcation is
+ exact under log scoring and otherwise depends on the declared reward
+ convention. Usage curves collapse after rescaling, and the controller re-
+ adapts empirically after a tenfold reward shift. Targets selected by a
+ predeclared rule from calibration curves are met on held-out seeds to
+ within 0.13 observations. Calibration can nevertheless sacriﬁce reward rel-
+ ative to spending less or choosing another mixture. Comparisons against
+ usage-capped and target-matched references distinguish the cost of ex-
+ tra sensing from shortfalls within the family. On real sensor records with
+ learned likelihoods, two independently ﬁxed targets transfer within the
+ represented collection period, one lies below the sampled range, and later
+ batches defeat frozen calibration. Direct-penalty and ﬁxed-count policies
+ achieve better classiﬁcation accuracy. Usage calibration is appropriate
+ when expected sensing usage is the design requirement. It does not maxi-
+ mize reward under a cap. EFE supplies an information-unit anchor under
+ speciﬁed assumptions, while usage, reward, and success must be evalu-
+ ated separately.
+
+ Keywords: Active inference · Expected free energy · ρ-POMDPs ·
+ Epistemic value · Belief-dependent utility · Partial observability · In-
+ formation gain · Sensing budgets · Shadow prices
+2       P. Cooper and A. Velasquez
+
+1    Introduction
+An engineer designing an inspection policy may need to specify how much testing
+the system should perform before deciding whether to repair or release an item.
+A standard partially observable Markov decision process (POMDP) values a test
+through its eﬀect on expected task reward. A ρ-POMDP additionally rewards
+properties of the agent’s belief, allowing information gain to have explicit value
+[2]. This introduces a practical choice: how much weight should information gain
+receive relative to reward?
+     We study a diﬀerent design input, an expected sensing-usage target B. Such
+a target is useful when sensing is itself a deliverable, as in a coverage, monitor-
+ing, or veriﬁcation requirement. It speciﬁes the average number of tests or their
+expected cumulative cost. It is neither a hard limit on each episode nor an in-
+struction to maximize reward subject to spending at most B. Those alternatives
+deﬁne diﬀerent design problems, and our experiments measure the reward cost
+of meeting a target when reward alone would justify less sensing.
+     For a family of policies indexed by information weight w, let U (w) be the
+expected sensing usage. We call the weight at which this curve crosses B its
+operational shadow price, w∗ (B). The adjective operational matters: this price
+is read from a usage curve, rather than obtained as the Lagrange multiplier of
+a usage-cap constraint. The curve can have plateaus, jumps, and non-monotone
+portions. A ﬁnite grid therefore estimates a crossing by a bracket. When the
+selected endpoint policies straddle a usage gap, a per-episode mixture can attain
+the target in expectation under the conditions of Deﬁnition 2. The crossing
+threshold, its grid bracket, and this randomized policy are distinct objects.
+     Figures 1 and 2 connect this construction to the engineer’s workﬂow. The
+engineer supplies a model, states an expected-usage requirement, estimates the
+usage curve oﬄine, and checks usage and reward on held-out episodes. During
+deployment the agent chooses each test or terminal decision from its current
+belief. It does not perform a prescribed number of tests on every item.
+     The price has a useful response to a change of reward units. Multiplying all re-
+wards and costs by α > 0 and the information weight by the same factor preserves
+the receding-horizon planner’s decisions under the assumptions of Proposition 3.
+Observation counts are unchanged and cumulative sensing costs rescale by α.
+An online feedback rule can also adjust the weight when observed usage diﬀers
+from the target. We prove stationary convergence for its projected, decaying-
+step form under explicit conditions and separately evaluate re-adaptation after
+a reward-scale shift.
+     Active inference identiﬁes a particular point in this policy family. Its Ex-
+pected Free Energy (EFE) objective combines pragmatic value with expected
+information gain [20, 41]. For the recursive, reward-based objective speciﬁed
+here, minimizing EFE is equivalent to maximizing reward plus information gain
+at w = 1. The reward–information identiﬁcation is exact under log scoring [4].
+For ordinary task rewards it depends on the declared reward convention and the
+treatment of the preference normalizer. The coeﬃcient is therefore an untuned
+default under shared units, not a scale-invariant calibration. In particular, w = 1
+                                                                                            Pricing the Sensing Budget in ρ-POMDPs                                 3
+
+
+
+                                           12                                                                 wlo             whi
+
+
+
+
+U(w): expected sensing usage per episode
+                                                       Active inference minimizes
+
+                                                       G(π) = pragmatic − epistemic
+                                           10
+                                                       maximizes R(s, a)+w⋅I(b, a) at w = 1
+
+                                            8          (Prop. 1, exact under log scoring)
+                                                                                                                          q = 0.5
+
+
+
+
+           (schematic units)
+                                            6
+
+
+                                            4
+
+
+                                            2
+
+
+                                            0
+                                                10−1                                   100                                   101                             102
+                                                                                        Information weight w (log scale)
+
+                                                                usage curve U(w)              usage target B                    endpoint mixture, [U] = B
+                                                                sampled weights               grid bracket (wlo , whi ]         w = 1 (EFE)
+
+
+
+Fig. 1. An expected-usage target selects a crossing of the usage curve (schematic).
+Sampled grid weights bracket a jump over B. The shaded band estimates the crossing
+threshold, while the diamond represents a mixture of the two endpoint policies that
+attains B in expectation under Deﬁnition 2. Its horizontal position is schematic, not
+a third deterministic weight. The information-unit default w = 1 is one point on the
+curve and belongs to the level set of its own implicit budget. The equivalence shown in
+the inset uses the stated reward-based EFE objective, with exact reward identiﬁcation
+under log scoring.
+
+
+
+belongs to the level set of its implicit budget U (1), but need not equal that
+budget’s crossing threshold.
+    The paper makes three contributions. First, it formulates expected-usage
+calibration within a ρ-POMDP policy family, distinguishing the level set, cross-
+ing threshold, grid estimate, and endpoint mixture. It establishes scale equivari-
+ance and a conditional stationary-convergence result for online control. Second,
+it proves the EFE equivalence for observe-then-commit problems and extends
+it to the hidden-state-preserving actions of factored observation POMDPs. A
+two-state analysis characterizes sensing onset and an interval of weights that
+avoids an unnecessary second observation. Third, it evaluates calibration and
+the information-unit default against planning baselines and oﬄine references,
+then tests learned likelihoods on real sensor records with independently ﬁxed
+targets and a chronological transfer set. Code and experiment data are available
+at https://github.com/PatrickAllenCooper/rho_aif.
+    The evidence also sets limits on these contributions. Targets selected by a
+predeclared rule from calibration curves are met on held-out seeds to within 0.13
+observations, but the selected mixtures can sacriﬁce reward relative to spending
+4        P. Cooper and A. Velasquez
+
+
+
+                                From an inspection requirement to a policy
+
+
+
+      Inspection task               Design target                Offline calibration                  At each item
+       Hidden fault                                            Sweep w; estimate U(w)
+                                    B tests per item                                              Choose test or commit
+         Paid tests
+                                      on average               Bracket B; mix if needed           from the current belief
+      Repair or release
+
+
+
+                  Audit across items: compare mean test use with B and assess reward separately.
+
+
+                          A usage target is an expectation, not a limit on tests for each item.
+
+
+
+
+Fig. 2. From an inspection requirement to a running policy (schematic, not experimen-
+tal data). For a state-preserving task with a hidden fault and paid tests, the engineer
+states a target B in expected tests per item. An oﬄine sweep estimates usage U (w)
+and brackets B. When a usage gap lies between the selected endpoint policies, mixing
+them across items can meet the target under Deﬁnition 2’s conditions. The deployed
+agent chooses tests and terminal actions from its current belief. Usage and reward are
+assessed separately: meeting B does not establish reward optimality under a sensing
+cap.
+
+
+
+
+less or to the best sampled reference mixture meeting the same target, and need
+not be the best mixtures in the weight family. The untuned w = 1 lies in the
+reward-maximizing run of sampled weights on three of ﬁve swept environments
+and is beaten on the other two. Its advantage over reward-only planning depends
+on the observation structure and available planning depth, rather than on state-
+space size alone. Ordinary information gain can spend the budget on uncertainty
+unrelated to reward, and the stated equivalence does not cover observation ac-
+tions that change the hidden state. These limitations remain part of the main
+argument, with supporting controls and counterexamples in the appendices.
+    An abridged version was accepted at IWAI 2026 [10]. It contains the EFE
+equivalence results and their benchmark evaluation. The budgeted formulation,
+scale-equivariance and controller results, budget experiments, and distractor and
+destructive-sensing analyses are extensions. We also revise the workshop ver-
+sion’s claim that the advantage grows with state-space size and observation-
+action count, which RockSample[11,11] does not support.
+    Section 3 deﬁnes the model and EFE objective. Section 4 develops usage
+calibration, and Section 5 speciﬁes the evaluation protocol. Sections 6 and 7
+report the budget and EFE results. Section 8 explains their practical scope.
+Appendices provide proofs, experiment speciﬁcations, and controls needed to
+interpret these claims.
+                                  Pricing the Sensing Budget in ρ-POMDPs           5
+
+2    Related Work
+POMDP planning and belief-dependent rewards. POMDPs formalize decision-
+making under state uncertainty [28, 55]. Point-based oﬄine solvers approxi-
+mate the value function on reachable beliefs, including PBVI, HSVI, and SAR-
+SOP [31, 44, 52, 56]. Online solvers plan from the current belief. POMCP uses
+Monte Carlo tree search with UCB1 action selection and rollout evaluation [53],
+DESPOT searches regularized sparse belief trees [68], and POMCPOW uses pro-
+gressive widening for continuous spaces [59]. Value of Information Monte Carlo
+planning selectively skips observation branches with low expected decision value
+[33]. Our planner instead adds expected information gain to the objective. These
+are diﬀerent uses of information within planning, and our comparisons do not
+establish superiority over state-of-the-art POMDP solvers generally.
+    Araya-López et al. [2] introduced ρ-POMDPs with belief-dependent rewards.
+Their ρ denotes the whole reward, whereas we reserve it for an information
+term added to the ordinary task reward. Convex belief rewards support convex
+value functions and piecewise-linear convex approximations. Expected informa-
+tion gain is concave in the belief, so that machinery does not apply directly. Fehr
+et al. [16] treat non-convex rewards under a Lipschitz hypothesis, and Benchetrit
+et al. [5] develop an anytime planner for continuous spaces. For a ﬁnite observa-
+tion model, strictly positive likelihoods make expected information gain Lipschitz
+on the belief simplex. Zero likelihoods, including noiseless sensing, can violate
+this condition. Our exact tree recursion does not rely on that approximation
+guarantee.
+    POMDPs with information rewards were developed for active cooperative
+perception [57], and their relation to ρ-POMDPs is discussed by Satsangi et al.
+[49]. Earlier preference-elicitation work selected queries by sequential value of in-
+formation while retaining state-dependent rewards [7]. These approaches estab-
+lish the motivation for valuing information explicitly. Our focus is the coeﬃcient
+on that value and its relation to expected sensing usage.
+
+Information value and experimental design. Classical value of information mea-
+sures the improvement an observation can bring to a decision [27]. Bayesian
+experimental design instead commonly selects observations by expected infor-
+mation gain [17, 35]. The criteria coincide under a particular reward model:
+when the reward is a proper log score, the expected improvement in score is the
+expected information gain [4]. This supplies the exact reward–information iden-
+tiﬁcation used here. Sequential experimental design is also the closest structural
+analogue to our observe-then-commit setting.
+    Dynamic feature acquisition can greedily select features by conditional mu-
+tual information, with learned approximations to the required distributions [11].
+Our sensor-record study uses this established greedy rule as a ﬁxed-count com-
+parator. Its purpose is to test usage calibration within an information-weighted
+family, not introduce a new feature-selection principle.
+    Information-directed sampling (IDS) trades instantaneous regret against in-
+formation gain through their ratio, rather than through a ﬁxed additive coeﬃ-
+6      P. Cooper and A. Velasquez
+
+cient [47]. Walraven et al. [66] connect active inference with information gather-
+ing in POMDPs. Our contribution within this setting is to deﬁne and evaluate
+a calibration procedure for the weight in a speciﬁed ρ-POMDP policy family.
+
+Active inference and the EFE formulation. Active inference casts perception and
+action as variational inference [19, 42]. EFE combines pragmatic and epistemic
+terms [12, 20, 41]. Its recursive sophisticated-inference form conditions future
+choices on future beliefs [21]. Da Costa et al. [13] prove reward-Bellman optimal-
+ity for ﬁnite-horizon recursive inference in the limit of precise reward-encoding
+preferences, with exact state estimation. That limiting result does not imply that
+a ﬁxed ﬁnite information weight is reward-optimal.
+    Several distinct constructions occur under the EFE name. Millidge et al.
+[39] distinguish EFE from a naive future extension of variational free energy
+and propose Free Energy of the Expected Future (FEEF). Champion et al. [9]
+examine which EFE expressions follow from common root deﬁnitions and the
+restrictions those roots impose on prior preferences. de Vries et al. [14] derive
+EFE-based planning from a model augmented with preference and epistemic
+priors. The generalised free energy of Parr and Friston [41] is another distinct
+functional. Our equivalence concerns only the recursive, reward-based objective
+deﬁned in Section 3, with expected information gain about the hidden state as its
+epistemic term. It does not assert an unchanged coeﬃcient for these alternative
+constructions. Broader comparisons with decision-theoretic objectives include an
+EFE optimality-gap analysis [67] and a survey of formal equivalences [60].
+    Scaling work combines active inference with deep models, reinforcement-
+learning objectives, and Monte Carlo tree search [18, 36, 63]. Our MCTS-EFE
+variant follows this direction. Its controls test exploration constants, rollout
+choices, and two internal components, while leaving exact beliefs, exact com-
+mit values, and EFE leaf evaluation coupled (Appendix F.2).
+
+Exploration and control as inference. Control-as-inference relates maximum-
+entropy control to probabilistic inference [34, 61], with soft actor-critic and KL-
+minimizing control as algorithmic instances [24, 45]. Its treatment of value diﬀers
+from active inference [38]. EFE can produce intrinsic-motivation behavior [48],
+while curiosity, count-based exploration, VIME, and random network distillation
+use weighted exploration bonuses [3, 8, 26, 43, 50]. Oudeyer and Kaplan [40] sur-
+vey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement
+learning primarily address uncertainty about the model [15, 22, 23]. Our plan-
+ners treat the observation model as ﬁxed, either supplied by a simulator or ﬁtted
+once from training records. They do not plan to learn that model. Describing
+w = 1 as untuned still depends on a shared reward convention.
+
+Budgets and dual control. Rational inattention constrains or prices information
+capacity [37, 54]. Constrained MDPs use Lagrange multipliers on expected re-
+source costs [1], and constrained POMDP methods track admissible cost along-
+side belief [29]. Automatic temperature tuning in soft actor-critic drives policy
+                                     Pricing the Sensing Budget in ρ-POMDPs             7
+
+entropy toward a target [25]. These provide close conceptual precedents for re-
+source control. Our weight multiplies information gain, however, while the target
+concerns observation count or cost. It is not generally the multiplier of a sensing-
+cap constraint. Section 4.6 gives the detailed distinctions, including the diﬀerence
+from a dual formulation of EFE itself [30]. The contribution is an operational
+calibration for this policy family, its exact scale transformation under stated
+assumptions, and explicit treatment of ﬁnite-grid crossings and usage gaps.
+
+
+3     Methodology
+We ﬁrst specify the policy family whose information weight will be calibrated
+to a sensing target. The EFE connection identiﬁes one member of that family
+under explicit reward and information-unit conventions. It does not establish
+reward optimality.
+
+3.1     The ρ-POMDP Framework
+A ρ-POMDP adds a belief-dependent utility ρ : ∆(S) × A → R to task reward,
+where ∆(S) is the probability simplex over hidden states S. Its objective is
+                                [H                                ]
+                                 ∑ (                            )
+                 ∗
+               π = arg max Eπ         t
+                                     γ R(st , at ) + ρ(bt , at ) .           (1)
+                               π
+                                       t=0
+
+Here S is the ﬁnite hidden-state space, A the action set, bt ∈ ∆(S) the Bayesian
+belief, H the planning horizon, and γ the discount factor. The expectation runs
+over the initial state, state transitions, observations, and resulting belief updates
+under policy π. Setting ρ = 0 recovers a standard POMDP. Choosing informa-
+tion gain as ρ explicitly rewards uncertainty reduction. The equivalence below
+concerns γ = 1.
+    In the observe-then-commit class, A partitions into observation actions Aobs ,
+which leave the hidden state ﬁxed and update the belief at known cost, and
+terminal commit actions Acom , which yield state-dependent reward and emit no
+observation. Rewards are not observations: beliefs are conditioned on observation
+symbols alone. Each episode consists of observations followed by one commit.
+This structure isolates the information-weight question and permits analytic
+thresholds and near-optimal oﬄine references. Section 3.3 extends the reduction
+to interleaved sensing and navigation. Appendix H.1 includes a schematic of the
+basic decision loop.
+
+3.2     Expected Free Energy as ρ
+At future time τ , the EFE formulation considered here combines expected neg-
+ative log-preference with negative expected information gain,
+
+    G(π) = −EQ(oτ |π) [ln P (oτ | C)] − EQ(oτ |π) [DKL [Q(sτ | oτ , π) ∥ Q(sτ | π)]] . (2)
+8       P. Cooper and A. Velasquez
+
+Q(oτ | π) predicts observations under policy π, while Q(sτ | π) and Q(sτ | oτ , π)
+are the corresponding prior and posterior beliefs. The parameters C specify the
+preference distribution P (· | C), which is distinct from the observation model
+conditioned on state and action. Minimization favors preferred outcomes and
+informative observations. Following the recursive, closed-loop formulation asso-
+ciated with sophisticated inference [13, 21], we evaluate actions from the current
+belief and replan after every observation.
+    We identify the pragmatic term with negative task reward under the reward-
+based convention detailed below. A terminal commit has value G(commiti | b) =
+−Eb [Ri ], where Ri = R(s, commiti ). It has neither an epistemic term nor a
+continuation term, because it emits no observation and ends the episode. An
+observation action k costs ck > 0 and supplies expected information gain
+
+                          Ik (b) = H(b) − Eo|obsk [H(b′o )],
+                                                    ∑
+where b′o is the Bayesian posterior and H(b) = − s b(s) log b(s) is entropy. The
+entropy functional H(·) is distinct from the planning horizon H. The recursion
+is                                                 [               ]
+                 G(observek | b) = ck − Ik (b) + Eo min G(a | b′o ) .         (3)
+                                                          a
+
+At depth H, only commit actions are available. The agent selects a minimizing
+action using a ﬁxed tie-breaking rule. As policy precision κ → ∞, the softmax
+Q(π) ∝ exp(−κG(π)) concentrates on policies minimizing G. The implementa-
+tion makes a deterministic selection among tied minimizers. Policy precision κ is
+distinct from the reward inverse temperature β below. A separately normalized
+preference distribution does not generally give this recursion on variable-length
+episodes, because its omitted normalizer can aﬀect action choice.
+
+3.3   Formal Equivalence with ρ-POMDPs
+Writing d for search depth and setting V = −G gives
+                                                  [                      ]
+           V (observek , b, d) = −ck + Ik (b) + Eo max V (a, b′o , d + 1) ,     (4)
+                                                      a
+           V (commiti , b, d) = Eb [Ri ].                                       (5)
+                                                                 ∑
+At d = H, the value is the best commit value. Write R(b, a) := s b(s)R(s, a) for
+expected immediate reward and V ∗ (b, d) := maxa V (a, b, d) for the optimal belief-
+state value. This is a ρ-POMDP Bellman recursion with an action-dependent
+belief utility, as permitted by Araya-López et al. [2].
+Proposition 1. Deﬁne ρEFE (b, a) as
+                          {
+                            Ia (b) if a is an observation action
+            ρEFE (b, a) =
+                            0      if a is a commit action
+
+where Ia (b) = H(b) − Eo|a [H(b′o )] is the expected information gain from obser-
+vation action a at belief b. Assume (i) pragmatic value is identiﬁed with task
+                                 Pricing the Sensing Budget in ρ-POMDPs        9
+
+reward at β=1 per reward unit, (ii) beliefs are updated by exact Bayesian condi-
+tioning, (iii) information is measured in the same units on both terms, and (iv)
+both recursions select actions deterministically with the same ﬁxed tie-breaking
+rule. Commit actions carry ρEFE =0 not by stipulation but because the episode
+terminates on commitment, so no further observation is emitted and the epis-
+temic term has no successor belief to score. Then for undiscounted ﬁnite horizon
+(γ=1), minimizing recursive EFE (Eq. 3) over horizon H produces the same
+policy as solving the ρ-POMDP Bellman recursion
+                                      {
+                      V ∗ (b, d) = max R(b, a) + ρEFE (b, a)
+                                    a
+                                                                 }
+                                        + Eo [V ∗ (b′o , d + 1)]
+
+over the same horizon, with terminal commit actions carrying no continuation
+term and only commit actions available at d = H.
+
+    Negating the objective gives the Bellman maximization (proof in Ap-
+pendix A). This identiﬁes the speciﬁed recursive EFE agent with Planning+IG
+at w = 1 under the stated convention. It is a notational bridge, not a reward-
+optimality theorem. Unlike the β → ∞ limit of Da Costa et al. [13], it retains
+full information weight. It concerns the information-gain and pragmatic-value
+formulation among those related by Champion et al. [9], with the scope and
+approximation restrictions described in Related Work and Appendix H.1.
+
+Reward and information units. The identiﬁcation in assumption (i) ﬁxes an
+exchange rate rather than deriving one. With P (o | C) ∝ exp(βR(o)),
+                                                 ∑
+            ln P (o | C) = βR(o) − ln Z,    Z=       exp(βR(o′ )).
+                                                   o′
+
+Setting β = 1 assigns one nat to each reward unit. A path scoring T outcomes
+also accumulates −T ln Z in log-preference. Since observe-then-commit paths
+have diﬀerent lengths, this term can be policy-dependent. It vanishes for a log-
+scoring reward with Z = 1 [4], or cancels when every path scores the same
+number of outcomes under a common preference distribution. We do not impose
+that ﬁxed-length construction. Proposition 1 therefore proves equivalence for the
+reward-based recursion as written, conditional on its pragmatic identiﬁcation,
+rather than deriving it from general normalized preferences.
+    The empirical convention is diﬀerent again: the implementation computes
+entropy in bits and runs the reported EFE agent at one reward unit per bit.
+Since one bit is ln 2 nats, implemented w = 1 corresponds to 1/ ln 2 ≈ 1.44
+reward units per nat. The exactly nat-canonical agent uses w = ln 2 ≈ 0.69
+in implementation units. Appendix B.3 compares these directly. Their reward,
+success, and observation count are bit-identical on Tiger, Diagnosis, Bandit, and
+Testbed. Tileworld changes policy, and w = 1 remains Pareto-dominated there.
+Thus the exact log-score case, the conditional recursion equivalence, and the
+empirical bit convention are separate claims.
+10      P. Cooper and A. Velasquez
+
+    The weight is also reward-scale dependent. Multiplying all rewards and costs
+by k > 0 at ﬁxed w is behaviorally equivalent to using w/k before rescaling.
+Proposition 3 establishes this equivariance and gives the corresponding usage
+identities. Whether w = 1 is a useful default at a ﬁxed scale remains an empirical
+question.
+    A two-state calculation separates the weight needed to buy a ﬁrst observa-
+tion at H = 1 from the weight that buys an unnecessary second observation at
+H = 2 (Proposition 6, Appendix H.2). The ﬁrst threshold is negative when obser-
+vation is already strictly instrumentally worthwhile. The second bounds a near-
+optimality interval under the proposition’s symmetric two-state assumptions.
+Tiger satisﬁes these assumptions, while Testbed lies at the boundary |R− | = R+ .
+The proposition does not apply directly to Diagnosis or Tileworld. The interval
+is not a guarantee for longer receding-horizon episodes. Discounting preserves
+the algebraic equivalence when applied consistently to both recursions, with be-
+havioral eﬀects reported in Appendix D.2.
+
+Extension to factored observation POMDPs. The reduction extends to inter-
+leaved sensing and navigation when both preserve the hidden state.
+Deﬁnition 1 (Factored observation POMDP). A POMDP is a factored
+observation POMDP if its state decomposes as s = (svis , shid ) where svis is fully
+observable and shid is hidden, and the action set partitions into (i) observation
+actions Aobs that produce observations about shid without changing shid (though
+they may change svis ), (ii) navigation actions Anav that change svis deterministi-
+cally without changing shid and produce no informative observation, and (iii) ex-
+ploitation actions Aexp that yield reward that may depend on shid and emit no
+informative observation. Throughout, rewards are not observations. The belief is
+conditioned on the observation symbol alone, so an exploitation action’s payoﬀ,
+however informative about shid it would be to an agent that conditioned on it,
+does not update the belief.
+    Observe-then-commit is the special case with no navigation and a trivial
+visible state. Our RockSample variant [56] holds rock qualities ﬁxed, makes po-
+sition and sampling status visible, and classiﬁes checks, moves, and sample/exit
+actions as observation, navigation, and exploitation respectively. The original
+RockSample changes a good rock to bad on sampling. Our variant diﬀers in that
+respect.
+    To state the boundary precisely, write s, s′ for the hidden components, b for
+their belief, and O for the observation likelihood. Let
+                                                ∑
+      b′o (s) ∝ O(o | s, a)b(s),  b′o,T (s′ ) ∝   Thid (s′ | s, a)O(o | s, a)b(s).
+                                                 s
+
+Here the observation precedes the transition, and the known visible state is
+suppressed. Interpret b′o on the post-transition state space through the identity
+coupling s′ = s. The transition–observation diagnostic is
+
+                          ∆T (b, a) := Eo DKL [b′o,T ∥ b′o ].
+                                 Pricing the Sensing Budget in ρ-POMDPs         11
+
+It compares the correct posterior with the one obtained by assuming preserva-
+tion.
+
+Proposition 2. In a factored observation POMDP (Deﬁnition 1), let b denote
+the belief over shid . For any action a that preserves shid (i.e., a ∈ Aobs ∪
+Anav ), the transition–observation coupling term vanishes, ∆T (b, a) = 0, and
+ρEFE (b, a) = Ia (b) for observation actions, ρEFE (b, a) = 0 for navigation ac-
+tions.
+
+    Under preservation, the two posteriors coincide, which proves the claim (Ap-
+pendix H.3). Terminal exploitation has no continuation or epistemic term. Non-
+terminal exploitation carries no information gain here because its observation
+is uninformative and its payoﬀ is not used to update the belief. A model that
+conditions on exploitation rewards must include the resulting information gain.
+Proposition 2 covers observation and navigation actions, not arbitrary exploita-
+tion transitions.
+    State preservation is an exact hypothesis. Slow drift alone does not ensure a
+small diagnostic: a perfect sensor gives a point-mass posterior, and an arbitrarily
+small probability of a state change can place mass outside its support, making
+∆T inﬁnite. Example 1 shows a complete action-ranking reversal from using
+obsolete information.
+    Destructive sensing can reverse the action ranking. In Example 1, a per-
+fect test reveals the old state and then destroys it. At w = 1 reward unit per
+bit and cost c ∈ (1, 2), the preservation-based value is 2 − c > 0, while the
+transition-aware value is 1 − c < 0. Acting on the obsolete observation realizes
+expected reward −c, below immediate commitment’s zero. Appendix H.3 gives
+the complete calculation. The restriction is on the state-preserving reduction.
+Transition-aware EFE removes the illusory information credit. We have not es-
+tablished ∆T as an additive value correction or a decision-error bound, and a
+transition-aware budget procedure remains open.
+
+
+3.4   Agents
+
+The six core agents in Table 1 share a known generative model and exact
+Bayesian updates. Planning, Planning+IG, and EFE use the same recursive
+search, so the comparison separates the objective from planning depth. Every
+H > 1 agent replans a full depth-H tree after each real observation and executes
+only its root action.
+    Planning+IG is the central baseline and represents the familiar information-
+reward construction in POMDP-IR and ρ-POMDPs [2, 49, 57]. By Proposition 1,
+its diﬀerence from EFE is the chosen weight.
+    Epistemic-only sets commit EFE to zero, removing reward from commit
+timing while retaining sensing costs and information gain. On commitment it
+chooses the most probable state. Myopic has no information bonus but can still
+observe when one-step lookahead reveals positive instrumental value of informa-
+tion. Additional baselines are Greedy without sensing and a posterior-vote rule.
+12      P. Cooper and A. Velasquez
+
+Table 1. Agent speciﬁcations. All use exact Bayesian belief updates over a known
+generative model.
+
+       Agent             ρ function     Horizon Controls for
+       Myopic              ρ=0          H=1        Weakest baseline
+       Planning            ρ=0          H>1        Planning depth
+       Info Gain          w · I(b)      H=1        Epistemic bonus (myopic)
+       Planning+IG        w · I(b)      H>1        IG + planning depth
+       EFE            Ia (b) via EFE    H>1        Joint objective (Prop. 1)
+       Epistemic-only   Ia (b) only     H>1        Ablation: no pragmatic term
+
+
+
+The last draws 100 states and takes the majority of their individually optimal
+actions. It is not Thompson sampling, although the committed CSVs label it
+ThompsonSamplingAgent. Appendix H.4 gives implementation details.
+                                                                       ∗
+    Info Gain and Planning+IG use success-maximizing weights wsucc        in the main
+comparison tables, selected from {0.1, 0.5, 1, 2, 5, 10, 20, 50, 100}. Each candidate
+uses a common tuning stream at seed 7, reset between candidates, with 200
+episodes (100 on Tileworld). Ties favor the smallest maximizing weight. This
+stream is disjoint from the ﬁve evaluation seeds, and the selected weights re-
+tain its sampling noise. Seed 7 also appears in the separate frontier battery,
+which evaluates no tuned baseline. The Pareto study instead reports reward-
+                       ∗
+maximizing weights wret   from its wider eleven-point grid (Section 7.2). Neither
+is the usage-calibrated price w∗ (B) deﬁned next.
+
+
+4     Budgeted ρ-POMDPs and the Price of Information
+
+We now choose an information weight from a target for expected sensing usage.
+If sensing already has a known economic cost in reward units, that cost belongs
+directly in R. A usage target is useful when the reward scale is conventional or
+the design requirement is naturally stated as an average number or cumulative
+cost of tests. It controls sensing eﬀort. It does not by itself maximize reward.
+
+
+4.1   The Budgeted Problem and the Usage Curve
+
+Let R(π) and U (π) denote expected episodic return and sensing usage. The
+calibration problem asks for a member of the receding-horizon Planning+IG
+family, or a per-episode mixture of two members, whose expected usage equals
+B. The separate constrained problem is
+
+                       max R(π)       subject to    U (π) ≤ B.                   (6)
+                         π
+
+The policy class may be the ﬁxed family Π or the broader class used by a
+constrained-POMDP reference. We use those references to measure the reward
+cost of calibration (Section 6.8). Their cap may be slack at the reward optimum.
+                                                              Pricing the Sensing Budget in ρ-POMDPs                             13
+
+                    7                      Cap optimum C
+                                           U = 2 < B, R = 6                                       B=4
+
+                    6
+                                                                                                          Best target mixture
+                                                                                                             U = 4, R = 4
+
+
+
+Expected reward R
+                    5
+
+
+                    4
+                            Policy A
+                             (1, 4)
+                    3                                                                                                 Policy D
+                                                                                                                       (5, 3)
+                    2
+                                                          Selected endpoint mixture
+                                                               U = 4, R = 3.25
+
+                        0              1                 2                 3                  4                   5              6
+                                                               Expected sensing usage U
+                                            Illustrative policy points. Line segments are per-episode mixtures.
+                                                           Shading marks cap-feasible mixtures.
+
+
+Fig. 3. An expected-usage target and a usage cap answer diﬀerent questions. This
+schematic uses three illustrative policies and their per-episode mixtures, not benchmark
+data. The target U = B is the vertical line, while the shaded portion of the mixture
+hull satisﬁes the cap U ≤ B. Suppose increasing grid weights select policies C, A, then
+D, so A and D form the selected crossing pair. A selected endpoint mixture can meet
+the target yet earn less than another mixture at the same usage. The highest-return
+cap-feasible policy can also leave part of the budget unused. These possibilities explain
+why calibration alone supplies neither an equality-constrained nor a cap-constrained
+reward optimum. They do not assert that every instance has either shortfall.
+
+
+
+    The literal Lagrangian of (6) penalizes usage through R(π) − λU (π), λ ≥ 0.
+Planning+IG instead uses R(π) + wI(π), where I(π) is expected cumulative
+information gain. This is an information-ﬂoor relaxation. For w ≥ 0, an exact
+maximizer πw over a ﬁxed class solves max R(π) subject to I(π) ≥ I(πw ): opti-
+mality gives
+                                     (             )
+                   R(π) ≤ R(πw ) + w I(πw ) − I(π) ≤ R(πw )
+
+for every ﬂoor-feasible π. This statement concerns a one-shot exact maximizer,
+not the implemented receding-horizon agent.
+                                          ∗
+    For that implemented family, let πw     denote the closed-loop policy using
+                                                     ∗
+weight w and deﬁne its usage curve by U (w) := U (πw   ). The star here denotes the
+policy produced by the ﬁnite-horizon planner, not an optimizer of total episodic
+return. Its operational shadow price w∗ (B) locates a crossing of the target by this
+curve. It is not the usage-cap multiplier λ∗ (B), and meeting the target neither
+solves (6) nor guarantees the best reward among mixtures at the same usage.
+Figure 3 distinguishes these possibilities.
+    Discrete policy changes produce usage gaps, so a single weight need not attain
+B. The curve may also be nonmonotone. We estimate it on a ﬁnite grid and use
+14      P. Cooper and A. Velasquez
+
+the following four distinct objects to avoid treating a grid estimate as an exact
+inverse.
+
+Deﬁnition 2 (Operational shadow price, crossing bracket, and end-
+point mixture). Fix the implemented family’s usage curve U (w) on w ≥ 0
+and a target B.
+    Level set. U −1 (B) = {w ≥ 0 : U (w) = B} contains the weights that attain
+the target. It is empty at a usage gap and may contain a plateau.
+    Crossing threshold. Suppose the curve has ﬁnitely many upward crossings of
+B and at least one occurs at a ﬁnite weight. Deﬁne
+
+               DB = {w ≥ 0 : U (w) < B, ∃v > w with U (v) ≥ B}.
+
+When DB is nonempty and bounded, the operational shadow price is w∗ (B) :=
+w† (B) := sup DB , the ﬁnal crossing location. Selecting the last crossing is a
+convention for nonmonotone curves. At a jump it is a single weight, even if no
+weight attains B. It is undeﬁned if the curve never crosses from below, or has
+no ﬁnite ﬁnal crossing. A level set can therefore exist without a shadow price.
+    Grid bracket. On an ordered ﬁnite grid, let wlo be the largest sampled
+weight with U (wlo ) < B, and let whi be the ﬁrst subsequent sampled weight
+with U (whi ) ≥ B. If both exist, the solver reports (wlo , whi ]. Its closed enclosure
+[wlo , whi ] contains the population threshold provided the grid misses no crossing,
+either between samples or beyond its ﬁnal point. The enclosure is closed because
+the threshold can equal wlo when usage rises immediately after it. The bracket’s
+width measures grid resolution, not uncertainty, and its interior weights need
+not attain B. Without straddling endpoints, the solver ﬂags its fallback as
+unbracketed, even if an unsampled population crossing exists.
+    Endpoint mixture. For straddling endpoints, choose whi independently at the
+start of each episode with probability
+
+                                       B − U (wlo )
+                               q=                       ,
+                                    U (whi ) − U (wlo )
+
+and otherwise choose wlo , retaining that policy for the episode. Linearity gives
+expected usage exactly B for these population endpoint usages. This is one ran-
+domized policy, not an interval of scalar prices or a constrained-reward optimum.
+It attains gap targets that no single weight can, consistent with the need for ran-
+domization in constrained MDPs and POMDPs [1, 29].
+
+    In practice, the grid and mixture probability use estimated usages, so held-
+out usage need not equal B. Oﬄine solving also labels the nearest grid point as
+achieving the target when |U (w)−B| ≤ max(0.3, 0.1B). This numerical tolerance
+aﬀects only that achievability label, never the bracket.
+    The closure of mixture usages is [inf w≥0 U (w), supw≥0 U (w)]. Every interior
+target can be attained by mixing two straddling members. A boundary target
+is attained only if that endpoint usage is attained by a member. The selected
+crossing mixture is more restrictive: it requires the solver’s upward-straddling
+                                  Pricing the Sensing Budget in ρ-POMDPs          15
+
+pair. For example, a curve that descends from usage 2 to 1 admits a mixture
+at B = 1.5 but has no crossing from below. A curve whose ﬁnal grid point falls
+below B also gives an unbracketed fallback, even if an earlier upward crossing
+exists. No swept curve exhibits that ﬁnal-grid shape.
+    All reported endpoint mixtures have straddling brackets. Tiger’s B = 4 in
+Section 6.1 and the below-range targets of Sections 6.8 and 6.9 are explicitly
+unbracketed. The attainable range need not begin at U (0): usage is nonmonotone,
+and on Tileworld-6×6 it falls from 15.64 at w = 0 to 14.75 at w = 1 (Section 7.3).
+Positive U (0) reﬂects instrumental sensing under the planner’s model, while
+belief saturation and the episode cap limit usage at large weights.
+
+
+4.2   Exact Scale Equivariance
+
+Let an α-rescaled environment multiply every pragmatic quantity, including ob-
+servation costs, by α > 0, while leaving dynamics, observations, and belief up-
+dates unchanged. Scaling w by the same factor then multiplies every candidate
+value by α.
+
+Proposition 3 (Exact scale equivariance). For every α > 0 and w ≥ 0,
+the receding-horizon Planning+IG agent facing the α-scaled environment with
+weight αw selects the same action as the agent facing the unscaled environment
+with weight w, at every belief, provided ties are broken by a scale-independent rule.
+Consequently the closed-loop policies coincide, and so do the induced distributions
+of every quantity that depends on the actions alone. For usage denominated in
+observation count this gives
+
+                            Ucount,α (αw) = Ucount (w),                          (7)
+
+and for usage denominated in cumulative sensing cost, which sums the rescaled
+costs of the same actions, it gives Ucost,α (αw) = α Ucost (w).
+
+Proof. For any candidate plan, the α-scaled value is α · (pragmatic sum) + αw ·
+(IG sum) = α · [pragmatic sum + w · IG sum], i.e. exactly α times the unscaled
+value. Multiplying every candidate’s value by the same positive constant pre-
+serves the ordering of the candidates, and the scale-independent rule compares
+values and a tolerance that have both been multiplied by α, so it returns the
+same action. By induction over decision points, the closed-loop policies agree at
+every belief. Since the environment’s stochastic dynamics are otherwise identi-
+cal, the induced trajectory distributions agree, and with them the distribution
+of the observation count. Each action’s cost is α times its unscaled cost, so the
+cumulative sensing cost of every trajectory is α times its unscaled value, which
+gives the cost identity.
+
+   The implementation’s comparison tolerance is relative, 10−12 times the larger
+candidate magnitude, and favors the incumbent commit action. This rule scales
+with value. An absolute tolerance would not. Floating-point rounding need not
+16      P. Cooper and A. Velasquez
+
+be exactly homogeneous, so bit-identical collapse in the experiments is a mea-
+surement rather than a mathematical guarantee.
+    For count usage, plotting against w/α gives the same curve. Cost usage must
+also be divided by α. Wherever the threshold exists,
+         ∗                ∗                   ∗               ∗
+        wcount (B; α) = αwcount (B; 1),      wcost (B; α) = αwcost (B/α; 1).
+The grid bracket rescales only when the grid itself is multiplied by α. A ﬁxed
+w = 1 at scale α instead behaves as w = 1/α at scale 1, with implicit count
+budget BEFE (α) := U (1/α). Equivariance applies equally to a directly tuned
+weight on the correspondingly rescaled grid.
+
+4.3   Monotone Comparative Statics and the Usage Staircase
+Scale equivariance does not imply that usage increases with w. The general
+monotonicity result concerns expected information gain under exact maximiza-
+tion over a ﬁxed plan set.
+Proposition 4 (Monotone comparative statics for exact maximizers).
+Let Π be any ﬁxed set of plans and, for w ≥ 0, let πw ∈ arg maxπ∈Π R(π) +
+w I(π). Then for w2 > w1 ≥ 0,
+                   I(πw2 ) ≥ I(πw1 )   and   R(πw2 ) ≤ R(πw1 ).                 (8)
+Proof. Optimality of πw1 at w1 gives R(πw1 ) + w1 I(πw1 ) ≥ R(πw2 ) + w1 I(πw2 ),
+and optimality of πw2 at w2 gives R(πw2 ) + w2 I(πw2 ) ≥ (R(πw1 ) + w2 I(π)w1 ).
+Adding the two inequalities and simplifying yields (w2 − w1 ) I(πw2 ) − I(πw1 ) ≥
+0, and since w2 > w1 , I(πw2 ) ≥ I(πw(1 ). Substituting )this back into the ﬁrst
+inequality gives R(πw1 ) − R(πw2 ) ≥ w1 I(πw2 ) − I(πw1 ) ≥ 0.
+    These inequalities do not imply monotone observation count. A policy with
+fewer, more informative observations can collect more information. Moreover, a
+receding-horizon agent maximizes again at each reached belief, so its complete
+trajectory is not a single optimizer over the ﬁxed plan set in the proposition. The
+empirical usage staircases can therefore dip, as they do on Bandit and Tileworld
+(Section 6.5).
+    The single observe-or-commit decision does admit an exact usage threshold.
+                                                                    ∗
+In this corollary and its onset checks, we write wthresh for the wthresh  of Propo-
+                                                     ∗
+sition 6, dropping the star to distinguish it from w (B).
+Corollary 1 (Proposition 6’s onset thresholds are usage-staircase
+knots). In the two-state H=1 setting of Proposition 6 with wthresh ≥ 0, equiv-
+alently c ≥ (p − 12 )(R+ − R− ), for any budget B ∈ (0, 1) the crossing threshold
+of Deﬁnition 2 is exactly wthresh , the weight at which the staircase leaves zero,
+and the closed enclosure [wlo , whi ] of a ﬁnite-grid crossing bracket contains that
+threshold whenever the sampled usages straddle B, locating it to grid resolution
+rather than equalling it. When wthresh < 0 every nonnegative weight already
+observes, so U ≡ 1 on [0, ∞) and no onset knot lies in the nonnegative range.
+The onset boundary of the budgeted problem recovers Proposition 6’s closed form
+as the ﬁrst knot of the usage staircase.
+                                  Pricing the Sensing Budget in ρ-POMDPs          17
+
+   Its proof is the single-step curve U (w) = 1[w > wthresh ] under the commit-
+favoring tie rule, where 1[A] is 1 when A holds and 0 otherwise. The full argument
+and implementation check are in Appendix H.5. That check runs whole receding-
+horizon episodes and veriﬁes the onset, not a claim that every such episode takes
+exactly one observation.
+
+4.4   Solving for the Shadow Price
+We estimate U (w) by multi-seed Monte Carlo on a log-spaced grid: ﬁve seeds
+and 100 episodes per cell on the discrete observe-then-commit domains, 40 on
+Tileworld-6 × 6, and lighter settings on tree-search domains (Section 6). Per-seed
+means give standard errors. We report the crossing bracket and the grid weight
+ŵ(B) minimizing |U − B|, rather than a bisection root. This plotted point can
+lie on the lower bracket edge or, at a slack budget, below it. Count and cost
+usage are distinct. When all sensing actions share a cost, the two diﬀer by a
+ﬁxed conversion (Section 6.3).
+
+4.5   Online Dual Control of the Shadow Price
+A reward-scale change moves the count-budget crossing. To adjust without a
+fresh grid sweep, we adapt SAC’s automatic temperature update [25], replacing
+the policy-entropy target by a sensing target. After episode t with observed usage
+Ut , update
+                                 (                 )               η0
+             wt+1 = Proj[0,wmax ] wt + at (B − Ut ) ,     at =          ,        (9)
+                                                                 1 + δt
+where η0 is the initial step, δ its decay rate, and projection clips the weight
+to [0, wmax ]. If E[Ut | wt ] = U (wt ), usage is a noisy observation of the curve.
+Underspending raises w and overspending lowers it. This sign corrects usage
+only under suitable crossing conditions.
+    The proposition covers the projected decaying-step controller, with ﬁnite
+wmax and δ > 0. Every reported run uses wmax = 100 and δ = 0.02. No iterate
+exceeded 3.1, so the upper projection was present but inactive. It does not cover
+the released library default, which has a constant step and no upper projection,
+or the reset-on-shift heuristic described below.
+
+Proposition 5 (Stationary convergence of the dual controller). Con-
+sider the projected decaying-step
+                          ∑       controller,∑the recursion (9) with a ﬁnite wmax
+and step sizes satisfying t at = ∞ and t a2t < ∞ (the schedule in (9) with
+δ > 0). Suppose four conditions hold. (i) The environment, agent family, and
+budget B are stationary, so that E[Ut | wt ] = U (wt ) for a ﬁxed function U . (ii)
+Per-episode usage is bounded, which holds here because usage is bounded by the
+episode step cap, and each episode is run on an environment reset and freshly
+seeded independently of the past, so that the noise Ut − U (wt ) is a martingale dif-
+ference with bounded conditional second moment. (iii) There is a single crossing
+w∗ ∈ (0, wmax ) with U (w) < B for w < w∗ and U (w) > B for w > w∗ . (iv) The
+18      P. Cooper and A. Velasquez
+
+curve stays away from the budget outside every neighborhood of the crossing, that
+is, for every 0 < ϵ1 < ϵ2 , inf{ |U (w)−B| : ϵ1 ≤ |w−w∗ | ≤ ϵ2 , w ∈ [0, wmax ] } > 0.
+Then wt → w∗ with probability one, and hence in probability. Condition (iii) does
+not require U (w∗ ) = B, and condition (iv) does not require continuity, so the
+conclusion covers a gap budget in the sense of Deﬁnition 2, where U jumps over
+B at w∗ without touching it. What converges in that case is the weight. The usage
+at the limit is U (w∗ ), one side of the jump, so the expected usage at wt need not
+converge to B. The running∑     average of observed usage under the schedule in (9)
+does converge to B, n1 t<n Ut → B with probability one, gap budgets included,
+as Appendix H.6 proves. Attaining B in expectation with one stationary policy
+at a gap budget is the job of the endpoint mixture of Deﬁnition 2, not of this
+recursion.
+
+    The update is a projected Robbins–Monro recursion [46], with classical
+almost-sure extensions due to Blum [6] and constrained treatments in Kushner
+and Clark [32]. Appendix H.6 proves this bounded scalar case directly by a
+supermartingale argument, including discontinuous curves. Kronecker’s lemma
+gives the running-average result for the harmonic schedule above. The theorem
+is conditional on one sign-consistent crossing and does not cover an arbitrary
+nonmonotone usage curve.
+    The reset-on-shift variant detects a persistent recent usage mismatch once
+the step size has fallen below half its initial value, then restarts the decay clock at
+zero. These resets break the single diminishing-step schedule, so the proposition
+does not justify their convergence. Section 6.2 evaluates both decay-only and
+reset-on-shift recovery empirically. Constant-step tracking would require sepa-
+rate drift and noise arguments and is not claimed here.
+
+
+4.6   Positioning against Prior Art
+
+Resource-price adaptation is classical in constrained MDPs [1], rational inat-
+tention [37, 54], and SAC [25]. Here one information weight controls sensing
+usage across episodes. It diﬀers from an information constraint internal to EFE
+[30] and per-node constrained-POMDP dual ascent [58]. The contribution is the
+calibration procedure for this policy family, with count/cost equivariance, grid
+crossings, endpoint mixtures and conditional stationary convergence.
+    A constrained-POMDP solver may randomize belief-dependently and out-
+perform a mixture that ﬁxes one weight for each episode [29]. Our references
+use sampled SARSOP policies and estimated feasibility, with approximation,
+sampling and selection uncertainty. The shallow RockSample reference does not
+reach EFE’s operating region (Appendix H.7).
+    Oﬄine calibration requires a weight sweep. Its beneﬁt is a requirement stated
+in sensing units, rather than reduced sampling. Under its hypotheses, the online
+controller can ﬁnd a crossing without a sweep. Scale equivariance also transfers
+directly tuned weights on a correspondingly rescaled grid, so that beneﬁt is not
+unique to usage calibration.
+                                 Pricing the Sensing Budget in ρ-POMDPs        19
+
+5   Experiments
+We evaluate two claims separately. The budget experiments ask whether an
+information-weighted policy family can meet an expected sensing-usage target,
+transfer that calibration across reward scales, and re-adapt after a scale change.
+The EFE experiments ask where the canonical w=1 policy lies relative to reward-
+only planning, tuned information gain, and established POMDP solvers. Meeting
+a usage target and maximizing reward under a usage cap are diﬀerent objec-
+tives, so the ﬁrst battery measures both usage error and reward relative to a
+constrained reference.
+    The six main environments form a progression in sensing decisions. Tiger has
+one sensor and asks whether to listen again. Diagnosis and Bandit oﬀer several
+tests and ask which observation to buy. Tileworld makes those tests spatial
+partitions of a grid. RockSample and Structural Inspection interleave sensing
+with movement and exploitation. The ﬁrst four have a ﬁxed hidden state and
+an observe-then-commit structure. The last two satisfy the factored-observation
+assumptions of Proposition 2. Complete speciﬁcations and protocols appear in
+Appendices C and I.
+    Tiger [28] has two hidden states, one listen action of accuracy 0.85 and cost
+1, and terminal door choices paying +10 or −100. Diagnosis has four possible
+conditions, two binary tests of accuracy 0.80 and cost 1, and a terminal diagnosis
+paying +10 or −50. Each test partitions the conditions diﬀerently. Bandit has
+four arms and a single hidden variable identifying the best arm. An inspection
+targets one arm, has accuracy 0.80, and costs 0.5. A terminal pull pays +10 for
+the best arm and +1 otherwise. Tileworld hides one target on a 6×6 grid. Its
+six noisy binary scans query bits of the target’s row or column index, each with
+accuracy 0.80 and cost 1. Declaring a cell pays +10 or −50.
+    Our RockSample variant [56] has known rock positions and hidden binary
+qualities. Checking is noisy, movement changes sensor range, and sampling and
+exit yield reward. It diﬀers materially from the original benchmark. Every ac-
+tion costs 0.5, maps are our own, returns are undiscounted with an episode cap,
+exit is available from any cell, hidden rock qualities remain ﬁxed after sampling,
+and sensor accuracy starts at 0.95 and reaches chance at ﬁnite range. Sample
+history is observable and prevents a collected rock from yielding a second re-
+ward. These choices support the ﬁxed-hidden-state analysis and make sensing
+use directly interpretable, but absolute returns are not comparable to published
+RockSample values. Appendix I gives the six diﬀerences in full. We evaluate
+RS[5,3], RS[7,4], RS[7,8], and RS[11,11], where the pair denotes grid width and
+rock count. Hidden-state counts exclude observable position.
+    Structural Inspection places N components with ﬁxed hidden nominal/faulty
+states on a grid. The agent moves, chooses a visual test (accuracy 0.70, cost 0.5)
+or detailed test (accuracy 0.90, cost 2), and makes an irreversible declaration
+for each component. Missing a fault costs 50, while correct declarations pay 2
+or 5. We evaluate N =8 and N =16, the latter with 65,536 hidden conﬁgurations.
+This is a synthetic benchmark with a known model and a shared hand-coded
+search-leaf rule, not a deployed inspection study. Two additional boundary cases,
+20      P. Cooper and A. Velasquez
+
+the mild-penalty two-state Testbed and Navigation without separate observation
+actions, are reported in Appendices B.2 and D.1. Section 6.9 separately evalu-
+ates retrospective acquisition of real sensor records with a learned model and a
+chronological transfer set.
+     Unless a battery states otherwise, the canonical seeds are {42, 123, 456, 789,
+1024}. The main EFE comparison uses 1,000 episodes per seed on Tiger, Diag-
+nosis, and Bandit, and 500 on Tileworld and Inspection. RockSample protocols
+appear with their tables. Means aggregate episodes across seeds, and main-table
+uncertainty is the SE of per-seed means. Pairwise comparisons use seed-level
+Welch t-tests with Holm–Bonferroni correction for the stated comparison fam-
+ilies. Pooled episode-level statistics and bootstrap intervals are supplementary
+(Appendix E). A failure to reject a diﬀerence is not called equivalence. Equiva-
+lence is tested separately with ﬁxed-margin TOST below.
+     The budget battery generally uses 100 episodes per evaluation cell, with
+each cell deﬁned by one weight and one seed. Tileworld uses 40 episodes per
+usage-curve cell and 30 per scale-collapse cell, and Inspection-N =8 uses 30 per
+usage-curve cell. Diﬀerent batteries have diﬀerent episode counts and seeding
+rules, so their estimates are not interchangeable. The frontier study below ex-
+plicitly addresses a consequential cross-battery diﬀerence. The JAIR version’s
+reproducibility checklist records all exceptions and artifact locations.
+
+
+6     Experiments on Shadow Prices and Sensing Budgets
+
+We ﬁrst test scale transfer and online re-adaptation, then examine cost-
+denominated budgets, interleaved settings, and the measured staircases. Com-
+parisons with unconstrained and usage-constrained references lead to the
+held-out calibration study. A distractor experiment then separates the amount
+of sensing from its relevance to reward.
+
+
+6.1   Curve Collapse across Reward Scales
+
+Proposition 3 predicts that rescaling rewards and sensing costs by α preserves
+a count-usage curve when the information weight is also multiplied by α. We
+evaluate reward scales α ∈ {0.1, 1, 10} on corresponding scaled weight grids.
+Figure 4 shows the result in raw and normalized coordinates. Every matched w/α
+point agrees bit-exactly on Diagnosis, Bandit, Tiger, and Tileworld. Shared per-
+episode random streams make exact empirical agreement possible when actions
+coincide. These CSVs are byte-identical under an absolute comparison tolerance
+in place of the relative one of Section 4.2, which does not bind at these points.
+    The normalized grid bracket is (0.141, 0.323] for Diagnosis at B=8,
+(3.84, 8.76] for Bandit at B=8, and (5.80, 20.0] for Tileworld at B=15, un-
+changed across scales. Tiger is a necessary negative control. Its usage is constant
+at 4.37 across the tested normalized range [0, 20], so collapse is trivial and B=4
+is unbracketed. Equivariance preserves a curve but does not ensure that it oﬀers
+a useful sensing dial.
+                                                                                   Pricing the Sensing Budget in ρ-POMDPs                                21
+
+
+
+
+                                                                           Multiplier on all rewards and sensing costs
+                                                                                 α = 0.1         α=1                α = 10
+
+
+                                     (a) Reward scaling shifts the curve                            (b) Weight rescaling restores it
+
+                                10
+
+
+
+
+Mean observations per episode
+                                                                                                                     Shared grid bracket
+                                 9                                                                                     (0.141, 0.323]
+
+
+                                      B=8                                                            B=8
+                                 8
+
+
+                                 7
+                                       Larger reward scale                                             All three measured series
+                                       shifts the curve right                                          coincide at every grid point
+                                 6
+
+
+                                      0     10−4           10−2            100             102         0     10−3        10−2         10−1   100   101
+                                                      Information weight w                                            Normalized weight w/α
+
+
+
+Fig. 4. Reward-scale transfer on Diagnosis. In (a), separately evaluated usage curves
+shift when rewards and sensing costs are multiplied by α ∈ {0.1, 1, 10}. In (b), plot-
+ting against w/α collapses them exactly, including the B=8 grid bracket (0.141, 0.323].
+Points and error bars are means ±1 seed-level SE over ﬁve seeds and 100 episodes per
+seed, with shared per-episode streams. Lines guide the eye. Bands and open–closed
+endpoints mark grid brackets, not uncertainty intervals or policies attaining the target.
+The crossing between sampled points remains unresolved.
+22     P. Cooper and A. Velasquez
+
+6.2   Online Re-adaptation after a Reward Rescale
+
+We compare the projected decaying-step controller with its reset-on-shift exten-
+sion on Diagnosis at target B=8. Both use η0 =0.05, decay δ=0.02, and a tenfold
+reward-and-cost rescale at episode 200 of a 400-episode run. Ten shared con-
+troller seeds support a paired comparison. The extension watches a 20-episode
+usage window. Once the step has decayed below half its initial value, a deviation
+exceeding both three window standard errors and 0.5 observations restarts its de-
+cay clock. The per-episode traces and derived metrics are archived in results_
+price_dual_multiseed_metrics.csv and its companion outputs.
+    Recovery occurs when a rolling mean computed only from post-rescale
+episodes stays within ±1 of B for 20 consecutive episodes. The comparison
+uses the restricted time min(T, 180) for every seed, where T is the zero-based
+post-rescale index at the start of the ﬁrst qualifying hold and 180 is the last
+admissible start index. A seed that never completes it receives 180. Decay-only
+averages 157.3 episodes and reset-on-shift 51.2, a descriptive ratio of 3.07. The
+paired diﬀerence is 106.1 episodes with a Student-t 95% interval [96.8, 115.4].
+All ten paired diﬀerences favor resetting. Reset-on-shift recovers on 10/10 seeds
+and decay-only on 9/10, so the latter’s unrestricted recovery distribution is
+right-censored. The conditional mean among its nine recovered seeds is not the
+comparison estimand.
+    These measurements come from the per-episode-seeded runner, which also
+seeds the environment constructed at the rescale. Decay-only is slower than
+reset-on-shift on every seed, and on one of the ten it does not recover within the
+window. Figure 5 plots the trajectories. The mid-run rescale is nonstationary, and
+the reset variant restarts its step schedule, so neither experiment is covered by
+Proposition 5’s stationary convergence guarantee. This is empirical re-adaptation
+evidence on one shift scenario.
+
+
+6.3   Cost-Denominated Budgets
+
+Heterogeneous test costs make count and cost targets diﬀerent design inputs. In
+a Diagnosis variant with equally accurate tests costing 0.5 and 2.5, the ratio
+Ucost /Ucount rises from 1.26 at weights through 10 to 1.37 and 1.41 at the two
+largest weights. The 12.0% spread relative to the grid mean reﬂects a changing
+test mix. Each test’s information gain depends on the current belief over its
+partition. The cost vector alone does not predict which is more informative.
+    The tested budget pairs nevertheless select the same grid brackets: count/cost
+targets 8.86/11.50 give (10, 31.6], and 13.71/19.20 give (31.6, 100]. Each pair is
+placed at the same fractional height within its curve’s sampled usage range,
+from the smallest to the largest mean on the grid, with end margins to ensure
+a crossing. This is not a ﬁxed conversion between count and cost. The observed
+change in cost per test is insuﬃcient to separate these paired crossings at this
+grid resolution. Appendix J.1 speciﬁes the target-placement margins.
+                                                                     Pricing the Sensing Budget in ρ-POMDPs                      23
+
+
+
+
+                                               (a) Decay only                                       (b) Reset on shift
+
+
+
+                              2
+
+          Weight w
+                              1
+
+
+
+                              0
+
+                                            (c) Decay only, usage                              (d) Reset on shift, usage
+                              9
+
+
+
+Sensing actions per episode
+                              8
+
+
+
+
+   (rolling mean, 20 ep)
+                              7
+
+
+                              6
+
+
+                                  0   100           200            300     400   0          100           200            300   400
+                                                   Episode                                               Episode
+
+                                               median (10 seeds)         IQR         budget B = 8           rescale
+
+
+
+Fig. 5. Online control on Diagnosis through a tenfold reward-and-cost rescale at
+episode 200. Columns compare decay-only and reset-on-shift. Top panels show weight,
+as median and interquartile range over ten seeds. Bottom panels show rolling usage with
+window 20 and target B=8. Recovery uses post-shift-only windows and a 20-episode
+hold within ±1 of the target. Restricted recovery time min(T, 180) averages 157.3 ver-
+sus 51.2 episodes, with paired diﬀerence 106.1 and Student-t 95% interval [96.8, 115.4].
+This nonstationary experiment is outside Proposition 5.
+24     P. Cooper and A. Velasquez
+
+6.4   RockSample and Structural Inspection as Interleaved Settings
+
+Usage calibration also applies to the interleaved agents of Sections 7.4
+and 7.5, counting check/test actions as sensing. Their sampled usage ranges
+are [3.00, 8.83] on RockSample[5,3], [2.00, 14.54] on RockSample[7,4], and
+[22.38, 58.56] on Inspection-N = 16. Four budgets per instance are placed inside
+these ranges. Appendix J.1 gives the grid, episode counts and target-placement
+rule.
+    RockSample[7,4] and Inspection-N = 16 have nondecreasing usage at con-
+secutive sampled weights. RockSample[5,3] instead falls from U (0) = 3.70 ± 0.11
+to 3.00 ± 0.00 at w = 0.316 before rising. Thus even an interleaved family’s at-
+tainable usage can extend below its reward-only usage. These are sampled-grid
+observations, not bounds on untested weights.
+
+
+6.5   Shadow-Price Staircases across Five Domains
+
+The observe-then-commit domains and the smaller Inspection instance now re-
+ceive the same treatment as the interleaved instances. Figure 6 reports grid
+estimates of w∗ (B) over identiﬁable budgets inside [Umin , Umax ] for Tiger, Diag-
+nosis, Bandit, Tileworld-6×6, and Inspection-N =8, where Umin and Umax are
+the endpoints of each curve’s usage range (Section 6.3). An identiﬁable budget
+is one placed strictly inside that range by the rule of that section, evenly spaced
+with the end margins speciﬁed in Appendix J.1, so that the grid brackets it. The
+monotonicity at issue is that of the underlying usage curve U (w) from which
+each staircase is read oﬀ, taken between consecutive sampled grid weights. On
+Tiger, Diagnosis, and Inspection that curve is nondecreasing between every pair
+of consecutive grid weights. On Bandit and Tileworld it is not, showing local non-
+monotonicity from discrete policy switches, the ﬁrst of the two obstacles noted
+after Proposition 4. We report crossing brackets and usage standard errors for
+every domain (Deﬁnition 2).
+    The standard error attached to a bracket is that of usage at a ﬁxed weight,
+and the bracket’s width is set by the grid, so neither says how often a diﬀerent
+sample of seeds would select a diﬀerent bracket. We measured bracket-selection
+stability by resampling the ﬁve seeds with replacement 2000 times and re-solving
+each of the 25 budgets of Figure 6 on each resampled curve (run_bracket_
+stability.py, results_price_bracket_stability.csv, with the count of ev-
+ery bracket outcome in results_price_bracket_stability_counts.csv). The
+reported bracket is recovered in every resample at 19 budgets and in at least 99
+percent of resamples at 21. The lowest agreement is 0.789, at Inspection’s lowest
+budget. In all but one disagreeing resample, the alternative is a neighbouring
+step of the staircase or, at Tiger’s lowest and highest budgets, no bracket at
+all. Those two Tiger budgets lie about one standard error of usage from the
+corresponding ends of its usage range.
+    On Bandit and Tileworld a budget can be crossed more than once, and the
+reported bracket estimates the last crossing by the convention that deﬁnition
+adopts, so it names one threshold at grid resolution rather than displaying the
+                                  Pricing the Sensing Budget in ρ-POMDPs         25
+
+reversals. Bandit’s budget B=5.87 is the one tested case. Usage ﬁrst reaches it
+at w=0.139 (6.19 observations), falls back to 5.11 at w=0.72, and reaches it for
+the last time inside the reported bracket (1.64, 3.73] (results_price_shadow_
+curves.csv), which does not show the earlier crossing.
+   Tiger’s price is weakly identiﬁed: the budget pins the price down only loosely.
+Instrumental listening already saturates most of the usage range at w=0, so the
+curve is ﬂat at its ﬂoor across the low-weight range and rises in a single step at
+high weight. Every tested budget lands in that one step’s bracket.
+
+6.6   Unconstrained Reward Reference
+To determine whether w=1 is reward-competitive at its natural operating point,
+we compare EFE with SARSOP [31] on Tiger, Diagnosis, and Bandit. The orig-
+inal APPL solver is built from source, each environment is exported through a
+common model path, and the solve uses precision 10−3 at γ=0.999. The returned
+alpha-vector policy is evaluated in the same simulator as EFE at ﬁve seeds and
+500 episodes per seed. SARSOP is a near-optimal reference, not a certiﬁed ex-
+act solution to the reported Monte Carlo comparison. Build and export details
+appear in Appendix G.1.
+    Fixed-margin two one-sided tests (TOST) [51] assess reward equivalence
+within one observation’s cost, ±1.0 on Tiger and Diagnosis and ±0.5 on Bandit.
+The ﬁve-seed unpaired Welch TOST rejects both nulls on all three environments
+after Holm correction. Its margins were chosen after a canonical-seed compar-
+ison was inspected, so it is retrospective. The ﬁfteen additional seeds in the
+n = 20 check were ﬁxed after the margin and before that study ran, and all
+three equivalence conclusions persist.
+    A predeclared twenty-seed check also reseeds every episode, matching hidden
+states and observation draws while actions agree. It retains equivalence, with
+paired reward diﬀerences +0.11 ± 0.09 on Diagnosis and +0.04 ± 0.03 on Bandit
+(seed-level SE). Tiger’s policies act identically. Appendix J.2 gives the numerical
+tests, intervals and archives. These results establish equivalence within the stated
+margins on these three environments, not universal near-optimality of w = 1.
+
+6.7   A Usage-Constrained Reference
+A literal usage penalty supplies a diﬀerent reference from an information bonus.
+We replace observation reward −costj by −(costj + λ) and solve with SARSOP
+over a 12-point penalty grid in [0, 100]. This estimates policies maximizing E[R]−
+λE[U ] over the POMDP policy space, with γ=0.999 and ﬁve seeds of 300 episodes
+per penalty. The penalty is the Lagrangian price of the usage cap in Equation 6.
+The information weight w is not that multiplier.
+    At budget B, the reference is the feasible envelope of the sampled policy
+points, obtained by maximizing their mixture reward subject to mixture usage
+at most B. A solution uses at most two sampled policies. Policies below the target
+remain eligible, and the reference is ﬂat at the largest sampled reward once the
+cap is slack. This is a linear program over measured points, not equal-usage
+26                                           P. Cooper and A. Velasquez
+
+
+
+
+                                              top of tested w grid
+                                       102
+
+
+
+
+Shadow price: estimate ̂
+                      w(B), bracket
+                                       101
+
+
+                                       100
+
+
+                                      10−1
+
+
+
+                                         0
+
+                                                                 5             7              10                  15               20               30
+                                                                             Sensing budget B (mean observations, log scale)
+
+                                                          Bandit                    Tiger                   bracket (wlo , whi ] (series style)
+                                                          Diagnosis                 Tileworld-6×6                          ̂
+                                                                                                            slack budget: w(B) below its crossing bracket
+                                                          Inspection-N = 8
+
+
+
+Fig. 6. Operational shadow-price staircases w∗ (B) across ﬁve observe-then-commit and
+inspection domains (Tiger, Bandit, Diagnosis, Inspection-N =8, Tileworld-6×6), each
+in its own color, with a logarithmic budget axis and a symmetric-log weight axis that is
+linear near zero. Each staircase steps up as the sensing budget B rises, and the vertical
+bar at each step marks that budget’s crossing bracket (wlo , whi ] (Deﬁnition 2), capped
+where the bracket’s upper edge coincides with the top of the tested w grid (dotted
+horizontal rule at 100). An open circle with a dotted bar marks a slack budget, one for
+which the grid weight whose usage comes nearest to the budget lies strictly below the
+lower edge of the crossing bracket (w=0 at seven of the nine marked budgets, w=0.316
+at Diagnosis B=11.06, and w=0.139 at Bandit B=5.87, the twice-crossed budget dis-
+cussed in the text), so the nearest-point solution returns a weight below the bracket
+while the dotted bar still marks the crossing. Every marker plots that nearest-point
+solution ŵ(B), which can also sit on a bracket’s lower edge. The usage curves behind
+Tiger, Diagnosis, and Inspection never step downward between consecutive sampled
+weights, while Bandit and Tileworld show local non-monotonicity from discrete policy
+switches, so their brackets mark the last crossing of each budget by the convention of
+Deﬁnition 2.
+                                  Pricing the Sensing Budget in ρ-POMDPs         27
+
+interpolation. The solver is approximate, the penalty grid is ﬁnite, and reward
+and usage are Monte Carlo estimates. Consequently the envelope is neither a
+certiﬁed population bound nor the full constrained frontier. We do not assume
+that ﬁnite-state strong-duality results [1] automatically extend to the continuous
+belief MDP. Appendix J.2 identiﬁes the evaluated policies and reference records.
+    At EFE’s endogenous usage, the cap does not lower the maximum sampled
+reference reward on any of the three environments, and estimated reward gaps
+are small relative to their standard errors (Appendix J.2). The evaluated usage-
+matched Planning+IG weights also give the same rewards as EFE. This is a
+measured plateau, not an extension of Proposition 1 to arbitrary weights. The
+next study instead uses calibration-derived targets. No comparable constrained
+reference is available for the larger RockSample or Inspection instances.
+
+
+6.8   Calibration-Derived Targets on Held-Out Seeds
+
+The preceding comparison uses whatever sensing the weight-one policy happens
+to buy. We now test targets independent of that weight-one usage, chosen by a
+predeclared rule from each calibration curve. These targets stand in for applica-
+tion requirements but are not themselves application-speciﬁed. The study sepa-
+rates whether the procedure meets expected usage from whether doing so maxi-
+mizes reward under a cap. Its original design was recorded in the producer’s doc-
+string before results were inspected (experiments/run_budget_frontier.py).
+    Each core environment is calibrated on the canonical ﬁve seeds, 100 episodes
+per seed, using the 16-point weight grid and horizons speciﬁed in Appendix J.1.
+We select budgets at 0.25, 0.5, and 0.75 of the measured range [Umin , Umax ], at
+the midpoint of its largest jump, and at half of Umin . The last is deliberately
+unattainable and must be declared so. Deﬁnition 2 supplies the crossing bracket
+and endpoint-mixture probability q. All selection uses calibration data alone, and
+evaluation uses held-out seeds {7, 8, 9, 10, 11} with 100 episodes each. Tiger’s gap
+budget duplicates its middle-range budget. Bandit’s curve is nonmonotone, so
+the stipulated last-crossing convention determines its bracket.
+    The original within-family comparator is the highest-reward single grid mem-
+ber whose calibration usage is at most B. Two additional LP comparators were
+introduced after inspecting the ﬁrst results, and that amendment is disclosed in
+the producer. One maximizes calibration reward over mixtures with usage equal
+to B, and one does so with usage at most B. Each uses at most two calibration-
+grid weights and is evaluated on held-out seeds. Their scope is the sampled grid.
+Selecting calibration usage below a cap does not guarantee that the population
+or held-out usage meets it.
+    Table 2 gives the principal held-out results. All three below-range targets
+are declared unattainable. At all twelve attainable targets, the selected endpoint
+mixture meets usage to within 0.13 observations. Errors are within one held-out
+SE except Bandit’s gap target, where an error of 0.09 is about 1.3 SE. The
+evaluated bracket endpoints and best feasible single member miss the targets by
+more. Endpoints miss by 0.3–1.1 observations on Tiger and 0.2–3.6 elsewhere.
+28        P. Cooper and A. Velasquez
+
+Table 2. Endpoint-mixture calibration on held-out seeds, 100 episodes per seed over
+ﬁve seeds. B is the calibration-derived expected-use target. U and R are held-out
+mixture usage and reward. All ± values are seed-level SE. The cap gap is mixture
+reward minus the same-stream cap-reference envelope, and the target gap is mixture
+reward minus the best sampled reference mixture whose usage equals B, each with
+seed-level SE. Reference supports and weights are ﬁtted on those same seed means and
+held ﬁxed for the SE, so intervals derived from these columns are nominal pointwise
+plug-in summaries, as qualiﬁed in the text. Tiger’s gap row duplicates its middle target.
+All three below-range targets are declared unattainable. Appendix J.3 gives the within-
+family comparisons and reference sensitivity checks.
+
+ Environment Target       B         U             R           Cap gap      Target gap
+ Tiger          0.25    4.72    4.64 ± 0.10   5.36 ± 0.10   −0.33 ± 0.04   0.08 ± 0.04
+ Tiger          0.50    5.07    5.04 ± 0.14   4.96 ± 0.14   −0.72 ± 0.06   0.03 ± 0.06
+ Tiger          0.75    5.42    5.35 ± 0.14   4.65 ± 0.14   −1.03 ± 0.06   0.07 ± 0.06
+ Tiger          gap     5.07    5.04 ± 0.14   4.96 ± 0.14   −0.72 ± 0.06   0.03 ± 0.06
+ Diagnosis      0.25     7.72 7.70 ± 0.25 −2.14 ± 0.48 −0.03 ± 0.28 −0.03 ± 0.28
+ Diagnosis      0.50     9.53 9.47 ± 0.20 −2.11 ± 0.67 −0.76 ± 0.15 −0.76 ± 0.15
+ Diagnosis      0.75    11.35 11.47 ± 0.37 −2.31 ± 0.45 −1.10 ± 0.22 −0.05 ± 0.16
+ Diagnosis      gap      7.84 7.86 ± 0.25 −2.06 ± 0.47 0.00 ± 0.22 0.00 ± 0.22
+ Bandit         0.25     5.51   5.62 ± 0.21   6.06 ± 0.26   −0.21 ± 0.12 −0.16 ± 0.12
+ Bandit         0.50     7.79   7.67 ± 0.37   5.70 ± 0.25   −0.57 ± 0.09 −0.08 ± 0.06
+ Bandit         0.75    10.07   9.95 ± 0.36   4.95 ± 0.22   −1.32 ± 0.08 0.05 ± 0.04
+ Bandit         gap      4.71   4.62 ± 0.07   5.62 ± 0.21   −0.59 ± 0.20 −0.59 ± 0.20
+
+
+
+The selected feasible single member leaves 0.2–4.7 observations unspent on held-
+out data. Its usage is below the target in all twelve rows, an observed result
+in addition to the calibration selection fact. Conversely, the endpoint mixture’s
+held-out mean exceeds B on three rows, by at most 0.13. An expected-use target
+provides neither a hard per-episode cap nor ﬁnite-sample cap feasibility.
+    Meeting a target can buy useful information or impose an avoidable reward
+cost. On Diagnosis at B=7.72, 9.53, and its gap target 7.84, the mixture earns
+−2.14, −2.11, and −2.06 against the feasible member’s −2.86. On Tiger, reward-
+only planning uses 4.32 observations and earns 5.68 on this held-out stream.
+Spending more to meet the three increasing targets reduces reward to 5.36, 4.96,
+and 4.65. Bandit likewise loses reward at its two larger interior targets. The
+endpoint procedure also need not select the best mixture meeting a target. At
+Bandit’s gap budget, the calibration LP mixes w=0 and w=0.72 and earns 5.94±
+0.19 on held-out seeds, against the endpoint mixture’s 5.62±0.21. Its usage error
+is larger, 0.18 rather than 0.09. The chosen endpoint mixture therefore cannot
+stand for every mixture in the family, and its deﬁcit at this budget cannot be
+attributed to planning depth alone.
+    A valid constrained-reward comparison must also control the evaluation
+stream. The original reference points were evaluated on canonical seeds with
+once-per-seed seeding, whereas the family uses held-out per-episode seeds. Their
+                                 Pricing the Sensing Budget in ρ-POMDPs        29
+
+direct reward comparisons are descriptive cross-stream comparisons. The dif-
+ference matters on Tiger. Its unpenalized reference earns 5.02 on the canonical
+stream but 5.68 on the held-out stream, removing the mixture’s apparent excess
+over the reference at the smallest budget.
+    We therefore added a same-stream comparison after inspecting the original
+results. Every saved reference policy was ﬁrst checked against its committed
+canonical estimate to 10−9 , then re-evaluated on the held-out seeds with the
+family’s per-episode seeding, and the feasible envelope was recomputed. The
+Cap gap column of Table 2 pairs each seed’s mixture reward with its reference
+reward on the same episode seeds. Reference support and mixture weights are
+ﬁtted on those same held-out seed means and held ﬁxed for the SE. The resulting
+Student-t intervals are nominal pointwise plug-in summaries. They omit support
+reselection, uncertainty in mixture weights and cap feasibility, and multiplicity
+across budgets. They do not establish coverage for the population constrained
+frontier.
+    Under that ﬁtted comparison, negative 95% intervals exclude zero at eight
+of eleven distinct budgets, counting Tiger’s duplicate once. The cap is slack at
+seven budgets: every Tiger target, Bandit’s three interior targets, and Diagno-
+sis’s largest. At these budgets, the reference is the unpenalized SARSOP policy,
+the estimated unconstrained reward optimum. A gap there combines the cost
+of spending B with any ineﬃciency of the family. A predeclared target-matched
+reference separates the two. Subsidized SARSOP policies, with negative usage
+penalties, extend the sampled points above the unpenalized usage, and the refer-
+ence becomes the best sampled mixture whose usage equals B (run_frontier_
+target_reference.py). Against it, intervals exclude zero at two of eleven dis-
+tinct budgets on the held-out seeds. Replaying the held-out-ﬁtted mixtures on
+ten fresh seeds again gives two shortfalls, all at budgets whose held-out cap ref-
+erence binds. Fresh realized usage need not equal B. Only Bandit’s gap-budget
+shortfall, −0.59 held out and −0.50 fresh, appears on both streams, and its held-
+out interval just reaches zero when the reference is matched to the mixture’s
+realized usage rather than to B (Appendix J.3). Diagnosis’s held-out shortfall at
+B=9.53 mostly pairs a policy on the usage plateau containing w=1 with the unpe-
+nalized SARSOP policy at nearly equal usage. The twenty-seed episode-matched
+check of Section 6.6 ﬁnds that pair equivalent within the margin, although on
+these ﬁve held-out seeds it diﬀers by 1.01 ± 0.18. Both references are maxima
+over noisy sampled points, so selection bias remains.
+    Tiger’s paired gaps measure only extra listening, since neither the family nor
+any policy in either reference support makes a wrong commit in the 500 held-out
+episodes. A wrong commit costs 110 relative to a correct one, and the canonical
+reference error rate of 0.6% is worth about 0.66 expected reward, a rare-event
+uncertainty the nominal intervals do not capture. If the reference erred at that
+rate while the family never did, the smallest-budget cap shortfall would reverse
+and the middle one would nearly vanish.
+    This study supports expected-usage calibration within the tested family, in-
+cluding gap targets, while quantifying its limits as a reward optimizer. If the
+30      P. Cooper and A. Velasquez
+
+engineering requirement is to spend a speciﬁed expected sensing amount for
+coverage or veriﬁcation that reward does not represent, the endpoint mixture
+directly addresses it. If the requirement is only an upper limit and reward is the
+objective, the feasible mixture or constrained reference is the relevant compara-
+tor. Appendix J.3 supplies selection details, reference sensitivity checks and the
+paired archive pointers.
+
+6.9   Sensor Records with Learned Likelihoods
+We next test calibration on recorded observations with a learned model. The UCI
+Gas Sensor Array Drift dataset contains 13,910 exposures to six gases, measured
+by sixteen sensors [64, 65]. Acquiring a sensor reveals its eight stored descrip-
+tors once. This is retrospective access to recordings, not selective operation of
+the original instruments. Before evaluating policies or inspecting usage curves,
+we ﬁxed targets B ∈ {2, 4, 8} accesses per case. They are researcher-deﬁned
+requirements, not operator-supplied needs or measured energy budgets.
+    Batches 1–6 provide 3,550 training, 1,175 calibration and 1,208 test cases,
+stratiﬁed by batch and class. Training alone determines eight categories per
+sensor, class priors and smoothed categorical likelihoods. Policies assume condi-
+tional independence of sensors given gas identity, use one-observation lookahead,
+and cannot reacquire a sensor. Each action reveals the case’s actual category.
+Correct classiﬁcation earns 1, with a benchmark cost of 0.02 per access. All meth-
+ods share this ﬁtted model. We compare the crossing mixture with calibration-
+selected equality mixtures from a direct usage-penalty family, a best equality
+mixture within the weight grid, and greedy conditional-information acquisition
+that takes exactly B sensors. Greedy information acquisition is an established ap-
+proach [11], and this comparison does not reproduce a learned neural acquisition
+method. Appendix I.1 gives the frozen grids, splits and uncertainty procedure.
+    The sampled weight family cannot reach B = 2, whose target is below its
+smallest calibration usage, 3.424. The two straddled targets transfer closely
+to unseen cases, with mean usage 4.006 and 8.019. Their Bonferroni-adjusted
+98.333% conditional bootstrap intervals for usage error are [−0.210, 0.255] and
+[−0.362, 0.411], inside the predeclared ±0.5 tolerance. Each of the 2,000 repli-
+cates reselects the calibration crossing. None fails at B = 4 or 8, whereas all fail
+at B = 2. Thus two targets meet the usage criterion, and the all-three-target
+requirement fails.
+    Accurate usage does not make the selected policy competitive on classiﬁca-
+tion. At B = 4, 8, the crossing mixtures achieve 80.23% and 76.28% accuracy,
+against 82.11% and 80.18% for direct equality mixtures and 81.71% and 79.47%
+for exact-count greedy information acquisition. The direct mixtures use 3.965
+and 7.977 sensors on test cases, so their realized usage is close but not identical
+to the crossing mixtures’. Each nominal paired accuracy-gap interval lies below
+zero (Figure 7). The best equality mixtures within the weight grid also do bet-
+ter, at 82.12% and 78.41%. The direct and exact-count policies can serve B = 2,
+with 80.08% and 81.04% accuracy. These results favor the simpler controls in
+this conﬁguration, not calibration as a general acquisition algorithm.
+                                                                                 Pricing the Sensing Budget in ρ-POMDPs                        31
+
+
+                                           (a) Usage transfer                                     (b) Held-out accuracy gaps
+                                           98.333% test / 95% later intervals                     95% paired intervals
+
+
+
+
+  Mean sensor accesses minus target
+                                       5
+                                                                                            B=2     Crossing unavailable
+                                       4
+
+                                       3
+                                                                                            B=4
+                                       2
+
+                                       1
+
+                                       0                                                    B=8
+                                      −1
+                                            Test       B7        B8         B9        B10          −5      −4     −3      −2      −1       0
+                                                 Within-period test and later batches                   Crossing − reference accuracy (pp)
+                                           B = 2 unavailable      B=8                              Direct equality
+                                           B=4                                                     Exact-count CMI
+
+
+
+Fig. 7. Usage transfer and accuracy costs on recorded sensor cases. (a) Frozen crossing-
+mixture usage minus its target on within-period test cases and later batches. The gray
+band is the predeclared ±0.5 access tolerance. Test intervals are 98.333% conditional
+bootstrap intervals with calibration reselection. Later intervals are nominal 95% inter-
+vals with selections ﬁxed. Positions denote collection groups, not equal elapsed times.
+(b) Paired test accuracy gaps against direct equality mixtures and exact-count greedy
+conditional-information acquisition (CMI), with nominal 95% intervals including cali-
+bration reselection. Positive gaps favor the crossing mixture. Direct mixtures need not
+exactly meet the target on test cases. All intervals condition on one trained model and
+within-stratum case exchangeability. The unbracketed B = 2 request is retained as
+unavailable.
+
+
+    Frozen calibration does not transfer to the 7,977 later cases in batches 7–10.
+Across those batches, the B = 4 mixture uses 5.15–6.51 sensors and the B = 8
+mixture uses 9.49–12.73. Accuracy also falls, reaching 14.56% and 11.56% in
+batch 8. The model is deliberately approximate. Even within the test period,
+the full-record classiﬁer has log loss 2.237, worse than the prior’s 1.674, despite
+higher accuracy. The study therefore demonstrates within-period usage calibra-
+tion and its limits under learned likelihoods and collection shift. It provides
+neither deployment validation nor a general robustness advantage.
+
+
+6.10                                       Reward-Irrelevant Sensing
+
+An expected sensing target controls the amount of sensing, but does not ensure
+that it concerns the task. We test this limit with Distractor Diagnosis, whose
+hidden state combines the usual four-way condition with an independent binary
+nuisance bit. Commit rewards depend only on the condition. An added test
+observes only the nuisance bit, while the original tests observe only the condi-
+tion. Under the independent generative process the belief stays factored, so the
+distractor carries exactly zero information about the condition. Appendix G.2
+32     P. Cooper and A. Velasquez
+
+states and tests that property, whose scope excludes correlated priors introduced
+through misspeciﬁcation.
+    We sweep ordinary Planning+IG over sixteen weights with ﬁve seeds and 100
+episodes per weight and seed, reﬁning the grid where distractor use begins. The
+distractor fraction is zero through w=3.5, 0.103 ± 0.001 at w=4, 0.233 ± 0.003
+at w=5, and approximately one third at the largest weights (Figure 8). Thus
+the observed onset bracket is (3.5, 4.0]. The canonical w=1 agent avoids the
+distractor on this instance because it is below onset, not because its objective
+is structurally immune. At suﬃciently high weights, genuine information about
+the nuisance bit earns more epistemic value than the test costs.
+    A reward-relevance variant scores information gain on the marginal belief
+over reward-equivalence classes. Two states belong to the same class when every
+commit action pays the same in them, so the partition is determined by the
+commit reward matrix already supplied to the agent. On this benchmark, the
+two states diﬀering only in the nuisance bit share a class and the four classes
+are the four conditions. The planner still propagates the full joint posterior
+and changes only the belief on which information gain is scored. If no states
+are reward-equivalent, the variant reduces to ordinary information gain. This
+construction uses the known reward model and the benchmark’s factorization,
+rather than learning task relevance from data.
+    The variant buys zero distractor tests at every swept weight. At w=100,
+ordinary information gain buys 6.46 distractor tests, 33.2% of its usage, and
+earns −10.48 ± 0.11 reward against the variant’s −3.64 ± 0.36. Seed-level Welch
+tests with Holm correction over the weight-by-metric family detect usage and
+distractor-count diﬀerences at every tested weight past onset. Reward diﬀerences
+survive that correction at w=31.6 and 100, with p = 1.2×10−5 and 1.5×10−5 ,
+but not at the smaller post-onset weights. Success rates are identical through
+31.6, and the variant’s nominal advantage at 100 is not signiﬁcant.
+    Relevance weighting does not solve over-observation. At the two largest
+weights the variant still buys 13.16 task-relevant tests against 9.77 at w=10. Nor
+is the IDS adaptation used here immune to nuisance sensing. Its information
+about the optimal commit is correctly zero for the distractor, but its zero-
+denominator fallback uses raw state-entropy reduction and yields a distractor
+fraction of 0.305 ± 0.005. This is a failure of that implementation choice, not
+evidence against reward-aware information measures in general. A sensing
+target and relevance weighting therefore address diﬀerent design requirements.
+Appendix J.4 deﬁnes the IDS adaptation and its fallback.
+
+
+7    Results
+
+The second battery locates the canonical EFE weight within the policy family
+and compares it with other planners. It provides empirical context for the equiv-
+alence result, whose validity itself rests on the stated assumptions and proof.
+Appendices B and K provide additional controls for the information-unit weight,
+observation structure and leaf rules.
+                                                                              Pricing the Sensing Budget in ρ-POMDPs                            33
+
+
+
+
+                                                               (a) Usage composition under ordinary information gain
+                               20
+                                         task-relevant tests
+                                         distractor tests
+
+
+
+
+    Mean tests per episode
+                               15
+
+
+
+                               10
+
+
+
+                                5
+
+
+
+                                0
+                                     0     1       6     01      16      1     6     1     16    5      4     5        5   10   .6   0
+                                         00      31     0.      03       0.   31         3.      3.         4.                  31   10
+                                         0.    00              0.             0.
+                                              0.
+                                                                                   Info-gain weight w
+
+                                                                    (b) Distractor fraction under the two objectives
+                                         ordinary information gain
+                                         reward-relevance weighted
+
+
+
+
+Distractor fraction of usage
+                               0.3
+
+
+
+                               0.2
+
+
+
+                               0.1
+
+
+
+                               0.0
+                                     0                            10−1                     100                     101                    102
+                                                                                   Info-gain weight w
+
+
+
+Fig. 8. Reward-irrelevant sensing on DistractorDiagnosisEnv. The upper panel de-
+composes ordinary Planning+IG’s usage into task-relevant and distractor tests as w
+grows. Distractor spend is zero below the onset bracket (3.5, 4.0] and saturates at
+roughly a third of total usage. The lower panel plots the distractor fraction for ordi-
+nary information gain against the reward-relevance-weighted variant on the same grid.
+The weighted variant is ﬂat at exactly zero everywhere. Error bars are seed-level SE
+over 5 seeds.
+34      P. Cooper and A. Velasquez
+
+7.1   Core Environments
+
+Table 3 contrasts w=1 EFE with myopic reward maximization, same-horizon
+reward-only Planning, and Planning+IG tuned for success within its own class.
+Reward-maximizing weights are considered separately below. On Tiger, EFE
+and Planning produce identical trajectories. With one observation action, the
+information term never changes the reward-based action choice at these stakes.
+This is a measured property of this instance rather than a general consequence
+of having a single sensor.
+
+
+Table 3. Core comparison, 1,000 episodes per seed over ﬁve seeds. Reward is mean
+± seed-level SE. Here w∗ = wsucc∗
+                                     is tuned for success, with reward tuning reported
+separately. Bold identiﬁes EFE and its exact Tiger tie with Planning, not a per-column
+winner. Success-tuned Planning+IG buys greater accuracy at a reward cost. Additional
+controls and statistical conventions are in Appendices B and E.
+
+             Environment Agent             Obs. Success      Reward
+                         Myopic            1.00   85.3% −7.15 ± 0.41
+             Tiger       Planning          4.20   99.4% +5.19 ± 0.21
+             H=6, w∗ =50 Planning+IG       5.66   99.9% +4.21 ± 0.08
+                         EFE               4.20   99.4% +5.19 ± 0.21
+                         Myopic       2.00        64.7% −13.17 ± 0.58
+             Diagnosis   Planning     5.86        88.8% −2.57 ± 0.20
+             H=3, w∗ =50 Planning+IG 13.16        99.2% −3.66 ± 0.12
+                         EFE         9.66         97.2% −1.37 ± 0.18
+                         Myopic            2.06   62.2% +5.56 ± 0.09
+             Bandit      Planning          3.29   71.0% +5.75 ± 0.08
+             H=2, w∗ =20 Planning+IG       9.57   98.9% +5.11 ± 0.04
+                         EFE               5.11   86.9% +6.27 ± 0.04
+
+
+
+    On Diagnosis, EFE raises success from 88.8% to 97.2% relative to Plan-
+ning and improves reward from −2.57 to −1.37. Seed-level Welch tests give
+p = 4.0×10−8 for success and p = 0.002 for reward. On Bandit it raises suc-
+cess from 71.0% to 86.9% and reward from 5.75 to 6.27, with p = 2.1×10−5
+and p = 0.001. These diﬀerences survive the stated Holm correction. Thus
+EFE Pareto-dominates same-horizon reward-only Planning on these two environ-
+ments. Success-tuned Planning+IG reaches higher accuracy, 99.2% and 98.9%,
+but pays for more sensing and attains lower reward. EFE supplies an untuned
+trade-oﬀ, not the best value of every metric.
+    Two baselines limit any attribution of these outcomes solely to explicit infor-
+mation gain. Posterior-vote, which draws states from the belief and votes over
+their optimal actions without an information term, is not signiﬁcantly diﬀerent
+from EFE on any Bandit metric. Its reward is nominally higher, 6.32 against
+6.27 (p = 0.58). It also beats EFE on Testbed, but performs worse on Diagnosis
+                                   Pricing the Sensing Budget in ρ-POMDPs          35
+
+and Tiger. The Epistemic-only ablation commits immediately at chance-level
+success on all three core environments and Tileworld. The units force this out-
+come, since in bits no observation there yields as much information as it costs.
+Appendices B and E give these controls and their statistical conventions. Re-
+ward eﬀects against Planning are small at the episode level on Diagnosis and
+Bandit despite statistically detectable mean diﬀerences. We do not interpret the
+mechanically inﬂated eﬀect sizes computed from only ﬁve seed means.
+    POMCP provides a search-based comparison, reported in Appendix F.2. Its
+simulation count per decision is a computational budget distinct from the sensing
+budget B. The MCTS-EFE comparison matches simulation counts, while a sep-
+arate Tiger control matches wall-clock computation. The POMCP comparisons
+outside the exploration sweep use untuned exploration constants. A separate
+sweep selects constants on tuning seeds. The selection rule was written after in-
+spection of an exploratory sweep on the canonical seeds and was recorded before
+the runs reported here. Neither the POMCP comparison nor the component ab-
+lation isolates directed observation selection as the cause of every performance
+diﬀerence. These qualiﬁcations remain necessary when comparing search archi-
+tectures, even when the information-weighted family performs well.
+
+
+7.2   Where the Information-Unit Weight Sits
+
+We sweep w ∈ {0.01, 0.1, 0.5, 1, 2, 5, 10, 20, 50, 100, 200} on Tiger, Diagnosis, Ban-
+dit, Testbed, and Tileworld. Figure 9 shows reward against success. The w=1
+Planning+IG and EFE markers coincide under Proposition 1 and shared tie-
+breaking. The empirical question is where that common policy lies relative to
+other weights, not whether equivalent implementations diﬀer.
+    The weight-one policy is within the reward-maximizing run of sampled
+weights on Tiger (0.01 through 20), Diagnosis (0.5 through 20), and Bandit (1
+and 2). These are sampled plateaus, not claims about every untested weight
+between grid points. Testbed instead maximizes reward across sampled weights
+from 0.01 through 0.5. Its weight-one policy buys 6.4 percentage points of
+success at a reward cost of 0.11. On Tileworld, w=20 Pareto-dominates w=1,
+with reward −18.95 against −21.53 and success 91.8% against 72.0%. Thus
+the canonical weight attains the sampled reward maximum on three of ﬁve
+environments and is suboptimal on two.
+    Success reaches its maximum at the upper grid endpoint 200 on all ﬁve
+environments, although it dips from w=0.5 to w=1 on Bandit and Tileworld.
+The reward cost need not grow smoothly. On Tiger and Diagnosis, the tested
+weights from 1 up to the point below 50 leave reward unchanged, and the step
+to 50 incurs the measured cost. The grid does not exclude a cheaper untested
+intermediate policy. The advantage of w=1 here is that it selects a useful de-
+fault without environment-speciﬁc search under the stated reward convention.
+It does not remove dependence on units, promise best accuracy, or replace cal-
+ibration when a particular sensing target is required. Appendix B.3 compares
+the implementation’s bit-unit default with the exactly nat-canonical weight.
+36                       P. Cooper and A. Velasquez
+
+
+
+
+                                                 (a) Tiger                                                   (b) Testbed
+                           w=0.01–20                                                     w=0.01–0.5
+                                                                                   0.5
+                     5
+
+
+       Mean reward
+                                                                                                      w=1
+                                     w=50–100
+                                                                                   0.0
+                     4                                                                                           w=10
+
+
+                                                                                  −0.5                   w=50–100
+                     3
+
+                            98.0          98.5      99.0          99.5    100.0            90.0       92.5      95.0       97.5   100.0
+                                            Success rate (%)                                            Success rate (%)
+
+                                             (c) Diagnosis                                                   (d) Bandit
+                     0                                                              7
+                                             w=0.5–20                                                    w=1–2
+
+                 −2                                                                 6
+
+
+   Mean reward
+                           w=0.01–0.1                                               5    w=0.01–0.1
+                 −4                                                                                             w=10
+                                                 w=50–100
+                                                                                    4
+                 −6                                                                                              w=100
+
+                                                                                    3
+                         87.5      90.0      92.5     95.0         97.5   100.0             70           80             90        100
+                                            Success rate (%)                                            Success rate (%)
+
+                                             (e) Tileworld
+                          w=0.01–0.5                              w=20
+
+              −20                                                                                     Planning+IG (sweep over w)
+
+
+Mean reward
+                                           w=10
+                                                                                                      Planning+IG w = 1
+              −25         w=1
+                                                           w=100                                      EFE agent (w = 1)
+              −30
+
+
+                           70               80               90            100
+                                            Success rate (%)
+
+
+Fig. 9. Reward and success across eleven information weights from 0.01 to 200. The
+w=1 Planning+IG diamond and EFE star coincide under their equivalence assump-
+tions and shared tie-breaking. They attain the largest sampled mean reward on Tiger,
+Diagnosis, and Bandit. On Testbed they trade reward for success, and on Tileworld
+w=20 dominates them on both axes. Labels identify sampled weights sharing a point.
+Error bars are seed-level SE, visible where larger than markers.
+                                                                              Pricing the Sensing Budget in ρ-POMDPs                                                 37
+
+                         (a) Success rate vs. grid size                        (b) Reward vs. grid size                             (c) Computation cost vs. grid size
+                   100                                                                                                             103
+
+
+
+
+                                                                                                           Time per episode (ms)
+                                                                        −20
+
+
+
+Success rate (%)
+                    75                                                                                                             102
+
+
+                                                          Mean reward
+                                                                        −30
+                    50
+                                                                                                                                   101
+                    25                                                  −40
+                                                                                                                                   100
+                     0                                                  −50
+                         4×4          6×6         8×8                         4×4         6×6        8×8                                 4×4       6×6         8×8
+                                                                                       Grid size
+                                   Myopic            Planning                       InfoGain-Tuned           Planning+IG                            EFE
+
+
+
+Fig. 10. Tileworld scaling (H=2, 200 episodes per seed × 5 seeds) across Myopic, Plan-
+ning, InfoGain-Tuned, Planning+IG, and EFE. Planning collapses at 8×8 (|S|=64),
+while EFE maintains 69.4%. Planning+IG at a ﬁxed w=100, not tuned in class, achieves
+97.8% but at higher reward cost. Error bars in (a) and (b) are seed-level SE, tied series
+are oﬀset slightly along the categorical axis for legibility, and per-episode time in (c) is
+a pooled mean over all episodes and seeds, shown without error bars on a log scale.
+
+
+7.3                      Tileworld
+
+Tileworld shows why horizon and observation structure must accompany a scal-
+ing claim. At 6×6 and H=2, EFE and Planning are not signiﬁcantly diﬀerent
+in reward (−21.53 against −21.39, p = 0.82) or success (72.0% against 73.8%,
+p = 0.17). EFE uses fewer scans, 14.75 against 15.64 (p = 8.8×10−5 ). These
+are failures to reject reward and success diﬀerences, not TOST equivalence. The
+success-tuned w=50 agent reaches 97.3% accuracy but uses 32.25 scans and earns
+lower reward.
+    In a separate ﬁxed-H=2 sweep (Figure 10), Planning takes no scans at 8×8
+and achieves 1.4% ± 0.3pp success, while EFE achieves 69.4% ± 1.0pp. The short
+horizon cannot value enough scans to repay their costs before committing on
+a large grid. The contrast is therefore with a non-scanning ﬁnite-horizon agent,
+not with reward-only planning at arbitrary depth. At 4×4 and 6×6 the two
+are within one SE, with no formal test for that sweep. The advantage appears
+at a horizon-and-scale threshold rather than widening uniformly with size. Its
+weighted comparators use ﬁxed w=100, not class-speciﬁc tuning. Random and
+overlapping scan partitions sharply reduce all agents’ absolute performance and
+do not separate EFE from Planning on reward or success, although EFE uses
+fewer scans in all three modes. Appendix K.1 preserves these robustness results
+and their scope.
+
+
+7.4                      RockSample
+
+RockSample tests the information weight within a shared factored belief-space
+search and a shared greedy leaf rule. On RS[5,3], EFE (16.47) and the w=5
+comparator (16.41) are not signiﬁcantly diﬀerent. On RS[7,4], EFE earns 15.96
+38      P. Cooper and A. Velasquez
+
+against 14.56 and leads the weighted family (p < 10−5 ). On RS[7,8], EFE (21.85)
+and w=5 (23.76) are not signiﬁcantly diﬀerent after correction, and both outper-
+form reward-only Planning (12.31). Raising the weight from 5 to 10 signiﬁcantly
+hurts on two of these instances and does not signiﬁcantly help on the third. Only
+weights 1, 5, and 10 were compared here, so this is not a dense reward-tuning
+claim.
+    The important counterexample is RS[11,11]. EFE and Planning both earn
+13.23, while a standalone approach-then-check heuristic earns 28.66 ± 0.83. That
+heuristic also beats both weighted agents on RS[7,8]. With this shared leaf rule,
+a larger state space therefore does not by itself increase the value of information
+weighting. At feasible search depths, distant useful checks lie beyond the tree,
+and the shared leaf rule values untouched rocks at zero under the uniform prior.
+It also charges a phantom trip to the east edge before exit, although this variant
+allows exit anywhere, biasing depth-capped continuations toward early exit. The
+cost is shared across the weighted family but limits absolute performance. Deeper
+POMCP does not repair this instance in the tested conﬁgurations. Behavioral
+traces show many distant checks, and reward declines from 12.94 at horizon
+10 to −54.78 at horizon 40. Table 4 gives the full comparison. Appendix K.2
+retains the leaf-rule disclosure, depth check, and heuristic comparison, alongside
+the extended solver analysis in Appendix F.1.
+
+7.5   Structural Inspection
+Inspection makes the reward-accuracy trade-oﬀ explicit. At N =8, EFE improves
+accuracy from Planning’s 73.0% to 91.1% while reward falls from −17.85 to
+−20.95. At N =16, it improves accuracy from 78.2% to 90.8%, with reward
+−45.80 against −45.42, a non-signiﬁcant diﬀerence (p = 0.57). The w=5 agent
+attains higher accuracy, 97.3%, but uses 38.3 tests against EFE’s 28.1 and earns
+−54.74. These results demonstrate feasible factored search on a synthetic known-
+model problem with a hand-coded leaf rule. They do not validate industrial
+deployment or show that EFE uniquely optimizes either reward or accuracy.
+Table 5 reports both instances.
+    Across the battery, the canonical weight is useful when the reward-only pol-
+icy leaves valuable, representable sensing opportunities unused. Its beneﬁt is
+bounded by the search horizon, sensor structure, reward convention, and objec-
+tive of the comparison. It matches the sampled reward maximum on three of
+ﬁve swept environments, loses to other weights on two, and gains nothing over
+Planning on the largest RockSample instance. These limits matter alongside its
+positive results on Diagnosis, Bandit, and the largest ﬁxed-horizon Tileworld
+grid.
+
+8     Discussion
+Choosing a sensing requirement. Expected usage is an interpretable design in-
+put when sensing itself is required. It controls neither reward eﬃciency nor rele-
+vance. The endpoint mixture can meet a target while earning less than another
+                                  Pricing the Sensing Budget in ρ-POMDPs          39
+
+mixture at that usage, or than a policy spending less. Ordinary information
+gain can also pay for irrelevant uncertainty. Reward-equivalence scoring removes
+distractor spending in the tested factorized benchmark, but does not prevent
+over-observation (Section 6.10). The simulated targets are calibration-derived.
+The sensor-record targets were ﬁxed independently of usage curves, but are
+researcher-deﬁned rather than application requirements. Their later-batch fail-
+ures require a fresh transfer check before using a frozen calibration.
+
+Interpreting the information-unit default. The recursive EFE identity ﬁxes w = 1
+after reward and information units are declared. That weight belongs to the level
+set of U (1), but need not equal its crossing threshold. Its usefulness is empirical:
+it lies in the reward-maximizing run of sampled weights on three of ﬁve swept
+environments and is beaten on two. Larger weights can buy greater success at a
+reward cost. Reward, success and usage therefore require separate evaluation.
+
+Observation structure and planning depth. The advantage depends on sensing
+opportunities that the search can represent. State-space size and sensor count
+alone do not predict it. The largest Tileworld separation is against a ﬁxed-horizon
+policy that takes no scans. On RockSample[11,11] the weighted family gains
+nothing over Planning, and the standalone heuristic beats the tree-search agents
+on the two larger instances. Navigation supplies another negative case, with no
+epistemic agent signiﬁcantly beating the greedy mover at any tested size (Ap-
+pendix D.1). These results do not imply superiority over reward-only planning
+at arbitrary depth.
+    At one-step depth, the recursion is myopic reward plus information gain at
+w = 1. Horizon, discounting and model accuracy aﬀect its behavior. The ﬁnite-
+horizon comparisons above and the controls in Appendices D.2 and D.3 show
+these dependencies. The observed discount threshold is not a general regime
+boundary. Every tested Tiger sensor mismatch aﬀects EFE and Planning identi-
+cally, providing no EFE-speciﬁc robustness beneﬁt. Overestimated sensor accu-
+racy can cause premature commitment.
+
+What the search controls establish. MCTS-EFE addresses the cost of exact belief-
+tree enumeration. Its main POMCP comparison matches simulation counts with
+diﬀerent costs per simulation, and a separate Tiger control matches computation.
+Tuning both solvers on disjoint seeds leaves MCTS-EFE ahead on Tiger reward
+and success. The Diagnosis and Tileworld gaps also survive the tested exploration
+constants and information-gain rollouts. However, neither in-tree information
+gain nor max-backup has a detectable success or reward eﬀect after multiplicity
+correction at ﬁve seeds. EFE leaf evaluation, exact beliefs and exact commit-child
+values remain coupled, so the experiments do not isolate directed observation
+selection or establish general solver superiority (Appendices L and F.2).
+
+Structural and practical limits. The reduction requires hidden-state-preserving
+observation and navigation actions. State-changing sensing needs transition-
+aware predictive and posterior beliefs. The diagnostic ∆T is neither a proved
+40     P. Cooper and A. Velasquez
+
+additive correction nor a decision-error bound, and perfect sensing can make it
+inﬁnite after arbitrarily small drift (Example 1, Appendix H). The simulators
+use known models, and Structural Inspection uses a synthetic task and a hand-
+coded leaf rule. The sensor-record study learns a model, but its shallow planner
+and conditional-independence approximation establish no general acquisition
+advantage. More eﬃcient search, transition-aware budget control and validation
+against an operational sensing requirement remain open.
+
+9    Conclusion
+An expected sensing-usage requirement can calibrate the information-gain weight
+of a ρ-POMDP policy family. The operational shadow price is a crossing thresh-
+old, estimated by a grid bracket. Under stated conditions, mixing the bracket’s
+endpoint policies meets a usage-gap target in expectation. The receding-horizon
+planner is scale equivariant, and a projected decaying-step controller has a
+stationary-convergence guarantee under explicit hypotheses. Re-adaptation af-
+ter reward-scale shifts is an empirical result, including a useful reset heuristic
+that the theorem does not cover.
+    The simulated held-out study shows accurate usage calibration but also its
+reward cost. Real sensor records extend the test to learned likelihoods and targets
+ﬁxed independently of usage curves. Two targets transfer within the represented
+collection period, one lies below the sampled range, and later batches defeat
+frozen calibration. Direct cost tuning and ﬁxed-count information acquisition
+also give better test accuracy in that conﬁguration. Calibration is therefore a way
+to adapt an already-selected information-weighted family to a feasible expected-
+use target, subject to a transfer check. It is not a reason to prefer that family
+when directly counting or penalizing accesses meets the design need.
+    The recursive EFE objective supplies an information-unit anchor at w = 1,
+with exact reward–information identiﬁcation under log scoring and an explicit
+convention for ordinary rewards. This weight is competitive in several bench-
+marks and suboptimal in others. Its practical value depends on the observation
+structure, planning depth, and model assumptions. The resulting design proce-
+dure is to state the intended usage, calibrate within a speciﬁed policy family,
+and assess usage, reward, and success together.
+
+Competing interests. The authors have no competing interests to declare that
+are relevant to the content of this article.
+
+Acknowledgments
+The authors used Anthropic’s Claude and OpenAI’s Codex as assistants for
+drafting and revising text, implementing and testing code, running and summa-
+rizing experiments, checking citations, preparing ﬁgures, and generating simu-
+lated referee reviews. The authors are responsible for the originality, accuracy,
+and integrity of the manuscript and its associated artifacts. No AI system is an
+author of this work.
+                                  Pricing the Sensing Budget in ρ-POMDPs         41
+
+
+
+
+Table 4. RockSample results. RS[5,3] and RS[7,4] run 500 episodes × 10 seeds (5,000
+episodes), and RS[7,8] and RS[11,11] run 100 episodes × 5 seeds (500 episodes, re-
+duced protocol). Greedy samples without checking. POMCP is the search-tree solver
+at its tuned, frozen conﬁguration (2,048 simulations, Appendix F.1). Rollout only
+runs POMCP’s approach-then-check rollout policy standalone, with no search tree.
+It is not signiﬁcantly diﬀerent from EFE on RS[5,3] and RS[7,4] and earns more on
+RS[7,8] and RS[11,11]. Bold marks the best mean reward per instance plus any agent
+not signiﬁcantly diﬀerent from it by a seed-level Welch t-test with Holm–Bonferroni
+correction, corrected within metric (complete pairwise statistics in the committed
+results_rocksample_*_stats.csv ﬁles). Reward reported as mean ± seed-level SE
+(SE of the per-seed means over 10 seeds for RS[5,3] and RS[7,4] and over 5 seeds for
+RS[7,8] and RS[11,11]). Steps and Checks are omitted here. Complete per-instance
+counts are in the committed results_rocksample_*.csv ﬁles.
+
+          Instance   Agent                     Good Bad       Reward
+                     Greedy                    1.49   1.51 +3.71 ± 0.26
+                     Planning (w=0, d=3)       0.99   0.04 +14.28 ± 0.13
+                     Plan+IG (w=5, d=3)        1.44   0.01 +16.41 ± 0.13
+          RS[5,3]
+                     EFE (w=1, d=3)            1.44   0.03 +16.47 ± 0.12
+                     POMCP (2048 sims)         0.68   0.03 +12.74 ± 0.11
+                     Rollout only (approach)   1.41   0.07 +16.67 ± 0.13
+                     Greedy                    1.98   2.02 −1.38 ± 0.36
+                     Planning (w=0, d=4)       0.95   0.05 +13.97 ± 0.11
+                     Plan+IG (w=5, d=4)        1.69   0.01 +14.56 ± 0.14
+          RS[7,4]
+                     EFE (w=1, d=4)            1.44   0.01 +15.96 ± 0.15
+                     POMCP (2048 sims)         0.66   0.03 +12.01 ± 0.06
+                     Rollout only (approach)   1.88   0.10 +15.85 ± 0.17
+                     Greedy                    4.02   3.98 −5.60 ± 1.03
+                     Planning (w=0, d=3)       0.48   0.03 +12.31 ± 0.35
+                     Plan+IG (w=5, d=3)        3.40   0.01 +23.76 ± 0.58
+          RS[7,8]
+                     EFE (w=1, d=3)            2.61   0.06 +21.85 ± 0.79
+                     POMCP (2048 sims)         1.71   0.10 +15.07 ± 0.45
+                     Rollout only (approach)   3.83   0.19 +28.33 ± 0.82
+                    Greedy                     5.48   5.52 −18.90 ± 1.04
+                    Planning (w=0, d=2)        0.48   0.03 +13.23 ± 0.18
+                    Plan+IG (w=5, d=2)         0.50   0.03 +13.18 ± 0.15
+          RS[11,11]
+                    EFE (w=1, d=2)             0.48   0.03 +13.23 ± 0.18
+                    POMCP (2048 sims)          0.49   0.03 +12.94 ± 0.24
+                    Rollout only (approach)    5.22   0.23 +28.66 ± 0.83
+42       P. Cooper and A. Velasquez
+
+
+
+
+Table 5. Structural Inspection results. N =8 and N =16 run 2,500 episodes each (500
+per seed × 5 seeds). Reward and accuracy are reported as mean ± seed-level SE. Greedy
+diagnoses without testing. Bold marks the best accuracy and the best reward per
+instance, plus any value within sampling error of that best (seed-level Welch p > 0.05,
+uncorrected). The two are not always the same agent. EFE is a competitive untuned
+trade-oﬀ, not uniquely best on all metrics. Accuracy is the fraction of components
+correctly diagnosed.
+
+     Instance   Agent                  Accuracy     Missed Tests       Reward
+                Greedy            70.7 ± 0.5%        2.34     0.0 −114.33 ± 1.96
+     N =8       Planning (w=0)    73.0 ± 0.3%        0.07    12.7 −17.85 ± 0.23
+     |S|=256    Planning+IG (w=5) 96.3 ± 0.1%        0.10    19.7 −27.98 ± 0.44
+                EFE (w=1)         91.1 ± 0.2%        0.09    15.5 −20.95 ± 0.30
+                Greedy            70.5 ± 0.4%        4.72     0.0 −233.09 ± 3.13
+     N =16      Planning (w=0)    78.2 ± 0.2%        0.24    22.4 −45.42 ± 0.23
+     |S|=65,536 Planning+IG (w=5) 97.3 ± 0.0%        0.14    38.3 −54.74 ± 0.40
+                EFE (w=1)         90.8 ± 0.1%        0.24    28.1 −45.80 ± 0.60
+                              Bibliography
+
+
+ [1] E. Altman. Constrained Markov Decision Processes. Chapman & Hall/CRC,
+     1999.
+ [2] M. Araya-López, O. Buﬀet, V. Thomas, and F. Charpillet. A POMDP ex-
+     tension with belief-dependent rewards. In Advances in Neural Information
+     Processing Systems, 2010.
+ [3] M. Bellemare, S. Srinivasan, G. Ostrovski, T. Schaul, D. Saxton, and
+     R. Munos. Unifying count-based exploration and intrinsic motivation. In
+     Advances in Neural Information Processing Systems, 2016.
+ [4] J. M. Bernardo. Expected information as expected utility. The Annals of
+     Statistics, 7(3):686–690, 1979.
+ [5] R. Benchetrit, I. Lev-Yehudi, A. Zhitnikov, and V. Indelman. Anytime
+     incremental ρPOMDP planning in continuous spaces. arXiv preprint
+     arXiv:2502.02549, 2025.
+ [6] J. R. Blum. Approximation methods which converge with probability one.
+     The Annals of Mathematical Statistics, 25(2):382–386, 1954.
+ [7] C. Boutilier. A POMDP formulation of preference elicitation problems. In
+     AAAI Conference on Artiﬁcial Intelligence, pages 239–246, 2002.
+ [8] Y. Burda, H. Edwards, A. Storkey, and O. Klimov. Exploration by random
+     network distillation. In International Conference on Learning Representa-
+     tions, 2019.
+ [9] T. Champion, H. Bowman, D. Marković, and M. Grześ. Reframing the
+     expected free energy: Four formulations and a uniﬁcation. Neural Compu-
+     tation, 38(3):439–469, 2026.
+[10] P. Cooper and A. Velasquez. Expected free energy as belief-dependent util-
+     ity for ρ-POMDPs. In Proceedings of the 7th International Workshop on
+     Active Inference (IWAI 2026), Communications in Computer and Informa-
+     tion Science. Springer, 2026. To appear.
+[11] I. C. Covert, W. Qiu, M. Lu, N. Y. Kim, N. J. White, and S.-I. Lee. Learning
+     to maximize mutual information for dynamic feature selection. In Proceed-
+     ings of the 40th International Conference on Machine Learning, volume 202
+     of Proceedings of Machine Learning Research, pages 6424–6447. PMLR,
+     2023.
+[12] L. Da Costa, T. Parr, N. Sajid, S. Veselic, V. Neacsu, and K. Friston. Active
+     inference on discrete state-spaces: A synthesis. Journal of Mathematical
+     Psychology, 99:102447, 2020.
+[13] L. Da Costa, N. Sajid, T. Parr, K. Friston, and R. Smith. Reward maximiza-
+     tion through discrete active inference. Neural Computation, 35(5):807–852,
+     2023.
+[14] B. de Vries, W. Nuijten, T. van de Laar, W. Kouw, S. Adamiat, T. Nisslbeck,
+     M. Lukashchuk, H. M. H. Nguyen, M. Hidalgo Araya, R. Trésor, T. Jen-
+     neskens, I. Nikoloska, R. G. Subramanian, B. van Erp, D. Bagaev, and
+44     P. Cooper and A. Velasquez
+
+     A. Podusenko. Expected free energy-based planning as variational infer-
+     ence. arXiv preprint arXiv:2504.14898, 2025.
+[15] M. O. Duﬀ. Optimal learning: Computational procedures for Bayes-
+     adaptive Markov decision processes. PhD thesis, University of Mas-
+     sachusetts Amherst, 2002.
+[16] M. Fehr, O. Buﬀet, V. Thomas, and J. Dibangoye. ρ-POMDPs have
+     Lipschitz-continuous ϵ-optimal value functions. In Advances in Neural In-
+     formation Processing Systems, 2018.
+[17] A. Foster, D. R. Ivanova, I. Malik, and T. Rainforth. Deep adaptive de-
+     sign: Amortizing sequential Bayesian experimental design. In International
+     Conference on Machine Learning, pages 3384–3395. PMLR, 2021.
+[18] Z. Fountas, N. Sajid, P. A. M. Mediano, and K. Friston. Deep active infer-
+     ence agents using Monte-Carlo methods. In Advances in Neural Information
+     Processing Systems, 2020.
+[19] K. Friston. The free-energy principle: a uniﬁed brain theory? Nature Re-
+     views Neuroscience, 11(2):127–138, 2010.
+[20] K. Friston, F. Rigoli, D. Ognibene, C. Mathys, T. FitzGerald, and G. Pez-
+     zulo. Active inference and epistemic value. Cognitive Neuroscience,
+     6(4):187–214, 2015.
+[21] K. Friston, L. Da Costa, D. Hafner, C. Hesp, and T. Parr. Sophisticated
+     inference. Neural Computation, 33(3):713–763, 2021.
+[22] M. Ghavamzadeh, S. Mannor, J. Pineau, and A. Tamar. Bayesian reinforce-
+     ment learning: A survey. Foundations and Trends in Machine Learning,
+     8(5–6):359–483, 2015.
+[23] A. Guez, D. Silver, and P. Dayan. Scalable and eﬃcient Bayes-adaptive rein-
+     forcement learning based on Monte-Carlo tree search. Journal of Artiﬁcial
+     Intelligence Research, 48:841–883, 2013.
+[24] T. Haarnoja, A. Zhou, P. Abbeel, and S. Levine. Soft actor-critic: Oﬀ-policy
+     maximum entropy deep reinforcement learning with a stochastic actor. In
+     International Conference on Machine Learning, 2018.
+[25] T. Haarnoja, A. Zhou, K. Hartikainen, G. Tucker, S. Ha, J. Tan, V. Kumar,
+     H. Zhu, A. Gupta, P. Abbeel, and S. Levine. Soft actor-critic algorithms
+     and applications. arXiv preprint arXiv:1812.05905, 2018. The applications
+     paper introducing automatic entropy-temperature tuning. The earlier ICML
+     2018 paper uses a ﬁxed temperature.
+[26] R. Houthooft, X. Chen, Y. Duan, J. Schulman, F. De Turck, and P. Abbeel.
+     VIME: Variational information maximizing exploration. In Advances in
+     Neural Information Processing Systems, 2016.
+[27] R. A. Howard. Information value theory. IEEE Transactions on Systems
+     Science and Cybernetics, 2(1):22–26, 1966.
+[28] L. P. Kaelbling, M. L. Littman, and A. R. Cassandra. Planning and acting
+     in partially observable stochastic domains. Artiﬁcial Intelligence, 101(1–
+     2):99–134, 1998.
+[29] D. Kim, J. Lee, K.-E. Kim, and P. Poupart. Point-based value iteration
+     for constrained POMDPs. In International Joint Conference on Artiﬁcial
+     Intelligence, pages 1968–1974, 2011.
+                                 Pricing the Sensing Budget in ρ-POMDPs         45
+
+[30] W. M. Kouw. Expected free energy as an information constraint on the
+     Bethe Lagrangian. arXiv preprint arXiv:2608.17167, 2026.
+[31] H. Kurniawati, D. Hsu, and W. S. Lee. SARSOP: Eﬃcient point-based
+     POMDP planning by approximating optimally reachable belief spaces. In
+     Robotics: Science and Systems, 2008.
+[32] H. J. Kushner and D. S. Clark. Stochastic Approximation Methods for
+     Constrained and Unconstrained Systems, volume 26 of Applied Mathematical
+     Sciences. Springer-Verlag, New York, 1978.
+[33] Z. Laouar, Q. H. Ho, and Z. Sunberg. Leveraging the value of information
+     in POMDP planning. In International Conference on Automated Planning
+     and Scheduling, pages 152–160, 2026.
+[34] S. Levine. Reinforcement learning and control as probabilistic inference:
+     Tutorial and review. arXiv preprint arXiv:1805.00909, 2018.
+[35] D. V. Lindley. On a measure of the information provided by an experiment.
+     The Annals of Mathematical Statistics, 27(4):986–1005, 1956.
+[36] D. Maisto, F. Gregoretti, K. J. Friston, and G. Pezzulo. Active inference
+     tree search in large POMDPs. Neurocomputing, 623:129319, 2025.
+[37] F. Matějka and A. McKay. Rational inattention to discrete choices: A new
+     foundation for the multinomial logit model. American Economic Review,
+     105(1):272–298, 2015.
+[38] B. Millidge, A. Tschantz, A. K. Seth, and C. L. Buckley. On the relationship
+     between active inference and control as inference. In International Workshop
+     on Active Inference, pp. 3–11. Springer, 2020.
+[39] B. Millidge, A. Tschantz, and C. L. Buckley. Whence the expected free
+     energy? Neural Computation, 33(2):447–482, 2021.
+[40] P.-Y. Oudeyer and F. Kaplan. What is intrinsic motivation? A typology of
+     computational approaches. Frontiers in Neurorobotics, 1:6, 2007.
+[41] T. Parr and K. J. Friston. Generalised free energy and active inference.
+     Biological Cybernetics, 113(5–6):495–513, 2019.
+[42] T. Parr, G. Pezzulo, and K. J. Friston. Active Inference: The Free Energy
+     Principle in Mind, Brain, and Behavior. MIT Press, 2022.
+[43] D. Pathak, P. Agrawal, A. A. Efros, and T. Darrell. Curiosity-driven ex-
+     ploration by self-supervised prediction. In International Conference on Ma-
+     chine Learning, 2017.
+[44] J. Pineau, G. Gordon, and S. Thrun. Point-based value iteration: An any-
+     time algorithm for POMDPs. In International Joint Conference on Artiﬁ-
+     cial Intelligence, 2003.
+[45] K. Rawlik, M. Toussaint, and S. Vijayakumar. On stochastic optimal control
+     and reinforcement learning by approximate inference. In Robotics: Science
+     and Systems, 2012.
+[46] H. Robbins and S. Monro. A stochastic approximation method. The Annals
+     of Mathematical Statistics, 22(3):400–407, 1951.
+[47] D. Russo and B. Van Roy. Learning to optimize via information-directed
+     sampling. In Advances in Neural Information Processing Systems, 2014.
+[48] N. Sajid, P. J. Ball, T. Parr, and K. J. Friston. Active inference: Demystiﬁed
+     and compared. Neural Computation, 33(3):674–712, 2021.
+46     P. Cooper and A. Velasquez
+
+[49] Y. Satsangi, S. Whiteson, F. A. Oliehoek, and M. T. J. Spaan. Exploiting
+     submodular value functions for scaling up active perception. Autonomous
+     Robots, 42(2):209–233, 2018.
+[50] J. Schmidhuber. A possibility for implementing curiosity and boredom in
+     model-building neural controllers. In Proc. International Conference on
+     Simulation of Adaptive Behavior, pp. 222–228, 1991.
+[51] D. J. Schuirmann. A comparison of the two one-sided tests procedure and
+     the power approach for assessing the equivalence of average bioavailability.
+     Journal of Pharmacokinetics and Biopharmaceutics, 15(6):657–680, 1987.
+[52] G. Shani, J. Pineau, and R. Kaplow. A survey of point-based POMDP
+     solvers. Autonomous Agents and Multi-Agent Systems, 27(1):1–51, 2013.
+[53] D. Silver and J. Veness. Monte-Carlo planning in large POMDPs. In Ad-
+     vances in Neural Information Processing Systems, 2010.
+[54] C. A. Sims. Implications of rational inattention. Journal of Monetary
+     Economics, 50(3):665–690, 2003.
+[55] R. D. Smallwood and E. J. Sondik. The optimal control of partially
+     observable Markov processes over a ﬁnite horizon. Operations Research,
+     21(5):1071–1088, 1973.
+[56] T. Smith and R. Simmons. Heuristic search value iteration for POMDPs.
+     In Uncertainty in Artiﬁcial Intelligence, 2004.
+[57] M. T. J. Spaan, T. S. Veiga, and P. U. Lima. Decision-theoretic planning un-
+     der uncertainty with information rewards for active cooperative perception.
+     Autonomous Agents and Multi-Agent Systems, 29(6):1157–1185, 2015.
+[58] P. Stocco, S. Chundi, A. Jamgochian, and M. J. Kochenderfer. Addressing
+     myopic constrained POMDP planning with recursive dual ascent. In Inter-
+     national Conference on Automated Planning and Scheduling, pages 565–569,
+     2024.
+[59] Z. N. Sunberg and M. J. Kochenderfer. Online algorithms for POMDPs with
+     continuous state, action, and observation spaces. In International Confer-
+     ence on Automated Planning and Scheduling, 2018.
+[60] P. Sweeney, J. Ruiz-Serra, and M. S. Harré. Decision, inference, and in-
+     formation: Formal equivalences under active inference. Entropy, 28(1):1,
+     2026.
+[61] E. Todorov. Linearly-solvable Markov decision problems. In Advances in
+     Neural Information Processing Systems, 2006.
+[62] M. Towers, A. Kwiatkowski, J. Terry, J. U. Balis, G. De Cola, T. Deleu,
+     M. Goulão, A. Kallinteris, M. Krimmel, A. KG, R. Perez-Vicente, A. Pierré,
+     S. Schulhoﬀ, J. J. Tai, H. Tan, and O. G. Younis. Gymnasium: A stan-
+     dard interface for reinforcement learning environments. arXiv preprint
+     arXiv:2407.17032, 2024.
+[63] A. Tschantz, B. Millidge, A. K. Seth, and C. L. Buckley. Reinforcement
+     learning through active inference. In ICLR Workshop on Bridging AI and
+     Cognitive Science, 2020.
+[64] A. Vergara. Gas sensor array drift dataset. UCI Machine Learning Reposi-
+     tory, 2012. Dataset. https://doi.org/10.24432/C5RP6W.
+                                  Pricing the Sensing Budget in ρ-POMDPs       47
+
+[65] A. Vergara, S. Vembu, T. Ayhan, M. A. Ryan, M. L. Homer, and R. Huerta.
+     Chemical gas sensor drift compensation using classiﬁer ensembles. Sensors
+     and Actuators B: Chemical, 166–167:320–329, 2012. https://doi.org/10.
+     1016/j.snb.2012.01.074.
+[66] E. Walraven, J. Sijs, and G. J. Burghouts. Information gathering in
+     POMDPs using active inference. Autonomous Agents and Multi-Agent Sys-
+     tems, 39(1):3, 2025.
+[67] R. Wei. Value of information and reward speciﬁcation in active inference
+     and POMDPs. arXiv preprint arXiv:2408.06542, 2024.
+[68] N. Ye, A. Somani, D. Hsu, and W. S. Lee. DESPOT: Online POMDP
+     planning with regularization. Journal of Artiﬁcial Intelligence Research,
+     58:231–266, 2017.
+
+
+
+A     Proof of Proposition 1
+
+Proof. Let Vρ (a, b, d) be the ρ-POMDP action value at belief b and depth d,
+with ρEFE deﬁned in the proposition. Deﬁne V (a, b, d) := −G(a, b, d). Negation
+reverses ordering, so the minimizing actions for G are the maximizing actions for
+V.
+   For any terminal commit action i and d ≤ H, Equation 5 gives
+
+                 V (commiti , b, d) = Eb [Ri ] = Vρ (commiti , b, d),
+
+because ρEFE (b, commiti ) = 0 and there is no continuation. At depth H, only
+these commit actions are available, establishing the induction boundary.
+   For observation action k at d < H, negating Equation 3, with its depth
+arguments explicit, gives
+                                                [                         ]
+                                                          ′ ′
+         V (observek , b, d) = −ck + Ik (b) + Eo max
+                                                   ′
+                                                     V (a  , b o , d + 1)   .
+                                                     a
+
+The ρ-POMDP backup has the same immediate reward −ck , belief utility Ik (b),
+posterior distribution, and continuation depth. Under γ = 1, it is therefore the
+same expression with Vρ replacing V . Induction on the remaining horizon H − d
+gives V (a, b, d) = Vρ (a, b, d) for every available action and belief node. Their
+maximizing action sets coincide, and the shared tie-breaking rule selects the
+same action. Hence the policies agree throughout the ﬁnite-horizon tree and,
+when replanned from the same beliefs, at each real decision.
+
+
+B     Controls for the Information-Unit Weight
+
+B.1   Posterior-vote and reward-aware stopping
+
+The core results do not establish that an explicit information bonus is neces-
+sary for good performance. Posterior-vote is not signiﬁcantly diﬀerent from EFE
+48     P. Cooper and A. Velasquez
+
+on any Bandit metric: reward is 6.32/6.27 (p = 0.58), success 87.0%/86.9%
+(p = 0.97), and usage 5.01/5.11 (p = 0.30). These are seed-level Welch compar-
+isons under Table 3’s protocol. On Diagnosis and Tiger its rewards are lower,
+−2.78 and 3.79, against EFE’s −1.37 and 5.19. Removing reward-aware stop-
+ping altogether gives a diﬀerent failure. Epistemic-only commits immediately
+at chance on Tiger, Diagnosis, Bandit and Tileworld because no observation’s
+information gain in bits clears its cost. The complete baseline rows and both
+seed-level and pooled uncertainties remain in the environment CSVs.
+
+
+B.2   Symmetric-reward counterexample
+
+Testbed uses two states, observation accuracy 0.75, cost 0.1, and symmetric
+commit rewards +1/−1. Under the H = 4, 1,000-episodes-per-seed, ﬁve-seed
+protocol, EFE takes 5.50 observations and earns +0.38, compared with Plan-
+ning’s 3.15 observations and +0.48 (seed-level Welch reward p = 1.1 × 10−5 ).
+Posterior-vote matches Planning on observations, success and reward. EFE’s
+higher success, 96.3% versus 89.8%, therefore comes at a reward cost. Success-
+tuned myopic Info Gain (w = 20) and Planning+IG (w = 10), each tuned within
+its own class, go further: both take 9.79 observations, attain 99.5% success and
+earn only +0.01. This is an empirical H = 4 comparison, not a consequence of
+the two-step ceiling in Proposition 6. Results and selected weights are produced
+by experiments/run_supplementary.py.
+
+
+B.3   Information-unit sensitivity
+
+Bit-unit w = 1 equals 1/ ln 2 ≈ 1.44 reward units per nat. The exactly
+nat-canonical policy instead uses bit-unit w = ln 2 ≈ 0.69. A direct com-
+parison under the Pareto protocol, 500 episodes per seed over ﬁve seeds,
+gives bit-identical reward, success and usage on Tiger, Diagnosis, Bandit and
+Testbed (results_nat_canonical_check.csv). Both conventions remain below
+Testbed’s sampled maximum.
+   Tileworld changes policy. Nat-canonical EFE earns −20.81, succeeds on
+74.7%, and uses 15.64 scans, against −21.53, 72.0%, and 14.75 at bit-unit w = 1.
+Only usage diﬀers signiﬁcantly (seed-level Welch p = 9.5 × 10−5 , surviving
+Holm over three metrics), with reward p = 0.34 and success p = 0.070. Both
+are Pareto-dominated by sampled w = 20. Thus the unit check preserves the
+positive and negative conclusions of Section 7.2, without establishing policy
+invariance to information units.
+
+
+C     Supplementary Environment Speciﬁcations
+
+Section 5 deﬁnes the main observation accuracies, costs and payoﬀs. Table 6
+records the planning depths and hidden-state counts, excluding observable po-
+sition and action history. All main comparison agents use γ = 1. The oﬄine
+                                  Pricing the Sensing Budget in ρ-POMDPs          49
+
+Table 6. Hidden-state size and planning horizon or tree depth for the reported com-
+parison instances. RockSample depths were ﬁxed before the reported runs, not selected
+on measured performance.
+
+                 Instance                     Hidden states   H
+                 Tiger / Testbed                 2            6/4
+                 Diagnosis / Bandit              4            3/2
+                 Tileworld 6 × 6 / 8 × 8      36 / 64          2
+                 RockSample [5,3] / [7,4]      8 / 16         3/4
+                 RockSample [7,8] / [11,11] 256 / 2,048       3/2
+                 Inspection N = 8 / N = 16 256 / 65,536       3/2
+
+
+
+SARSOP/CPOMDP exports instead require γ = 0.999, and separate discount
+and POMCP sensitivity batteries state their overrides locally.
+    Diagnosis uses K = ⌈log2 N ⌉ noisy binary tests of diﬀerent partitions of the
+state space. Tileworld uses K = 2⌈log2 n⌉ scans on an n × n grid, querying
+bit-level splits of row and column indices. These complementary partitions per-
+mit complete identiﬁcation. The random and overlapping partition controls are
+described with their results in Appendix K.1.
+    The additional Navigation task has no separate sensing action. Each move
+costs 0.5 and yields a proximity-based warm/cold signal whose accuracy depends
+on Manhattan distance to the hidden goal. Reaching the goal pays 20. The tested
+grids have n2 hidden locations and an episode cap of 3n2 moves. NavEFE uses
+depth 2.
+    RockSample’s ﬁxed maps are in ROCKSAMPLE_CONFIGS (experiments/run_
+rocksample.py). On RS[11,11], the start cell (5, 0) contains a rock and every
+other rock is at least 3.16 cells away, where sensor accuracy is roughly 0.55. This
+geometry helps explain why useful distant checks fall beyond the tested exact-
+search horizons. Appendix I speciﬁes the sensor kernel, step caps, variant-speciﬁc
+rules and Inspection parameters.
+
+
+D     Limits across Task and Model Variations
+
+D.1    Navigation without separate sensing
+
+Navigation supplies a negative case for the epistemic bonus. Over 150 episodes
+per seed and ﬁve seeds on each of the 3 × 3, 5 × 5 and 7 × 7 grids, the my-
+opic mover has the highest mean reward and success at every size. At 5 × 5,
+its reward is −16.64 ± 1.54 against NavEFE’s −25.76 ± 1.14, and success is
+80.7 ± 1.4% against 74.4 ± 1.2% (seed-level SE). Both diﬀerences survive Holm
+within metric (Welch p = 0.002 and 0.010). No pairwise comparison survives
+correction on the other two grids. No epistemic agent signiﬁcantly beats the my-
+opic rule in this battery. The result does not isolate task structure as its cause
+(results_navigation_scaling.csv and its seed-statistics companion).
+50     P. Cooper and A. Velasquez
+
+D.2    State count and discounting
+
+Increasing state count alone does not produce an EFE advantage. A Diagno-
+sis sweep at ﬁxed H = 2, with 500 episodes per seed over ﬁve seeds, ﬁnds
+EFE and Planning bit-identical at N = 2, 4 and no consistent gap at N =
+8, 16. The success advantage over Myopic is shared by reward-only Planning
+(results_scaling_stats.csv). Together with Section 7.3’s ﬁxed-depth thresh-
+old and the RockSample counterexample, this limits any interpretation of size
+as the governing variable.
+    Discounting also changes the comparison. The separate sweep uses 500
+episodes per seed over ﬁve seeds at γ ∈ {0.90, 0.95, 0.99, 1}. Diagnosis and
+Bandit show no signiﬁcant EFE/Planning success gap at γ ≤ 0.95, but an
+advantage at γ ≥ 0.99 after Holm correction over the battery’s 24 tests. For
+example, EFE’s Diagnosis usage falls from 9.68 at γ = 1 to 5.83 at 0.95. Tiger
+remains above 96% success throughout. These are measured conﬁguration
+eﬀects, not a universal discount threshold (results_discount.csv).
+
+
+D.3    Sensor-model misspeciﬁcation
+
+The accuracy-sensitivity battery holds the true sensor ﬁxed while varying the
+agent’s model, using 500 episodes per seed over ﬁve seeds (results_model_
+misspec.csv). On Tiger (ptrue = 0.85, H = 4), EFE and Planning are bit-
+identical at every tested accuracy. At pagent ∈ {0.70, 0.75, 0.80, 0.85} both take
+4.23 observations and earn 5.33 ± 0.26. At 0.90 and 0.95 both take 2.65 and earn
+3.91 ± 0.38 (seed-level SE). Overconﬁdence reduces sensing and reward without
+any EFE-speciﬁc buﬀering.
+    Diagnosis also changes in steps. With true accuracy 0.80 and H = 3, EFE
+takes 9.68 tests and succeeds on 97.4% at modeled accuracies 0.70, 0.75 and
+0.80. At 0.65, 0.85 and 0.90 it takes 5.86 tests and succeeds on 88.7%. Planning’s
+pattern is similar but not identical. These discontinuities are not speciﬁc to the
+epistemic term, and the experiment does not establish their mechanism.
+
+
+E     Statistical Conventions
+
+Primary comparisons use independent two-sample Welch t-tests on per-seed
+means, ordinarily n = 5, with Holm–Bonferroni correction. Uncorrected compar-
+isons are marked locally. Unless stated otherwise, a family contains all pairwise
+agent
+   ( ) comparisons and measured metrics within one environment or instance:
+M A2 tests for A agents and M metrics. Families include agents and metrics
+omitted from the printed summaries. The nominal sizes are 108 for Tiger, 84 for
+Diagnosis and Bandit, and 18 per Inspection instance. Undeﬁned zero-variance
+comparisons are excluded, leaving 107 deﬁned tests for Tiger and 83 for Diagno-
+sis.
+     RockSample corrects within metric, with 21 comparisons per instance over
+seven agents. Pooling metrics would loosen its non-rejection-based bolding rule.
+                                  Pricing the Sensing Budget in ρ-POMDPs        51
+
+The discount sweep pools 24 tests across environments, discounts and metrics.
+The MCTS ablation corrects within metric across its three environments, and
+the exploration sweep within metric within each of its three comparison families.
+The separate Tileworld scaling battery reports seed-level SEs without a Welch
+companion ﬁle.
+    Main tables report seed-level SE, which describes between-seed replicability.
+Pooled episode-level SEs and tests remain in the companion CSVs as supple-
+mentary descriptions, since episodes within a seed are not independent. The six
+core observe-then-commit and Tileworld statistics ﬁles use equal-variance pooled
+tests. Substituting Welch changes no non-degenerate decision at α = 0.05 among
+their 510 comparisons. RockSample and Inspection use Welch at both levels.
+Bootstrap 95% intervals use 10,000 resamples and a ﬁxed seed unless a study
+states otherwise.
+    Interpreted eﬀect sizes use the pooled episode-level standard deviation. EFE’s
+reward eﬀects against Planning are d = 0.08 on Diagnosis and d = 0.14 on
+Bandit, small despite their detectable seed-level diﬀerences. We do not interpret
+Cohen’s d computed from ﬁve seed means. Equal episodes per seed make pooled
+and seed-level mean diﬀerences identical, so their sign agreement supplies no
+independent evidence. A failure to reject a diﬀerence is not equivalence. The
+ﬁxed-margin TOST comparisons are reported separately.
+
+
+F     Search Baseline Controls
+
+F.1   RockSample: tuning and rollout limitations
+
+The RockSample POMCP comparison depends on the search conﬁguration, not
+just the objective. Its history tree uses UCB1, mean backup and Monte Carlo roll-
+out with the exact factored posterior. The depth bound shrinks near the episode
+cap, masks remove invalid actions, and subtrees are not promoted because their
+accumulated values use shorter horizons. These departures depend on observable
+quantities. Three disjoint tuning seeds select rollout, exploration constant, hori-
+zon and root criterion through a two-stage coordinate grid. The selected conﬁg-
+uration uses exploration constant 5, horizon 10, the approach-then-check rollout
+and highest-mean-value root selection. It is frozen before evaluation. The two-
+stage grid and tuning results are recorded in experiments/run_rocksample_
+pomcp.py and results_rocksample_pomcp_tuning.csv. The 2,048-simulation
+evaluation budget is twice the 1,024 tuning budget and is not itself tuned.
+    On RS[5,3], frozen POMCP earns 12.74 ± 0.11 under the full table protocol,
+compared with EFE’s 16.47 ± 0.12. Its standalone approach-then-check rollout
+earns 16.67 ± 0.13, signiﬁcantly more than the search (p = 1.9 × 10−14 , surviving
+Holm). The search exits after 7.5 steps, while the rollout follows a 13.5-step
+collection tour. The position-independent 9.50 net exit payoﬀ makes early exit
+attractive under mean backup.
+    A post hoc budget–horizon sweep shows why the frozen result cannot char-
+acterize POMCP generally. At 16,384 simulations, increasing the frozen horizon
+52     P. Cooper and A. Velasquez
+
+from 10 to 15, 25 or 40 raises mean reward from 12.52 to about 15.6, 15.2 or
+15.6. Under this diagnostic’s matched ﬁve-seed, 100-episode protocol, EFE earns
+16.90 ± 0.45 at about 1.7 ms per decision, versus the best measured POMCP at
+roughly 15.6 and 530 ms. None of the gaps against these three deeper, 16,384-
+simulation conﬁgurations survives Holm over all nine diagnostic rows. Tuning
+horizon at one simulation budget missed an interaction with computation. The
+diagnostic does not re-select the frozen conﬁguration.
+    The larger instance reverses this trend. On RS[11,11], the post hoc 2,048-
+simulation sweep gives 12.94 ± 0.24 at horizon 10 and −54.78 ± 0.86 at 40, with
+every tested horizon increase reducing reward after Holm (p ≤ 4.3 × 10−5 ). The
+endpoints expand from 3.3 steps and 1.6 checks to 196 steps and 144 checks.
+Deeper search spends heavily on distant sensing. Its best measured alternative,
+4,096 simulations at horizon 10, earns 13.14±0.15, still 15.5 below the standalone
+rollout’s 28.66 ± 0.83 (p = 3.2 × 10−5 , surviving Holm at both levels). The 16,384
+tier was not run on this instance because of its per-step cost.
+    Two implementation sensitivities do not resolve the comparison. On RS[5,3],
+literal unweighted rejection sampling and the exact factored posterior give
+12.93 ± 0.25 and 12.81 ± 0.43 (p = 0.81). Replacing the exit-valued depth-cap
+leaf with a greedy-belief leaf gives 14.52 ± 0.34, but its diﬀerences from the
+frozen search and standalone rollout do not survive the sensitivity battery’s per-
+metric Holm correction. These are non-rejections, not equivalence ﬁndings. The
+weighted agents’ separate shared-leaf limitation is speciﬁed in Appendix K.2.
+
+F.2   Observe-then-commit POMCP and MCTS-EFE
+The observe-then-commit POMCP adaptation [53] has two ﬁdelity gaps absent
+from the separate RockSample implementation. The depth-cap leaf uses the best
+commit reward for the sampled state, an optimistic clairvoyant value. Rollout
+commits instead receive their belief-expected reward, replacing sampled payoﬀ
+with conditional expectation. Their separate policy eﬀects are not isolated. Roll-
+outs start from the simulated path’s updated belief, choose tests uniformly and
+commit to the belief-optimal action with probability 0.3 per step.
+    The core battery ﬁxes UCB1 constant 10, depth cap H + 3, and simulation
+counts {500, 1000, 2000, 5000}. Each outer seed initializes both environment and
+planner randomness. A ﬁxed constant has diﬀerent eﬀective strength across re-
+ward scales, and simulation budgets do not match computation to exact EFE or
+Planning. Nor does the comparison isolate directed observation choice, since ex-
+act EFE also changes tree enumeration, leaf values and commit values. The full
+core results are in results_pomcp.csv. The simulation-matched MCTS-EFE
+comparison and its algorithm are described in Appendix L.
+
+Computation and component controls. A same-machine Tiger control, timed
+without contention over ﬁve seeds and 200 episodes per seed, compares MCTS-
+EFE(500) at 13.87s with POMCP(661) at 13.88s. MCTS-EFE uses horizon 10,
+while POMCP uses constant 5 and depth cap 13. The latter simulation count
+was selected by timing calibration at 200, 500 and 1,000 simulations. Success is
+                                  Pricing the Sensing Budget in ρ-POMDPs         53
+
+97.7 ± 0.5% versus 88.0 ± 0.6%. Both the compute-matched POMCP and its 500-
+simulation version trail MCTS-EFE on success and reward (p < 0.0001). This
+result concerns the tested constant and protocol, not all POMCP conﬁgurations.
+    Switching MCTS-EFE’s in-tree information gain and max-backup indepen-
+dently detects no success or reward eﬀect after Holm correction within metric
+across the three environments. Only Tiger usage changes signiﬁcantly, from 3.73
+to 3.48 without in-tree information gain (p = 0.0014). Five seeds give limited sen-
+sitivity. The ﬁxed EFE-greedy leaf, exact beliefs and exact commit values remain
+candidate explanations, so this ablation cannot attribute the advantage to infor-
+mation gain throughout the tree. These ablation and compute-matched batteries
+retain ﬁxed internal planner seeds, unlike the core POMCP and exploration-
+sweep batteries.
+
+Exploration selection and its limits. The exploration sweep tests c ∈ {1, 2, 5, 10,
+20, 50, R} on Tiger, Diagnosis and Tileworld, where R is the commit-reward
+range and MCTS-EFE’s default. Bandit is not swept. POMCP also receives an
+informed rollout selecting the largest exact one-step information gain. Selection
+maximizes success and then reward on seeds {11, 22, 33} with 100 episodes each.
+This rule was recorded before selection, but the rule and grid followed inspection
+of the canonical-seed exploratory sweep. Evaluation uses the canonical ﬁve seeds.
+    Selected MCTS-EFE uses c = 5 on Tiger and Diagnosis, and its default
+on Tileworld. Selected POMCP uses c = 50 with uniform rollouts on Tiger,
+c = 5 with uniform rollouts on Diagnosis, and c = 5 with informed rollouts on
+Tileworld. On Tiger, selected MCTS-EFE retains higher success (98.2 ± 0.3%
+versus 93.2 ± 0.5%, p = 0.0001) and reward (4.33 ± 0.28 versus 0.39 ± 0.52, p =
+0.0005). Both survive Holm over the six selected success/reward comparisons, as
+do the selected Diagnosis and Tileworld comparisons.
+    This sweep does not exhaust plausible conﬁgurations. Diagnosis’s evaluation-
+seed-best POMCP setting diﬀers from its tuning selection. Tileworld’s best
+uniform-rollout constant is the grid’s lower edge, and lower values were not tested.
+MCTS-EFE’s default is not reward-optimal either. Informed rollouts leave one-
+test Tiger unchanged, give no signiﬁcant Diagnosis success gain, and improve
+Tileworld success but not reward after Holm. None of these controls isolates all
+architectural diﬀerences.
+
+
+G     Budget Benchmark Implementation
+G.1    SARSOP export and evaluation
+The reference uses the original APPL C++ solver pomdpsol, built by tools/
+build_sarsop.sh with four documented Apple-Silicon/clang compatibility
+patches. The binary is not committed. experiments/run_sarsop_baseline.py
+exports each discrete observe-then-commit benchmark from the agents’ own
+state, action and observation deﬁnitions, adding an absorbing done state
+and discount γ = 0.999. It solves to precision 10−3 , parses the XML al-
+pha vectors and evaluates their policy through the shared episode runner.
+54      P. Cooper and A. Velasquez
+
+tests/test_sarsop_export.py checks the exporter, parser and argmax agent
+without the solver binary.
+
+G.2    Distractor factorization
+DistractorDiagnosisEnv has a four-way condition x and binary nuisance z.
+Each test observes one factor, terminal rewards depend only on x, and rewards
+are not observations. For a factored belief b(x, z) = bX (x)bZ (z) and nuisance
+likelihood L(o | z), Bayes’ rule gives
+                                              L(o | z)bZ (z)
+                      b′ (x, z | o) = bX (x) ∑                     .
+                                               z̃ L(o | z̃)bZ (z̃)
+
+The condition marginal is therefore unchanged. Condition tests preserve the
+nuisance marginal by the same argument. The independent generative process
+preserves this factorization, but correlated beliefs, including those caused by mis-
+speciﬁcation, are outside the guarantee. tests/test_distractor_diagnosis.
+py checks both marginal identities numerically.
+
+
+H     Methodological and Budget-Theory Details
+H.1    Observe-then-Commit Structure and EFE Scope
+The equivalence proof concerns the reward-based recursion and information units
+speciﬁed in Section 3.3. Related Work distinguishes this objective from other
+EFE formulations.
+
+H.2    Two-State Thresholds and Their Empirical Scope
+Proposition 6. Consider a two-state observe-then-commit ρ-POMDP with uni-
+form prior, one observation action of accuracy 21 < p ≤ 1 and cost c > 0, and
+two commit actions paying R+ > 0 when correct and R− < 0 otherwise, with
+|R− | > R+ . Write α = |R− |/R+ , η = Imax /c and
+
+       Imax = ln 2 − Hpost (p),       Hpost (p) = −p ln p − (1 − p) ln(1 − p).
+
+Information is measured in nats. Part (a) concerns one observation followed by
+commitment (H = 1), and Part (b) allows a second observation (H = 2) and
+requires p < 1.
+                                                                  ∗
+    Part (a) (H=1 lower threshold). The minimum weight wthresh           above
+which the Planning+IG objective, expected reward plus w times expected infor-
+mation gain, prefers observing once to committing immediately is
+                        (     )                    (     )
+           ∗       c − p − 21 (R+ − R− )      c − p − 12 (1 + α) R+
+         wthresh =                         =
+                             Imax                      Imax
+                ∗
+For any w > wthresh   the agent observes before committing at H=1. The threshold
+ ∗
+wthresh is negative, making w=1 suﬃcient for at least one observation, whenever
+                                        Pricing the Sensing Budget in ρ-POMDPs                            55
+
+
+                                          Replan from b ′
+
+
+                          Observe a                      Sample o                    Update belief
+                          pay cost ca                    P(o ∣ s, a)              b ′ ∝ P(o ∣ s, a)b(s)
+
+      Belief b
+    choose action                                Hidden state s is unchanged
+
+
+                                                      Receive reward                End episode
+                          Commit a
+                                                          R(s, a)                  no observation
+
+
+                           Rewards contribute to return, not to belief updates.
+
+
+
+Fig. 11. The observe-then-commit decision loop, shown schematically. An observation
+incurs a cost and updates the belief about a hidden state that remains ﬁxed. The agent
+then chooses again from the updated belief. A commit instead pays a state-dependent
+reward and ends the episode without emitting an observation. Rewards are not inputs
+to the belief update. The loop describes the episode, while the planner’s ﬁnite horizon
+limits how far it looks ahead at each decision.
+
+
+                                             ∗
+α > c/[(p − 12 ) R+ ] − 1. In particular, wthresh → −∞ as α → ∞ for any ﬁxed
+     1
+p > 2 and c > 0.
+    Part (b) (H=2 near-optimality interval). At the post-ﬁrst-observation
+belief b=(p, 1−p), deﬁne the instrumental value of a second observation VoI2 (b)
+and the expected information gain I(b) of one further observation. The upper
+(over-observation) threshold is
+                            {
+                     ∗        (c − VoI2 (b))/I(b) if VoI2 (b) < c,
+                  wover =
+                              +∞                  otherwise.
+
+In this symmetric model VoI2 (b) = 0, because a disconﬁrming second observa-
+tion returns the posterior to the tie point. Thus the ﬁnite branch applies. If
+  ∗                          ∗         ∗
+wthresh ≤ 0, every w ∈ (wthresh    , wover ) ∩ [0, ∞) reproduces the reward-optimal
+                                                                                 ∗
+single observation. We call this the near-optimality interval. Weights above wover
+                                                               ∗
+buy an instrumentally unproﬁtable second observation. If wthresh > 0, immediate
+commitment is reward-optimal. Weights inside the interval instead buy one ob-
+servation at reward loss c − (p − 21 )(R+ − R− ), strictly between zero and c. These
+statements do not extend to longer horizons. Part (a) includes perfect sensing
+under 0 ln 0 = 0, giving Imax = ln 2. Part (b) excludes it because I(b) = 0 makes
+the upper ratio undeﬁned.
+
+Proof. For Part (a), immediate commitment has value (R+ + R− )/2, while ob-
+serving once and committing has value −c + wImax + pR+ + (1 − p)R− . Their
+diﬀerence is
+                       (p − 21 )(R+ − R− ) − c + wImax .
+56      P. Cooper and A. Velasquez
+
+Solving the strict positivity condition and substituting R− = −αR+ gives the
+stated threshold and asymmetry condition.
+    For Part (b), the second observation’s advantage at b = (p, 1 − p) is −c +
+wI(b) + VoI2 (b). A conﬁrming observation has probability q = p2 + (1 − p)2 and
+posterior maximum p2 /q. A disconﬁrming observation has probability 2p(1 − p)
+and posterior maximum 1/2. Their expected maximum is p2 + p(1 − p) = p, so
+the expected best commit reward is unchanged and VoI2 (b) = 0. The second
+                                         ∗
+observation is therefore rejected below wover = c/I(b). Combining this with Part
+(a) gives the stated interval and reward loss.
+
+Discounting. Applying γ < 1 consistently preserves the algebraic equivalence:
+               −G(observek , b) = −ck + Ik (b) + γ Eo [max V (a, b′o )].
+                                                            a
+
+Current information gain is immediate while the eventual commit reward is dis-
+counted. This increases the epistemic share along a branch but need not increase
+sensing, because the entire continuation is discounted relative to committing now.
+Appendix D.2 reports the behavioral sensitivity.
+
+H.3    State-Preservation Proof and Destructive Sensing
+Example 1 (Destructive sensing can make naive information gain harmful). Let
+s ∈ {0, 1} have uniform prior and commit reward r(Commiti , s) = +1 if i = s,
+−1 otherwise. A test aD costs c > 0, reveals the old state perfectly, O(o = s |
+s, aD ) = 1, and then sets the state to 0, T (s′ = 0 | s, aD ) = 1.
+    Ignoring the transition gives posterior b′o = δo and one bit of information. At
+w = 1 reward unit per bit,
+                           Vnaive (aD ) = −c + 1 + 1 = 2 − c.
+The correct posterior is instead
+                       ∑
+         b′o,T (s′ ) ∝   T (s′ | s, aD )O(o | s, aD )b(s)   =⇒    b′o,T = δ0
+                       s
+
+for either report. For o = 1 the two posteriors are disjoint point masses, so their
+KL divergence, and hence ∆T , is inﬁnite. The post-transition state is already
+certain before seeing the report. A transition-aware EFE calculation therefore
+assigns zero epistemic value and gives
+                   Vtrue (aD ) = −c + max r(Commiti , 0) = 1 − c.
+                                         i
+
+Immediate commitment has expected value zero. For 1 < c < 2, the naive value
+recommends testing and the true value rejects it. Moreover, an agent that tests
+and commits according to the obsolete report realizes
+                  −c + 21 r(Commit0 , 0) + 21 r(Commit1 , 0) = −c,
+strictly worse than immediate commitment for every c > 0. The example is
+checked in tests/test_destructive_boundary.py.
+                                  Pricing the Sensing Budget in ρ-POMDPs          57
+
+Proof (Proof sketch). When action a preserves shid , the transition on the hid-
+den component is Thid (s′hid |shid , a) = δ(s′hid = shid ). The belief update over
+shid is then b′ (shid ) ∝ O(o | shid , a) b(shid ), depending only on the observation
+likelihood, identical to the observe-then-commit case. The posterior that would
+incorporate transitions, b′o,T , coincides with the observation-only posterior b′o ,
+so DKL [b′o,T ∥b′o ] = 0. For observation actions, EFE reduces to cost minus in-
+formation gain plus expected continuation, matching the ρ-POMDP Bellman
+equation with ρ = Ia (b). For navigation actions, the observation is uninforma-
+tive (Ia (b) = 0), giving ρ = 0.
+
+    The branch identity is preserved under arbitrary interleaving of observation
+and navigation actions because both preserve the hidden state. It does not cover
+arbitrary exploitation transitions. Terminal exploitation has no successor belief.
+Nonterminal exploitation has zero information gain here because its observation
+is uninformative and rewards are not used for belief updates. A model that
+conditions on payoﬀs must include their information gain. RockSample agents
+mark sampled rocks unavailable but never infer quality from the sampling payoﬀ
+(rho_aif/agents/rocksample_agents.py).
+
+Remark 1 (Transition-aware information gain). For general transitions, com-
+pute information gain by comparing the transition-aware posterior b′o,T with
+the corresponding predictive distribution over the post-transition state. Gen-
+uine information about that state can remain. A nonzero ∆T witnesses failure
+of state preservation, but zero does not establish it. The diagnostic is neither an
+established additive value correction nor a decision-error bound. Extending the
+budget procedure to these dynamics, or proving a perturbation bound, remains
+open.
+
+
+H.4    Agent Implementation Details
+
+Section 3.4 speciﬁes the objectives, tuning grid, episode counts and tie rules.
+The success-weight tuner is tune_info_gain_weight in experiments/run_
+experiment.py. Greedy samples unchecked rocks in RockSample and diagnoses
+from the prior without tests in Inspection. Epistemic-only compares informa-
+tion gain with sensing cost, with no reward-aware stopping, and selects the
+belief-argmax state on commitment.
+
+
+H.5    Proof and Numerical Check of the Usage-Onset Corollary
+
+Proof. At H=1 the only two plans are commit now and observe once then com-
+mit, and Proposition 6 establishes the observe plan is preferred iﬀ w > wthresh .
+Consequently U (w) = 1[w > wthresh ] exactly for this single observe-or-commit
+decision, so U is 0 below wthresh and 1 above it. For any B ∈ (0, 1) the supremum
+of the weights with U (w) < B that precede a weight with U (w) ≥ B is there-
+fore wthresh , which is the stated crossing threshold, and a grid whose sampled
+usages straddle B returns a bracket whose closed enclosure contains wthresh . The
+58     P. Cooper and A. Velasquez
+
+claim is about this H=1 decision, not about the receding-horizon usage curves
+of Section 6, which take many values and need not be monotone.
+
+     TestProp2OnsetExact in tests/test_budget.py checks the onset with the
+implemented H = 1 planner over complete receding-horizon episodes. It there-
+fore asserts zero usage below the threshold and at least one observation above
+it, rather than the one-shot proof’s exact usage of one.
+
+
+H.6   Proof and Implementation Scope of the Online Controller
+
+Only the projected decaying-step variant speciﬁed in Section 4.5 is covered below.
+It is implemented by DualWeightAgent in rho_aif/agents/dual_descent.py
+and dual_update in rho_aif/budget.py.
+    Let Ft be the history before episode t, et = wt − w∗ , and M (w) = U (w) − B.
+By (ii), E[Ut | Ft ] = U (wt ) and (B −Ut )2 is bounded by a constant C. Projection
+onto an interval containing w∗ cannot increase distance from w∗ , so
+
+                     E[e2t+1 | Ft ] ≤ e2t − 2at et M (wt ) + Ca2t .
+
+Condition (iii) gives et M (wt ) ≥ ∑  0, also when wt = w∗ without requiring
+      ∗                         2
+M (w ) = 0. Thus Yt = et + C k≥t a2k is a nonnegative supermartingale
+and∑converges almost surely. Summing the expected drift inequality gives
+2 E[ t at et M (wt )] ≤ ∑E[Y0 ] < ∞, so that nonnegative series is ﬁnite almost
+surely. Since the tail k≥t a2k vanishes, e2t has an almost-sure limit. If it were
+positive, the bounded interval and condition ∑ (iv) would keep et M (wt ) bounded
+away from zero eventually, contradicting t at = ∞. Hence wt → w∗ almost
+surely.
+    The running-average claim follows from that convergence. Because w∗ is in-
+terior and the increments at (B − Ut ) vanish, usage
+                                                 ∑ being bounded by (ii), the
+projection is inactive from some episode on, so t at (B − Ut ) converges, its par-
+tial sums being diﬀerences of the convergent iterates.
+                                                    ∑ Since 1/at = (1 + δt)/η0
+increases to inﬁnity, Kronecker’s lemma gives an t<n (B − Ut ) → 0, and be-
+cause n an → η0 /δ > 0 under   ∑that schedule, the one property of it the running-
+average claim uses, this is n1 t<n (B − Ut ) → 0 almost surely. The constant-step
+default and reset-on-shift runs require separate arguments (Section 4.5). The re-
+adaptation results of Section 6.2 are empirical. The proof requires a single sign-
+consistent crossing and does not cover arbitrary nonmonotone usage curves.
+
+
+H.7   Limit of the RockSample Constrained Reference
+
+The same reference construction does not reach EFE’s operating region on Rock-
+Sample[7,8]. A 12-point penalty sweep with depth-3 search yields zero or one
+check and rewards 9.5 or 12.3, versus EFE’s 9.84 checks (experiments/run_
+rocksample_cpomdp_reference.py). A usage penalty values a check through
+its short-horizon instrumental beneﬁt, whereas the information weight credits
+gain locally. A deeper solver is needed for a useful reference.
+                                  Pricing the Sensing Budget in ρ-POMDPs         59
+
+I     Extended Experimental Speciﬁcations and Protocols
+
+Sections 5 and Appendix C specify the environments, episode counts and sta-
+tistical protocol. Battery-speciﬁc counts and seeding diﬀer, so estimates are not
+interchangeable. All simulators use the Gymnasium Python interface [62].
+    Our RockSample variant diﬀers from Smith and Simmons [56] in six ways.
+Every action costs 0.5, maps are ﬁxed but our own, returns are undiscounted
+with cap N 2 + 10K, exit pays +10 from any cell, sampled rock qualities remain
+ﬁxed, and sensor accuracy is max(0.5, 0.95 2−d/4 ) at Euclidean distance d. The
+original has free moves and checks, east-edge exit, a good rock becomes bad af-
+ter sampling, and its sensor starts perfect and approaches chance asymptotically.
+Here the sensor reaches chance at about 3.7 cells. Observable sample history pre-
+vents repeated sampling rewards. Good/bad sampling pays +10/ − 10, before
+action cost. These choices preserve hidden state but prevent comparison of ab-
+solute returns with published RockSample results. State counts include only the
+2K hidden quality vectors, not observable position.
+    Inspection has prior fault probability 0.3, a 0.5 move cost, and visual/detailed
+tests with accuracies 0.70/0.90 and costs 0.5/2. Correct nominal/fault declara-
+tions pay 2/5, missed faults cost 50 and false alarms cost 5. Each component is
+declared once while the agent stands on it. An episode ends after all declarations
+or at the step cap. Tests and moves preserve component states. This remains a
+synthetic known-model benchmark.
+
+
+I.1   Retrospective Sensor-Acquisition Protocol
+
+The protocol for Section 6.9 was committed before calibration or held-out evalua-
+tion. Targets, model, grids, split rules and inferential margins were ﬁxed together.
+The sensor archive’s ten chronological batches and consecutive eight-descriptor
+sensor blocks follow its primary documentation [64]. All sixteen sensors originally
+operated together. This study masks access to their stored records and does not
+measure physical sensing costs.
+    Within each batch/class stratum of batches 1–6, a permutation with seed
+20261001 assigns ﬂoor proportions 60% to training and 20% to calibration, with
+the remainder to testing. Exact duplicate feature vectors would be grouped be-
+fore splitting, and any overlap with later batches excluded from the primary
+transfer summary. Neither duplicates nor cross-period overlaps occur in this
+archive. Batch/class stratiﬁcation preserves represented collection periods, not
+independence of laboratory exposures. Batches 7–10 contain 3,613, 294, 470 and
+3,600 cases, respectively. Each is evaluated separately, with an equal-batch mean
+also archived. No later label adjusts a prior, model, weight or mixture.
+    For each sensor, training-only standardization precedes eight-center k-means
+with ten initializations, at most 300 iterations and seed 20261001 + j for
+zero-based sensor index j. Add-one smoothing estimates the six-class prior
+and each class-conditional categorical distribution. Real sensors need not sat-
+isfy the model’s conditional-independence assumption. Acquisition reveals the
+60      P. Cooper and A. Velasquez
+
+held-out row’s encoded value, never a simulated draw from the learned likeli-
+hood. The observed-sensor mask augments the planning state. At belief b, the
+one-observation acquisition value for an unobserved sensor j is
+                                             ∑
+         Qw (j, b) = −0.02 + wIb (Y ; Zj ) +   P (z | b, j) max b(y | z, j),
+                                                             y
+                                              z
+
+Here Y is gas identity and Zj is the sensor category. Information is measured
+in bits, and the stopping value is maxy b(y). This is the H = 1 observe-then-
+commit convention of Section 3.4, replanned after each access. Numerical ties
+favor stopping, then the lowest sensor index, using a relative tolerance of 10−12
+times the largest absolute eligible score or stopping value. Classiﬁcation ties use
+the lowest class ID. No case acquires a sensor twice.
+    The information grid is the sorted union {0, ln 2, 1} ∪ {2k : k = −8, . . . , 8}.
+Direct policies omit information gain and replace the acquisition cost by 0.02+λ,
+with λ ∈ {0, −0.02} ∪ {±2k : k = −10, . . . , 1}. Negative eﬀective penalties are
+explicit benchmark subsidies that allow equality references to spend more. Every
+return is nevertheless scored at the common base cost 0.02. The direct and
+information-grid equality references maximize estimated calibration return over
+per-case mixtures with expected calibration usage equal to B. Separate cap
+references replace equality by an upper bound. These are sampled-family linear
+programs, not global constrained optima. Direct equality selections at B = 4
+and 8 mix the λ = −2 and λ = 2−6 policies. The crossing rule uses weights
+(0.0625, 0.125) at B = 4 and (8, 16) at B = 8, with upper probabilities 0.41328
+and 0.22276. Its calibration curve has one descending grid step, so monotonicity
+is not assumed. Any unbracketed request fails the declared crossing criterion,
+even if a separate policy can attain it.
+    The ﬁxed-count CMI policy greedily selects the unobserved sensor with
+largest model conditional information gain and stops after exactly B accesses.
+A ﬁxed-order control instead ranks sensors once by training-prior informa-
+tion. Zero-access, full-access and weights 0, 1, and ln 2 are also archived. On
+within-period test cases, the ﬁxed-order accuracies at B = 2, 4, 8 are 68.87%,
+68.96% and 76.82%. The weight-one and nat-canonical policies use 6.280 and
+5.985 sensors with accuracies 75.99% and 75.91%. These controls isolate aspects
+of this ﬁtted model and acquisition family. They are not a comparison with
+state-of-the-art active feature acquisition.
+    Each deterministic candidate is evaluated on every relevant recorded case,
+with ordered acquisitions, observed categories, posterior, prediction, usage and
+base return archived. Mixture expectations average the candidate contributions
+analytically, representing a random endpoint chosen once per case. A separately
+seeded realization checks that implementation. Candidate evaluations do not
+create additional independent cases.
+    Within-period uncertainty uses 2,000 paired bootstrap replicates, with cali-
+bration and test rows resampled independently within their original batch/class
+strata. Each calibration resample reselects all crossing brackets and ﬁtted LP
+supports. All policies share the resampled test cases. The three usage-error in-
+tervals use Bonferroni-adjusted 98.333% coverage, giving a nominal simultaneous
+                                  Pricing the Sensing Budget in ρ-POMDPs         61
+
+95% family under the bootstrap assumptions. The margin is ±0.5 accesses, and
+all targets must pass for the study-wide criterion. Accuracy comparisons have
+nominal paired 95% intervals, with no family-wide superiority claim. Failed ﬁts
+are retained in the denominator. No interval is reported for the 2-sensor crossing,
+which fails in all replicates. Both higher-target crossings and their references re-
+main feasible throughout. Later-batch intervals resample within each batch/class
+while holding the original calibration selections ﬁxed. Every interval conditions
+on one ﬁtted model and assumed exchangeability within strata. It excludes re-
+training, unobserved dependence among exposures and variation across devices
+or sites.
+    The archive reports accuracy, balanced accuracy, class-speciﬁc usage, base
+return, log loss and Brier score. More access need not improve this approximate
+model’s predictions. Full-record test accuracy is 76.32%, below reward-only plan-
+ning’s 82.04% at 3.385 accesses, and full-record log loss is worse than the prior’s.
+Later shifts include changing class proportions as well as sensor responses. Their
+eﬀects are not separated causally. The results support neither a deployment
+claim nor the premise that every usage target expresses an external need.
+    The source checksum, training transforms, row partitions, policies and
+analysis are reproducible from experiments/run_real_sensor_study.py and
+experiments/analyze_real_sensor_study.py, with instructions in results/
+real_sensor_2026-10-01/README.md. Computation is CPU only. Model ﬁt-
+ting takes 0.44 seconds, calibration replay 1.71 seconds, held-out replay 13.68
+seconds and the complete analysis 5.90 seconds on the recorded host. Peak
+replay process memory is approximately 186 MB. Timings describe vectorized
+batches, not per-case response latency. All selected policies, including failures,
+are retained in results_real_sensor_summary.csv.
+
+
+J     Calibration Protocols and Reference Checks
+
+The main text reports the budget studies’ usage and reward outcomes. This
+appendix gives the remaining sampling details and reference checks needed to
+interpret those results.
+
+
+J.1   Usage Grids and Target Placement
+
+The Tiger, Diagnosis and Bandit calibration curves use zero plus 15 logarithmi-
+cally spaced positive weights from 10−3 to 100, for 16 grid points. Their planning
+horizons are 6, 3 and 2, respectively. The shadow-price and held-out frontier stud-
+ies share this grid and these horizons (make_log_w_grid in rho_aif/budget.py,
+experiments/run_budget_frontier.py).
+    The curves in Section 6.4 use ﬁve common seeds. At each grid weight, Rock-
+Sample[5,3] has 50 episodes per seed on a ten-point grid, RockSample[7,4] has 30
+on eight points, and Inspection-N = 16 has 50 on ten points. Each grid includes
+zero and positive logarithmically spaced weights up to 100. Four targets are
+evenly spaced between the 8% and 92% positions of each sampled usage range.
+62      P. Cooper and A. Velasquez
+
+The ﬁve-domain staircases use the same end margins, while the paired count/cost
+targets use 15% and 85%. Usage SEs describe estimates at sampled weights, not
+price uncertainty. The curves and brackets are archived by experiments/run_
+price_of_information.py.
+
+
+J.2   Oﬄine Reward References
+
+Section 6.6 compares EFE with the common-export SARSOP policies of Ap-
+pendix G.1. The ﬁve-seed unpaired Welch TOST uses the stated one-observation-
+cost margins. Its larger one-sided p-values on Tiger, Diagnosis and Bandit are
+0.0010, 0.0458 and 0.0130, all surviving Holm correction. The corresponding
+90% diﬀerence intervals are [−0.41, 0.41], [−0.51, 0.98] and [−0.35, 0.31], strictly
+inside the margins. The ﬁve-seed margin choice was retrospective. Fifteen ad-
+ditional seeds were ﬁxed after that choice and before the n = 20 study, which
+retains equivalence. These checks and their per-seed inputs are in results_tost_
+sarsop.csv and results_tost_sarsop_n20_robustness.csv.
+    Shared seed labels do not match episodes when policies consume random
+draws diﬀerently. The predeclared episode-matched check therefore resets
+episode e of seed s at 104 s + e, matching hidden states and observation draws
+while actions agree. It uses the same twenty seeds, 500 episodes each and ﬁxed
+margins. Tiger acts identically. Diagnosis’s paired diﬀerence is +0.11 ± 0.09
+with pTOST = 3.2 × 10−9 , and Bandit’s is +0.04 ± 0.03 with p = 4.6 × 10−12
+(SE). Unpaired tests on those runs also support equivalence (3.8 × 10−5 and
+1.8×10−8 ). Results and per-seed inputs are in results_tost_sarsop_episode_
+paired.csv and its companion ﬁle.
+    The unconstrained-reference battery does not attain every reference usage.
+Tiger’s SARSOP usage of 4.32 lies below the sampled information-weight fam-
+ily’s ﬂoor of 4.37, within one usage SE. Its archived “usage-matched” w = 0 row
+is a low-end fallback, not an attained target (results_sarsop_baseline.json).
+The separate cap-reference comparison of Section 6.7 uses the measured points
+in results_cpomdp_frontier.csv and the feasible_envelope routine in rho_
+aif/budget.py. Its evaluated usage-matched weights 0.00, 0.45 and 1.07 on
+Tiger, Diagnosis and Bandit give the same rewards as EFE in that run (results_
+cpomdp_baseline.csv). This observed plateau does not certify the population
+constrained optimum.
+
+
+J.3   Held-Out Calibration and Reference Sensitivity
+
+Table 2 reports every attainable target’s usage, reward and reference gaps. The
+within-family LP comparisons select only from the calibration grid. The best
+equality mixture coincides with the endpoint mixture at eleven of twelve tar-
+gets, allowing equivalent plateau endpoints. Bandit’s gap target is the exception,
+where the alternative mixture earns more reward but misses usage by more, as
+reported in Section 6.8. The best feasible mixture equals the best feasible mem-
+ber at every slack target, the endpoint mixture at the three binding Diagnosis
+                                  Pricing the Sensing Budget in ρ-POMDPs         63
+
+targets, and the best equality mixture at Bandit’s gap target. Full comparisons
+and selection probabilities are archived in results_budget_frontier.csv.
+    The predeclared target-matched reference adds eleven subsidies λ = −cs,
+with s from 0.1 to 0.98 and observation cost c, keeping net observation reward
+negative. Equality-mixture supports are ﬁtted on held-out usage and frozen for
+the fresh stream. They coincide with the cap reference at four binding budgets
+and include a subsidized policy at the seven slack budgets. No slack-budget
+target-gap interval excludes zero on either stream. The held-out shortfalls are
+Diagnosis at B = 9.53 and Bandit’s gap target. The fresh shortfalls are Diagnosis
+at B = 7.72 (−0.56±0.24) and Bandit’s gap target (−0.50±0.11). Only Bandit’s
+recurs. These are conditional, nominal pointwise comparisons with the ﬁt, cap-
+feasibility and multiplicity omissions stated in Section 6.8.
+    The fresh stream uses seeds 12–21, 100 episodes each, and Student-t intervals
+with 9 degrees of freedom. One Diagnosis policy pair had already been evaluated
+on these seeds before the replication was speciﬁed, so that pair is not blind.
+A wrong diagnosis changes reward by 60, making these samples sensitive to
+few errors. The paired archives retain both the cap and target comparisons,
+including the changing identity of Diagnosis’s shortfalls (results_budget_
+frontier_fresh_seed_replication.csv and results_budget_frontier_
+target_reference.csv).
+    A post hoc sensitivity analysis reﬁts the equality reference at each mixture’s
+realized held-out usage rather than at B, using no new episodes. Every held-
+out Tiger mean gap then becomes zero, because rewards there equal 10 minus
+usage. Diagnosis still falls short at B = 9.53 held out and B = 7.72 fresh.
+Bandit’s gap-target interval reaches +0.001 held out but remains negative fresh.
+Target gaps thus include usage mismatch, and neither ﬁtted reference certiﬁes
+the population constrained frontier. The analysis and subsidized points are in
+the usage_matched companion of the target-reference ﬁle and results_cpomdp_
+frontier_subsidy.csv.
+
+J.4   Distractor Comparison Implementation
+The IDS control in Section 6.10 minimizes ∆2 /I over individual observation
+actions. Here ∆ is the opportunity cost of observing rather than committing
+and I measures information about the optimal commit. When that information
+vanishes, the adaptation substitutes state-entropy gain. Information about the
+optimal commit is correctly zero for the distractor, but the fallback rewards learn-
+ing its nuisance bit. This deterministic action choice does not implement IDS
+over randomized action distributions. The observed distractor spending therefore
+identiﬁes a failure of this adaptation, not of reward-aware information measures
+generally.
+
+K     Observation Structure and Leaf Heuristics
+The main comparisons use speciﬁc sensing structures and depth-capped contin-
+uations. The following checks bound their interpretation.
+64     P. Cooper and A. Velasquez
+
+K.1    Tileworld Scan Partitions
+The partition study replaces complementary bit partitions while keeping the
+rest of the 6 × 6 benchmark ﬁxed. Random partitions assign cells to equal halves,
+losing guaranteed joint identiﬁcation. Overlapping partitions threshold random
+weighted row/column coordinates, creating correlated tilted cuts. The study uses
+H = 2, ﬁve seeds and 200 episodes per seed (experiments/run_tileworld.py
+partition).
+    Less complementary observations sharply reduce absolute performance.
+EFE/Planning success falls from 71.9/73.6% with bitwise partitions to 8.5/8.4%
+with overlapping partitions. No partition mode separates them on reward or
+success. The largest reward gap, under random partitions, has Welch p = 0.24.
+EFE uses fewer scans in all three modes. These results do not establish a
+model-independent advantage (results_partition_sensitivity_6x6.csv).
+
+K.2    RockSample Leaf and Heuristic Policies
+The weighted agents use independent per-rock beliefs and the tabled search
+depths. They share a leaf rule that repeatedly chooses an unsampled rock with
+positive belief-weighted sample value, subtracts travel cost, visits the best re-
+maining rock and samples it, then exits when none remains. The leaf also charges
+travel to the east edge before exit, although the environment allows exit any-
+where. This deﬂates depth-capped continuations relative to immediate exit and
+biases the entire family toward early exit. All weighted agents use this same leaf
+rule.
+    The standalone heuristic in Table 4 is POMCP’s approach-then-check roll-
+out without a tree. It approaches the unresolved rock with highest belief per
+unit distance, checks nearby at accuracy 0.95, samples above its belief threshold,
+abandons rocks below 0.15 and exits when none remains. It is a hand-coded
+policy without a search horizon. Greedy instead samples without checking. Ap-
+pendix F.1 gives the POMCP protocol and sensitivity studies.
+    The large-instance failure persists in the depth-three check. On RS[11,11],
+Planning and EFE remain at reward 13.23 and Planning+IG reaches 13.17,
+within one SE of the shallower results (results_rocksample_11x11_depth3_
+check.csv). The heuristic collects 5.22 good rocks against about half a rock for
+each tree-search agent. Useful distant checks require travel beyond the tested
+exact-search horizons. At the uniform prior, each untouched rock has zero ex-
+pected sampling reward and fails the leaf’s positive-value ﬁlter, compounded by
+the phantom exit cost. This supports a horizon-and-leaf limitation, not absence
+of exploitable reward. It is a mechanistic interpretation, not an independently
+tested scaling law.
+
+
+L     Approximate Search Method
+Exact enumeration costs O((K|O|)H ) for K sensing actions with |O| outcomes
+each. MCTS-EFE uses UCB1 over observe/commit actions, enumerates each
+                                 Pricing the Sensing Budget in ρ-POMDPs        65
+
+observation action’s outcomes, adds exact per-node information gain, and backs
+up maxima. EFE-greedy leaf rollouts compare immediate commitment with the
+best one-step EFE observation. Commit-child values are exact belief-expected
+rewards. The default exploration constant is the ﬁxed commit-reward range, 110
+on Tiger, rather than the preliminary-return range used by Silver and Veness
+[53]. Appendix F.2 reports exploration tuning, informed rollouts, the ablation
+and a separate compute-matched Tiger control.
+    The simulation-matched comparison uses 500 simulations on Tiger at H = 10.
+MCTS-EFE reaches 97.7%±0.5 percentage points against POMCP’s 88.1%±0.2
+(p = 4.4 × 10−6 ). Its cost is 14–16 ms per episode across tested horizons, versus
+11–12 ms for POMCP, so matching simulations does not match computation. At
+H = 5 and 200 simulations on Diagnosis, the corresponding success rates are
+94.2% ± 0.5 and 65.5% ± 2.1 (p = 1.1 × 10−4 ). These are seed-level SEs and
+Welch tests from results_mcts_efe.csv.
+    Approximate search does not uniformly improve either reward or success
+over Exact-EFE. On Tiger and Diagnosis, MCTS-EFE falls below it on success
+(97.7/99.9%, 94.2/97.1%) and reward (3.73/5.65, −3.26/ − 1.44). On Tileworld-
+6 × 6, success instead rises from 71.9% ± 1.5 to 95.4% ± 0.6 under this battery’s
+protocol, but reward falls from −21.62 to −25.02 and usage rises from 14.8 to
+32.3. These outcomes describe the joint implementation. The controls in Ap-
+pendix F.2 detect no success or reward eﬀect of either switchable component,
+in-tree information gain and max-backup, after Holm correction at ﬁve seeds.
+EFE leaf evaluation, exact beliefs and exact commit-child values remain cou-
+pled, preventing attribution to an isolated component.
+

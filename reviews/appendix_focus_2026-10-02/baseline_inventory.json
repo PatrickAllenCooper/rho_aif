@@ -1,0 +1,169 @@
+{
+  "source_commit": "3c1e99a",
+  "jair_pages": 80,
+  "scientific_appendix_pages": 42,
+  "figures": [
+    {
+      "region": "main",
+      "label": [
+        "fig:hero"
+      ],
+      "file": [
+        "figures/fig_hero_price_curve_jair.pdf"
+      ]
+    },
+    {
+      "region": "main",
+      "label": [
+        "fig:engineering_workflow"
+      ],
+      "file": [
+        "figures/fig_engineering_workflow.pdf"
+      ]
+    },
+    {
+      "region": "main",
+      "label": [
+        "fig:target_vs_cap"
+      ],
+      "file": [
+        "figures/fig_target_vs_cap.pdf"
+      ]
+    },
+    {
+      "region": "main",
+      "label": [
+        "fig:collapse"
+      ],
+      "file": [
+        "figures/price_scale_invariance.pdf"
+      ]
+    },
+    {
+      "region": "main",
+      "label": [
+        "fig:dualmultiseed"
+      ],
+      "file": [
+        "figures/price_dual_multiseed.pdf"
+      ]
+    },
+    {
+      "region": "main",
+      "label": [
+        "fig:stairs"
+      ],
+      "file": [
+        "figures/price_shadow_curves.pdf"
+      ]
+    },
+    {
+      "region": "main",
+      "label": [
+        "fig:real_sensor"
+      ],
+      "file": [
+        "figures/real_sensor_transfer.pdf"
+      ]
+    },
+    {
+      "region": "main",
+      "label": [
+        "fig:distractor"
+      ],
+      "file": [
+        "figures/distractor_composition.pdf"
+      ]
+    },
+    {
+      "region": "main",
+      "label": [
+        "fig:pareto"
+      ],
+      "file": [
+        "figures/fig_pareto.pdf"
+      ]
+    },
+    {
+      "region": "main",
+      "label": [
+        "fig:tw_scaling"
+      ],
+      "file": [
+        "figures/fig_tileworld_scaling.pdf"
+      ]
+    },
+    {
+      "region": "appendix",
+      "label": [
+        "fig:extended_efe"
+      ],
+      "file": [
+        "figures/fig_extended_efe.pdf"
+      ]
+    },
+    {
+      "region": "appendix",
+      "label": [
+        "fig:nearopt_horizon"
+      ],
+      "file": [
+        "figures/fig_nearopt_horizon.pdf"
+      ]
+    },
+    {
+      "region": "appendix",
+      "label": [
+        "fig:otc_loop"
+      ],
+      "file": [
+        "figures/fig_otc_loop.pdf"
+      ]
+    },
+    {
+      "region": "appendix",
+      "label": [
+        "fig:state_preservation"
+      ],
+      "file": [
+        "figures/fig_state_preservation.pdf"
+      ]
+    },
+    {
+      "region": "appendix",
+      "label": [
+        "fig:costbudget"
+      ],
+      "file": [
+        "figures/price_cost_budget.pdf"
+      ]
+    },
+    {
+      "region": "appendix",
+      "label": [
+        "fig:prop2"
+      ],
+      "file": [
+        "figures/price_prop2_jumps.pdf"
+      ]
+    },
+    {
+      "region": "appendix",
+      "label": [
+        "fig:interleaved"
+      ],
+      "file": [
+        "figures/price_staircase_interleaved.pdf"
+      ]
+    },
+    {
+      "region": "appendix",
+      "label": [
+        "fig:tw_comparison"
+      ],
+      "file": [
+        "figures/fig_tileworld_comparison.pdf"
+      ]
+    }
+  ]
+}

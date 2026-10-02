@@ -1,0 +1,1559 @@
+Rc files read (in order):
+  NONE
+Latexmk: This is Latexmk, John Collins, 9 March 2026. Version 4.88.
+Latexmk: applying rule 'pdflatex'...
+Rule 'pdflatex':  Reasons for rerun
+Changed files or newly in use/created:
+  full_paper_jair.tex
+Category 'changed_user':
+  full_paper_jair.tex
+
+------------
+Run number 1 of rule 'pdflatex'
+------------
+------------
+Running 'pdflatex  -interaction=nonstopmode -halt-on-error -recorder  "full_paper_jair.tex"'
+------------
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./full_paper_jair.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-08-10>
+(./jair.cls
+Document Class: jair 2025/08/15 JAIR class extending acmart
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmart.cls
+Document Class: acmart 2026/08/16 v2.20 Typesetting articles for the Association for Computing Machinery
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/keyval.tex)))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xstring/xstring.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xstring/xstring.tex)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amscls/amsart.cls
+Document Class: amsart 2020/05/29 v2.20.6
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype-pdftex.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype.cfg)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/totpages/totpages.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/everyshi/everyshi.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/environ/environ.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/trimspaces/trimspaces.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/stringenc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/url/url.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperxmp/hyperxmp.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ifmtarg/ifmtarg.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/ifthen.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/oberdiek/ifdraft.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifluatex.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/trig.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/geometry/geometry.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifvtex.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ncctools/manyfoot.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ncctools/nccfoots.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdftex/glyphtounicode.tex) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/cmap/cmap.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty<<t1.cmap>>) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/libertine.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifxetex.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/textcomp.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fontaxes/fontaxes.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fontaxes/fontaxes-v1.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/LinLibertine_I.tex)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/inconsolata/zi4.sty `inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/newtxmath.sty `newtxmath' v1.754, 2024/09/22 Math macros based originally on txfonts (msharpe) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/oberdiek/centernot.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/kastrup/binhex.tex)
+amsthm NOT loaded
+) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/pifont.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/upzd.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/upsy.fd)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption3.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption-ams-smf.sto))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/float/float.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/comment/comment.sty Excluding comment 'comment') Excluding comment 'CCSXML' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty) Special comment 'acks' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/T1LinuxLibertineT-TLF.fd)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/textcase/textcase.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/doclicense.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xifthen/xifthen.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/calc.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/xspace.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/doclicense-english.ldf))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/logreq/logreq.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/logreq/logreq.def)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-dm.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmdatamodel.dbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/software.dbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-compat.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmauthoryear.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/authoryear-comp.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/authoryear.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/standard.bbx))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/software.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xurl/xurl.sty
+xurl: Set penalties for biblatex
+)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xpatch/xpatch.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3packages/xparse/xparse.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmauthoryear.cbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/cbx/authoryear-comp.cbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-case-expl3.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/units/nicefrac.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/enumitem/enumitem.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/placeins/placeins.sty) Include comment 'screenonly' Excluding comment 'printonly' Include comment 'anonsuppress' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ccicons/ccicons.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.cfg)) (./full_paper_jair.aux) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/omlnxlmi.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxexa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/lmsntxsy.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/lmxntxexx.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/OT1LinuxLibertineT-TLF.fd)<<ot1.cmap>> (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxmia.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxsym.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxsyc.fd) (./full_paper_jair.out) (./full_paper_jair.out) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/upquote/upquote.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/american.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/english-software.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/english.lbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/english-software.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/english.lbx))) (./full_paper_jair.bbl) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/TS1LinuxLibertineT-TLF.fd)
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\\' on input line 87.
+
+[1.1{/Users/pat/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc} </Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/images/doclicense-CC-by-88x31.pdf>] (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd) [2.2{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_afusau.enc} <../figures/fig_hero_price_curve_jair.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[3.3 <../figures/fig_engineering_workflow.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active [4.4]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[5.5]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 171.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 171.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 171.
+
+[6.6]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 191.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 191.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 191.
+
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[7.7] [8.8] (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[9.9]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 294.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 294.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 294.
+
+[10.10{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc}]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[11.11 <../figures/fig_target_vs_cap.pdf>] [12.12]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[13.13{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_fygcup.enc}] [14.14]
+Underfull \vbox (badness 1895) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[15.15] [16.16]
+Underfull \vbox (badness 3690) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[17.17 <../figures/price_scale_invariance.pdf>]
+Underfull \vbox (badness 1189) has occurred while \output is active [18.18 <../figures/price_dual_multiseed.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[19.19]
+Underfull \vbox (badness 1331) has occurred while \output is active [20.20 <../figures/price_shadow_curves.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[21.21] [22.22]
+Underfull \vbox (badness 4927) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[23.23]
+Underfull \vbox (badness 4927) has occurred while \output is active [24.24]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[25.25 <../figures/real_sensor_transfer.pdf>]
+Underfull \vbox (badness 1205) has occurred while \output is active [26.26 <../figures/distractor_composition.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[27.27] (./tables/rocksample_main.tex) [28.28]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[29.29 <../figures/fig_pareto.pdf>] [30.30 <../figures/fig_tileworld_scaling.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[31.31]
+Underfull \vbox (badness 1331) has occurred while \output is active [32.32] Processing 'acks' comment. Comment 'acks' writing to comment.cut. Straight input of comment.cut. (./comment.cut)
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[33.33] [34.34]
+Underfull \vbox (badness 2409) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[35.35]
+
+LaTeX Warning: Reference `tab:environment_depths' on page 36 undefined on input line 848.
+
+[36.36]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[37.37] [38.38]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[39.39] [40.40]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[41.41{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc} <../figures/fig_otc_loop.pdf>] [42.42]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[43.43] [44.44]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[45.45]
+Underfull \hbox (badness 3000) in paragraph at lines 1145--1146
+\T1/zi4/m/n/10 experiments/run_real_sensor_study.py \T1/LinuxLibertineT-TLF/m/n/10 (+20) and \T1/zi4/m/n/10 experiments/analyze_real_sensor_study.py\T1/LinuxLibertineT-TLF/m/n/10 (+20) , with in-
+[46.46]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[47.47] [48.48]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[49.49] [50.50]
+Underfull \vbox (badness 4927) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[51.51]
+
+Class acmart Warning: ACM keywords are mandatory for papers over two pages.
+
+
+Class acmart Warning: CCS concepts are mandatory for papers over two pages.
+
+[52.52] (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/se-pdfdoc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/se-utf8.def) [53.52] (./full_paper_jair.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+LaTeX Warning: Temporary extra page added at the end. Rerun to get it removed.
+
+
+Package rerunfilecheck Warning: File `full_paper_jair.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                full_paper_jair
+(biblatex)                and rerun LaTeX afterwards.
+
+ )
+(see the transcript file for additional information)
+pdfTeX warning (dest): name{example.U.2} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{proposition.U.1} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{page.80} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.Z} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.Y.3} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.Y.2} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.Y.1} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.Y} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.X.5} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.X.4} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.X.3} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.X.2} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.X.1} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.X} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.W.9} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.W.8} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.W.7} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.W.6} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.W.5} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.W.4} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.W.3} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.W.2} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.W.1} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.W} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.V.1} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.V} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.U.7} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.U.6} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.U.5} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.U.4} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.U.3} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.U.2} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.U.1} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.U} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.T.3} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.T.2} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.T.1} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.T} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.S} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.R} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.Q} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.P} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.O} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{appendix.N} has been referenced but does not exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.6.11} has been referenced but does not exist, replaced by a fixed one
+
+</Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI5.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI7.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathRM.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTBI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/NewTXMI7.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txexs.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txsym.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
+Output written on full_paper_jair.pdf (53 pages, 1087535 bytes).
+Transcript written on full_paper_jair.log.
+Latexmk: Getting log file 'full_paper_jair.log'
+Latexmk: Examining 'full_paper_jair.fls'
+Latexmk: Examining 'full_paper_jair.log'
+Latexmk: Found input bbl file 'full_paper_jair.bbl'
+Latexmk: References changed.
+Latexmk: References changed.
+Latexmk: References changed.
+Latexmk: Log file says output to 'full_paper_jair.pdf'
+Latexmk: Using biber to make bibliography file(s).
+Latexmk: Bibliography file(s) from .bcf file:
+  full_paper_jair.bib
+Sources for biber
+  full_paper_jair.bib
+  full_paper_jair.bcf
+Latexmk: applying rule 'biber full_paper_jair'...
+Rule 'biber full_paper_jair':  Reasons for rerun
+Changed files or newly in use/created:
+  full_paper_jair.bcf
+
+------------
+Run number 1 of rule 'biber full_paper_jair'
+------------
+------------
+Running 'biber  "full_paper_jair.bcf"'
+------------
+INFO - This is Biber 2.22
+INFO - Logfile is 'full_paper_jair.blg'
+INFO - Reading 'full_paper_jair.bcf'
+INFO - Found 69 citekeys in bib section 0
+INFO - Processing section 0
+INFO - Looking for bibtex file 'full_paper_jair.bib' for section 0
+INFO - LaTeX decoding ...
+INFO - Found BibTeX data source 'full_paper_jair.bib'
+INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+INFO - Sorting list 'nty/global//global/global/global' of type 'entry' with template 'nty' and locale 'en-US'
+INFO - No sort tailoring available for locale 'en-US'
+INFO - Writing 'full_paper_jair.bbl' with encoding 'UTF-8'
+INFO - Output to full_paper_jair.bbl
+Latexmk: Found biber source file(s) [full_paper_jair.bcf, full_paper_jair.bib]
+Latexmk: applying rule 'pdflatex'...
+Rule 'pdflatex':  Reasons for rerun
+Changed files or newly in use/created:
+  full_paper_jair.aux
+  full_paper_jair.bbl
+  full_paper_jair.out
+  full_paper_jair.run.xml
+
+------------
+Run number 2 of rule 'pdflatex'
+------------
+------------
+Running 'pdflatex  -interaction=nonstopmode -halt-on-error -recorder  "full_paper_jair.tex"'
+------------
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./full_paper_jair.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-08-10>
+(./jair.cls
+Document Class: jair 2025/08/15 JAIR class extending acmart
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmart.cls
+Document Class: acmart 2026/08/16 v2.20 Typesetting articles for the Association for Computing Machinery
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/keyval.tex)))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xstring/xstring.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xstring/xstring.tex)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amscls/amsart.cls
+Document Class: amsart 2020/05/29 v2.20.6
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype-pdftex.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype.cfg)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/totpages/totpages.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/everyshi/everyshi.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/environ/environ.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/trimspaces/trimspaces.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/stringenc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/url/url.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperxmp/hyperxmp.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ifmtarg/ifmtarg.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/ifthen.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/oberdiek/ifdraft.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifluatex.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/trig.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/geometry/geometry.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifvtex.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ncctools/manyfoot.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ncctools/nccfoots.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdftex/glyphtounicode.tex) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/cmap/cmap.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty<<t1.cmap>>) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/libertine.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifxetex.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/textcomp.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fontaxes/fontaxes.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fontaxes/fontaxes-v1.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/LinLibertine_I.tex)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/inconsolata/zi4.sty `inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/newtxmath.sty `newtxmath' v1.754, 2024/09/22 Math macros based originally on txfonts (msharpe) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/oberdiek/centernot.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/kastrup/binhex.tex)
+amsthm NOT loaded
+) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/pifont.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/upzd.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/upsy.fd)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption3.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption-ams-smf.sto))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/float/float.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/comment/comment.sty Excluding comment 'comment') Excluding comment 'CCSXML' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty) Special comment 'acks' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/T1LinuxLibertineT-TLF.fd)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/textcase/textcase.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/doclicense.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xifthen/xifthen.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/calc.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/xspace.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/doclicense-english.ldf))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/logreq/logreq.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/logreq/logreq.def)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-dm.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmdatamodel.dbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/software.dbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-compat.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmauthoryear.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/authoryear-comp.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/authoryear.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/standard.bbx))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/software.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xurl/xurl.sty
+xurl: Set penalties for biblatex
+)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xpatch/xpatch.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3packages/xparse/xparse.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmauthoryear.cbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/cbx/authoryear-comp.cbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-case-expl3.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/units/nicefrac.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/enumitem/enumitem.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/placeins/placeins.sty) Include comment 'screenonly' Excluding comment 'printonly' Include comment 'anonsuppress' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ccicons/ccicons.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.cfg)) (./full_paper_jair.aux) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/omlnxlmi.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxexa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/lmsntxsy.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/lmxntxexx.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/OT1LinuxLibertineT-TLF.fd)<<ot1.cmap>> (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxmia.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxsym.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxsyc.fd) (./full_paper_jair.out) (./full_paper_jair.out) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/upquote/upquote.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/american.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/english-software.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/english.lbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/english-software.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/english.lbx))) (./full_paper_jair.bbl) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/TS1LinuxLibertineT-TLF.fd)
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\\' on input line 87.
+
+[1.1{/Users/pat/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc} </Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/images/doclicense-CC-by-88x31.pdf>] (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd) [2.2{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_afusau.enc} <../figures/fig_hero_price_curve_jair.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[3.3 <../figures/fig_engineering_workflow.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active [4.4]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[5.5]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 171.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 171.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 171.
+
+[6.6]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 191.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 191.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 191.
+
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[7.7] [8.8] (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[9.9]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 294.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 294.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 294.
+
+[10.10{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc}]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[11.11 <../figures/fig_target_vs_cap.pdf>] [12.12]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[13.13{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_fygcup.enc}] [14.14]
+Underfull \vbox (badness 1895) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[15.15] [16.16]
+Underfull \vbox (badness 3690) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[17.17 <../figures/price_scale_invariance.pdf>]
+Underfull \vbox (badness 1189) has occurred while \output is active [18.18 <../figures/price_dual_multiseed.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[19.19]
+Underfull \vbox (badness 1331) has occurred while \output is active [20.20 <../figures/price_shadow_curves.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[21.21] [22.22]
+Underfull \vbox (badness 4927) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[23.23]
+Underfull \vbox (badness 4927) has occurred while \output is active [24.24]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[25.25 <../figures/real_sensor_transfer.pdf>]
+Underfull \vbox (badness 1205) has occurred while \output is active [26.26 <../figures/distractor_composition.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[27.27] (./tables/rocksample_main.tex) [28.28]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[29.29 <../figures/fig_pareto.pdf>] [30.30 <../figures/fig_tileworld_scaling.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[31.31]
+Underfull \vbox (badness 1331) has occurred while \output is active [32.32] Processing 'acks' comment. Comment 'acks' writing to comment.cut. Straight input of comment.cut. (./comment.cut)
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[33.33] [34.34]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[35.35] [36.36]
+Underfull \vbox (badness 2277) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[37.37]
+Underfull \vbox (badness 2384) has occurred while \output is active [38.38]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[39.39] [40.40]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[41.41{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc} <../figures/fig_otc_loop.pdf>] [42.42]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[43.43] [44.44]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[45.45]
+Underfull \hbox (badness 3000) in paragraph at lines 1145--1146
+\T1/zi4/m/n/10 experiments/run_real_sensor_study.py \T1/LinuxLibertineT-TLF/m/n/10 (+20) and \T1/zi4/m/n/10 experiments/analyze_real_sensor_study.py\T1/LinuxLibertineT-TLF/m/n/10 (+20) , with in-
+[46.46]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[47.47] [48.48]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[49.49] [50.50]
+Underfull \vbox (badness 4927) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[51.51]
+
+Class acmart Warning: ACM keywords are mandatory for papers over two pages.
+
+
+Class acmart Warning: CCS concepts are mandatory for papers over two pages.
+
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/se-pdfdoc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/se-utf8.def) [52.52] (./full_paper_jair.aux)
+
+Package biblatex Warning: Please rerun LaTeX.
+(biblatex)                Page breaks have changed.
+
+ )
+(see the transcript file for additional information)</Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI5.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI7.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathRM.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTBI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/NewTXMI7.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txexs.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txsym.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
+Output written on full_paper_jair.pdf (52 pages, 1083534 bytes).
+Transcript written on full_paper_jair.log.
+Latexmk: Getting log file 'full_paper_jair.log'
+Latexmk: Examining 'full_paper_jair.fls'
+Latexmk: Examining 'full_paper_jair.log'
+Latexmk: Found input bbl file 'full_paper_jair.bbl'
+Latexmk: Log file says output to 'full_paper_jair.pdf'
+Latexmk: Using biber to make bibliography file(s).
+Latexmk: Bibliography file(s) from .bcf file:
+  full_paper_jair.bib
+Sources for biber
+  full_paper_jair.bib
+  full_paper_jair.bcf
+Latexmk: applying rule 'pdflatex'...
+Rule 'pdflatex':  Reasons for rerun
+Changed files or newly in use/created:
+  full_paper_jair.aux
+  full_paper_jair.run.xml
+
+------------
+Run number 3 of rule 'pdflatex'
+------------
+------------
+Running 'pdflatex  -interaction=nonstopmode -halt-on-error -recorder  "full_paper_jair.tex"'
+------------
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./full_paper_jair.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-08-10>
+(./jair.cls
+Document Class: jair 2025/08/15 JAIR class extending acmart
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmart.cls
+Document Class: acmart 2026/08/16 v2.20 Typesetting articles for the Association for Computing Machinery
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/keyval.tex)))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xstring/xstring.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xstring/xstring.tex)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amscls/amsart.cls
+Document Class: amsart 2020/05/29 v2.20.6
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype-pdftex.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype.cfg)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/totpages/totpages.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/everyshi/everyshi.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/environ/environ.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/trimspaces/trimspaces.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/stringenc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/url/url.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperxmp/hyperxmp.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ifmtarg/ifmtarg.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/ifthen.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/oberdiek/ifdraft.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifluatex.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/trig.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/geometry/geometry.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifvtex.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ncctools/manyfoot.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ncctools/nccfoots.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdftex/glyphtounicode.tex) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/cmap/cmap.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty<<t1.cmap>>) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/libertine.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifxetex.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/textcomp.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fontaxes/fontaxes.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fontaxes/fontaxes-v1.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/LinLibertine_I.tex)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/inconsolata/zi4.sty `inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/newtxmath.sty `newtxmath' v1.754, 2024/09/22 Math macros based originally on txfonts (msharpe) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/oberdiek/centernot.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/kastrup/binhex.tex)
+amsthm NOT loaded
+) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/pifont.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/upzd.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/upsy.fd)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption3.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption-ams-smf.sto))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/float/float.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/comment/comment.sty Excluding comment 'comment') Excluding comment 'CCSXML' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty) Special comment 'acks' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/T1LinuxLibertineT-TLF.fd)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/textcase/textcase.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/doclicense.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xifthen/xifthen.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/calc.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/xspace.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/doclicense-english.ldf))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/logreq/logreq.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/logreq/logreq.def)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-dm.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmdatamodel.dbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/software.dbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-compat.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmauthoryear.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/authoryear-comp.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/authoryear.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/standard.bbx))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/software.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xurl/xurl.sty
+xurl: Set penalties for biblatex
+)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xpatch/xpatch.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3packages/xparse/xparse.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmauthoryear.cbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/cbx/authoryear-comp.cbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-case-expl3.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/units/nicefrac.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/enumitem/enumitem.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/placeins/placeins.sty) Include comment 'screenonly' Excluding comment 'printonly' Include comment 'anonsuppress' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ccicons/ccicons.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.cfg)) (./full_paper_jair.aux) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/omlnxlmi.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxexa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/lmsntxsy.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/lmxntxexx.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/OT1LinuxLibertineT-TLF.fd)<<ot1.cmap>> (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxmia.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxsym.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxsyc.fd) (./full_paper_jair.out) (./full_paper_jair.out) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/upquote/upquote.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/american.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/english-software.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/english.lbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/english-software.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/english.lbx))) (./full_paper_jair.bbl) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/TS1LinuxLibertineT-TLF.fd)
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\\' on input line 87.
+
+[1.1{/Users/pat/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc} </Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/images/doclicense-CC-by-88x31.pdf>] (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd) [2.2{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_afusau.enc} <../figures/fig_hero_price_curve_jair.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[3.3 <../figures/fig_engineering_workflow.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active [4.4]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[5.5]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 171.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 171.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 171.
+
+[6.6]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 191.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 191.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 191.
+
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[7.7] [8.8] (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[9.9]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 294.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 294.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 294.
+
+[10.10{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc}]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[11.11 <../figures/fig_target_vs_cap.pdf>] [12.12]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[13.13{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_fygcup.enc}] [14.14]
+Underfull \vbox (badness 1895) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[15.15] [16.16]
+Underfull \vbox (badness 3690) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[17.17 <../figures/price_scale_invariance.pdf>]
+Underfull \vbox (badness 1189) has occurred while \output is active [18.18 <../figures/price_dual_multiseed.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[19.19]
+Underfull \vbox (badness 1331) has occurred while \output is active [20.20 <../figures/price_shadow_curves.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[21.21] [22.22]
+Underfull \vbox (badness 4927) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[23.23]
+Underfull \vbox (badness 4927) has occurred while \output is active [24.24]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[25.25 <../figures/real_sensor_transfer.pdf>]
+Underfull \vbox (badness 1205) has occurred while \output is active [26.26 <../figures/distractor_composition.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[27.27] (./tables/rocksample_main.tex) [28.28]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[29.29 <../figures/fig_pareto.pdf>] [30.30 <../figures/fig_tileworld_scaling.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[31.31]
+Underfull \vbox (badness 1331) has occurred while \output is active [32.32] Processing 'acks' comment. Comment 'acks' writing to comment.cut. Straight input of comment.cut. (./comment.cut)
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[33.33] [34.34]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[35.35] [36.36]
+Underfull \vbox (badness 2277) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[37.37]
+Underfull \vbox (badness 2384) has occurred while \output is active [38.38]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[39.39] [40.40]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[41.41{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc} <../figures/fig_otc_loop.pdf>] [42.42]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[43.43] [44.44]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[45.45]
+Underfull \hbox (badness 3000) in paragraph at lines 1145--1146
+\T1/zi4/m/n/10 experiments/run_real_sensor_study.py \T1/LinuxLibertineT-TLF/m/n/10 (+20) and \T1/zi4/m/n/10 experiments/analyze_real_sensor_study.py\T1/LinuxLibertineT-TLF/m/n/10 (+20) , with in-
+[46.46]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[47.47] [48.48]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[49.49] [50.50]
+Underfull \vbox (badness 4927) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[51.51]
+
+Class acmart Warning: ACM keywords are mandatory for papers over two pages.
+
+
+Class acmart Warning: CCS concepts are mandatory for papers over two pages.
+
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/se-pdfdoc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/se-utf8.def) [52.52] (./full_paper_jair.aux) )
+(see the transcript file for additional information)</Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI5.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI7.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathRM.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTBI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/NewTXMI7.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txexs.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txsym.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
+Output written on full_paper_jair.pdf (52 pages, 1083534 bytes).
+Transcript written on full_paper_jair.log.
+Latexmk: Getting log file 'full_paper_jair.log'
+Latexmk: Examining 'full_paper_jair.fls'
+Latexmk: Examining 'full_paper_jair.log'
+Latexmk: Found input bbl file 'full_paper_jair.bbl'
+Latexmk: Log file says output to 'full_paper_jair.pdf'
+Latexmk: Using biber to make bibliography file(s).
+Latexmk: Bibliography file(s) from .bcf file:
+  full_paper_jair.bib
+Sources for biber
+  full_paper_jair.bib
+  full_paper_jair.bcf
+Latexmk: applying rule 'pdflatex'...
+Rule 'pdflatex':  Reasons for rerun
+Changed files or newly in use/created:
+  full_paper_jair.run.xml
+
+------------
+Run number 4 of rule 'pdflatex'
+------------
+------------
+Running 'pdflatex  -interaction=nonstopmode -halt-on-error -recorder  "full_paper_jair.tex"'
+------------
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./full_paper_jair.tex
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-08-10>
+(./jair.cls
+Document Class: jair 2025/08/15 JAIR class extending acmart
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmart.cls
+Document Class: acmart 2026/08/16 v2.20 Typesetting articles for the Association for Computing Machinery
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xkeyval/keyval.tex)))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xstring/xstring.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/xstring/xstring.tex)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amscls/amsart.cls
+Document Class: amsart 2020/05/29 v2.20.6
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype-pdftex.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/microtype.cfg)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/booktabs/booktabs.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/totpages/totpages.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/everyshi/everyshi.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/environ/environ.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/trimspaces/trimspaces.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/stringenc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/url/url.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/hyperxmp/hyperxmp.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ifmtarg/ifmtarg.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/ifthen.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/oberdiek/ifdraft.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifluatex.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/trig.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/geometry/geometry.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifvtex.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ncctools/manyfoot.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ncctools/nccfoots.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/pdftex/glyphtounicode.tex) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/cmap/cmap.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty<<t1.cmap>>) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/libertine.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifxetex.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/textcomp.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fontaxes/fontaxes.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fontaxes/fontaxes-v1.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/LinLibertine_I.tex)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/inconsolata/zi4.sty `inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/newtxmath.sty `newtxmath' v1.754, 2024/09/22 Math macros based originally on txfonts (msharpe) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/oberdiek/centernot.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/kastrup/binhex.tex)
+amsthm NOT loaded
+) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/pifont.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/upzd.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/psnfss/upsy.fd)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption3.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/caption/caption-ams-smf.sto))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/float/float.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/comment/comment.sty Excluding comment 'comment') Excluding comment 'CCSXML' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty) Special comment 'acks' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/T1LinuxLibertineT-TLF.fd)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/textcase/textcase.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/doclicense.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xifthen/xifthen.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/calc.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/xspace.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/doclicense-english.ldf))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/logreq/logreq.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/logreq/logreq.def)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-dm.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmdatamodel.dbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/software.dbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-compat.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmauthoryear.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/authoryear-comp.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/authoryear.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/bbx/standard.bbx))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/software.bbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xurl/xurl.sty
+xurl: Set penalties for biblatex
+)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/xpatch/xpatch.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/l3packages/xparse/xparse.sty))) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/acmart/acmauthoryear.cbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/cbx/authoryear-comp.cbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/biblatex.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/blx-case-expl3.sty)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/units/nicefrac.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/multirow/multirow.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/enumitem/enumitem.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/placeins/placeins.sty) Include comment 'screenonly' Excluding comment 'printonly' Include comment 'anonsuppress' (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/ccicons/ccicons.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/csquotes/csquotes.cfg)) (./full_paper_jair.aux) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/omlnxlmi.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxexa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/lmsntxsy.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/lmxntxexx.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/OT1LinuxLibertineT-TLF.fd)<<ot1.cmap>> (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxmia.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxsym.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/newtx/untxsyc.fd) (./full_paper_jair.out) (./full_paper_jair.out) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/upquote/upquote.sty) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/american.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/english-software.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/english.lbx)) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex-software/english-software.lbx (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/biblatex/lbx/english.lbx))) (./full_paper_jair.bbl) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg) (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/TS1LinuxLibertineT-TLF.fd)
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 87.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\\' on input line 87.
+
+[1.1{/Users/pat/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc} </Users/pat/Library/TinyTeX/texmf-dist/tex/latex/doclicense/images/doclicense-CC-by-88x31.pdf>] (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd) [2.2{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_afusau.enc} <../figures/fig_hero_price_curve_jair.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[3.3 <../figures/fig_engineering_workflow.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active [4.4]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[5.5]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 161.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 171.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 171.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 171.
+
+[6.6]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 191.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 191.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 191.
+
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[7.7] [8.8] (/Users/pat/Library/TinyTeX/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[9.9]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 294.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\rho' on input line 294.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 294.
+
+[10.10{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc}]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[11.11 <../figures/fig_target_vs_cap.pdf>] [12.12]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[13.13{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_fygcup.enc}] [14.14]
+Underfull \vbox (badness 1895) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[15.15] [16.16]
+Underfull \vbox (badness 3690) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[17.17 <../figures/price_scale_invariance.pdf>]
+Underfull \vbox (badness 1189) has occurred while \output is active [18.18 <../figures/price_dual_multiseed.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[19.19]
+Underfull \vbox (badness 1331) has occurred while \output is active [20.20 <../figures/price_shadow_curves.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[21.21] [22.22]
+Underfull \vbox (badness 4927) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[23.23]
+Underfull \vbox (badness 4927) has occurred while \output is active [24.24]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[25.25 <../figures/real_sensor_transfer.pdf>]
+Underfull \vbox (badness 1205) has occurred while \output is active [26.26 <../figures/distractor_composition.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[27.27] (./tables/rocksample_main.tex) [28.28]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[29.29 <../figures/fig_pareto.pdf>] [30.30 <../figures/fig_tileworld_scaling.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[31.31]
+Underfull \vbox (badness 1331) has occurred while \output is active [32.32] Processing 'acks' comment. Comment 'acks' writing to comment.cut. Straight input of comment.cut. (./comment.cut)
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[33.33] [34.34]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[35.35] [36.36]
+Underfull \vbox (badness 2277) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[37.37]
+Underfull \vbox (badness 2384) has occurred while \output is active [38.38]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[39.39] [40.40]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[41.41{/Users/pat/Library/TinyTeX/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc} <../figures/fig_otc_loop.pdf>] [42.42]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[43.43] [44.44]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[45.45]
+Underfull \hbox (badness 3000) in paragraph at lines 1145--1146
+\T1/zi4/m/n/10 experiments/run_real_sensor_study.py \T1/LinuxLibertineT-TLF/m/n/10 (+20) and \T1/zi4/m/n/10 experiments/analyze_real_sensor_study.py\T1/LinuxLibertineT-TLF/m/n/10 (+20) , with in-
+[46.46]
+Underfull \vbox (badness 10000) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[47.47] [48.48]
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[49.49] [50.50]
+Underfull \vbox (badness 4927) has occurred while \output is active
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 19.08403pt, for example:
+(fancyhdr)                \setlength{\headheight}{19.08403pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-6.08403pt}.
+
+[51.51]
+
+Class acmart Warning: ACM keywords are mandatory for papers over two pages.
+
+
+Class acmart Warning: CCS concepts are mandatory for papers over two pages.
+
+(/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/se-pdfdoc.def) (/Users/pat/Library/TinyTeX/texmf-dist/tex/generic/stringenc/se-utf8.def) [52.52] (./full_paper_jair.aux) )
+(see the transcript file for additional information)</Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI5.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathMI7.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/LibertineMathRM.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTBI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/NewTXMI7.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txexs.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txsym.pfb></Users/pat/Library/TinyTeX/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
+Output written on full_paper_jair.pdf (52 pages, 1083534 bytes).
+Transcript written on full_paper_jair.log.
+Latexmk: Getting log file 'full_paper_jair.log'
+Latexmk: Examining 'full_paper_jair.fls'
+Latexmk: Examining 'full_paper_jair.log'
+Latexmk: Found input bbl file 'full_paper_jair.bbl'
+Latexmk: Log file says output to 'full_paper_jair.pdf'
+Latexmk: Using biber to make bibliography file(s).
+Latexmk: Bibliography file(s) from .bcf file:
+  full_paper_jair.bib
+Sources for biber
+  full_paper_jair.bib
+  full_paper_jair.bcf
+Latexmk: All targets (full_paper_jair.pdf) are up-to-date
+

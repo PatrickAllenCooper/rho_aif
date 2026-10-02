@@ -1,0 +1,71 @@
+\section{Calibration Protocols and Reference Checks}
+\label{app:extended_budget_evidence}
+
+The main text reports the budget studies' usage and reward outcomes. This appendix gives the remaining sampling details and reference checks needed to interpret those results.
+
+\subsection{Interleaved Usage Curves}
+\label{app:interleaved_details}
+
+The curves in Section~\ref{sec:interleaved_budget} use five common seeds. At each grid weight, RockSample[5,3] has $50$ episodes per seed on a ten-point grid, RockSample[7,4] has $30$ on eight points, and Inspection-$N=16$ has $50$ on ten points. Each grid includes zero and positive logarithmically spaced weights up to $100$. Four targets are evenly spaced between the $8\%$ and $92\%$ positions of each sampled usage range. The five-domain staircases use the same end margins, while the paired count/cost targets use $15\%$ and $85\%$. Usage SEs describe estimates at sampled weights, not price uncertainty. The curves and brackets are archived by \texttt{experiments/\allowbreak run\_\allowbreak price\_\allowbreak of\_\allowbreak information.py}.
+
+\subsection{Offline Reward References}
+\label{app:sarsop_details}
+\label{app:cpomdp_details}
+
+Section~\ref{sec:sarsop} compares EFE with the common-export SARSOP policies of Appendix~\ref{app:sarsop_build}. The five-seed unpaired Welch TOST uses the stated one-observation-cost margins. Its larger one-sided $p$-values on Tiger, Diagnosis and Bandit are $0.0010$, $0.0458$ and $0.0130$, all surviving Holm correction. The corresponding $90\%$ difference intervals are $[-0.41,0.41]$, $[-0.51,0.98]$ and $[-0.35,0.31]$, strictly inside the margins. The five-seed margin choice was retrospective. Fifteen additional seeds were fixed after that choice and before the $n=20$ study, which retains equivalence. These checks and their per-seed inputs are in \texttt{results\_\allowbreak tost\_\allowbreak sarsop.csv} and \texttt{results\_\allowbreak tost\_\allowbreak sarsop\_\allowbreak n20\_\allowbreak robustness.csv}.
+
+Shared seed labels do not match episodes when policies consume random draws differently. The predeclared episode-matched check therefore resets episode $e$ of seed $s$ at $10^4s+e$, matching hidden states and observation draws while actions agree. It uses the same twenty seeds, $500$ episodes each and fixed margins. Tiger acts identically. Diagnosis's paired difference is $+0.11\pm0.09$ with $p_{\mathrm{TOST}}=3.2\times10^{-9}$, and Bandit's is $+0.04\pm0.03$ with $p=4.6\times10^{-12}$ (SE). Unpaired tests on those runs also support equivalence ($3.8\times10^{-5}$ and $1.8\times10^{-8}$). Results and per-seed inputs are in \texttt{results\_\allowbreak tost\_\allowbreak sarsop\_\allowbreak episode\_\allowbreak paired.csv} and its companion file.
+
+The unconstrained-reference battery does not attain every reference usage. Tiger's SARSOP usage of $4.32$ lies below the sampled information-weight family's floor of $4.37$, within one usage SE. Its archived ``usage-matched'' $w=0$ row is a low-end fallback, not an attained target (\texttt{results\_\allowbreak sarsop\_\allowbreak baseline.json}). The separate cap-reference comparison of Section~\ref{sec:cpomdp} uses the measured points in \texttt{results\_\allowbreak cpomdp\_\allowbreak frontier.csv} and the \texttt{feasible\_\allowbreak envelope} routine in \texttt{rho\_\allowbreak aif/budget.py}. Its evaluated usage-matched weights $0.00$, $0.45$ and $1.07$ on Tiger, Diagnosis and Bandit give the same rewards as EFE in that run (\texttt{results\_\allowbreak cpomdp\_\allowbreak baseline.csv}). This observed plateau does not certify the population constrained optimum.
+
+\subsection{Held-Out Calibration and Reference Sensitivity}
+\label{app:frontier_details}
+
+Table~\ref{tab:budget_frontier_main} reports every attainable target's usage, reward and reference gaps. The within-family LP comparisons select only from the calibration grid. The best equality mixture coincides with the endpoint mixture at eleven of twelve targets, allowing equivalent plateau endpoints. Bandit's gap target is the exception, where the alternative mixture earns more reward but misses usage by more, as reported in Section~\ref{sec:budget_frontier}. The best feasible mixture equals the best feasible member at every slack target, the endpoint mixture at the three binding Diagnosis targets, and the best equality mixture at Bandit's gap target. Full comparisons and selection probabilities are archived in \texttt{results\_\allowbreak budget\_\allowbreak frontier.csv}.
+
+The predeclared target-matched reference adds eleven subsidies $\lambda=-cs$, with $s$ from $0.1$ to $0.98$ and observation cost $c$, keeping net observation reward negative. Equality-mixture supports are fitted on held-out usage and frozen for the fresh stream. They coincide with the cap reference at four binding budgets and include a subsidized policy at the seven slack budgets. No slack-budget target-gap interval excludes zero on either stream. The held-out shortfalls are Diagnosis at $B=9.53$ and Bandit's gap target. The fresh shortfalls are Diagnosis at $B=7.72$ ($-0.56\pm0.24$) and Bandit's gap target ($-0.50\pm0.11$). Only Bandit's recurs. These are conditional, nominal pointwise comparisons with the fit, cap-feasibility and multiplicity omissions stated in Section~\ref{sec:budget_frontier}.
+
+The fresh stream uses seeds $12$--$21$, $100$ episodes each, and Student-$t$ intervals with $9$ degrees of freedom. One Diagnosis policy pair had already been evaluated on these seeds before the replication was specified, so that pair is not blind. A wrong diagnosis changes reward by $60$, making these samples sensitive to few errors. The paired archives retain both the cap and target comparisons, including the changing identity of Diagnosis's shortfalls (\texttt{results\_\allowbreak budget\_\allowbreak frontier\_\allowbreak fresh\_\allowbreak seed\_\allowbreak replication.csv} and \texttt{results\_\allowbreak budget\_\allowbreak frontier\_\allowbreak target\_\allowbreak reference.csv}).
+
+A post hoc sensitivity analysis refits the equality reference at each mixture's realized held-out usage rather than at $B$, using no new episodes. Every held-out Tiger mean gap then becomes zero, because rewards there equal $10$ minus usage. Diagnosis still falls short at $B=9.53$ held out and $B=7.72$ fresh. Bandit's gap-target interval reaches $+0.001$ held out but remains negative fresh. Target gaps thus include usage mismatch, and neither fitted reference certifies the population constrained frontier. The analysis and subsidized points are in the \texttt{usage\_\allowbreak matched} companion of the target-reference file and \texttt{results\_\allowbreak cpomdp\_\allowbreak frontier\_\allowbreak subsidy.csv}.
+
+\subsection{Distractor Comparison Implementation}
+\label{app:distractor_details}
+
+The IDS control in Section~\ref{sec:distractor} minimizes $\Delta^2/I$ over individual observation actions. Here $\Delta$ is the opportunity cost of observing rather than committing and $I$ measures information about the optimal commit. When that information vanishes, the adaptation substitutes state-entropy gain. Information about the optimal commit is correctly zero for the distractor, but the fallback rewards learning its nuisance bit. This deterministic action choice does not implement IDS over randomized action distributions. The observed distractor spending therefore identifies a failure of this adaptation, not of reward-aware information measures generally.
+
+
+
+\FloatBarrier
+\section{Observation Structure and Leaf Heuristics}
+\label{app:extended_efe_results}
+
+The main comparisons use specific sensing structures and depth-capped continuations. The following checks bound their interpretation.
+
+\subsection{Tileworld Scan Partitions}
+\label{app:tileworld_details}
+
+The partition study replaces complementary bit partitions while keeping the rest of the $6\times6$ benchmark fixed. Random partitions assign cells to equal halves, losing guaranteed joint identification. Overlapping partitions threshold random weighted row/column coordinates, creating correlated tilted cuts. The study uses $H=2$, five seeds and $200$ episodes per seed (\texttt{experiments/\allowbreak run\_\allowbreak tileworld.py partition}).
+
+Less complementary observations sharply reduce absolute performance. EFE/Planning success falls from $71.9/73.6\%$ with bitwise partitions to $8.5/8.4\%$ with overlapping partitions. No partition mode separates them on reward or success. The largest reward gap, under random partitions, has Welch $p=0.24$. EFE uses fewer scans in all three modes. These results do not establish a model-independent advantage (\texttt{results\_\allowbreak partition\_\allowbreak sensitivity\_\allowbreak 6x6.csv}).
+
+\subsection{RockSample Leaf and Heuristic Policies}
+\label{app:rocksample_main_details}
+
+The weighted agents use independent per-rock beliefs and the tabled search depths. They share a leaf rule that repeatedly chooses an unsampled rock with positive belief-weighted sample value, subtracts travel cost, visits the best remaining rock and samples it, then exits when none remains. The leaf also charges travel to the east edge before exit, although the environment allows exit anywhere. This deflates depth-capped continuations relative to immediate exit and biases the entire family toward early exit. All weighted agents use this same leaf rule.
+
+The standalone heuristic in Table~\ref{tab:rocksample} is POMCP's approach-then-check rollout without a tree. It approaches the unresolved rock with highest belief per unit distance, checks nearby at accuracy $0.95$, samples above its belief threshold, abandons rocks below $0.15$ and exits when none remains. It is a hand-coded policy without a search horizon. Greedy instead samples without checking. Appendix~\ref{app:rocksample} gives the POMCP protocol and sensitivity studies.
+
+The large-instance failure persists in the depth-three check. On RS[11,11], Planning and EFE remain at reward $13.23$ and Planning+IG reaches $13.17$, within one SE of the shallower results (\texttt{results\_\allowbreak rocksample\_\allowbreak 11x11\_\allowbreak depth3\_\allowbreak check.csv}). The heuristic collects $5.22$ good rocks against about half a rock for each tree-search agent. Useful distant checks require travel beyond the tested exact-search horizons. At the uniform prior, each untouched rock has zero expected sampling reward and fails the leaf's positive-value filter, compounded by the phantom exit cost. This supports a horizon-and-leaf limitation, not absence of exploitable reward. It is a mechanistic interpretation, not an independently tested scaling law.
+
+
+\FloatBarrier
+\section{Approximate Search Method}
+\label{app:interpretation}
+
+Exact enumeration costs $\mathcal O((K|\mathcal O|)^H)$ for $K$ sensing actions with $|\mathcal O|$ outcomes each. MCTS-EFE uses UCB1 over observe/commit actions, enumerates each observation action's outcomes, adds exact per-node information gain, and backs up maxima. EFE-greedy leaf rollouts compare immediate commitment with the best one-step EFE observation. Commit-child values are exact belief-expected rewards. The default exploration constant is the fixed commit-reward range, $110$ on Tiger, rather than the preliminary-return range used by \citet{silver2010}. Appendix~\ref{app:pomcp} reports exploration tuning, informed rollouts, the ablation and a separate compute-matched Tiger control.
+
+The simulation-matched comparison uses $500$ simulations on Tiger at $H=10$. MCTS-EFE reaches $97.7\%\pm0.5$ percentage points against POMCP's $88.1\%\pm0.2$ ($p=4.4\times10^{-6}$). Its cost is $14$--$16$ ms per episode across tested horizons, versus $11$--$12$ ms for POMCP, so matching simulations does not match computation. At $H=5$ and $200$ simulations on Diagnosis, the corresponding success rates are $94.2\%\pm0.5$ and $65.5\%\pm2.1$ ($p=1.1\times10^{-4}$). These are seed-level SEs and Welch tests from \texttt{results\_\allowbreak mcts\_\allowbreak efe.csv}.
+
+Approximate search does not uniformly improve either reward or success over Exact-EFE. On Tiger and Diagnosis, MCTS-EFE falls below it on success ($97.7/99.9\%$, $94.2/97.1\%$) and reward ($3.73/5.65$, $-3.26/-1.44$). On Tileworld-$6\times6$, success instead rises from $71.9\%\pm1.5$ to $95.4\%\pm0.6$ under this battery's protocol, but reward falls from $-21.62$ to $-25.02$ and usage rises from $14.8$ to $32.3$. These outcomes describe the joint implementation. The controls in Appendix~\ref{app:pomcp} detect no success or reward effect of either switchable component, in-tree information gain and max-backup, after Holm correction at five seeds. EFE leaf evaluation, exact beliefs and exact commit-child values remain coupled, preventing attribution to an isolated component.
+

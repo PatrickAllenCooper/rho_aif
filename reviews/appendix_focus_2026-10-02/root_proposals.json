@@ -1,0 +1,352 @@
+[
+  {
+    "id": "root-01",
+    "old": "Appendices retain proofs, complete tables, robustness studies, and implementation details.",
+    "new": "Appendices provide proofs, experiment specifications, and controls needed to interpret these claims.",
+    "reason": "Describe the focused supporting material without promising complete tables for peripheral studies."
+  },
+  {
+    "id": "root-02",
+    "old": " We include an observe-then-commit IDS baseline in Appendix~\\ref{app:ids}.",
+    "new": "",
+    "reason": "Remove the promise of a peripheral core-domain IDS comparison. The distinct distractor failure remains."
+  },
+  {
+    "id": "root-03",
+    "old": "The reward-maximizing weight scales with $k$ (Appendix~\\ref{app:reward_scaling}). Proposition~\\ref{prop:pi1} gives the corresponding usage identities.",
+    "new": "Proposition~\\ref{prop:pi1} establishes this equivariance and gives the corresponding usage identities.",
+    "reason": "The theorem supplies the scale argument; omit the separate reward-optimal sampled-grid experiment."
+  },
+  {
+    "id": "root-04",
+    "old": "Only Tiger among the tabulated comparisons satisfies those assumptions. Diagnosis and Tileworld use unproved two-state reductions, and Testbed lies at the boundary $|R^-|=R^+$.",
+    "new": "Tiger satisfies these assumptions, while Testbed lies at the boundary $|R^-|=R^+$. The proposition does not apply directly to Diagnosis or Tileworld.",
+    "reason": "Remove the heuristic cross-domain threshold table while keeping the scope restriction explicit."
+  },
+  {
+    "id": "root-05",
+    "old": "Appendix~\\ref{app:theory_factored} gives the complete example and Figure~\\ref{fig:state_preservation}.",
+    "new": "Appendix~\\ref{app:theory_factored} gives the complete calculation.",
+    "reason": "Keep the destructive-sensing counterexample without promising its redundant timing schematic."
+  },
+  {
+    "id": "root-06",
+    "old": " The \\texttt{pymdp} check in Appendix~\\ref{app:pymdp} tests qualitative consistency of the epistemic term, not certified numerical equivalence \\citep{heins2022}.",
+    "new": "",
+    "reason": "Remove the peripheral software consistency check, which is not evidence for the stated recursion proof."
+  },
+  {
+    "id": "root-07",
+    "old": "Additional baselines are Greedy without sensing, information-directed sampling (Appendix~\\ref{app:ids}), and a posterior-vote rule.",
+    "new": "Additional baselines are Greedy without sensing and a posterior-vote rule.",
+    "reason": "Remove the core-domain IDS comparison from the main roster; the distractor adaptation remains locally defined."
+  },
+  {
+    "id": "root-08",
+    "old": " Appendix~\\ref{app:theory_positioning} gives the detailed comparisons, including sequential experimental design.",
+    "new": "",
+    "reason": "Related Work and the main positioning already state the theoretical comparison."
+  },
+  {
+    "id": "root-09",
+    "old": "\\subsection{Additional Onset and Operating-Point Checks}\n\\label{sec:budget_breadth_summary}\n\nPositive-threshold two-state instances place the observed onset within one refined grid step, $3\\%$, above the closed-form threshold, while standard negative-threshold instances observe already at $w{=}0$ (Appendix~\\ref{sec:prop2exp}). The atlas collects the implicit $w{=}1$ budgets and two grid brackets per instance from the measured curves (Appendix~\\ref{app:w_atlas}). These are measured operating points, not a universal predictive formula for the price.\n\n",
+    "new": "",
+    "reason": "Drop the peripheral atlas and standalone summary subsection; the corollary still points to its numerical onset check."
+  },
+  {
+    "id": "root-10",
+    "old": " In the sampled random two-state family, approximately $21\\%$ fail the study's chosen reward-gap criterion even at $H=3$ (Appendix~\\ref{app:nearopt_horizon}).",
+    "new": "",
+    "reason": "Remove discussion of the discarded exploratory random-horizon study."
+  },
+  {
+    "id": "root-11",
+    "old": "Larger weights can buy greater success at a reward cost, and transfer at the top of the grid can be costly (Table~\\ref{tab:transfer}).",
+    "new": "Larger weights can buy greater success at a reward cost.",
+    "reason": "The main Pareto comparison already supports the trade-off; discard the redundant weight-transfer experiment."
+  },
+  {
+    "id": "root-12",
+    "old": "Tiger's $B=4$ in Table~\\ref{tab:collapse-breadth}",
+    "new": "Tiger's $B=4$ in Section~\\ref{sec:collapse}",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-13",
+    "old": " Table~\\ref{tab:collapse-breadth} and Appendix~\\ref{app:scale_details} give the complete breadth check.",
+    "new": "",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-14",
+    "old": " Appendix~\\ref{app:dual_details} specifies the detector and steady-state summaries.",
+    "new": " The per-episode traces and derived metrics are archived in \\texttt{results\\_\\allowbreak price\\_\\allowbreak dual\\_\\allowbreak multiseed\\_\\allowbreak metrics.csv} and its companion outputs.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-15",
+    "old": "Figure~\\ref{fig:costbudget} and Appendix~\\ref{app:cost_details} retain the full curves and pairing rule.",
+    "new": "Appendix~\\ref{app:interleaved_details} specifies the target-placement margins.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-16",
+    "old": "Figure~\\ref{fig:interleaved} and Appendix~\\ref{app:interleaved_details} give the brackets, uncertainty and complete grid/episode protocols.",
+    "new": "Appendix~\\ref{app:interleaved_details} gives the grid, episode counts and target-placement rule.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-17",
+    "old": "Tiger's price is weakly identified, consistent with Table~\\ref{tab:collapse-breadth}, in the sense that the budget pins the price down only loosely.",
+    "new": "Tiger's price is weakly identified: the budget pins the price down only loosely.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-18",
+    "old": " at five seeds and $500$ episodes per seed (Table~\\ref{tab:sarsop}).",
+    "new": " at five seeds and $500$ episodes per seed.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-19",
+    "old": "Table~\\ref{tab:sarsop} and Appendix~\\ref{app:sarsop_details} give the numerical tests, intervals and archives.",
+    "new": "Appendix~\\ref{app:sarsop_details} gives the numerical tests, intervals and archives.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-20",
+    "old": "Appendix~\\ref{app:cpomdp_details} discusses these limitations.",
+    "new": "Appendix~\\ref{app:cpomdp_details} identifies the evaluated policies and reference records.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-21",
+    "old": "(Table~\\ref{tab:cpomdp}, Appendix~\\ref{app:cpomdp_details})",
+    "new": "(Appendix~\\ref{app:cpomdp_details})",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-22",
+    "old": "Complete within-family and reference comparisons appear in Table~\\ref{tab:budget_frontier}.",
+    "new": "Appendix~\\ref{app:frontier_details} gives the within-family comparisons and reference sensitivity checks.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-23",
+    "old": "Their direct reward comparisons, retained in Appendix~\\ref{app:frontier_details}, are descriptive cross-stream comparisons.",
+    "new": "Their direct reward comparisons are descriptive cross-stream comparisons.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-24",
+    "old": "The complete three-panel table, selection details, reference construction, and paired archives are retained in Appendix~\\ref{app:frontier_details}.",
+    "new": "Appendix~\\ref{app:frontier_details} supplies selection details, reference sensitivity checks and the paired archive pointers.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-25",
+    "old": "Appendix~\\ref{app:distractor_details} preserves the full curves, implementation analysis, comparison family, and remaining numerical results.",
+    "new": "Appendix~\\ref{app:distractor_details} defines the IDS adaptation and its fallback.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-26",
+    "old": "We retain the main comparisons here and place detailed per-environment mechanisms, robustness studies, and additional tables in Appendix~\\ref{app:extended_efe_results}.",
+    "new": "Appendices~\\ref{app:full_tables} and~\\ref{app:extended_efe_results} provide additional controls for the information-unit weight, observation structure and leaf rules.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-27",
+    "old": "Full agents, pooled uncertainties, and statistical comparisons are in Appendices~\\ref{app:full_tables} and~\\ref{app:stats}.",
+    "new": "Additional controls and statistical conventions are in Appendices~\\ref{app:full_tables} and~\\ref{app:stats}.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-28",
+    "old": "Full baselines, pooled effect sizes, and seed-level tests appear in Appendices~\\ref{app:full_tables}, \\ref{app:stats}, and~\\ref{app:core_details}.",
+    "new": "Appendices~\\ref{app:full_tables} and~\\ref{app:stats} give these controls and their statistical conventions.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-29",
+    "old": "Appendix~\\ref{app:pareto_details} retains the detailed trade-offs, and Appendix~\\ref{app:nat_canonical} compares",
+    "new": "Appendix~\\ref{app:nat_canonical} compares",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-30",
+    "old": " Table~\\ref{tab:tileworld} and Figure~\\ref{fig:tw_comparison} retain the full comparison and an illustrative trajectory in Appendix~\\ref{app:tileworld_details}.",
+    "new": "",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-31",
+    "old": "Table~\\ref{tab:inspection} reports both instances, with the qualified two-state interpretation in Appendix~\\ref{app:inspection_details}.",
+    "new": "Table~\\ref{tab:inspection} reports both instances.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-32",
+    "old": "Horizon, discounting and model accuracy independently affect its behavior (Appendices~\\ref{app:nearopt_horizon}, \\ref{app:discount}, and~\\ref{app:misspec}).",
+    "new": "Horizon, discounting and model accuracy affect its behavior. The finite-horizon comparisons above and the controls in Appendices~\\ref{app:discount} and~\\ref{app:misspec} show these dependencies.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-33",
+    "old": "Appendix~\\ref{app:theory_agents} gives the full specifications and ablation interpretation.",
+    "new": "Appendix~\\ref{app:theory_agents} gives implementation details.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-34",
+    "old": "The shallow RockSample reference does not reach EFE's operating region.",
+    "new": "The shallow RockSample reference does not reach EFE's operating region (Appendix~\\ref{app:theory_positioning}).",
+    "reason": "Repair pointers and content promises after substantive appendix cuts."
+  },
+  {
+    "id": "root-35",
+    "old": ", the mean $\\pm$ SE usage-curve ranges of Appendix~\\ref{app:w_atlas}",
+    "new": " and the usage/reward SEs in Table~\\ref{tab:budget_frontier_main}",
+    "reason": "Repair pointers and content promises after substantive appendix cuts.",
+    "jair_only": true
+  },
+  {
+    "id": "root-36",
+    "old": "The Pareto sweep over $w$ (Section~\\ref{sec:pareto}) reports the full grid searched, not only the selected operating point, and the horizon sweep of Appendix~\\ref{app:nearopt_horizon} searches the horizon grid $H \\in \\{1,2,3\\}$ and the weight grid $\\{0.01, 0.5, 1, 2, 5, 50\\}$, both stated in \\url{experiments/run_nearopt_horizon.py}, from which its reward-optimal weight is selected.",
+    "new": "The Pareto sweep (Section~\\ref{sec:pareto}) reports every searched weight. Appendix~\\ref{app:pomcp} states the exploration grid, selection rule, tuning seeds and retrospective design qualification. Appendix~\\ref{app:real_sensor} gives the frozen sensor-study grids.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts.",
+    "jair_only": true
+  },
+  {
+    "id": "root-37",
+    "old": "Core, Tileworld, Inspection, transfer, IDS, scaling, discount and navigation summaries carry seed, episode, revision and timestamp provenance. RockSample records seeds and episode counts. Offline-reference, calibration and atlas protocols are stated in their captions or prose, while the MCTS ablation and POMCP sweep carry full provenance. Relevant summaries include seed-level SEs and Welch/Holm companions, with IDS comparisons reported inline. Reward rescaling and the single-seed, 50-episode horizon map retain point estimates only and support descriptive claims.",
+    "new": "Core, Tileworld, Inspection, scaling, discount and navigation summaries carry seed, episode, revision and timestamp provenance. RockSample records seeds and episode counts. Offline-reference and calibration protocols are stated in the text, while the MCTS ablation and POMCP sweep carry full provenance. Relevant summaries include seed-level SEs and Welch/Holm companions. Complete episode-level simulation records are not available for every retained battery.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts.",
+    "jair_only": true
+  },
+  {
+    "id": "root-38",
+    "old": "Counts for the three-seed reward-rescaling sweep, ten-seed dual study, ten-seed smaller RockSample instances and other batteries are stated with their results.",
+    "new": "Counts for the ten-seed dual study, ten-seed smaller RockSample instances and other retained batteries are stated with their results.",
+    "reason": "Repair pointers and content promises after substantive appendix cuts.",
+    "jair_only": true
+  },
+  {
+    "id": "root-39",
+    "old": " The horizon map derives its seed from environment and horizon.",
+    "new": "",
+    "reason": "Repair pointers and content promises after substantive appendix cuts.",
+    "jair_only": true
+  },
+  {
+    "id": "root-40",
+    "old": "We report crossing brackets and usage standard errors for every domain (Definition~\\ref{def:pi3}). The standard error",
+    "new": "We report crossing brackets and usage standard errors for every domain (Definition~\\ref{def:pi3}).\n\nThe standard error",
+    "reason": "Separate curve properties from sampling uncertainty for readability without changing content."
+  },
+  {
+    "id": "root-41",
+    "old": "On Bandit and Tileworld a budget can be crossed more than once,",
+    "new": "\n\nOn Bandit and Tileworld a budget can be crossed more than once,",
+    "reason": "Give the last-crossing convention its own paragraph."
+  },
+  {
+    "id": "root-42",
+    "old": "Tiger's price is weakly identified: the budget pins the price down only loosely.",
+    "new": "\n\nTiger's price is weakly identified: the budget pins the price down only loosely.",
+    "reason": "Separate the weak-identification example from nonmonotone crossings."
+  },
+  {
+    "id": "bibliography-gneiting2007",
+    "old": "\\bibitem[Gneiting and Raftery(2007)]{gneiting2007}\nT.~Gneiting and A.~E. Raftery.\n\\newblock Strictly proper scoring rules, prediction, and estimation.\n\\newblock \\emph{Journal of the American Statistical Association}, 102(477):359--378, 2007.\n\n",
+    "new": "",
+    "lncs_only": true,
+    "reason": "Remove an uncited entry whose peripheral empirical study was omitted. The frozen version retains it."
+  },
+  {
+    "id": "bibliography-heins2022",
+    "old": "\\bibitem[Heins et~al.(2022)]{heins2022}\nC.~Heins, B.~Millidge, D.~Demekas, B.~Klein, K.~Friston, I.~Couzin, and A.~Tschantz.\n\\newblock pymdp: A {P}ython library for active inference in discrete state spaces.\n\\newblock \\emph{Journal of Open Source Software}, 7(73):4098, 2022.\n\n",
+    "new": "",
+    "lncs_only": true,
+    "reason": "Remove an uncited entry whose peripheral empirical study was omitted. The frozen version retains it."
+  },
+  {
+    "id": "bibliography-russo2018ids",
+    "old": "\\bibitem[Russo and Van~Roy(2018)]{russo2018ids}\nD.~Russo and B.~Van~Roy.\n\\newblock Learning to optimize via information-directed sampling.\n\\newblock \\emph{Operations Research}, 66(1):230--252, 2018.\n\n",
+    "new": "",
+    "lncs_only": true,
+    "reason": "Remove an uncited entry whose peripheral empirical study was omitted. The frozen version retains it."
+  },
+  {
+    "id": "layout-1",
+    "old": "\\texttt{results\\_model\\_misspec.csv}",
+    "new": "\\texttt{results\\_\\allowbreak model\\_\\allowbreak misspec.csv}",
+    "reason": "Allow a narrow-column line break without reducing font size."
+  },
+  {
+    "id": "layout-2",
+    "old": "$c\\in\\{1,2,5,10,20,50,R\\}$",
+    "new": "$c\\in\\{1,2,5,10,\\allowbreak 20,50,R\\}$",
+    "reason": "Allow a narrow-column line break without reducing font size."
+  },
+  {
+    "id": "audit-01",
+    "old": " Additional onset and operating-point checks are summarized with appendix pointers at the end of the section.",
+    "new": "",
+    "reason": "Both final reviewers found this stale roadmap promise after removing the peripheral subsection."
+  },
+  {
+    "id": "audit-02",
+    "old": " The plotted lowest RockSample[5,3] target is attainable but marked slack because its nearest grid point is $w=0$, below its crossing bracket.",
+    "new": "",
+    "reason": "Remove a description of a marker in the omitted plot; retain the numerical nonmonotonicity counterexample immediately before it."
+  },
+  {
+    "id": "audit-03",
+    "old": "with full controls and counterexamples in the appendices.",
+    "new": "with supporting controls and counterexamples in the appendices.",
+    "reason": "Do not imply an exhaustive appendix roster after claim-focused selection."
+  },
+  {
+    "id": "audit-04",
+    "old": "None of these reward gaps survives Holm over the nine diagnostic rows.",
+    "new": "None of the gaps against these three deeper, $16{,}384$-simulation configurations survives Holm over all nine diagnostic rows.",
+    "reason": "The primary diagnostic CSV has five significant comparisons. Non-rejection applies specifically to H=15,25,40 at16384 simulations."
+  },
+  {
+    "id": "audit-05",
+    "old": "At EFE's endogenous usage, the cap does not bind on any of the three environments,",
+    "new": "At EFE's endogenous usage, the cap does not lower the maximum sampled reference reward on any of the three environments,",
+    "reason": "Tiger reference usage equals its cap exactly. Preserve the valid reward-envelope conclusion without calling the constraint slack."
+  },
+  {
+    "id": "audit-06",
+    "old": "\\subsection{Interleaved Usage Curves}\n\\label{app:interleaved_details}",
+    "new": "\\subsection{Usage Grids and Target Placement}\n\\label{app:interleaved_details}\n\nThe Tiger, Diagnosis and Bandit calibration curves use zero plus $15$ logarithmically spaced positive weights from $10^{-3}$ to $100$, for $16$ grid points. Their planning horizons are $6$, $3$ and $2$, respectively. The shadow-price and held-out frontier studies share this grid and these horizons (\\texttt{make\\_\\allowbreak log\\_\\allowbreak w\\_\\allowbreak grid} in \\texttt{rho\\_\\allowbreak aif/\\allowbreak budget.py}, \\texttt{experiments/\\allowbreak run\\_\\allowbreak budget\\_\\allowbreak frontier.py}).",
+    "reason": "Restore explicit retained frontier grid and horizons after deleting their old auxiliary table. Verified against make_log_w_grid, calibrate and benchmark config."
+  },
+  {
+    "id": "audit-07",
+    "old": "using the $16$-point weight grid and horizons of Section~\\ref{sec:stairs}.",
+    "new": "using the $16$-point weight grid and horizons specified in Appendix~\\ref{app:interleaved_details}.",
+    "reason": "Point to the restored concrete grid recipe."
+  },
+  {
+    "id": "audit-08",
+    "old": "The configuration is frozen before evaluation. The $2{,}048$-simulation evaluation budget",
+    "new": "The selected configuration uses exploration constant $5$, horizon $10$, the approach-then-check rollout and highest-mean-value root selection. It is frozen before evaluation. The two-stage grid and tuning results are recorded in \\texttt{experiments/\\allowbreak run\\_\\allowbreak rocksample\\_\\allowbreak pomcp.py} and \\texttt{results\\_\\allowbreak rocksample\\_\\allowbreak pomcp\\_\\allowbreak tuning.csv}. The $2{,}048$-simulation evaluation budget",
+    "reason": "Restore the retained POMCP configuration explicitly, as requested by the independent evidence audit."
+  },
+  {
+    "id": "whitespace-01",
+    "old": "The standard error attached to a bracket is that of usage at a fixed weight, and the bracket's width is set by the grid, so neither says how often a different sample of seeds would select a different bracket. We measured bracket-selection stability by resampling the five seeds with replacement $2000$ times and re-solving each of the $25$ budgets of Figure~\\ref{fig:stairs} on each resampled curve (\\texttt{run\\_\\allowbreak bracket\\_\\allowbreak stability.py}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability.csv}, with the count of every bracket outcome in \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability\\_\\allowbreak counts.csv}). The reported bracket is recovered in every resample at $19$ budgets and in at least $99$ percent of resamples at $21$. The lowest agreement is $0.789$, at Inspection's lowest budget. In all but one disagreeing resample, the alternative is a neighbouring step of the staircase or, at Tiger's lowest and highest budgets, no bracket at all. Those two Tiger budgets lie about one standard error of usage from the corresponding ends of its usage range. \n",
+    "new": "The standard error attached to a bracket is that of usage at a fixed weight, and the bracket's width is set by the grid, so neither says how often a different sample of seeds would select a different bracket. We measured bracket-selection stability by resampling the five seeds with replacement $2000$ times and re-solving each of the $25$ budgets of Figure~\\ref{fig:stairs} on each resampled curve (\\texttt{run\\_\\allowbreak bracket\\_\\allowbreak stability.py}, \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability.csv}, with the count of every bracket outcome in \\texttt{results\\_\\allowbreak price\\_\\allowbreak bracket\\_\\allowbreak stability\\_\\allowbreak counts.csv}). The reported bracket is recovered in every resample at $19$ budgets and in at least $99$ percent of resamples at $21$. The lowest agreement is $0.789$, at Inspection's lowest budget. In all but one disagreeing resample, the alternative is a neighbouring step of the staircase or, at Tiger's lowest and highest budgets, no bracket at all. Those two Tiger budgets lie about one standard error of usage from the corresponding ends of its usage range.\n",
+    "reason": "Remove trailing whitespace only; no rendered or scientific change."
+  },
+  {
+    "id": "whitespace-02",
+    "old": "On Bandit and Tileworld a budget can be crossed more than once, and the reported bracket estimates the last crossing by the convention that definition adopts, so it names one threshold at grid resolution rather than displaying the reversals. Bandit's budget $B{=}5.87$ is the one tested case. Usage first reaches it at $w{=}0.139$ ($6.19$ observations), falls back to $5.11$ at $w{=}0.72$, and reaches it for the last time inside the reported bracket $(1.64, 3.73]$ (\\texttt{results\\_\\allowbreak price\\_\\allowbreak shadow\\_\\allowbreak curves.csv}), which does not show the earlier crossing. \n",
+    "new": "On Bandit and Tileworld a budget can be crossed more than once, and the reported bracket estimates the last crossing by the convention that definition adopts, so it names one threshold at grid resolution rather than displaying the reversals. Bandit's budget $B{=}5.87$ is the one tested case. Usage first reaches it at $w{=}0.139$ ($6.19$ observations), falls back to $5.11$ at $w{=}0.72$, and reaches it for the last time inside the reported bracket $(1.64, 3.73]$ (\\texttt{results\\_\\allowbreak price\\_\\allowbreak shadow\\_\\allowbreak curves.csv}), which does not show the earlier crossing.\n",
+    "reason": "Remove trailing whitespace only; no rendered or scientific change."
+  }
+]

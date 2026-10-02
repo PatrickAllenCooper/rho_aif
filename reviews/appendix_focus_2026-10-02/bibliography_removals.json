@@ -1,0 +1,14 @@
+[
+  {
+    "key": "gneiting2007",
+    "removed_entry": "@article{gneiting2007,\n  author  = {Gneiting, T. and Raftery, A.~E.},\n  title   = {Strictly proper scoring rules, prediction, and estimation},\n  journal = {Journal of the American Statistical Association},\n  volume  = {102},\n  number  = {477},\n  pages   = {359--378},\n  year    = {2007}\n}\n\n"
+  },
+  {
+    "key": "heins2022",
+    "removed_entry": "@article{heins2022,\n  author  = {Heins, C. and Millidge, B. and Demekas, D. and Klein, B. and Friston, K. and Couzin, I. and Tschantz, A.},\n  title   = {{pymdp}: A {P}ython library for active inference in discrete state spaces},\n  journal = {Journal of Open Source Software},\n  volume  = {7},\n  number  = {73},\n  pages   = {4098},\n  year    = {2022}\n}\n\n"
+  },
+  {
+    "key": "russo2018ids",
+    "removed_entry": "@article{russo2018ids,\n  author  = {Russo, D. and Van~Roy, B.},\n  title   = {Learning to optimize via information-directed sampling},\n  journal = {Operations Research},\n  volume  = {66},\n  number  = {1},\n  pages   = {230--252},\n  year    = {2018},\n  doi     = {10.1287/opre.2017.1663}\n}\n\n"
+  }
+]

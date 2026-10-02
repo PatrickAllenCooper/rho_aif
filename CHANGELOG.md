@@ -7,6 +7,18 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- Claim-focused appendix selection reduces scientific JAIR appendices from
+  42 to about 15 pages, total JAIR 80→52 and LNCS 101→65. Peripheral studies,
+  repeated tables/figures and their dependent claims are removed. All proofs,
+  core adverse evidence, sensor methods and typography are retained. Two
+  independent final reviewers accept with no required revisions. All 541
+  tests and the isolated 17-file Overleaf build pass. The 80-page version is
+  frozen at `paper/legacy/2026-10-02_pre_claim_focused_appendices/`.
+- Historical claim verification now reads tables, source context and result
+  CSVs from the requested `--head`, including files deleted in the current
+  working tree. A new regression covers that case; the original historical
+  wrong-table regression remains unchanged.
+
 - Consolidated appendices reduce JAIR from 108 to 80 pages and LNCS from
   136 to 101. Main text, empirical records, bibliography and all proof
   statements are preserved. Seven redundant figures remain in the repo.

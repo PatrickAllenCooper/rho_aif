@@ -74,6 +74,48 @@ def test_underscore_and_star_prefixed_names_are_not_missing_files():
         assert name.startswith("_") or name.startswith("*")
 
 
+def test_historical_checks_use_revision_tables_and_data(tmp_path, monkeypatch):
+    """A historical replay must survive locally deleted tables and CSVs."""
+    (tmp_path / "paper/tables").mkdir(parents=True)
+    (tmp_path / "results").mkdir()
+    master = tmp_path / "paper/full_paper_jair.tex"
+    table = tmp_path / "paper/tables/history.tex"
+    data = tmp_path / "results/results_history.csv"
+    lines = [r"Table~\ref{tab:history}'s MCTS rows give $1.23$.",
+             r"Archive: \texttt{results_history.csv}."]
+    master.write_text("\n".join(lines))
+    table.write_text(r"\begin{table}\label{tab:history}POMCP rows\end{table}")
+    data.write_text("agent,value\nPOMCP,1.23\n")
+
+    def git(*args):
+        return subprocess.check_output(["git", "-C", str(tmp_path), *args], text=True)
+
+    git("init", "-q")
+    git("add", ".")
+    git("-c", "user.name=Test", "-c", "user.email=test@example.com",
+        "-c", "commit.gpgsign=false", "commit", "-qm", "Historical fixture")
+    head = git("rev-parse", "HEAD").strip()
+    table.unlink()
+    data.unlink()
+    master.write_text(r"Current source cites \texttt{results_current.csv}.")
+    monkeypatch.setattr(vc, "REPO", str(tmp_path))
+    monkeypatch.setattr(vc, "ALL_MASTERS", [str(master)])
+    monkeypatch.setattr(vc, "_CSV_CACHE", {})
+
+    labels, content = vc.all_labels_and_table_content([str(master)], head)
+    issues = vc.check_file("paper/full_paper_jair.tex", str(master), lines,
+                           labels, content, head)
+    assert "tab:history" in labels
+    assert issues["content_mismatch"]  # the historical table has no MCTS rows
+    assert not issues["broken_ref"]
+    assert not issues["missing_csv"]
+    assert not issues["mismatch"]  # source-level scope and CSV both use head
+    assert vc.source_paths("results", ".csv", head) == [str(data)]
+    assert vc.whole_file_csv_names(str(master)) == {"results_current.csv"}
+    assert "tab:history" not in vc.all_labels_and_table_content([str(master)])[0]
+    assert vc.load_csv_cells("results_history.csv") == []
+
+
 @pytest.mark.skipif(
     subprocess.run(["git", "-C", REPO, "cat-file", "-e", "4adc223"],
                     capture_output=True).returncode != 0,

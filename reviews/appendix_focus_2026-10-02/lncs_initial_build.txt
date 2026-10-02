@@ -1,0 +1,37 @@
+note: Running TeX ...
+warning: full_paper.tex:58: Underfull \vbox (badness 3417) has occurred while \output is active
+warning: full_paper.tex:97: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:370: Underfull \hbox (badness 1152) in paragraph at lines 367--370
+warning: full_paper.tex:437: Underfull \hbox (badness 1852) in paragraph at lines 436--437
+warning: full_paper.tex:474: Underfull \hbox (badness 1418) in paragraph at lines 473--474
+warning: full_paper.tex:474: Underfull \hbox (badness 1286) in paragraph at lines 473--474
+warning: full_paper.tex:559: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:566: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:614: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:1225: Overfull \hbox (36.24226pt too wide) in paragraph at lines 1224--1225
+warning: full_paper.tex:1272: Overfull \hbox (34.59537pt too wide) in paragraph at lines 1271--1272
+warning: full_paper.tex:1286: Underfull \hbox (badness 1132) in paragraph at lines 1285--1286
+warning: full_paper.tex:1493: Underfull \hbox (badness 1087) in paragraph at lines 1492--1493
+warning: full_paper.tex:1504: Underfull \hbox (badness 10000) in paragraph at lines 1503--1504
+warning: full_paper.tex:1525: Underfull \hbox (badness 1028) in paragraph at lines 1524--1525
+note: Rerunning TeX because "full_paper.aux" changed ...
+warning: full_paper.tex:58: Underfull \vbox (badness 3417) has occurred while \output is active
+warning: full_paper.tex:97: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:370: Underfull \hbox (badness 1152) in paragraph at lines 367--370
+warning: full_paper.tex:437: Underfull \hbox (badness 1852) in paragraph at lines 436--437
+warning: full_paper.tex:474: Underfull \hbox (badness 1418) in paragraph at lines 473--474
+warning: full_paper.tex:474: Underfull \hbox (badness 1286) in paragraph at lines 473--474
+warning: full_paper.tex:559: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:566: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:614: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:1225: Overfull \hbox (36.24226pt too wide) in paragraph at lines 1224--1225
+warning: full_paper.tex:1272: Overfull \hbox (34.59537pt too wide) in paragraph at lines 1271--1272
+warning: full_paper.tex:1286: Underfull \hbox (badness 1132) in paragraph at lines 1285--1286
+warning: full_paper.tex:1493: Underfull \hbox (badness 1087) in paragraph at lines 1492--1493
+warning: full_paper.tex:1504: Underfull \hbox (badness 10000) in paragraph at lines 1503--1504
+warning: full_paper.tex:1525: Underfull \hbox (badness 1028) in paragraph at lines 1524--1525
+warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
+note: Running xdvipdfmx ...
+note: Writing `full_paper.pdf` (521.939453125 KiB)
+note: Writing `full_paper.log` (22.4287109375 KiB)
+note: Skipped writing 2 intermediate files (use --keep-intermediates to keep them)

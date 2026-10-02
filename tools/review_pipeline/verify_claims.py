@@ -62,18 +62,14 @@ from __future__ import annotations
 import argparse
 import csv
 import glob
+import io
 import os
 import re
 import subprocess
 import sys
+from functools import lru_cache
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DEFAULT_FILES = [
-    "paper/full_paper_jair.tex",
-    "paper/full_paper.tex",
-] + sorted(glob.glob(os.path.join(REPO, "paper/tables/*.tex")))
-DEFAULT_FILES = [f if os.path.isabs(f) else os.path.join(REPO, f) for f in DEFAULT_FILES]
-ALL_TABLE_FILES = sorted(glob.glob(os.path.join(REPO, "paper/tables/*.tex")))
 ALL_MASTERS = [os.path.join(REPO, "paper/full_paper_jair.tex"), os.path.join(REPO, "paper/full_paper.tex")]
 
 NUM_RE = re.compile(r"(?<![A-Za-z0-9_.])(-?\d+\.\d+)(?![A-Za-z0-9_.])")
@@ -121,13 +117,47 @@ def added_lines(base: str, head: str | None, files: list[str]) -> dict[str, list
     return out
 
 
-def all_labels_and_table_content(files: list[str]) -> tuple[set[str], dict[str, str]]:
+@lru_cache(maxsize=None)
+def revision_text(repo: str, head: str, rel: str) -> str | None:
+    """Read one immutable revision's file, including files deleted locally."""
+    result = subprocess.run(["git", "-C", repo, "show", f"{head}:{rel}"],
+                            capture_output=True, text=True)
+    return result.stdout if result.returncode == 0 else None
+
+
+def source_text(path: str, head: str | None = None) -> str | None:
+    if head:
+        return revision_text(REPO, head, os.path.relpath(path, REPO))
+    try:
+        with open(path) as fh:
+            return fh.read()
+    except OSError:
+        return None
+
+
+@lru_cache(maxsize=None)
+def revision_paths(repo: str, head: str, directory: str, suffix: str) -> tuple[str, ...]:
+    result = subprocess.run(
+        ["git", "-C", repo, "ls-tree", "-r", "--name-only", head, "--", directory],
+        capture_output=True, text=True, check=True,
+    )
+    return tuple(os.path.join(repo, p) for p in result.stdout.splitlines()
+                 if os.path.dirname(p) == directory and p.endswith(suffix))
+
+
+def source_paths(directory: str, suffix: str, head: str | None = None) -> list[str]:
+    if head:
+        return list(revision_paths(REPO, head, directory, suffix))
+    return sorted(glob.glob(os.path.join(REPO, directory, "*" + suffix)))
+
+
+def all_labels_and_table_content(files: list[str], head: str | None = None) -> tuple[set[str], dict[str, str]]:
     labels: set[str] = set()
     content: dict[str, str] = {}
-    for f in set(files) | set(ALL_TABLE_FILES) | set(ALL_MASTERS):
-        if not os.path.exists(f):
+    for f in set(files) | set(source_paths("paper/tables", ".tex", head)) | set(ALL_MASTERS):
+        text = source_text(f, head)
+        if text is None:
             continue
-        text = open(f).read()
         labels |= set(LABEL_RE.findall(text))
         for block in TABLE_BLOCK_RE.findall(text):
             for lbl in LABEL_RE.findall(block):
@@ -135,19 +165,21 @@ def all_labels_and_table_content(files: list[str]) -> tuple[set[str], dict[str, 
     return labels, content
 
 
-def whole_file_csv_names(path: str) -> set[str]:
-    if not os.path.exists(path):
+def whole_file_csv_names(path: str, head: str | None = None) -> set[str]:
+    text = source_text(path, head)
+    if text is None:
         return set()
-    return {clean_csv_name(n) for n in CSVNAME_RE.findall(open(path).read())}
+    return {clean_csv_name(n) for n in CSVNAME_RE.findall(text)}
 
 
-def load_csv_cells(name: str) -> list[str]:
+def load_csv_cells(name: str, head: str | None = None) -> list[str]:
     path = os.path.join(REPO, "results", name)
-    if not os.path.exists(path):
+    text = source_text(path, head)
+    if text is None:
         return []
     cells = []
     try:
-        with open(path, newline="") as fh:
+        with io.StringIO(text, newline="") as fh:
             reader = csv.reader(fh)
             next(reader, None)
             for row in reader:
@@ -157,16 +189,17 @@ def load_csv_cells(name: str) -> list[str]:
     return cells
 
 
-_CSV_CACHE: dict[str, list[str]] = {}
+_CSV_CACHE: dict[str | tuple[str, str, str], list[str]] = {}
 
 
-def csv_cells(name: str) -> list[str]:
-    if name not in _CSV_CACHE:
-        _CSV_CACHE[name] = load_csv_cells(name)
-    return _CSV_CACHE[name]
+def csv_cells(name: str, head: str | None = None) -> list[str]:
+    key = (REPO, head, name) if head else name
+    if key not in _CSV_CACHE:
+        _CSV_CACHE[key] = load_csv_cells(name, head)
+    return _CSV_CACHE[key]
 
 
-def value_in_csv(raw: str, is_percent: bool, csv_name: str) -> bool:
+def value_in_csv(raw: str, is_percent: bool, csv_name: str, head: str | None = None) -> bool:
     """Compare in the unit the prose used (percent stays percent), at the
     exact precision the prose wrote, against every reasonable scaling of
     each CSV cell. Converting the PROSE number to fraction space before
@@ -181,7 +214,7 @@ def value_in_csv(raw: str, is_percent: bool, csv_name: str) -> bool:
         return False
     nd = len(raw.split(".")[-1])
     targets = {f"{v:.{nd}f}", f"{-v:.{nd}f}"}
-    for cell in csv_cells(csv_name):
+    for cell in csv_cells(csv_name, head):
         try:
             cv = float(cell)
         except (TypeError, ValueError):
@@ -204,10 +237,10 @@ def nearest_csv_for_number(line_csvs: list[tuple[int, str]], pos: int) -> str | 
 
 
 def check_file(rel: str, full_path: str, lines: list[str], labels: set[str],
-                table_content: dict[str, str]) -> dict[str, list[str]]:
+                table_content: dict[str, str], head: str | None = None) -> dict[str, list[str]]:
     issues = {"missing_csv": [], "broken_ref": [], "content_mismatch": [],
               "mismatch": [], "unscoped": [], "asymmetric": []}
-    file_csv_names = whole_file_csv_names(full_path)
+    file_csv_names = whole_file_csv_names(full_path, head)
     single_file_fallback = next(iter(file_csv_names)) if len(file_csv_names) == 1 else None
 
     for line in lines:
@@ -218,7 +251,7 @@ def check_file(rel: str, full_path: str, lines: list[str], labels: set[str],
             name = clean_csv_name(m.group(1))
             if name.startswith("_") or name.startswith("*"):
                 continue  # deliberate shorthand for "the companion _stats.csv file", not a filename
-            if not os.path.exists(os.path.join(REPO, "results", name)):
+            if source_text(os.path.join(REPO, "results", name), head) is None:
                 issues["missing_csv"].append(f"{rel}: \\texttt{{{name}}} not found under results/")
 
         for m in REF_RE.finditer(line):
@@ -267,15 +300,15 @@ def check_file(rel: str, full_path: str, lines: list[str], labels: set[str],
             ctx = line[max(0, m.start() - 70):m.end() + 15]
             scope = nearest_csv_for_number(scope_events, m.start()) or single_file_fallback
             if scope:
-                if not value_in_csv(raw, pct, scope):
+                if not value_in_csv(raw, pct, scope, head):
                     issues["mismatch"].append(
                         f"{rel}: {raw}{'%' if pct else ''} not found at that precision in "
                         f"{scope} \u2014 \u2026{ctx}\u2026"
                     )
             else:
                 found_anywhere = any(
-                    value_in_csv(raw, pct, os.path.basename(p))
-                    for p in glob.glob(os.path.join(REPO, "results", "*.csv"))
+                    value_in_csv(raw, pct, os.path.basename(p), head)
+                    for p in source_paths("results", ".csv", head)
                 )
                 if not found_anywhere:
                     issues["unscoped"].append(
@@ -293,16 +326,25 @@ def main() -> int:
                           "(retroactive checks, e.g. --base A --head B)")
     ap.add_argument("files", nargs="*", default=None)
     args = ap.parse_args()
-    files = [f if os.path.isabs(f) else os.path.join(REPO, f) for f in args.files] if args.files else DEFAULT_FILES
+    if args.head:
+        resolved = subprocess.run(
+            ["git", "-C", REPO, "rev-parse", "--verify", f"{args.head}^{{commit}}"],
+            capture_output=True, text=True,
+        )
+        if resolved.returncode:
+            ap.error(f"head revision does not resolve to a commit: {args.head}")
+        args.head = resolved.stdout.strip()
+    defaults = ALL_MASTERS + source_paths("paper/tables", ".tex", args.head)
+    files = [f if os.path.isabs(f) else os.path.join(REPO, f) for f in args.files] if args.files else defaults
 
-    labels, table_content = all_labels_and_table_content(files)
+    labels, table_content = all_labels_and_table_content(files, args.head)
     diffs = added_lines(args.base, args.head, files)
 
     all_issues = {"missing_csv": [], "broken_ref": [], "content_mismatch": [],
                   "mismatch": [], "unscoped": [], "asymmetric": []}
     for rel, lines in diffs.items():
         full_path = os.path.join(REPO, rel)
-        issues = check_file(rel, full_path, lines, labels, table_content)
+        issues = check_file(rel, full_path, lines, labels, table_content, args.head)
         for k in all_issues:
             all_issues[k].extend(issues[k])
 

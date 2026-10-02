@@ -1,0 +1,79 @@
+# Early-appendix claim and evidence audit
+
+Scope: frozen `paper/legacy/2026-10-02_pre_claim_focused_appendices/full_paper_jair.tex`, original appendices B–T, from “Additional Per-Environment Results” through “Budgeted ρ-POMDP Supplementary Details.” The archive and both live masters are untouched by this proposal. The companion LNCS old strings are supplied where the source differs.
+
+The proposal has 19 exact section guards, all unique in each frozen master. It reduces this span from 7,443 to 2,520 whitespace-delimited source words, 19 sections to six focused sections, and removes seven external table inputs and two displayed figures. The replacements include one specifications table using the unchanged `tablebody` type size. This word count is not a measured rendered-page count. Root must judge the assembled document's layout and clarity before accepting it.
+
+This is a substantive scope reduction. It removes the proper-score study, root-action audit demonstration, broad IDS comparison, random-horizon exploration, showcase trajectories, reward-asymmetry tour, reward-optimal scale sweep, and atlas. Their scientific claims should disappear from the manuscript rather than survive as a condensed catalogue. Core adverse outcomes and limitations of the main comparisons remain numerically reviewable in the appendix. Public code and CSVs retain the removed study material, but no new supplement is promised and no necessary proof is displaced outside the reviewed paper.
+
+## Claim-to-evidence map
+
+1. **Information-unit EFE is a useful but non-universal anchor.** The main Pareto figure already shows three sampled maxima and two failures. The focused controls retain a different negative mechanism: posterior-vote needs no explicit information term yet statistically ties EFE on Bandit and exactly matches Planning on Testbed. The Testbed section retains the measured reward loss from extra sensing and the own-class success-tuning disclosure. The nat-canonical section keeps the actual unit conversion and direct experiment, including the Tileworld policy change, multiplicity-adjusted usage finding, reward/success non-rejections, and continuing domination by weight 20. Removing the old per-agent tables does not turn a non-rejection into equivalence or imply invariant policies under unit changes.
+
+2. **Observation structure and representable depth limit the comparison.** Main Tileworld and RockSample results already supply the largest positive and negative cases. The new task/model section retains Navigation as an independent unfavorable case, with the significant 5×5 contrast and non-rejections at the other sizes. Fixed-depth Diagnosis retains its null scaling conclusion, rather than an apparent law that information weighting improves with state count. The discount sweep retains its measured gamma dependence and the original 24-test correction family. The model-misspecification section keeps all tested Tiger model-accuracy groups and the lack of EFE-specific buffering, plus the Diagnosis discontinuities and non-causal interpretation.
+
+3. **Main comparisons need their inferential definitions and exceptions.** The statistics section preserves original correction-family sizes even when a printed summary omits agents or metrics. It explicitly says that omitted rows do not redefine those families. It retains the undefined-zero-variance exclusion, RockSample per-metric correction, MCTS/sweep correction structure, Tileworld scaling's absent companion tests, seed versus episode uncertainty distinction, pooled-test caveat, and the ban on interpreting inflated five-seed Cohen's d. The two small pooled reward effects cited by the main argument remain. TOST is kept distinct from failure to reject. The random-horizon study's single-seed exception should be removed only because the entire study and its claims are removed, not hidden while retaining its results.
+
+4. **Search comparisons do not establish general POMCP inferiority or isolate the epistemic mechanism.** RockSample retains frozen-selection methodology, different tuning and evaluation budgets, the superior standalone rollout, the post hoc computation/horizon interaction, matched-protocol non-rejection against improved POMCP, catastrophic deeper-search behavior on the larger instance, and the unrun high-budget tier. It also keeps the belief and leaf sensitivities as non-rejections, not equivalence. The observe-then-commit section retains its two fidelity gaps, exact path-belief treatment, fixed-constant and computation caveats, timing-matched evidence, null success/reward ablations and significant usage change, retrospective exploration-grid design, disjoint tuning/evaluation seeds, selected comparison, boundary optimum and incomplete architectural isolation. The late agent retains MCTS-EFE's actual algorithm and simulation-matched results. The early text does not duplicate them.
+
+5. **Usage calibration rests on a specified reference and a genuine irrelevance construction.** SARSOP export/build/evaluation details remain. Distractor factorization and its Bayes equation remain, including rewards not being observations and the exclusion of correlated beliefs. The atlas is a redundant presentation of already-measured usage curves. Its removal leaves the actual calibration studies, definitions and limiting outcomes with the late agent. The late agent confirmed that the unfavorable IDS distractor result survives with the deterministic-action Δ²/I adaptation and state-entropy fallback defined locally, so removing the broad IDS benchmark does not hide that adverse outcome.
+
+6. **Reproducibility needs complementary specifications, not duplicate tables.** The new environment table preserves hidden-state counts and actual search horizons. Main environment costs/accuracies/rewards are not repeated. Testbed and Navigation definitions remain because they are auxiliary tasks. Diagnosis and Tileworld observation kernels and RockSample geometry remain. The theory agent confirmed that `app:experimental_protocol` retains the complete RockSample variant rules, sensor kernel, step caps, and Inspection parameters. Thus the new environment section relies on actual retained material, not an external promise.
+
+## Removed material and rationale
+
+- Additional core and Tileworld full-agent tables: main tables plus retained negative controls cover the argument. Pooled uncertainties remain available in the CSVs and their interpretation remains in the statistics section.
+- Showcase test-count, asymmetry and trajectory exercises: illustrative or exploratory EFE tours with no indispensable calibration claim. The low-penalty Tiger result is removed with the study, so its formerly corrected actor attribution is not reintroduced.
+- PyMDP check: qualitative single-step implementation consistency cannot substantiate the proved recursion identity or usage calibration. Remove its main-text advertisement too.
+- Broad effect-size matrix: only two small reward effects bear on the main interpretation. Keeping every pair and metric would recreate the old tour.
+- Random-environment horizon plot and map: descriptive study using a lenient gap rule and 50 episodes at one seed. It is not the proposition's proof. Remove its main statement that about 21% fail at horizon 3, and its other explanatory claims, as part of dropping the whole peripheral strand.
+- Broad IDS table: the main scientific use is the distractor failure. That particular adverse use remains with its method qualification. EFE's favorable Tiger/Diagnosis/Bandit tour is removed.
+- Proper scoring and audit record: separate belief-quality and software-inspectability deliverables. Neither is required to establish expected-usage calibration, the equivalence, or the retained reward comparisons.
+- Reward-maximizing weight-rescaling table: weaker than the scale-equivariance theorem and directly relevant usage-curve collapse study. Its finite-grid plateaus need not receive another appendix.
+- Atlas: repeated operating-point summary, not an additional inference or calibration guarantee. Main onset evidence can remain without the atlas.
+- Full RockSample/POMCP/ablation/exploration tables: their central main comparisons remain, while the appendix preserves the necessary methodological limits and adverse/qualifying outcomes. No result CSV, producer, code, test, or bibliography is edited.
+
+## Removed labels
+
+All removed labels, including labels defined inside the seven removed table inputs, are enumerated below. `early_reference_impact.json` provides exact outside source passages and frozen JAIR line numbers.
+
+`app:audit`, `app:calibration`, `app:efe_trajectory`, `app:foraging`, `app:ids`, `app:nearopt_horizon`, `app:obs_scaling`, `app:pymdp`, `app:reward_scaling`, `app:supp_figs`, `app:tiger_sweep`, `app:tw_belief`, `app:w_atlas`, `fig:extended_efe`, `fig:nearopt_horizon`, `tab:audit-case-study`, `tab:calibration`, `tab:discount`, `tab:effect_sizes`, `tab:horizon-map`, `tab:ids`, `tab:mcts-ablation`, `tab:misspec-diag`, `tab:nav_scaling`, `tab:pomcp`, `tab:pomcp-sweep`, `tab:reward_scaling`, `tab:rocksample_extended`, `tab:w-atlas`.
+
+Retained old labels: `app:full_tables`, `app:testbed`, `app:nat_canonical`, `app:envs`, `app:navigation`, `app:scaling`, `app:discount`, `app:misspec`, `app:stats`, `app:rocksample`, `app:pomcp`, `app:budget_supp`, `app:sarsop_build`, `app:distractor`. These label actual retained content. `app:full_tables` is retained for convenient assembly but now points to “Controls for the Information-Unit Weight,” so promises of full printed tables must change. The only new label is `tab:environment_depths`.
+
+Removed inputs: `tables/horizon_map.tex`, `tables/rocksample_extended.tex`, `tables/calibration_table.tex`, `tables/audit_case_study.tex`, `tables/mcts_ablation.tex`, `tables/pomcp_exploration_sweep.tex`, `tables/w_atlas.tex`. Removed graphics: `figures/fig_extended_efe.pdf`, `figures/fig_nearopt_horizon.pdf`. The files themselves are preserved.
+
+## Main-text repairs needed
+
+All line numbers refer to the frozen JAIR source. These edits deliberately are not in the early JSON, to avoid main-text ownership overlap.
+
+- **125, roadmap:** replace “complete tables” with wording about proof, protocol and limiting controls. The appendix no longer promises exhaustive tables.
+- **141, related work:** remove “We include an observe-then-commit IDS baseline in Appendix...” or point specifically to the retained distractor adaptation. The general IDS literature sentence can remain.
+- **226, reward scale:** remove the appendix reward-optimum sweep claim/pointer. The scale-equivariance proposition and retained usage-collapse study supply the relevant identity. If retaining a reward-argmax scaling inference, make it theoretical and conditional, not a claim about the deleted grid table.
+- **288, agent section:** remove the PyMDP consistency-check sentence and its pointer.
+- **290, additional baselines:** remove the broad IDS appendix pointer or point specifically to the distractor study. Posterior-vote and Greedy remain.
+- **641, additional onset/operating-point paragraph:** remove the atlas sentence and recast the subsection around the retained onset check. Do not keep a vacant atlas label.
+- **658, main core-table caption:** replace the promise “Full agents, pooled uncertainties, and statistical comparisons are in Appendices...” with accurate pointers to limiting controls and statistical conventions. Complete baseline rows and uncertainties remain in the result files, but are not newly promised as a reviewed supplement.
+- **683, core interpretation:** “Full baselines, pooled effect sizes, and seed-level tests appear...” is no longer accurate. Say the appendices give the additional controls and statistical conventions. The small effect-size claim itself remains supported by the new statistics paragraph. Coordinate `app:core_details`, which late removes.
+- **766, discussion:** remove the entire random-family 21%-failure sentence rather than keeping its result without method. The three-of-five Pareto finding and Testbed/Tileworld failures still support the limitation.
+- **771, discussion:** remove `app:nearopt_horizon` from the depth/discount/model sensitivity parenthesis. A main-method depth statement plus `app:scaling`, `app:discount`, and `app:misspec` can support the retained scoped interpretation.
+
+## Other appendix and checklist repairs
+
+- **1505:** replace the deleted `tab:discount` pointer with `app:discount`, or delete redundant numerical discussion. The new subsection retains the 5.83/9.68 Diagnosis comparison. The theory agent has been told.
+- **1565/1569:** remove PyMDP and broad IDS pointers. Theory agent confirmed these are removed in its proposal.
+- **1813:** retain the IDS distractor failure, define the adaptation locally, remove the broader-IDS-results pointer. Late agent confirmed this.
+- **1824/1828:** delete/rewrite the old repeated core section's full-table/effect-size-matrix promises. Late agent confirmed it removes the repeated core tour.
+- **1923:** delete the random-horizon empirical paragraph with the study. Late agent confirmed it removes that dependency.
+- **1969, raw-data item:** preserve **Partially** and the incomplete episode-archive disclosure. Remove the atlas/proper-score calibration, reward-optimum rescaling and single-seed horizon-map claims that no longer describe reported studies. Distinguish the retained usage-calibration study from the dropped proper-score study. The remaining IDS result is a distractor control, not the removed broader comparison table. Do not erase the fixed-planner-seed or pooled-inference disclosures.
+- **1972–1974, randomness item:** remove the three-seed reward-rescaling and horizon-map clauses because the studies are gone. Keep all seeding exceptions of retained studies, including fixed internal planner seeds in MCTS/compute-matched experiments.
+- **1982, uncertainty item:** replace the atlas example with an actual retained uncertainty-bearing result, such as the main held-out calibration/frontier or sensor study. The paired recovery-time interval can remain if late retains it.
+- **1984, hyperparameter-search item:** replace the horizon-map example with the retained POMCP exploration selection or main own-class weight tuning. The full grids and non-blind selection-design qualification remain in the new `app:pomcp`.
+
+## Checks performed and remaining work
+
+Read project writing/process rules, the contribution and limitation claims, the relevant guidance ledger sections, and the previous independent empirical-integrity review before proposing edits. All replacements are within the assigned frozen span. Both masters pass exact uniqueness guards, with class-specific old strings for the two figure sections. No new citations are introduced. No prose semicolons, reduced fonts, or compressed table sizing are added.
+
+I inspected primary CSVs for the retained model-misspecification and discount grouping, the compute-matched timing/control parameters, and all six larger-RockSample horizon pairwise reward comparisons. The latter all retain Holm significance, and their largest seed p-value is 4.26066e-5, supporting the retained bound 4.3e-5. The compute-matched runner confirms POMCP constant 5 and depth 13 at MCTS horizon 10. Other retained values are copied from the reviewed frozen evidence, including the prior audit's verified effect-size and matched-diagnostic values. This proposal is not an independent final empirical audit.
+
+Root still must assemble both masters, repair pointers and discarded main claims, run the mechanical claim checker, compile both formats, inspect the actual rendered layout, and obtain an independent audit of the complete applied result. No scientific source was changed and no experiment was run by this subtask.

@@ -1,0 +1,154 @@
+{
+  "removed_labels": [
+    "app:audit",
+    "app:calibration",
+    "app:efe_trajectory",
+    "app:foraging",
+    "app:ids",
+    "app:nearopt_horizon",
+    "app:obs_scaling",
+    "app:pymdp",
+    "app:reward_scaling",
+    "app:supp_figs",
+    "app:tiger_sweep",
+    "app:tw_belief",
+    "app:w_atlas",
+    "fig:extended_efe",
+    "fig:nearopt_horizon",
+    "tab:audit-case-study",
+    "tab:calibration",
+    "tab:discount",
+    "tab:effect_sizes",
+    "tab:horizon-map",
+    "tab:ids",
+    "tab:mcts-ablation",
+    "tab:misspec-diag",
+    "tab:nav_scaling",
+    "tab:pomcp",
+    "tab:pomcp-sweep",
+    "tab:reward_scaling",
+    "tab:rocksample_extended",
+    "tab:w-atlas"
+  ],
+  "added_labels": [
+    "tab:environment_depths"
+  ],
+  "removed_table_inputs": [
+    "tables/horizon_map.tex",
+    "tables/rocksample_extended.tex",
+    "tables/calibration_table.tex",
+    "tables/audit_case_study.tex",
+    "tables/mcts_ablation.tex",
+    "tables/pomcp_exploration_sweep.tex",
+    "tables/w_atlas.tex"
+  ],
+  "outside_references": [
+    {
+      "line": 141,
+      "labels": [
+        "app:ids"
+      ],
+      "text": "Information-directed sampling (IDS) trades instantaneous regret against information gain through their ratio, rather than through a fixed additive coefficient \\citep{russo2014}. We include an observe-then-commit IDS baseline in Appendix~\\ref{app:ids}. \\citet{walraven2024} connect active inference with information gathering in POMDPs. Our contribution within this setting is to define and evaluate a calibration procedure for the weight in a specified $\\rho$-POMDP policy family."
+    },
+    {
+      "line": 226,
+      "labels": [
+        "app:reward_scaling"
+      ],
+      "text": "The weight is also reward-scale dependent. Multiplying all rewards and costs by $k>0$ at fixed $w$ is behaviorally equivalent to using $w/k$ before rescaling. The reward-maximizing weight scales with $k$ (Appendix~\\ref{app:reward_scaling}). Proposition~\\ref{prop:pi1} gives the corresponding usage identities. Whether $w=1$ is a useful default at a fixed scale remains an empirical question."
+    },
+    {
+      "line": 288,
+      "labels": [
+        "app:pymdp"
+      ],
+      "text": "Planning+IG is the central baseline and represents the familiar information-reward construction in POMDP-IR and $\\rho$-POMDPs \\citep{spaan2015,araya2010,satsangi2018}. By Proposition~\\ref{prop:equivalence}, its difference from EFE is the chosen weight. The \\texttt{pymdp} check in Appendix~\\ref{app:pymdp} tests qualitative consistency of the epistemic term, not certified numerical equivalence \\citep{heins2022}."
+    },
+    {
+      "line": 290,
+      "labels": [
+        "app:ids"
+      ],
+      "text": "Epistemic-only sets commit EFE to zero, removing reward from commit timing while retaining sensing costs and information gain. On commitment it chooses the most probable state. Myopic has no information bonus but can still observe when one-step lookahead reveals positive instrumental value of information. Additional baselines are Greedy without sensing, information-directed sampling (Appendix~\\ref{app:ids}), and a posterior-vote rule. The last draws 100 states and takes the majority of their individually optimal actions. It is not Thompson sampling, although the committed CSVs label it \\texttt{ThompsonSamplingAgent}. Appendix~\\ref{app:theory_agents} gives the full specifications and ablation interpretation."
+    },
+    {
+      "line": 641,
+      "labels": [
+        "app:w_atlas"
+      ],
+      "text": "Positive-threshold two-state instances place the observed onset within one refined grid step, $3\\%$, above the closed-form threshold, while standard negative-threshold instances observe already at $w{=}0$ (Appendix~\\ref{sec:prop2exp}). The atlas collects the implicit $w{=}1$ budgets and two grid brackets per instance from the measured curves (Appendix~\\ref{app:w_atlas}). These are measured operating points, not a universal predictive formula for the price."
+    },
+    {
+      "line": 766,
+      "labels": [
+        "app:nearopt_horizon"
+      ],
+      "text": "The recursive EFE identity fixes $w=1$ after reward and information units are declared. That weight belongs to the level set of $U(1)$, but need not equal its crossing threshold. Its usefulness is empirical: it lies in the reward-maximizing run of sampled weights on three of five swept environments and is beaten on two. In the sampled random two-state family, approximately $21\\%$ fail the study's chosen reward-gap criterion even at $H=3$ (Appendix~\\ref{app:nearopt_horizon}). Larger weights can buy greater success at a reward cost, and transfer at the top of the grid can be costly (Table~\\ref{tab:transfer}). Reward, success and usage therefore require separate evaluation."
+    },
+    {
+      "line": 771,
+      "labels": [
+        "app:nearopt_horizon"
+      ],
+      "text": "At one-step depth, the recursion is myopic reward plus information gain at $w=1$. Horizon, discounting and model accuracy independently affect its behavior (Appendices~\\ref{app:nearopt_horizon}, \\ref{app:discount}, and~\\ref{app:misspec}). The observed discount threshold is not a general regime boundary. Every tested Tiger sensor mismatch affects EFE and Planning identically, providing no EFE-specific robustness benefit. Overestimated sensor accuracy can cause premature commitment."
+    },
+    {
+      "line": 1505,
+      "labels": [
+        "tab:discount"
+      ],
+      "text": "Current information gain is immediate while the eventual commit reward is discounted. This increases the epistemic share along a branch but need not increase sensing, because the entire continuation is discounted relative to committing now. Diagnosis uses $5.83$ observations at $\\gamma=0.95$ versus $9.68$ at $\\gamma=1$ (Table~\\ref{tab:discount}). Appendix~\\ref{app:discount} gives the same-horizon EFE/Planning comparison."
+    },
+    {
+      "line": 1565,
+      "labels": [
+        "app:pymdp"
+      ],
+      "text": "Planning+IG uses EFE's tree search at the same horizon, adding $wI_a(b)$ to observation values. It represents explicit information rewards in POMDP-IR and $\\rho$-POMDPs \\citep{spaan2015,araya2010}. \\citet{satsangi2018} prove equivalence of those formulations for piecewise-linear convex belief rewards, a result we do not invoke for the concave expected-IG reward here. Proposition~\\ref{prop:equivalence} identifies EFE with Planning+IG at $w{=}1$, so within this shared implementation tuned-weight comparisons isolate the weight. The \\texttt{pymdp} check \\citep{heins2022} is qualitative consistency evidence, not certified numerical equivalence (Appendix~\\ref{app:pymdp})."
+    },
+    {
+      "line": 1569,
+      "labels": [
+        "app:ids"
+      ],
+      "text": "Myopic ($\\rho{=}0,H{=}1$) can observe because its lookahead includes one observation followed by a commit, capturing instrumental value of information without an epistemic bonus. Greedy samples unchecked rocks in RockSample and diagnoses from the prior without tests in Inspection. The IDS adaptation minimizes squared expected regret divided by information about the optimal commit \\citep{russo2014}, with its fidelity limits and results in Appendix~\\ref{app:ids}. Posterior-vote draws $100$ states from the belief and votes over their optimal actions. It approaches a deterministic most-likely-state rule, unlike Thompson sampling, which acts optimally for one posterior draw and retains probability matching. The CSV label \\texttt{ThompsonSamplingAgent} denotes posterior-vote."
+    },
+    {
+      "line": 1813,
+      "labels": [
+        "app:ids"
+      ],
+      "text": "The IDS adaptation's \\texttt{info\\_\\allowbreak astar} correctly vanishes for the distractor, but its near-zero-denominator fallback to \\texttt{info\\_\\allowbreak state} rewards nuisance information. Its distractor fraction is $0.305\\pm0.005$, versus ordinary information gain's saturated $0.330$--$0.332$ (SE $0.004$--$0.005$). The relevance variant has no fallback and buys zero distractor tests. This isolates a flaw in that IDS implementation pattern, not in reward-aware information measures generally. Appendix~\\ref{app:ids} reports its broader results."
+    },
+    {
+      "line": 1828,
+      "labels": [
+        "tab:effect_sizes"
+      ],
+      "text": "Table~\\ref{tab:effect_sizes} reports pooled effect sizes. EFE/Planning reward effects are zero on Tiger and below $0.15$ in magnitude on Diagnosis and Bandit, despite corrected seed-level reward and success differences on the latter two. The large Tileworld-$8\\times8$ reward effect ($|d|=1.13$) compares EFE with a non-scanning planner. Equal episodes per seed make pooled and seed-level mean differences identical, so sign agreement is no independent check. Inference uses seed-level tests and intervals, not Cohen's $d$ computed from only five seed means."
+    },
+    {
+      "line": 1923,
+      "labels": [
+        "app:nearopt_horizon"
+      ],
+      "text": "Proposition~\\ref{prop:nearopt}'s lower threshold concerns $H=1$ and its interval concerns $H=2$. Their two-state scope and heuristic reductions are detailed in Appendix~\\ref{app:theory_thresholds}. The random-environment study of Appendix~\\ref{app:nearopt_horizon} instead uses an empirical reward-gap criterion: $w=1$ passes on $30\\%$, $58\\%$ and $79\\%$ of the $100$ sampled environments at depths $1$, $2$ and $3$. Thus greater depth still leaves about one fifth failing. Expected-usage calibration addresses a different requirement and remains conditional on target attainability within the selected family."
+    },
+    {
+      "line": 1982,
+      "labels": [
+        "app:w_atlas"
+      ],
+      "text": "\\item Analysis of results goes beyond single-dimensional summaries of performance (e.g., average, median) to include measures of variation, confidence, or other distributional information. \\textbf{Yes.} Standard errors and confidence intervals are reported throughout Sections~\\ref{sec:budget_experiments} and~\\ref{sec:results} (e.g., the paired Student-$t$ interval for the recovery-time difference in Section~\\ref{sec:dual_multiseed}, the mean $\\pm$ SE usage-curve ranges of Appendix~\\ref{app:w_atlas})."
+    },
+    {
+      "line": 1984,
+      "labels": [
+        "app:nearopt_horizon"
+      ],
+      "text": "\\item The number and range of (hyper-)parameter settings explored prior to conducting final experiments have been indicated, along with the effort spent on (hyper-)parameter optimisation. \\textbf{Yes.} The Pareto sweep over $w$ (Section~\\ref{sec:pareto}) reports the full grid searched, not only the selected operating point, and the horizon sweep of Appendix~\\ref{app:nearopt_horizon} searches the horizon grid $H \\in \\{1,2,3\\}$ and the weight grid $\\{0.01, 0.5, 1, 2, 5, 50\\}$, both stated in \\url{experiments/run_nearopt_horizon.py}, from which its reward-optimal weight is selected."
+    }
+  ],
+  "old_words": 7443,
+  "new_words": 2520
+}

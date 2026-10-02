@@ -1,0 +1,50 @@
+[
+  {
+    "id": "audit-01",
+    "old": " Additional onset and operating-point checks are summarized with appendix pointers at the end of the section.",
+    "new": "",
+    "reason": "Both final reviewers found this stale roadmap promise after removing the peripheral subsection."
+  },
+  {
+    "id": "audit-02",
+    "old": " The plotted lowest RockSample[5,3] target is attainable but marked slack because its nearest grid point is $w=0$, below its crossing bracket.",
+    "new": "",
+    "reason": "Remove a description of a marker in the omitted plot; retain the numerical nonmonotonicity counterexample immediately before it."
+  },
+  {
+    "id": "audit-03",
+    "old": "with full controls and counterexamples in the appendices.",
+    "new": "with supporting controls and counterexamples in the appendices.",
+    "reason": "Do not imply an exhaustive appendix roster after claim-focused selection."
+  },
+  {
+    "id": "audit-04",
+    "old": "None of these reward gaps survives Holm over the nine diagnostic rows.",
+    "new": "None of the gaps against these three deeper, $16{,}384$-simulation configurations survives Holm over all nine diagnostic rows.",
+    "reason": "The primary diagnostic CSV has five significant comparisons. Non-rejection applies specifically to H=15,25,40 at16384 simulations."
+  },
+  {
+    "id": "audit-05",
+    "old": "At EFE's endogenous usage, the cap does not bind on any of the three environments,",
+    "new": "At EFE's endogenous usage, the cap does not lower the maximum sampled reference reward on any of the three environments,",
+    "reason": "Tiger reference usage equals its cap exactly. Preserve the valid reward-envelope conclusion without calling the constraint slack."
+  },
+  {
+    "id": "audit-06",
+    "old": "\\subsection{Interleaved Usage Curves}\n\\label{app:interleaved_details}",
+    "new": "\\subsection{Usage Grids and Target Placement}\n\\label{app:interleaved_details}\n\nThe Tiger, Diagnosis and Bandit calibration curves use zero plus $15$ logarithmically spaced positive weights from $10^{-3}$ to $100$, for $16$ grid points. Their planning horizons are $6$, $3$ and $2$, respectively. The shadow-price and held-out frontier studies share this grid and these horizons (\\texttt{make\\_\\allowbreak log\\_\\allowbreak w\\_\\allowbreak grid} in \\texttt{rho\\_\\allowbreak aif/\\allowbreak budget.py}, \\texttt{experiments/\\allowbreak run\\_\\allowbreak budget\\_\\allowbreak frontier.py}).",
+    "reason": "Restore explicit retained frontier grid and horizons after deleting their old auxiliary table. Verified against make_log_w_grid, calibrate and benchmark config."
+  },
+  {
+    "id": "audit-07",
+    "old": "using the $16$-point weight grid and horizons of Section~\\ref{sec:stairs}.",
+    "new": "using the $16$-point weight grid and horizons specified in Appendix~\\ref{app:interleaved_details}.",
+    "reason": "Point to the restored concrete grid recipe."
+  },
+  {
+    "id": "audit-08",
+    "old": "The configuration is frozen before evaluation. The $2{,}048$-simulation evaluation budget",
+    "new": "The selected configuration uses exploration constant $5$, horizon $10$, the approach-then-check rollout and highest-mean-value root selection. It is frozen before evaluation. The two-stage grid and tuning results are recorded in \\texttt{experiments/\\allowbreak run\\_\\allowbreak rocksample\\_\\allowbreak pomcp.py} and \\texttt{results\\_\\allowbreak rocksample\\_\\allowbreak pomcp\\_\\allowbreak tuning.csv}. The $2{,}048$-simulation evaluation budget",
+    "reason": "Restore the retained POMCP configuration explicitly, as requested by the independent evidence audit."
+  }
+]

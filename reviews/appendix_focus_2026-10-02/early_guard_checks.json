@@ -1,0 +1,11 @@
+{
+  "records": 19,
+  "guards": {
+    "full_paper_jair.tex": "all 19 unique replacements passed in memory",
+    "full_paper.tex": "all 19 unique replacements passed in memory"
+  },
+  "semicolon_count_new": 0,
+  "new_citation_keys": [],
+  "cited_csv_files_exist": true,
+  "proposals_sha256": "83f67b52d495533e5dfd3238ffccf723b695507269a823b4e7e8aa21a7c2d4cd"
+}
