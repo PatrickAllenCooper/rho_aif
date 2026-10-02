@@ -1,0 +1,233 @@
+{
+  "created": "2026-10-02T00:59:43.468646+00:00",
+  "protocol_sha256": "9a06f780e124b09a197ad1fac5c4da390bc724c88cdce0ed651f972c357c4d12",
+  "calibration_archive_sha256": "042ae534fabcbf62c2f72799a6d1b6b77bf23e6ca0f83116d799d1ff0db333f2",
+  "selected": {
+    "crossing_B2": {
+      "budget": 2,
+      "family": "crossing",
+      "bracket": {
+        "w_lo": 0.0,
+        "w_hi": 0.0,
+        "usage_lo": 3.425531914893617,
+        "usage_hi": 3.425531914893617,
+        "budget": 2.0,
+        "bracketed": false,
+        "achievable": false,
+        "note": "budget below observed U range",
+        "usage_se_lo": 0.0,
+        "usage_se_hi": 0.0,
+        "u_min": 3.4238297872340424,
+        "u_max": 10.244255319148936
+      },
+      "weights": null
+    },
+    "weight_target_B2": {
+      "budget": 2,
+      "family": "weight_target",
+      "weights": null
+    },
+    "weight_cap_B2": {
+      "budget": 2,
+      "family": "weight_cap",
+      "weights": null
+    },
+    "direct_target_B2": {
+      "budget": 2,
+      "family": "direct_target",
+      "weights": {
+        "d21": 0.9049904030710171,
+        "d22": 0.09500959692898292
+      }
+    },
+    "direct_cap_B2": {
+      "budget": 2,
+      "family": "direct_cap",
+      "weights": {
+        "d21": 0.9049904030710171,
+        "d22": 0.09500959692898292
+      }
+    },
+    "cmi_B2": {
+      "budget": 2,
+      "family": "cmi",
+      "weights": {
+        "cmi2": 1.0
+      }
+    },
+    "order_B2": {
+      "budget": 2,
+      "family": "order",
+      "weights": {
+        "order2": 1.0
+      }
+    },
+    "crossing_B4": {
+      "budget": 4,
+      "family": "crossing",
+      "bracket": {
+        "w_lo": 0.0625,
+        "w_hi": 0.125,
+        "usage_lo": 3.6451063829787236,
+        "usage_hi": 4.503829787234043,
+        "budget": 4.0,
+        "bracketed": true,
+        "achievable": true,
+        "note": "",
+        "usage_se_lo": 0.0,
+        "usage_se_hi": 0.0,
+        "u_min": 3.4238297872340424,
+        "u_max": 10.244255319148936
+      },
+      "weights": {
+        "w05": 0.5867195242814671,
+        "w06": 0.4132804757185329
+      }
+    },
+    "weight_target_B4": {
+      "budget": 4,
+      "family": "weight_target",
+      "weights": {
+        "w05": 0.9462213051328346,
+        "w18": 0.05377869486716533
+      }
+    },
+    "weight_cap_B4": {
+      "budget": 4,
+      "family": "weight_cap",
+      "weights": {
+        "w02": 1.0
+      }
+    },
+    "direct_target_B4": {
+      "budget": 4,
+      "family": "direct_target",
+      "weights": {
+        "d00": 0.09161190568225745,
+        "d18": 0.9083880943177426
+      }
+    },
+    "direct_cap_B4": {
+      "budget": 4,
+      "family": "direct_cap",
+      "weights": {
+        "d19": 1.0
+      }
+    },
+    "cmi_B4": {
+      "budget": 4,
+      "family": "cmi",
+      "weights": {
+        "cmi4": 1.0
+      }
+    },
+    "order_B4": {
+      "budget": 4,
+      "family": "order",
+      "weights": {
+        "order4": 1.0
+      }
+    },
+    "crossing_B8": {
+      "budget": 8,
+      "family": "crossing",
+      "bracket": {
+        "w_lo": 8.0,
+        "w_hi": 16.0,
+        "usage_lo": 7.921702127659574,
+        "usage_hi": 8.273191489361702,
+        "budget": 8.0,
+        "bracketed": true,
+        "achievable": true,
+        "note": "",
+        "usage_se_lo": 0.0,
+        "usage_se_hi": 0.0,
+        "u_min": 3.4238297872340424,
+        "u_max": 10.244255319148936
+      },
+      "weights": {
+        "w13": 0.7772397094430987,
+        "w14": 0.22276029055690125
+      }
+    },
+    "weight_target_B8": {
+      "budget": 8,
+      "family": "weight_target",
+      "weights": {
+        "w05": 0.34008253804488003,
+        "w18": 0.6599174619551199
+      }
+    },
+    "weight_cap_B8": {
+      "budget": 8,
+      "family": "weight_cap",
+      "weights": {
+        "w02": 1.0
+      }
+    },
+    "direct_target_B8": {
+      "budget": 8,
+      "family": "direct_target",
+      "weights": {
+        "d00": 0.39440793712150496,
+        "d18": 0.605592062878495
+      }
+    },
+    "direct_cap_B8": {
+      "budget": 8,
+      "family": "direct_cap",
+      "weights": {
+        "d19": 1.0
+      }
+    },
+    "cmi_B8": {
+      "budget": 8,
+      "family": "cmi",
+      "weights": {
+        "cmi8": 1.0
+      }
+    },
+    "order_B8": {
+      "budget": 8,
+      "family": "order",
+      "weights": {
+        "order8": 1.0
+      }
+    },
+    "anchor_zero": {
+      "budget": null,
+      "family": "anchor",
+      "weights": {
+        "zero": 1.0
+      }
+    },
+    "anchor_all": {
+      "budget": null,
+      "family": "anchor",
+      "weights": {
+        "all": 1.0
+      }
+    },
+    "anchor_w00": {
+      "budget": null,
+      "family": "anchor",
+      "weights": {
+        "w00": 1.0
+      }
+    },
+    "anchor_w10": {
+      "budget": null,
+      "family": "anchor",
+      "weights": {
+        "w10": 1.0
+      }
+    },
+    "anchor_w09": {
+      "budget": null,
+      "family": "anchor",
+      "weights": {
+        "w09": 1.0
+      }
+    }
+  }
+}
