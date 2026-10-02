@@ -1,0 +1,10 @@
+{
+  "full_paper_jair.tex": {
+    "before": "22bda90c6403a2d54bf91aef3b87b9071d1e6683ddd69b79e39c00204e113a6d",
+    "after": "92367d8b535a099d238a9a5f715f168c8b348bdfdfa17a6f8f4397b2a1218558"
+  },
+  "full_paper.tex": {
+    "before": "58034a6fd6d4505ca346ebf8966995d773b7d8513f2e572afe65bae20f241d08",
+    "after": "59fa1ce9d58f4618dbaaef0cf152dcbc017f529e3902b1c848b391dc7188b978"
+  }
+}

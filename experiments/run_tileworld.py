@@ -5,7 +5,7 @@ Tileworld experiments and figure generation.
 Produces:
   - Figure A: EFE belief evolution strip on 6x6 Tileworld
   - Figure B: Agent comparison (EFE vs Planning vs InfoGain-Tuned)
-  - Figure C: Scaling analysis and computation time
+  - Figure C: Scaling success and sensing use
   - Results table for the paper
 """
 
@@ -213,68 +213,50 @@ def run_scaling_battery(csv_path=SCALING_CSV):
 
 def fig_scaling_replot(csv_path=SCALING_CSV,
                        save_path="figures/fig_tileworld_scaling.pdf"):
-    """Figure C: rebuild the scaling figure from the committed results CSV.
+    """Rebuild the claim-focused scaling figure from the committed CSV.
 
     Reads ``results/results_tileworld_scaling.csv`` (written by
     ``run_scaling_battery``) and replots without re-running any episodes.
+    The omitted near-duplicate agents and timing results remain in that CSV.
     """
     print(f"  Plotting Tileworld scaling from {csv_path}...")
     figstyle.apply()
     df = pd.read_csv(csv_path)
     grid_sizes = sorted(df["grid_size"].unique())
 
-    # Authored at the printed width (JAIR text block, width=\linewidth) so
-    # rcParams point sizes are the on-page point sizes.
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=figstyle.figsize(1.0, 0.34))
-
-    # Categorical x-dodge so tied series sit side by side instead of
-    # occluding each other. The ties are pairwise (Planning+IG with
-    # InfoGain-Tuned at every grid, EFE with Planning at 4x4), so each tied
-    # pair gets symmetric offsets wide enough to separate 5pt markers at the
-    # authored 6.5in width. The x-axis is categorical (ticks are pinned to
-    # grid_sizes below), so the dodge is purely cosmetic.
-    dodge = {"Myopic": 0.0, "Planning": -0.12, "EFE": 0.12,
-             "InfoGain-Tuned": -0.12, "Planning+IG": 0.12}
-
-    for name in SCALING_AGENT_ORDER:
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figstyle.figsize(1.0, 0.43))
+    shown = ["Planning", "EFE", "Planning+IG"]
+    dodge = {"Planning": -.08, "EFE": .08, "Planning+IG": 0.0}
+    labels = {"Planning": "Planning ($w=0$)", "EFE": "EFE ($w=1$)",
+              "Planning+IG": "Planning+IG ($w=100$)"}
+    for name in shown:
         sub = df[df["agent"] == name].sort_values("grid_size")
-        if sub.empty:
-            continue
+        assert len(sub) == len(grid_sizes), f"Missing {name} scaling rows"
         style = figstyle.agent_style(name)
+        style.update(markersize=5, linewidth=1.7)
         x = sub["grid_size"] + dodge[name]
         ax1.errorbar(x, sub["success_rate"] * 100,
                      yerr=sub["se_success_seed_level"] * 100,
                      capsize=figstyle.CAPSIZE, elinewidth=0.8,
-                     label=name, **style)
-        ax2.errorbar(x, sub["mean_reward"],
-                     yerr=sub["se_reward_seed_level"],
-                     capsize=figstyle.CAPSIZE, elinewidth=0.8,
-                     label=name, **style)
-        ax3.plot(sub["grid_size"], sub["sec_per_episode"] * 1000,
-                 label=name, **style)
+                     label=labels[name], **style)
+        ax2.plot(x, sub["mean_scans"], label=labels[name], **style)
 
+    ax1.set_ylim(-4, 106)
     ax1.set_ylabel("Success rate (%)")
-    ax1.set_title("(a) Success rate vs. grid size")
-
-    ax2.set_ylabel("Mean reward")
-    ax2.set_title("(b) Reward vs. grid size")
-    # One shared x-label for the row; the three panels share an identical
-    # categorical axis, so repeating it per panel wasted vertical space.
-    ax2.set_xlabel("Grid size")
-
-    ax3.set_ylabel("Time per episode (ms)")
-    ax3.set_title("(c) Computation cost vs. grid size")
-    ax3.set_yscale("log")
-
-    for ax in (ax1, ax2, ax3):
+    ax1.set_title("(a) Planning fails at $8\\times8$", loc="left")
+    ax2.set_ylim(-2, 43)
+    ax2.set_ylabel("Mean scans per episode")
+    ax2.set_title("(b) Planning stops scanning", loc="left")
+    for ax in (ax1, ax2):
         figstyle.style_axis(ax)
         ax.set_xticks(grid_sizes)
         ax.set_xticklabels([f"{g}$\\times${g}" for g in grid_sizes])
+        ax.set_xlabel("Grid size")
 
     handles, labels = ax1.get_legend_handles_labels()
-    fig.legend(handles, labels, ncol=len(labels), loc="lower center",
-               bbox_to_anchor=(0.5, -0.10), frameon=False)
-    fig.tight_layout()
+    fig.legend(handles, labels, ncol=3, loc="lower center",
+               bbox_to_anchor=(.5, .015), frameon=False)
+    fig.subplots_adjust(left=.105, right=.985, bottom=.28, top=.88, wspace=.31)
 
     save_fig(fig, save_path)
     plt.close(fig)

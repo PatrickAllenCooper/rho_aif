@@ -2,7 +2,8 @@
 """Publication figure from the frozen real-sensor study's archived summaries.
 
 No model fitting, policy selection, resampling, or evaluation occurs here.
-The figure keeps all preregistered targets, including unavailable crossings.
+The unavailable target is reported in the text and caption; it has no plotted
+estimate or interval.
 """
 from __future__ import annotations
 
@@ -97,33 +98,28 @@ def build_figure(cfg, analysis, selected, rows, output: Path):
     fig, (usage_ax, gap_ax) = plt.subplots(1, 2, figsize=(6.7, 3.45))
     fig.subplots_adjust(left=.10, right=.985, bottom=.27, top=.82, wspace=.34)
     targets = cfg["targets"]
+    unavailable = [budget for budget in targets
+                   if selected[f"crossing_B{budget}"]["weights"] is None]
+    plotted_targets = [budget for budget in targets if budget not in unavailable]
     periods = ["test"] + [f"batch{b}" for b in cfg["shift_batches"]]
     x = np.arange(len(periods), dtype=float)
-    styles = [(figstyle.BLUE, "o"), (figstyle.ORANGE, "s"), (figstyle.GREEN, "^")]
-    usage_handles, usage_extents, unavailable, conditional = [], [0.0], [], []
+    styles = [(figstyle.ORANGE, "s"), (figstyle.GREEN, "^")]
+    usage_handles, usage_extents, conditional = [], [0.0], []
     margin = cfg["usage_margin"]
     usage_ax.axhspan(-margin, margin, color=".91", zorder=0)
     usage_ax.axhline(0, color=".35", linestyle="--", linewidth=1, zorder=1)
     usage_ax.axvline(.5, color=".65", linestyle=":", linewidth=.9, zorder=1)
-    for index, budget in enumerate(targets):
+    for index, budget in enumerate(plotted_targets):
         color, marker = styles[index % len(styles)]
         method = f"crossing_B{budget}"
-        available = selected[method]["weights"] is not None
-        label = f"$B={budget}$" if available else f"$B={budget}$ unavailable"
-        usage_handles.append(Line2D([], [], color=color if available else ".5", marker=marker if available else "x",
-                                    linewidth=1.2 if available else 0, label=label))
-        if not available:
-            unavailable.append(budget)
-            continue
-        means = []
+        usage_handles.append(Line2D([], [], color=color, marker=marker,
+                                    linewidth=0, label=f"$B={budget}$"))
         for period_index, period in enumerate(periods):
             row = rows[(period, method)]
             usage = number(row, "usage")
             if usage is None:
-                means.append(np.nan)
                 continue
             estimate = usage - budget
-            means.append(estimate)
             if period == "test":
                 interval = analysis["bootstrap"][str(budget)]["usage_error_interval"]
             else:
@@ -136,9 +132,6 @@ def build_figure(cfg, analysis, selected, rows, output: Path):
             if limits is not None:
                 usage_extents.extend(limits)
             draw_vertical_interval(usage_ax, x[period_index], estimate, interval, color=color, marker=marker)
-        # The line is a visual guide between discrete collection periods. It
-        # makes no claim that collection times or intervals are equally spaced.
-        usage_ax.plot(x, means, color=color, linewidth=1.2, zorder=2)
     lower, upper = min(usage_extents + [-margin]), max(usage_extents + [margin])
     pad = max(.12, .11 * (upper - lower))
     usage_ax.set_ylim(lower - pad, upper + pad)
@@ -147,7 +140,7 @@ def build_figure(cfg, analysis, selected, rows, output: Path):
     usage_ax.set_xticklabels(["Test"] + [f"B{b}" for b in cfg["shift_batches"]])
     usage_ax.set_xlabel("Within-period test and later batches")
     usage_ax.set_ylabel("Mean sensor accesses minus target")
-    usage_ax.set_title("(a) Usage transfer\n98.333% test / 95% later intervals", loc="left", pad=10)
+    usage_ax.set_title("(a) Usage exceeds both targets after transfer", loc="left", pad=10)
 
     references = [("direct_target", "Direct equality", figstyle.BLUE, "o", -.12),
                   ("cmi", "Exact-count CMI", figstyle.ORANGE, "s", .12)]
@@ -155,10 +148,8 @@ def build_figure(cfg, analysis, selected, rows, output: Path):
     gap_ax.axvline(0, color=".35", linestyle="--", linewidth=1, zorder=1)
     for reference, label, color, marker, offset in references:
         gap_handles.append(Line2D([], [], color=color, marker=marker, linewidth=0, label=label))
-        for index, budget in enumerate(targets):
+        for index, budget in enumerate(plotted_targets):
             method = f"crossing_B{budget}"
-            if selected[method]["weights"] is None:
-                continue
             main_row = rows[("test", method)]
             reference_row = rows[("test", f"{reference}_B{budget}")]
             a, b = number(main_row, "correctness"), number(reference_row, "correctness")
@@ -175,23 +166,17 @@ def build_figure(cfg, analysis, selected, rows, output: Path):
             if limits is not None:
                 gap_extents.extend(100 * np.asarray(limits))
             draw_horizontal_interval(gap_ax, index + offset, gap, interval, color=color, marker=marker)
-    for index, budget in enumerate(targets):
-        if budget in unavailable:
-            gap_ax.text(.05, index, "Crossing unavailable", transform=gap_ax.get_yaxis_transform(),
-                        fontsize=9.5, va="center", color=".4",
-                        bbox={"facecolor": "white", "edgecolor": "none", "pad": 2})
     span = max(gap_extents) - min(gap_extents)
     pad = max(.5, .12 * span)
     gap_ax.set_xlim(min(gap_extents) - pad, max(gap_extents) + pad)
-    gap_ax.set_ylim(len(targets) - .6, -.45)
-    gap_ax.set_yticks(np.arange(len(targets)))
-    gap_ax.set_yticklabels([f"$B={b}$" for b in targets])
+    gap_ax.set_ylim(len(plotted_targets) - .6, -.45)
+    gap_ax.set_yticks(np.arange(len(plotted_targets)))
+    gap_ax.set_yticklabels([f"$B={b}$" for b in plotted_targets])
     gap_ax.set_xlabel("Crossing − reference accuracy (pp)")
-    gap_ax.set_title("(b) Held-out accuracy gaps\n95% paired intervals", loc="left", pad=10)
+    gap_ax.set_title("(b) Crossing loses accuracy on held-out cases", loc="left", pad=10)
     gap_ax.grid(False, axis="y")
     gap_ax.grid(True, axis="x", alpha=.25, linewidth=.6)
-    ncol = 3 if not unavailable else 2
-    fig.legend(handles=usage_handles, loc="lower left", bbox_to_anchor=(.06, .025), ncol=ncol,
+    fig.legend(handles=usage_handles, loc="lower left", bbox_to_anchor=(.06, .025), ncol=2,
                columnspacing=.9, handlelength=1.2, handletextpad=.4, borderaxespad=0)
     fig.legend(handles=gap_handles, loc="lower left", bbox_to_anchor=(.58, .025), ncol=1,
                handlelength=1.2, handletextpad=.4, borderaxespad=0)
@@ -221,15 +206,17 @@ def write_notes(cfg, analysis, selected, rows, output, unavailable, conditional,
         "on one trained observation model and exchangeability within batch/class strata."
     )
     if unavailable:
-        caption += " Targets without a calibration crossing are retained and marked unavailable."
+        caption += (" The fixed $B=2$ request has no calibration crossing and no plotted estimate; "
+                    "it fails the declared all-target criterion.")
     if conditional:
         caption += " Where reselection failed, plotted intervals summarize successful replicates and the failure counts are archived."
     description = (
-        "Two panels retain all three fixed sensor-access targets. The left panel plots realized crossing-mixture "
-        "usage minus target across within-period held-out cases and four later collection batches, with interval "
-        "bars, a horizontal zero line, and a gray half-sensor tolerance band. The right panel plots paired held-out "
-        "accuracy differences from direct equality and exact-count information acquisition, with interval bars "
-        "and a vertical zero line. Unavailable crossings appear as text rather than numerical outcomes."
+        "Two panels plot the available four- and eight-access crossing mixtures. The left panel shows "
+        "usage minus target across within-period held-out cases and four later collection batches as separate "
+        "points with intervals, a horizontal zero line, and a gray half-sensor tolerance band. Both series "
+        "overshoot in every later batch. The right panel plots negative paired held-out accuracy differences "
+        "from direct equality and exact-count information acquisition, with interval bars and a vertical zero line. "
+        "The unavailable two-access request is stated in the caption and prose, not plotted as a measurement."
     )
     lines = ["# Real-sensor publication figure", "", f"PDF: `{output.with_suffix('.pdf').relative_to(ROOT)}`",
              f"PNG: `{output.with_suffix('.png').relative_to(ROOT)}`", "",
