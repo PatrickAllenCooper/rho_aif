@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-02",
+  "source_commit": "c5125abf3f4467271a414661ccca4741645d9161",
+  "baseline_pages": {
+    "jair": 108,
+    "lncs": 136
+  },
+  "files": {
+    "full_paper_jair.tex": "99d85005390f091fbacb56fe136a538f8502850184be717d15b2b486ecfd6e07",
+    "full_paper.tex": "7e9e0c8b58dd6d16fd502aa8dfbec0dc7d652446e894927782298feb6b10a655",
+    "full_paper_jair.pdf": "e704787ebc2d911c607bc74820e08b30285abc48403dcfa7412fde1b74752d8c",
+    "full_paper.pdf": "7f9c67a6cff650595faa6a3b01f9b6d02bb8fe75b653c0242d36c4e20479aa63",
+    "full_paper_jair.bib": "c436b27d4b69f727a091c239c2f447620d81eae4651458d63b7a921874460b16",
+    "rho_aif_jair_overleaf_2026-09-28.zip": "40b4276754239c04bcf027791419e7cffefcda0ac4dfdb6ba63e63f8611a36be"
+  }
+}
