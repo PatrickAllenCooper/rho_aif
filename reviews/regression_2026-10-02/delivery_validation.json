@@ -1,0 +1,13 @@
+{
+  "archive": "/Users/pat/code/rho_aif/paper/rho_aif_jair_overleaf_2026-10-02.zip",
+  "archive_sha256": "f2f240620cc5b82a895333e3d9ecf65e5177ad8439101cf28a1f948f84ab778c",
+  "members": 16,
+  "figures": 10,
+  "tables": 1,
+  "extract_compile": "passed",
+  "pdf_text_match": true,
+  "jair_source_sha256": "db283e6949d6a018a1bbed7fb93c4291b0b5b25dbf0fab63d2b43978da4fb9a9",
+  "jair_pdf_sha256": "d58a747617d214afdcdd8116f390d436bb4899c55b60d44b549a352e26933592",
+  "lncs_source_sha256": "4aed0485371b1186953c13956d87232b3da8b14dac6e19bfd45867333e87953f",
+  "lncs_pdf_sha256": "31e9dce7e910605c269e2df5de46e56de04e3fb5ef7c224f7d9f96d238b15ec8"
+}

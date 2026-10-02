@@ -1,0 +1,15 @@
+{
+  "comparison_archive": "paper/legacy/2026-10-02_pre_claim_focused_appendices",
+  "proofs": {
+    "full_paper_jair.tex": {
+      "unchanged_proof_environments": 6,
+      "source_sha256": "db283e6949d6a018a1bbed7fb93c4291b0b5b25dbf0fab63d2b43978da4fb9a9"
+    },
+    "full_paper.tex": {
+      "unchanged_proof_environments": 6,
+      "source_sha256": "4aed0485371b1186953c13956d87232b3da8b14dac6e19bfd45867333e87953f"
+    }
+  },
+  "rho_aif_and_results_unchanged_since": "c5125ab",
+  "no_changes_in_results_or_package": true
+}

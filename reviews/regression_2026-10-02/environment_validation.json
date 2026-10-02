@@ -1,0 +1,33 @@
+{
+  "pins": 107,
+  "all_pins_match_installed_metadata": true,
+  "unique_normalized_package_names": true,
+  "lock_sha256": "b62c625a93a46b908e2ad12b8399cd4387564ce31d9440c8ba20ed3ef6717ebb",
+  "checks": [
+    {
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pip",
+        "install",
+        "--dry-run",
+        "--no-index",
+        "-r",
+        "requirements-lock.txt"
+      ],
+      "exit_code": 0,
+      "output_lines": 107
+    },
+    {
+      "command": [
+        ".venv/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0,
+      "output_lines": 1
+    }
+  ],
+  "scope": "Validates the existing recorded environment and resolver dry run, not a fresh network installation."
+}
