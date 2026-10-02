@@ -13,7 +13,7 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 LEGACY = ROOT / 'paper/legacy/2026-10-02_pre_claim_focused_appendices'
-PACKAGE = ROOT / 'paper/rho_aif_jair_overleaf_2026-09-28.zip'
+PACKAGE = ROOT / 'paper/rho_aif_jair_overleaf_2026-10-02.zip'
 
 
 def sha(path):

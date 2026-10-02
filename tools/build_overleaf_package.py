@@ -91,6 +91,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--output", type=Path,
-        default=ROOT / "paper/rho_aif_jair_overleaf_2026-09-28.zip",
+        default=ROOT / "paper/rho_aif_jair_overleaf_2026-10-02.zip",
     )
     build(parser.parse_args().output)

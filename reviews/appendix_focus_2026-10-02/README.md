@@ -1,5 +1,7 @@
 # Final claim-focused appendix reduction — 2026-10-02
 
+Current delivery: `paper/rho_aif_jair_overleaf_2026-10-02.zip`. The filename was corrected from the stale September 28 date after final delivery; the archive bytes and reviewed manuscript are unchanged.
+
 The scientific appendices now occupy about 15 JAIR pages, down from 42. The complete submission decreases from 80 to 52 pages; the companion LNCS manuscript decreases from 101 to 65. References begin on JAIR page 33, scientific appendices on page 35, and the submission checklist on page 49. Boundary pages are shared, so these occupied-page counts are not additive.
 
 The comparison is the measured median of 13 pages and mean of 11.29 among the 17 articles with scientific appendices in JAIR Volume 84 (2025). That is a one-volume descriptive benchmark, not a journal-wide norm or acceptance threshold. Its per-paper sources and methodology are archived in `../appendix_consolidation_2026-10-02/`.
