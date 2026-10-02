@@ -1,0 +1,57 @@
+{
+  "source_url": "https://archive.ics.uci.edu/static/public/224/gas+sensor+array+drift+dataset.zip",
+  "retrieved_utc": "2026-10-02T00:48:52.047663+00:00",
+  "zip_sha256": "91e8f466f202e7a093d657673ce47311c3e90416f7df3057966058961c351fe4",
+  "source_files": {
+    "Dataset/batch1.dat": "f346beee8e0c5e31ac5961845b6d96a70dc1ccf799481592fb2f0d96a81952e6",
+    "Dataset/batch2.dat": "07f7e94a9bf4377240f9b230d20c750932fc785d4766b6a4b7fc370a035c825a",
+    "Dataset/batch3.dat": "a4c7a1a6744df32f0ca139c75c3b4dade7cc99f57a7785d28cb0f62577dd2061",
+    "Dataset/batch4.dat": "bd76f86be34ffe89f46a27c6fc2b5b8c6ebfcf984dff4b3e5befc76d98034b7f",
+    "Dataset/batch5.dat": "3f95cb6e4a39a94bbacd2f1984f1754c9fb5eb3221812975ad70edbcea7abaec",
+    "Dataset/batch6.dat": "83348c504105a5aa5264d1209f2a5d7ba7d9c8bcae60290395f201ac4708ff95",
+    "Dataset/batch7.dat": "3168cb56d5c9bc29c36184e2e73c9f3474adb3c4a893b1ce0d88b6c47698cfdb",
+    "Dataset/batch8.dat": "296346b932893ea18c513e23ac5b660f35e1c499fde8254d4804a2ce8a1b4ca7",
+    "Dataset/batch9.dat": "e019f11f4fa8336ab1f41f7503eb456b3679da0a84eb8032fe6cef90f0547826",
+    "Dataset/batch10.dat": "30011067c7c05c2b01038f84c73af0c6f1820b622fa2b0ad89111cb4c649f791"
+  },
+  "readmes": {},
+  "integrity": {
+    "early_duplicate_groups": 0,
+    "early_duplicate_extra_rows": 0,
+    "conflicting_label_groups": 0,
+    "later_overlap_rows": 0,
+    "counts": {
+      "calibration": 1175,
+      "shift": 7977,
+      "test": 1208,
+      "train": 3550
+    }
+  },
+  "protocol_sha256": "9a06f780e124b09a197ad1fac5c4da390bc724c88cdce0ed651f972c357c4d12",
+  "prepared_sha256": "05821be375c085f017d0bfd6ecbf5a68378424659e4d10c2df5e238fe17a9e02",
+  "model_sha256": "316d5ffe75610b3f0f4c0b19d8ef1a89660e71b260dc3dce0f60b2022cd5a7f5",
+  "provenance": {
+    "utc": "2026-10-02T00:48:53.170126+00:00",
+    "git_revision": "fb3a9dec47538dcbdefb0bab3738d3ca9e292c08",
+    "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+    "numpy": "2.0.2",
+    "scipy": "1.13.1",
+    "sklearn": "1.6.1",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "machine": "arm64",
+    "cpu_count": 18,
+    "thread_limits": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    }
+  },
+  "started_utc": "2026-10-02T00:48:50.614368+00:00",
+  "fit_started_utc": "2026-10-02T00:48:52.567005+00:00",
+  "finished_utc": "2026-10-02T00:48:53.195978+00:00",
+  "fit_seconds": 0.43596616600000004,
+  "total_seconds": 2.581617584,
+  "split_dtype": "<U12",
+  "preparation_note": "Prepared before U16 split-label hardening. This dataset has no overlaps, so all stored labels fit U12. Reconstruction preserves the original encoding and its hash."
+}

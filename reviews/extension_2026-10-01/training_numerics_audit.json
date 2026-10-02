@@ -1,0 +1,670 @@
+{
+  "started_utc": "2026-10-02T00:53:02.026818+00:00",
+  "scope": "Training rows only. No policy replay or model refit.",
+  "n_train": 3550,
+  "model_sha256": "316d5ffe75610b3f0f4c0b19d8ef1a89660e71b260dc3dce0f60b2022cd5a7f5",
+  "raw_sha256": "91e8f466f202e7a093d657673ce47311c3e90416f7df3057966058961c351fe4",
+  "provenance": {
+    "utc": "2026-10-02T00:53:02.030985+00:00",
+    "git_revision": "fb3a9dec47538dcbdefb0bab3738d3ca9e292c08",
+    "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+    "numpy": "2.0.2",
+    "scipy": "1.13.1",
+    "sklearn": "1.6.1",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "machine": "arm64",
+    "cpu_count": 18,
+    "source_sha256": {
+      "rho_aif/real_sensor.py": "4ad857dead774fe11e6f81f0c23a8ccc561ff356aabbac566abd6448291e1455",
+      "rho_aif/budget.py": "5b4deef0ed8d6d271ac85c1b938aec92d6a4a8206b56b388f6865d6decea0d21",
+      "experiments/run_real_sensor_study.py": "32370717708d32d3c34814cb40d79f7ea26291d74337d78c41f35ea59d9af23e",
+      "experiments/analyze_real_sensor_study.py": "3a82681722a628e6b2d7d2a941c4a5e5cb975ae2219604c8b90c28436e0e7c92"
+    },
+    "thread_limits": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    }
+  },
+  "sensors": [
+    {
+      "sensor": 0,
+      "raw_abs_max": 670687.3477,
+      "standardized_abs_max": 23.20611130401519,
+      "center_abs_max": 23.20611130401519,
+      "product_abs_max": 552.5372427630614,
+      "blas_vs_independent_max_abs_error": 2.842170943040401e-14,
+      "distance_max_abs_error": 3.410605131648481e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 3370.548157615217,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        1125,
+        216,
+        1368,
+        250,
+        227,
+        17,
+        346,
+        1
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 1,
+      "raw_abs_max": 502202.8125,
+      "standardized_abs_max": 20.487659805121957,
+      "center_abs_max": 20.487659805121957,
+      "product_abs_max": 583.3763594986963,
+      "blas_vs_independent_max_abs_error": 5.684341886080802e-14,
+      "distance_max_abs_error": 2.2737367544323206e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 2948.035161410953,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        1272,
+        423,
+        681,
+        292,
+        241,
+        19,
+        1,
+        621
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 2,
+      "raw_abs_max": 67158.3098,
+      "standardized_abs_max": 56.90056845235752,
+      "center_abs_max": 56.90056845235752,
+      "product_abs_max": 4166.574060341141,
+      "blas_vs_independent_max_abs_error": 9.094947017729282e-13,
+      "distance_max_abs_error": 1.8189894035458565e-12,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 4685.892918326126,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        1218,
+        703,
+        1,
+        145,
+        138,
+        975,
+        354,
+        16
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 3,
+      "raw_abs_max": 65395.0528,
+      "standardized_abs_max": 57.670941147686214,
+      "center_abs_max": 57.670941147686214,
+      "product_abs_max": 6311.289378494722,
+      "blas_vs_independent_max_abs_error": 9.094947017729282e-13,
+      "distance_max_abs_error": 1.8189894035458565e-12,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 3221.116265740832,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        1188,
+        262,
+        1281,
+        129,
+        1,
+        1,
+        686,
+        2
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 4,
+      "raw_abs_max": 11857.4483,
+      "standardized_abs_max": 58.960293373324106,
+      "center_abs_max": 58.960293373324106,
+      "product_abs_max": 7062.720671768415,
+      "blas_vs_independent_max_abs_error": 5.684341886080802e-14,
+      "distance_max_abs_error": 1.8189894035458565e-12,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 3207.6710574429094,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        1093,
+        633,
+        1,
+        536,
+        1,
+        195,
+        234,
+        857
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 5,
+      "raw_abs_max": 13800.2196,
+      "standardized_abs_max": 49.558153289529564,
+      "center_abs_max": 49.558153289529564,
+      "product_abs_max": 3940.740419256674,
+      "blas_vs_independent_max_abs_error": 4.547473508864641e-13,
+      "distance_max_abs_error": 1.8189894035458565e-12,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 4667.884597724724,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        756,
+        946,
+        188,
+        1,
+        650,
+        1,
+        212,
+        796
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 6,
+      "raw_abs_max": 82323.6053,
+      "standardized_abs_max": 19.405331475157034,
+      "center_abs_max": 12.993386230879052,
+      "product_abs_max": 269.7828568594855,
+      "blas_vs_independent_max_abs_error": 2.842170943040401e-14,
+      "distance_max_abs_error": 1.1368683772161603e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 4891.6841125776,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        656,
+        540,
+        300,
+        586,
+        892,
+        218,
+        13,
+        345
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 7,
+      "raw_abs_max": 86587.8154,
+      "standardized_abs_max": 18.41259763388091,
+      "center_abs_max": 12.11225707901796,
+      "product_abs_max": 239.97559581309275,
+      "blas_vs_independent_max_abs_error": 2.842170943040401e-14,
+      "distance_max_abs_error": 1.1368683772161603e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 4708.711725902311,
+      "inertia_abs_error": 9.094947017729282e-13,
+      "cluster_counts": [
+        687,
+        217,
+        316,
+        17,
+        283,
+        886,
+        562,
+        582
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 8,
+      "raw_abs_max": 463858.121,
+      "standardized_abs_max": 13.211230573121767,
+      "center_abs_max": 5.459310517161589,
+      "product_abs_max": 236.03934098777228,
+      "blas_vs_independent_max_abs_error": 2.842170943040401e-14,
+      "distance_max_abs_error": 9.592326932761353e-14,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 2981.8900324337565,
+      "inertia_abs_error": 4.547473508864641e-13,
+      "cluster_counts": [
+        891,
+        409,
+        1332,
+        27,
+        302,
+        369,
+        203,
+        17
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 9,
+      "raw_abs_max": 490020.0234,
+      "standardized_abs_max": 12.90173416656228,
+      "center_abs_max": 6.3467394241488675,
+      "product_abs_max": 324.41969226635337,
+      "blas_vs_independent_max_abs_error": 5.684341886080802e-14,
+      "distance_max_abs_error": 2.2737367544323206e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 3227.6261534264954,
+      "inertia_abs_error": 4.547473508864641e-13,
+      "cluster_counts": [
+        1795,
+        410,
+        53,
+        23,
+        739,
+        285,
+        29,
+        216
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 10,
+      "raw_abs_max": 87508.1494,
+      "standardized_abs_max": 17.426655579798584,
+      "center_abs_max": 10.95945086133582,
+      "product_abs_max": 202.72403257113214,
+      "blas_vs_independent_max_abs_error": 2.842170943040401e-14,
+      "distance_max_abs_error": 1.1368683772161603e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 4142.54401472582,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        539,
+        132,
+        564,
+        670,
+        17,
+        389,
+        1046,
+        193
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 11,
+      "raw_abs_max": 69589.5572,
+      "standardized_abs_max": 20.51405982643211,
+      "center_abs_max": 11.507648919326396,
+      "product_abs_max": 185.5006482283196,
+      "blas_vs_independent_max_abs_error": 2.842170943040401e-14,
+      "distance_max_abs_error": 1.1368683772161603e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 4476.63648146273,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        714,
+        166,
+        499,
+        353,
+        15,
+        160,
+        777,
+        866
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 12,
+      "raw_abs_max": 15957.1645,
+      "standardized_abs_max": 22.32392199232751,
+      "center_abs_max": 12.80416496961252,
+      "product_abs_max": 330.41783443181345,
+      "blas_vs_independent_max_abs_error": 5.684341886080802e-14,
+      "distance_max_abs_error": 1.1368683772161603e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 5025.426961851305,
+      "inertia_abs_error": 9.094947017729282e-13,
+      "cluster_counts": [
+        288,
+        656,
+        142,
+        14,
+        464,
+        215,
+        1115,
+        656
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 13,
+      "raw_abs_max": 16257.9414,
+      "standardized_abs_max": 22.62094502589301,
+      "center_abs_max": 11.849137720268685,
+      "product_abs_max": 306.00521885143553,
+      "blas_vs_independent_max_abs_error": 5.684341886080802e-14,
+      "distance_max_abs_error": 2.2737367544323206e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 5126.356510116357,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        122,
+        1018,
+        222,
+        763,
+        15,
+        436,
+        365,
+        609
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 14,
+      "raw_abs_max": 113301.9158,
+      "standardized_abs_max": 20.41083659436855,
+      "center_abs_max": 11.94060423494781,
+      "product_abs_max": 268.95609842573015,
+      "blas_vs_independent_max_abs_error": 5.684341886080802e-14,
+      "distance_max_abs_error": 1.1368683772161603e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 4739.884868137631,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        489,
+        342,
+        15,
+        332,
+        508,
+        194,
+        1105,
+        565
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "sensor": 15,
+      "raw_abs_max": 96706.7927,
+      "standardized_abs_max": 20.645654867685515,
+      "center_abs_max": 13.099440459833742,
+      "product_abs_max": 306.5623859172342,
+      "blas_vs_independent_max_abs_error": 2.842170943040401e-14,
+      "distance_max_abs_error": 1.7053025658242404e-13,
+      "centroid_assignment_mismatches": 0,
+      "independent_inertia": 4458.395592248962,
+      "inertia_abs_error": 0.0,
+      "cluster_counts": [
+        352,
+        751,
+        315,
+        13,
+        600,
+        516,
+        796,
+        207
+      ],
+      "product_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "distance_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ],
+      "inertia_warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    }
+  ],
+  "primary_sources": [
+    "https://numpy.org/doc/stable/release/2.3.1-notes.html",
+    "https://github.com/numpy/numpy/issues/29820"
+  ],
+  "identity_controls": [
+    {
+      "size": 2,
+      "exact_identity": true,
+      "warnings": []
+    },
+    {
+      "size": 14,
+      "exact_identity": true,
+      "warnings": []
+    },
+    {
+      "size": 15,
+      "exact_identity": true,
+      "warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "size": 16,
+      "exact_identity": true,
+      "warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    },
+    {
+      "size": 64,
+      "exact_identity": true,
+      "warnings": [
+        "divide by zero encountered in matmul",
+        "overflow encountered in matmul",
+        "invalid value encountered in matmul"
+      ]
+    }
+  ],
+  "finished_utc": "2026-10-02T00:53:02.104149+00:00",
+  "checks_passed": true,
+  "warning_count": 144
+}

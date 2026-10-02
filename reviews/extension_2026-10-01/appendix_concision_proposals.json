@@ -1,0 +1,754 @@
+{
+  "schema_version": 1,
+  "status": "proposals_only_not_applied",
+  "baseline_commit": "fb3a9dec47538dcbdefb0bab3738d3ca9e292c08",
+  "source_sha256": {
+    "paper/full_paper_jair.tex": "73f6ee1feb9bf2202bc141dadf52ae557816a8934ecfa0db47a1836b07b4a44c",
+    "paper/full_paper.tex": "25a9eaa30eac01e354775cd33f8018685dc171cc932e5f5e5fc1ba6a0aeb0a44"
+  },
+  "instruction": "Guard against the current sources. Never run a previous manuscript assembler. Apply to both masters, then audit the actual combined diff and compile.",
+  "proposal_count": 26,
+  "exact_replacement_count": 29,
+  "source_word_reduction": 4619,
+  "counting_method": "Whitespace-delimited source tokens, one master, includes TeX commands and accessibility Description text; not rendered words or a page estimate.",
+  "proposals": [
+    {
+      "id": "AC01",
+      "title": "Testbed: retain the negative finding and threshold scope",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "Under symmetric rewards ($+1 / {-}1$), EFE gathers more information than is instrumentally optimal ($+0.38$ vs.\\ Planning's $+0.48$, seed-level Welch $p{=}1.1{\\times}10^{-5}$) because uncertainty reduction has intrinsic value under EFE. The success-tuned agents show the same effect more starkly, driving reward to $+0.01$ to reach $99.5\\%$ success. Posterior-vote matches reward-only Planning bit-for-bit ($+0.48$, $89.8\\%$, $3.15$ observations), and both beat EFE on reward. The Epistemic-only ablation of Table~\\ref{tab:agents}, which sets $\\mathcal{G}(\\text{commit}) = 0$, also matches reward-only Planning on observations and success here (\\texttt{results\\_\\allowbreak summary.csv}), because Testbed's observation is cheap enough that information gain alone clears its cost. On Tiger, Diagnosis, Bandit, and Tileworld it instead commits immediately at the chance rate (Appendix~\\ref{app:full_tables}). With symmetric $\\pm 1$ rewards a second observation at the post-first-observation belief has zero instrumental value, since the disconfirming outcome returns the belief exactly to the tie point, so its $0.1$ cost buys no reward. Proposition~\\ref{prop:nearopt}'s over-observation ceiling is correspondingly tight, $w^*_{\\mathrm{over}} \\approx 1.01$ reward units per nat (Table~\\ref{tab:alpha_eta}), below the implemented bit-denominated $w{=}1$ at $1.44$ reward units per nat, so in this regime EFE assigns too much weight to information gain. The high-asymmetry regime in which the interval analysis favors $w{=}1$ is discussed in Appendix~\\ref{app:interpretation}. Within that regime, $w{=}1$ lies on the reward-maximizing plateau on Tiger and Diagnosis but is Pareto-dominated by $w{=}20$ on Tileworld (Section~\\ref{sec:pareto}).",
+      "new": "Under symmetric $+1/{-}1$ rewards, EFE over-observes relative to Planning ($+0.38$ vs.\\ $+0.48$ reward, seed-level Welch $p{=}1.1{\\times}10^{-5}$). Success-tuned agents push this trade-off to $99.5\\%$ success at $+0.01$ reward. Posterior-vote matches Planning on all three metrics. Epistemic-only matches Planning on observations and success here because information gain clears the $0.1$ observation cost, but commits immediately on Tiger, Diagnosis, Bandit, and Tileworld (\\texttt{results\\_\\allowbreak summary.csv}, Appendix~\\ref{app:full_tables}).\n\nAt the post-first-observation belief, a second observation has zero instrumental value: a disconfirming outcome returns belief to the tie point. Proposition~\\ref{prop:nearopt}'s resulting ceiling is $w^*_{\\mathrm{over}}\\approx1.01$ reward units per nat, below the implemented weight's $1.44$ (Table~\\ref{tab:alpha_eta}). Testbed is a boundary case of the proposition's strict asymmetry assumption, and Appendix~\\ref{app:theory_thresholds} distinguishes this two-step calculation from measured behavior at $H{=}4$.",
+      "source_line": 1026,
+      "rationale": "Remove repeated high-asymmetry/plateau conclusions already in the threshold appendix and Pareto section, without weakening the Testbed counterexample.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1004-1027",
+        "results/results_summary.csv",
+        "paper/full_paper_jair.tex:1678-1714"
+      ],
+      "preserved": [
+        "Negative reward result, p-value, success-tuning cost, posterior-vote and Epistemic-only controls",
+        "Zero second-observation VoI and bit/nat ceiling",
+        "Explicit horizon and strict-asymmetry boundary"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 98
+    },
+    {
+      "id": "AC02",
+      "title": "Observation-action scaling: stop repeating the caption",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "Holding $N{=}8$ fixed on Diagnosis and varying $K$ from 1 to 3 isolates the ``which information'' hypothesis (Figure~\\ref{fig:obs_scaling}). EFE and Planning are bit-identical at $K{=}1$ and within seed-level sampling error at $K{=}2$ ($43.2\\%$ against $43.8\\%$ success). Evidence of a gap with two tests comes from the main Diagnosis battery of Section~\\ref{sec:results}. They separate at $K{=}3$ ($96.0\\%$ against $82.8\\%$), a threshold rather than steady growth. Figure~\\ref{fig:extended_efe} shows the mechanism in one extended episode. Tests become differentially informative as belief concentrates, because some partitions stop mattering once the condition is narrowed down while others remain decisive, and the agent shifts its test selection accordingly. It optimizes a recursive pragmatic--epistemic score, so its chosen test need not maximize the one-step information gain plotted in panel (b).",
+      "new": "At fixed $N{=}8$, EFE and Planning are bit-identical at $K{=}1$, within seed-level sampling error at $K{=}2$ ($43.2\\%$ vs.\\ $43.8\\%$), and separated at $K{=}3$ ($96.0\\%$ vs.\\ $82.8\\%$). This is a threshold pattern, not steady growth with test count (Figure~\\ref{fig:obs_scaling}). The main Diagnosis battery separately shows a gap with two tests. Figure~\\ref{fig:extended_efe} illustrates adaptive selection as tests become differently informative, but the chosen test maximizes a recursive score and need not maximize panel (b)'s one-step information gain.",
+      "source_line": 1066,
+      "rationale": "Keep all three outcomes and the crucial recursive-versus-myopic qualification, omitting a second explanation of partition elimination.",
+      "evidence": [
+        "results/results_showcase_obs_scaling.csv",
+        "paper/full_paper_jair.tex:1047-1066"
+      ],
+      "preserved": [
+        "K=1 identity, K=2 null, K=3 gain",
+        "Separate main Diagnosis battery",
+        "Chosen action is not necessarily one-step IG argmax"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 48
+    },
+    {
+      "id": "AC03",
+      "title": "Tiger asymmetry sweep: compact protocol and non-dominance",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "To test whether EFE's Tiger parity holds across reward scales, we sweep the penalty magnitude from $|R^-|{=}1$ to $500$ (Figure~\\ref{fig:sweep}). EFE adapts its listening on its own, from $2.7$ observations at the smallest penalty to $5.8$ at the largest, tracking the stakes without reconfiguration. The sweep re-tunes the myopic InfoGain-Tuned agent's weight at every penalty, and the tuned weight comes back as $w{=}20$ at all of them. At that fixed weight the myopic agent listens $4.37$ times at every penalty, while the deeper Planning+IG rises to $5.77$ observations at penalties $200$ and $500$. At low stakes that over-listening costs about $1.6$ reward against reward-only Planning. At the largest penalty the fixed-weight myopic agent sits marginally ahead of EFE ($4.61$ against $4.23$), so the case for adaptation is robustness across the sweep rather than uniform dominance.",
+      "new": "Across penalties $|R^-|\\in[1,500]$, EFE increases listening from $2.7$ to $5.8$ observations without reconfiguration (Figure~\\ref{fig:sweep}). Re-tuning myopic InfoGain-Tuned at each penalty selects $w{=}20$ throughout, giving $4.37$ observations at every penalty. Planning+IG reaches $5.77$ observations at penalties $200$ and $500$. At low stakes, over-listening costs about $1.6$ reward relative to Planning. At the largest penalty, myopic InfoGain-Tuned nominally beats EFE ($4.61$ vs.\\ $4.23$), so the sweep supports adaptation across stakes rather than uniform dominance.",
+      "source_line": 1079,
+      "rationale": "Replace a narrative restatement of the plot with the protocol, endpoints, and explicit counterexample.",
+      "evidence": [
+        "results/results_showcase_asymmetry.csv",
+        "paper/full_paper_jair.tex:1068-1079"
+      ],
+      "preserved": [
+        "Per-penalty re-tuning despite constant selected weight",
+        "Planning+IG observation change",
+        "Low-stakes reward penalty and largest-penalty reversal"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 63
+    },
+    {
+      "id": "AC04",
+      "title": "Diagnosis scaling: keep the horizon qualification",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "At $H{=}2$, EFE and Planning show no consistent gap at any $N$ tested here (bit-identical at $N{=}2$ and $N{=}4$, at $N{=}8$, $84.08\\% \\pm 0.66$pp vs.\\ $83.92\\% \\pm 0.82$pp, and at $N{=}16$, $77.12\\% \\pm 0.78$pp vs.\\ $77.36\\% \\pm 0.98$pp, seed-level SE, with no consistent direction), both substantially outperforming Myopic and untuned Info Gain. This contrasts with the $H{=}3$ Diagnosis result (Table~\\ref{tab:main}), where EFE outperformed Planning by $+8.3$ pp, consistent with EFE's advantage depending on recursive depth, not merely on a larger state space. EFE-over-Myopic advantage grows from $+13.8$ pp at $N{=}2$ ($94.12\\% \\pm 0.50$pp vs.\\ $80.28\\% \\pm 0.91$pp) to $+36.3$ pp at $N{=}16$ ($77.12\\% \\pm 0.78$pp vs.\\ $40.84\\% \\pm 1.69$pp, seed-level SE), consistent with deeper planning becoming more valuable as state spaces grow, independent of whether EFE or reward-only Planning supplies that depth.",
+      "new": "At $H{=}2$, EFE and Planning are bit-identical at $N{=}2,4$ and show no consistent gap at $N{=}8,16$. Their success rates are $84.08\\%\\pm0.66$pp vs.\\ $83.92\\%\\pm0.82$pp at $N{=}8$ and $77.12\\%\\pm0.78$pp vs.\\ $77.36\\%\\pm0.98$pp at $N{=}16$ (seed-level SE). Both outperform Myopic and untuned Info Gain. The contrast with EFE's $+8.3$pp advantage over Planning at $H{=}3$ (Table~\\ref{tab:main}) is consistent with a dependence on depth rather than state count alone. EFE's success advantage over Myopic grows from $13.8$pp at $N{=}2$ to $36.3$pp at $N{=}16$, a benefit of deeper planning shared by reward-only Planning.",
+      "source_line": 1251,
+      "rationale": "Remove duplicated endpoint means already in the adjacent table while retaining uncertainty on the null EFE/Planning comparison.",
+      "evidence": [
+        "results/results_scaling.csv",
+        "paper/full_paper_jair.tex:1216-1252"
+      ],
+      "preserved": [
+        "Identity at small N, non-consistent direction at larger N",
+        "H=3 counterpoint",
+        "Gain over Myopic is shared by reward-only depth"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 46
+    },
+    {
+      "id": "AC05",
+      "title": "PyMDP: retain the weak-control caveat",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "We check our EFE computation against the \\texttt{pymdp} library \\citep{heins2022} by wrapping pymdp's standard Agent class. The check tests consistency between implementations, not numerical equivalence. Run as an observe-then-commit agent on the two-state testbed under the canonical protocol, \\texttt{pymdp}-AIF returns $3.15$ observations, $89.8\\%$ success, and $+0.480$ reward. Our myopic Info Gain agent at $w{=}1$, which by Proposition~\\ref{prop:equivalence} is the myopic EFE agent, returns the same three values (\\texttt{results\\_\\allowbreak summary.csv}), so the two single-step implementations agree. Our $H{=}4$ recursive EFE agent differs on this environment ($5.50$ observations) through planning depth, so the check says nothing about recursive EFE. It is also weak evidence, because on this environment the myopic $w{=}1$ agent and \\texttt{pymdp}-AIF are both bit-identical to reward-only Planning, so the comparison cannot separate a correctly implemented epistemic term from its absence. Both implementations agree on observe-vs-commit decisions across all tested belief states (uniform, intermediate, and confident beliefs on the two-state environments). Information gain values computed by our recursive scheme and pymdp's \\texttt{control} module agree qualitatively, with differences attributable to our recursive multi-step evaluation vs.\\ pymdp's single-step policy enumeration.",
+      "new": "Wrapping \\texttt{pymdp}'s standard Agent class \\citep{heins2022} as an observe-then-commit agent gives $3.15$ observations, $89.8\\%$ success, and $+0.480$ reward on Testbed under the canonical protocol, matching our myopic Info Gain agent at $w{=}1$ (\\texttt{results\\_\\allowbreak summary.csv}). Our recursive $H{=}4$ EFE agent instead takes $5.50$ observations. This is a consistency check between single-step implementations, not numerical equivalence or a check of recursive EFE. It is weak evidence for the epistemic term because both single-step agents also match reward-only Planning. The implementations agree on observe-versus-commit choices at all tested uniform, intermediate, and confident two-state beliefs. Their information-gain evaluations agree qualitatively, with differences between recursive evaluation and \\texttt{pymdp}'s single-step policy enumeration.",
+      "source_line": 1257,
+      "rationale": "Keep the full negative interpretation of the consistency check, compressing repeated scope explanations.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1254-1258",
+        "results/results_summary.csv"
+      ],
+      "preserved": [
+        "Heins citation",
+        "Exact reported metrics",
+        "No recursive certification or isolated epistemic validation"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 72
+    },
+    {
+      "id": "AC06",
+      "title": "Statistics: consolidate definitions without changing families",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "Pairwise comparisons in the main results tables use independent two-sample Welch $t$-tests on per-seed means with Holm--Bonferroni correction for family-wise error control, and comparisons reported without that correction are marked uncorrected where they appear. The companion pooled episode-level column in the six stats files behind the main observe-then-commit and Tileworld tables is an equal-variance two-sample test rather than a Welch test, which changes no non-degenerate comparison's outcome at $\\alpha{=}0.05$ across the $510$ pooled comparisons in those files. The RockSample and Structural Inspection producers use Welch for both levels. The correction family is the full set of pairwise agent comparisons and metrics (reward, success/accuracy, and, where reported, observation count) reported together within a single table. For the main results tables (Table~\\ref{tab:main} and the RockSample and Structural Inspection tables), the family is scoped to one environment or instance at a time, since each table's rows are computed and corrected together, independently of every other table. Concretely, with $A$ agents and $M$ corrected metrics the family size is $M \\cdot \\binom{A}{2}$, giving $108$ for Tiger ($A{=}9$, $M{=}3$ over reward, success, and observations), $84$ for Diagnosis and Bandit ($A{=}8$, $M{=}3$), and $18$ for each Structural Inspection instance ($A{=}4$, $M{=}3$ over reward, accuracy, and tests). These are nominal sizes. A comparison whose seed-level $p$-value is undefined, because both agents' per-seed values have zero variance, is excluded from its family, which leaves $107$ defined tests for Tiger and $83$ for Diagnosis. RockSample corrects within metric rather than pooling, giving $21$ tests per metric per instance over its seven agents, because the RockSample table's bolding rule treats a non-rejection as a tie with the best row and pooling metrics into one larger family would loosen exactly that rule. The exceptions are the discount-sweep appendix table (Table~\\ref{tab:discount}), where the family spans every environment and $\\gamma$ value in that sweep jointly ($24$ tests, from $3$ environments $\\times$ $4$ discount factors $\\times$ $2$ metrics), and the two MCTS batteries of Appendix~\\ref{app:pomcp}, where the ablation corrects within metric across all three environments jointly and the exploration sweep corrects within metric within each of its three comparison families. Bootstrap 95\\% confidence intervals use 10{,}000 resamples with fixed seed for reproducibility. Effect sizes use Cohen's $d$ with pooled standard deviation. Because episodes within a seed are not independent, those primary tests aggregate each seed's episodes to a single mean before testing ($n{=}5$ seeds), and the pooled episode-level columns are reported alongside them. The main-text table (Table~\\ref{tab:main}) reports the seed-level SE as the primary uncertainty measure. Pooled episode-level and seed-level SE describe different sources of variation, episode-level precision and between-seed replicability, so neither replaces the other. The Tiger, Diagnosis and Bandit tables of Appendix~\\ref{app:full_tables} report the pooled episode-level SE only and omit the untuned Info Gain rows that duplicate Myopic exactly, together with Tiger's pymdp-AIF row. The two Tileworld tables report point estimates for every agent run, duplicates included. The companion \\texttt{*\\_\\allowbreak stats.csv} files committed alongside the main battery carry the seed-level Welch $t$-tests and Cohen's $d$ this section describes. The Tileworld scaling battery reports seed-level standard errors for reward and success without a companion Welch file.",
+      "new": "Primary comparisons use independent two-sample Welch $t$-tests on per-seed means ($n{=}5$), with Holm--Bonferroni correction. Uncorrected comparisons are marked locally. Unless stated otherwise, the family comprises all pairwise agent comparisons and reported metrics within one environment or instance: $M\\binom{A}{2}$ tests for $A$ agents and $M$ metrics. Nominal sizes are $108$ for Tiger ($9$ agents, reward/success/observations), $84$ for Diagnosis and Bandit ($8$ agents), and $18$ per Inspection instance ($4$ agents, reward/accuracy/tests). Undefined zero-variance comparisons are excluded, leaving $107$ defined tests for Tiger and $83$ for Diagnosis. RockSample instead corrects within metric, $21$ tests per instance over seven agents, because pooling metrics would loosen its non-rejection-based bolding rule. The discount sweep pools its $24$ tests across environments, discounts, and metrics. The MCTS ablation corrects within metric across its three environments, and the exploration sweep within metric within each of its three comparison families (Appendix~\\ref{app:pomcp}).\n\nThe six main observe-then-commit and Tileworld stats files also report pooled episode-level equal-variance tests. Substituting Welch changes no non-degenerate decision at $\\alpha{=}0.05$ among their $510$ comparisons. RockSample and Inspection use Welch at both levels. Because episodes within a seed are not independent, pooled tests supplement the seed-level analysis. Bootstrap $95\\%$ intervals use $10{,}000$ resamples and a fixed seed. Interpreted effect sizes are Cohen's $d$ with pooled episode-level standard deviation.\n\nTable~\\ref{tab:main} reports seed-level SE. Pooled SE describes episode-level precision and seed-level SE describes between-seed replicability, so neither replaces the other. Appendix~\\ref{app:full_tables}'s Tiger, Diagnosis, and Bandit tables give pooled SE and omit untuned Info Gain rows identical to Myopic and Tiger's \\texttt{pymdp}-AIF row. Its Tileworld tables retain every agent, including duplicate rows. Companion \\texttt{*\\_\\allowbreak stats.csv} files contain the tests and effect sizes. The separate Tileworld scaling battery has seed-level reward and success SEs but no Welch companion file.",
+      "source_line": 1263,
+      "rationale": "Keep every correction-family exception and data-level distinction once. Remove repeated explanation of seed aggregation and table conventions.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1260-1310",
+        "paper/full_paper_jair.tex:1991-2014",
+        "reviews/polish_2026-10-01/evidence_acceptance.md"
+      ],
+      "preserved": [
+        "All nominal/effective family sizes and exceptions",
+        "Equal-variance pooled-test disclosure",
+        "Pooled versus seed uncertainty and omitted-row rules",
+        "Bootstrap count and seed-level d non-interpretation retained in AC25"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 226
+    },
+    {
+      "id": "AC07",
+      "title": "Horizon sweep: preserve descriptive status and failure rates",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "Proposition~\\ref{prop:nearopt} derives $w^*_{\\mathrm{thresh}}$ at $H{=}1$ and $w^*_{\\mathrm{over}}$ at $H{=}2$. To check whether the resulting near-optimality claim survives recursive multi-step planning, we generated 100 random two-state environments (reward asymmetry $\\alpha \\in [1,50]$, observation accuracy $p \\in [0.55, 0.95]$, cost $\\in [0.1, 5]$). For each environment and each $H \\in \\{1,2,3\\}$, we selected the weight $w^*_{\\mathrm{ret}}$ with the largest estimated mean reward on the grid and recorded whether its estimated reward advantage over $w{=}1$ is at most $\\max(0.05|\\widehat R_{\\mathrm{best}}|,0.5)$, where $\\widehat R_{\\mathrm{best}}$ is that largest estimated mean and $0.5$ is measured in reward units. Each (environment, weight, horizon) cell runs $50$ episodes at a single seed, and $w^*_{\\mathrm{ret}}$ is selected over the six-point grid $\\{0.01, 0.5, 1, 2, 5, 50\\}$ (\\url{experiments/run_nearopt_horizon.py}). This is a deliberate deviation from the canonical five-seed protocol, because the study is a descriptive sweep over $100$ synthetic environments rather than a headline comparison, and its conclusions are read as coarse rates rather than per-environment estimates. Figure~\\ref{fig:nearopt_horizon} reports the fraction of environments where $w{=}1$ passes this test at each horizon, stratified by $\\alpha$. The near-optimality rate rises from 30\\% at $H{=}1$ to 58\\% at $H{=}2$ and 79\\% at $H{=}3$ (26\\%~$\\to$~53\\%~$\\to$~79\\% restricted to $\\alpha \\geq 10$), so deeper planning widens the basin in which the untuned information-unit weight is reward-competitive rather than narrowing it. Stated as a failure rate, $w{=}1$ fails this test in about $21\\%$ of the random family even at $H{=}3$ and in $70\\%$ of it at $H{=}1$, and the criterion is lenient by construction, since the absolute floor of $0.5$ reward units does most of the work on environments whose reward range is small. The trend is qualitatively consistent with Bandit, where a loose low-asymmetry reading would lead one to expect the least from $w{=}1$ yet multi-step EFE at $H{=}2$ reaches $86.9\\%$ success (Table~\\ref{tab:main}), although the two-state threshold formula does not apply to Bandit and no threshold is computed for it.",
+      "new": "To examine horizons beyond Proposition~\\ref{prop:nearopt}'s $H{=}1$ onset and $H{=}2$ ceiling, we sample $100$ two-state environments with asymmetry $\\alpha\\in[1,50]$, accuracy $p\\in[0.55,0.95]$, and cost in $[0.1,5]$. At each $H\\in\\{1,2,3\\}$, we select the largest estimated mean reward $\\widehat R_{\\mathrm{best}}$ over $w\\in\\{0.01,0.5,1,2,5,50\\}$ and count $w{=}1$ as near-optimal if its estimated deficit is at most $\\max(0.05|\\widehat R_{\\mathrm{best}}|,0.5)$ reward units. Each cell uses $50$ episodes at one seed (\\url{experiments/run_nearopt_horizon.py}), a deliberate departure from the canonical five-seed protocol. The rates are descriptive, not per-environment estimates with uncertainty guarantees.\n\nThe pass rate rises from $30\\%$ to $58\\%$ to $79\\%$ across the three horizons ($26\\%$, $53\\%$, $79\\%$ for $\\alpha\\ge10$, Figure~\\ref{fig:nearopt_horizon}). Thus $w{=}1$ still fails on $21\\%$ at $H{=}3$, despite a lenient absolute tolerance that dominates when reward ranges are small. This sampled trend is consistent with a benefit from recursive planning, not a general horizon guarantee. Bandit's $86.9\\%$ success at $H{=}2$ is only a qualitative comparison: the two-state threshold formula does not apply to it.",
+      "source_line": 1316,
+      "rationale": "Keep all study axes, grid, sampling, criterion, and failure qualification, but remove repeated verbal descriptions of the same success rates.",
+      "evidence": [
+        "experiments/run_nearopt_horizon.py",
+        "results/results_nearopt_horizon.csv",
+        "paper/tables/horizon_map.tex"
+      ],
+      "preserved": [
+        "Single-seed 50-episode design and six-point selected maximum",
+        "Tolerance floor and limits",
+        "Bandit is outside theorem scope"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 158
+    },
+    {
+      "id": "AC08",
+      "title": "Horizon agreement: retain every class and exception",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "\\paragraph{Agreement across planning horizons.} Table~\\ref{tab:horizon-map} breaks the same 100 environments down by all three sampled regime axes and compares the $H{=}1$ classification with $H{\\geq}2$ per environment. Eight of the nine regime strata show near-optimality rarer at $H{=}1$ than at $H{=}3$, most sharply for high-informativeness observations ($p \\geq 0.85$, $17\\% \\to 90\\%$). The exception is the low-informativeness stratum ($p < 0.65$, $25$ environments), flat and mildly non-monotone at $80\\% \\to 84\\% \\to 80\\%$, since weak observations leave little for a deeper horizon to exploit. Low reward asymmetry ($\\alpha < 3$, 7 environments) rises less sharply, from $71\\%$ at $H{=}1$ to $86\\%$ at both $H{=}2$ and $H{=}3$. Following the producing script, we classify an environment as agreeing across horizons when $w{=}1$ is near-optimal at $H{=}1$ and at some deeper horizon, or at neither. This holds for 44 of the 100 environments. In 30 the $H{=}1$ check passes and near-optimality recurs deeper, at every deeper horizon in 26 of them and at exactly one of the two in the other four (environments 2, 42, 63, and 95 in the committed CSV). In 14 the check fails and never recovers. The remaining 56 fail at $H{=}1$ yet are near-optimal at some deeper horizon (the table's myopic underclaims), a missed opportunity rather than a risk. No environment in this sample is a myopic overclaim, where $H{=}1$ predicts near-optimality and no deeper horizon delivers it. This is an empirical boundary map over one random family of two-state environments. It is not an adaptive-submodularity result, and it does not show that the $H{=}1$ check is monotone or that such overclaiming is impossible in general (per-environment data in \\texttt{results/\\allowbreak results\\_\\allowbreak nearopt\\_\\allowbreak horizon.csv}, aggregated by \\texttt{experiments/\\allowbreak build\\_\\allowbreak horizon\\_\\allowbreak map.py} into \\texttt{results/\\allowbreak results\\_\\allowbreak horizon\\_\\allowbreak map\\_\\allowbreak agreement.csv}).",
+      "new": "\\paragraph{Agreement across planning horizons.} Table~\\ref{tab:horizon-map} stratifies the same $100$ environments by asymmetry, accuracy, and cost. Eight of nine strata have higher pass rates at $H{=}3$ than at $H{=}1$, most sharply at $p\\ge0.85$ ($17\\%\\to90\\%$). Low accuracy ($p<0.65$, $25$ environments) is the exception ($80\\%\\to84\\%\\to80\\%$). Low asymmetry ($\\alpha<3$, $7$ environments) gives $71\\%\\to86\\%\\to86\\%$.\n\nAgreement means passing at $H{=}1$ and at least one deeper horizon, or failing at all three. There are $44$ agreements: $30$ passes recurring deeper ($26$ at both deeper horizons, four at just one, environment IDs $2,42,63,95$) and $14$ persistent failures. The other $56$ fail at $H{=}1$ but pass deeper. No sampled environment passes only at $H{=}1$. This boundary map neither proves monotonicity nor excludes such overclaims generally, and is not an adaptive-submodularity result. Per-environment records are in \\texttt{results/\\allowbreak results\\_\\allowbreak nearopt\\_\\allowbreak horizon.csv}, aggregated by \\texttt{experiments/\\allowbreak build\\_\\allowbreak horizon\\_\\allowbreak map.py} into \\texttt{results/\\allowbreak results\\_\\allowbreak horizon\\_\\allowbreak map\\_\\allowbreak agreement.csv}.",
+      "source_line": 1326,
+      "rationale": "Reduce verbal enumeration while preserving counts, agreement rule, exceptional stratum, and limitations.",
+      "evidence": [
+        "results/results_nearopt_horizon.csv",
+        "results/results_horizon_map_agreement.csv",
+        "paper/tables/horizon_map.tex"
+      ],
+      "preserved": [
+        "Non-monotone low-informativeness stratum",
+        "Exact definition and all class counts",
+        "No general monotonicity/adaptive-submodularity inference"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 144
+    },
+    {
+      "id": "AC09",
+      "title": "Discount interpretation: refer to the adjacent numerical table",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "\\paragraph{Sensitivity to discounting.} On Tiger (single observation action), both agents achieve ${\\geq}96\\%$ success across all $\\gamma$ values, with a significant but small $+2.7$ pp EFE advantage at the heaviest discounting tested ($\\gamma{=}0.9$, seed-level Welch $p<10^{-3}$). At $\\gamma \\geq 0.95$ the two agents are numerically identical ($p{=}1.0$). On Diagnosis and Bandit, heavy discounting ($\\gamma{=}0.9$--$0.95$) renders both agents effectively myopic and erases EFE's advantage, because discounting truncates the effective horizon below the number of observations needed for disambiguation. Both agents observe the same number of times on Bandit (${\\sim}2$) and Diagnosis (${\\sim}6$) at these discount levels, and the residual success gaps are not statistically significant (Diagnosis diff $\\approx 0.04$pp, $p{=}0.96$, Bandit diff $\\approx -0.16$pp, $p{=}0.95$, Table~\\ref{tab:discount}). The transition between $\\gamma{=}0.95$ and $\\gamma{=}0.99$ is sharp, and the Diagnosis and Bandit gaps at $\\gamma \\geq 0.99$ are significant after Holm correction. At $\\gamma{=}0.99$, EFE's success gap over Planning jumps to $+7.9$ pp on Diagnosis and $+22.4$ pp on Bandit (both $p<10^{-4}$), matching the undiscounted pattern ($+8.6$ pp Diagnosis, $+17.0$ pp Bandit at $\\gamma{=}1.0$, both $p<10^{-4}$). On this grid, EFE's advantage therefore requires a discount that preserves a sufficient effective horizon for recursive epistemic evaluation.",
+      "new": "\\paragraph{Sensitivity to discounting.} Tiger retains at least $96\\%$ success throughout the sweep. EFE leads by $2.7$pp at $\\gamma{=}0.9$ ($p<10^{-3}$) and is numerically identical to Planning at $\\gamma\\ge0.95$. Diagnosis and Bandit have no significant gap at $\\gamma\\in\\{0.90,0.95\\}$ ($p{=}0.96$ and $0.95$), with similar observation counts for both agents. Their success gaps emerge sharply at $\\gamma\\ge0.99$ and survive Holm correction (Table~\\ref{tab:discount}). On this grid, EFE's advantage requires enough effective horizon to value the observations needed for disambiguation.",
+      "source_line": 1382,
+      "rationale": "The adjacent table already gives every success gap, observation count, and p-value. Preserve the null lower-discount results and bounded interpretation.",
+      "evidence": [
+        "results/results_discount.csv",
+        "paper/full_paper_jair.tex:1333-1383"
+      ],
+      "preserved": [
+        "Tiger identity and small positive exception",
+        "Diagnosis/Bandit nulls under heavy discounting",
+        "Holm and grid-scoped interpretation"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 116
+    },
+    {
+      "id": "AC10",
+      "title": "Misspecification: combine repeated threshold descriptions",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "\\paragraph{Asymmetric sensitivity to sensor error.} On Tiger, success falls at most $2.7$pp below the calibrated $99.6\\%$ across the tested range of $-0.15$ to $+0.10$, and the pattern is asymmetric. Underestimating accuracy or calibrating exactly leaves behavior unchanged (4.23 observations, 99.6\\% success at every level from $-0.15$ to $0.00$), whereas overestimating it cuts observations to 2.65 and success to 96.9\\%. EFE and Planning give bit-identical rows at every tested level (Table~\\ref{tab:misspec-tiger}), not merely statistically indistinguishable ones. With a single observation action, the believed accuracy alone determines when committing becomes attractive, and information gain has no separate observation action to redirect toward. The study therefore shows no EFE-specific buffering on Tiger, since reward-only Planning, with no information-gain term, degrades identically.\n\nOn Diagnosis, EFE's behavior steps between exactly two levels rather than degrading smoothly with mismatch magnitude (Table~\\ref{tab:misspec-diag}). The high-testing level (9.68 observations, 97.4\\% success) occurs at mismatch $\\in \\{-0.10,\\allowbreak  -0.05,\\allowbreak  0.00\\}$. The low-testing level (5.86 observations, 88.7\\% success) occurs at mismatch $\\in \\{-0.15,\\allowbreak  +0.05,\\allowbreak  +0.10\\}$. Calibration therefore ties with two levels of underestimation rather than uniquely maximizing testing. Overestimating accuracy makes each test look more decisive than it is, so the agent commits prematurely on insufficient evidence at every overestimate tested. Mild underestimation ($-0.05$, $-0.10$) leaves behavior unchanged, while the most severe underestimate tested ($-0.15$) triggers the same reduced-testing response as overestimation. Reward-only Planning shows a comparable but not identical step pattern (Table~\\ref{tab:misspec-diag}), so this threshold structure is not unique to EFE's epistemic term. We report the pattern without assigning a mechanism to the precise transition point.\n\n\\paragraph{Implications for learned models.} Observation models learned from data will carry estimation error. On these two environments, mismatches up to $0.15$ change behavior in discrete steps without catastrophic failure, overestimating sensor informativeness is the more harmful direction, and reward-only Planning shows comparable sensitivity.",
+      "new": "\\paragraph{Asymmetric sensitivity to sensor error.} Tiger is unchanged from mismatch $-0.15$ through $0$ ($4.23$ observations, $99.6\\%$ success), then drops to $2.65$ observations and $96.9\\%$ success at the tested overestimates. EFE and Planning are bit-identical throughout (Table~\\ref{tab:misspec-tiger}), so this study shows no EFE-specific buffering. With one sensor there is no alternative observation action toward which information gain can redirect the policy.\n\nDiagnosis also changes in steps (Table~\\ref{tab:misspec-diag}). EFE takes $9.68$ observations with $97.4\\%$ success at mismatches $-0.10,-0.05,0$, but $5.86$ with $88.7\\%$ success at $-0.15,+0.05,+0.10$. Calibration ties mild underestimation, while every tested overestimate and the strongest underestimate reduce testing. Planning has a comparable but non-identical pattern, so the thresholds are not unique to EFE's epistemic term. We do not assign a mechanism to their precise locations.\n\n\\paragraph{Implications for learned models.} On these two environments, sensor errors up to $0.15$ cause discrete behavioral changes without catastrophic failure. Overestimating informativeness is the more consistently harmful direction, and Planning has comparable sensitivity.",
+      "source_line": 1442,
+      "rationale": "Eliminate repeated explanations of the same table partitions, preserving the asymmetric failures and non-exclusive mechanism.",
+      "evidence": [
+        "results/results_model_misspec.csv",
+        "paper/full_paper_jair.tex:1385-1447"
+      ],
+      "preserved": [
+        "All distinct EFE levels and mismatch membership",
+        "Tiger no-buffering control and Diagnosis Planning qualification",
+        "No claimed mechanism for threshold locations or general learned-model guarantee"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 141
+    },
+    {
+      "id": "AC11",
+      "title": "Proper scoring: separate quality from calibration succinctly",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "The reward and success-rate metrics used throughout this paper score decisions, not beliefs. To check that the epistemic term is doing more than inflating a task-performance proxy, we separately score the terminal belief itself against the true hidden state using two proper scoring rules \\citep{gneiting2007}, the log score ($\\ln b(s^\\star)$, the same functional the epistemic value term is derived from) and the Brier score ($\\sum_s (b(s) - \\mathbf{1}[s=s^\\star])^2$), where $s^\\star$ is the true state. For Structural Inspection, each rule is applied to each component's binary belief and true fault status, then averaged over components. Its reported score is not a joint-state score. The implementation floors the probability used in the log score at $10^{-12}$ to keep numerical output finite. These scores assess overall terminal-belief quality, which depends on both calibration and how informative the belief is. A uniform posterior before any observation and an exact point-mass posterior after a perfect observation can both be calibrated, although the latter has better expected scores. Table~\\ref{tab:calibration} reports mean $\\pm$ SE over 5 seeds for Planning (reward-only), EFE ($w{=}1$), and a reference near-optimal or IG-heavy policy on the three core OTC environments plus both Structural Inspection instances (500 episodes per seed for Tiger, Diagnosis, Bandit, and Inspection-N8, 200 per seed for Inspection-N16). The reference is the point-based near-optimal solver SARSOP \\citep{kurniawati2008}, run as a self-built alpha-vector policy evaluated in-simulator, for the three OTC environments whose small state spaces allow near-optimal convergence in reasonable time. For Structural Inspection, whose state space exceeds what our SARSOP build solves in reasonable time, the reference is Planning+IG at the atlas's higher canonical budget (Appendix~\\ref{app:w_atlas}).",
+      "new": "To assess terminal beliefs separately from decisions, we use the proper log score $\\ln b(s^\\star)$ and Brier score $\\sum_s(b(s)-\\mathbf{1}[s=s^\\star])^2$, where $s^\\star$ is the true state \\citep{gneiting2007}. Log-score probabilities are floored at $10^{-12}$. Inspection scores average over binary component beliefs, not the joint state. These rules measure overall belief quality, combining calibration and informativeness: a uniform prior and a posterior after perfect observation can both be calibrated, despite different expected scores.\n\nTable~\\ref{tab:calibration} compares Planning, EFE, and a reference over five seeds, with $500$ episodes per seed except $200$ for Inspection-N16. The reference on Tiger, Diagnosis, and Bandit is SARSOP's in-simulator alpha-vector policy \\citep{kurniawati2008}. Our SARSOP build does not scale practically to Inspection, whose reference is Planning+IG at the atlas's higher canonical budget (Appendix~\\ref{app:w_atlas}).",
+      "source_line": 1519,
+      "rationale": "Retain scoring formulae, proper-score interpretation, sample sizes, and reference provenance without repeating the method motivation.",
+      "evidence": [
+        "paper/tables/calibration_table.tex",
+        "results/results_calibration_table.csv",
+        "experiments/run_calibration_table.py"
+      ],
+      "preserved": [
+        "Gneiting and SARSOP citations",
+        "Log floor and component rather than joint score",
+        "Calibration versus informativeness distinction",
+        "N16 episode exception and approximate/IG-heavy references"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 144
+    },
+    {
+      "id": "AC12",
+      "title": "Audit trail: compact the implementation and case-study explanation",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "At the root of each decision, the Planning+IG score of an observation action is its weighted immediate information gain plus an expected task value. That task value carries the sensing cost and the value of continuing, including any information bonuses deeper in the tree. An optional audit record at the shared Planning+IG evaluation boundary, used by \\texttt{PlanningInfoGainAgent}, \\texttt{EFEAgent} (at $w{=}1$), and \\texttt{Inspection\\allowbreak Tree\\allowbreak Search\\allowbreak Agent}, exposes this decomposition. For every candidate action considered at the root of the decision, the record stores the sensing cost, the expected information gain in bits, the weighted information gain $w \\cdot \\mathrm{IG}$, the expected task value, and the resulting total score, plus which action was selected. Enabling this record does not change any action selection. It is a read-only projection of quantities the agent already computes, and unit tests confirm that the recorded total score always ranks the chosen action first and that its components sum correctly.\n\nTable~\\ref{tab:audit-case-study} shows one representative decision point from a Structural Inspection-N8 episode ($w{=}5$) where the ranking by total score disagrees with the ranking by raw information gain. \\texttt{test1} carries about 5$\\times$ the information gain of \\texttt{test0}, yet the agent selects \\texttt{test0} because \\texttt{test1}'s higher sensing cost is not offset by a compensating gain in expected task value. The audit trail lets a practitioner check, for any single decision, whether an unexpected action was chosen for an information-theoretic reason or a task-value reason. It is an interpretability artifact and changes no reported result.",
+      "new": "The optional audit record exposes each root action's sensing cost, expected information gain in bits, weighted gain $w\\,\\mathrm{IG}$, expected task value, total score, and selection status. Task value includes sensing cost and continuation value, including deeper information bonuses. The record is shared by \\texttt{PlanningInfoGainAgent}, \\texttt{EFEAgent} ($w{=}1$), and \\texttt{Inspection\\allowbreak Tree\\allowbreak Search\\allowbreak Agent}. It reads already-computed quantities without changing action selection. Unit tests check that components sum to the total and that the chosen action ranks first.\n\nAt the Inspection-N8 decision in Table~\\ref{tab:audit-case-study} ($w{=}5$), \\texttt{test1} has about five times \\texttt{test0}'s information gain, but its higher cost is not offset by task value, so the agent chooses \\texttt{test0}. The record makes this distinction inspectable without changing the reported results.",
+      "source_line": 1529,
+      "rationale": "Preserve the inspectable fields and the cost-versus-information example, dropping repeated statements of read-only status.",
+      "evidence": [
+        "paper/tables/audit_case_study.tex",
+        "results/results_audit_case_study.csv"
+      ],
+      "preserved": [
+        "Cost already included in task value",
+        "Deeper bonuses included in continuation",
+        "Exact shared agents and no policy mutation",
+        "Case-study ranking differs from raw IG"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 128
+    },
+    {
+      "id": "AC13",
+      "title": "Agent details: preserve distinctions and tuning provenance once",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "Planning+IG is the critical baseline. It uses the same tree search as the EFE agent with an additive information-gain (IG) bonus at the same horizon, meaning that at every node of the tree the value of an observation action is its reward-only value plus $w$ times the expected information gain $I_a(b)$ of that observation. Planning+IG represents the explicit-information-reward approach associated with POMDPs with information rewards (POMDP-IR) and $\\rho$-POMDPs \\citep{spaan2015,araya2010}. \\citet{satsangi2018} establish equivalence between the two formulations for piecewise-linear convex belief rewards. We do not invoke that equivalence for Planning+IG's concave expected-IG reward. By Proposition~\\ref{prop:equivalence}, the EFE agent is exactly Planning+IG with $w{=}1$, so any difference between EFE and Planning+IG at a tuned weight, in either direction, is attributable to the weight choice rather than a different mechanism. That weight-only reading presumes the EFE implementation computes the epistemic term it claims to, so the EFE computation itself is checked for consistency against \\texttt{pymdp} \\citep{heins2022}, a reference Python library for active inference (Appendix~\\ref{app:pymdp}). This is a qualitative agreement check on the epistemic term, not a certified numerical equivalence.\n\nThe Epistemic-only agent is the ablation that removes the pragmatic term. It sets $\\mathcal{G}(\\text{commit}) = 0$, removing reward awareness from the decision of when to commit, so that the comparison between observing and committing sees only observation costs and information gain. Once that comparison favors committing, the agent takes the commit action for the state its belief rates most probable, the belief-argmax commit, which is how it can still succeed once its belief is sharp. Success, for an observe-then-commit environment, is the fraction of episodes in which the agent's commit is correct. On Tiger, Diagnosis, Bandit, and Tileworld no observation's information gain alone clears its cost, so the agent commits immediately from its prior and succeeds at the chance rate, the accuracy the prior alone affords (Section~\\ref{sec:results}, per-agent numbers in Appendix~\\ref{app:full_tables}). Testbed is the exception, since its observation is cheap enough that information gain alone clears the cost, and there the ablation matches reward-only Planning exactly (Appendix~\\ref{app:testbed}). The pragmatic term is what makes commit timing reward-aware, and the four chance-level environments show what its removal costs.\n\nFour of the remaining baselines need a brief description here. Myopic ($\\rho{=}0$, $H{=}1$) has no epistemic term at all, yet it observes on many environments. It does so because its one-step lookahead compares committing now against observing once and then committing, so it can see when a commit made after an observation is worth more than one made now. That difference is the instrumental value of information (VoI) of the observation, and Myopic observes for that reason rather than because of an epistemic bonus. The Greedy baseline provides a no-information lower bound in RockSample and Structural Inspection, both specified in Section~\\ref{sec:experiments}. In RockSample it moves to rocks and samples them without first checking whether they are good. In Structural Inspection it declares a diagnosis for each component without running any test, so its declarations rest on the prior alone. We also include an observe-then-commit baseline built on information-directed sampling (IDS) \\citep{russo2014}, which picks the observation action that minimizes its information ratio, the squared expected regret of taking that action divided by the information the action yields about the optimal commit (results in Appendix~\\ref{app:ids}). The fourth baseline warrants a naming note. The posterior-vote baseline draws $100$ states from the belief, finds for each sampled state the action that would be optimal if that state were the true state, and takes the majority vote over those actions. As the sample count grows, this vote approaches the most-likely-state rule, which acts as if the belief's most probable state were the true state. It is not Thompson sampling, and we do not claim it as such. Thompson sampling draws a single state and acts optimally for that one draw, so the frequency with which it takes each action matches the belief's probability that the action is optimal, whereas the hundred-sample majority vote collapses toward a single action. The committed CSVs record it under the label \\texttt{ThompsonSamplingAgent}.\n\nTwo of the six core agents carry a weight $w$ that must be set. They are Info Gain and Planning+IG (Table~\\ref{tab:agents}). We report two tuning criteria for that weight, a success-maximizing criterion used in the main tables and a reward-maximizing criterion used in the Pareto analysis. In the main tables, the tuned weight for Info Gain and Planning+IG is the success-maximizing weight chosen by grid search over $\\{0.1, 0.5, 1, 2, 5, 10, 20, 50, 100\\}$. It is written $w^*_{\\mathrm{succ}}$ in the results tables and $w^*$ where the criterion is clear from context. Each grid point is evaluated on 200 episodes, except on Tileworld, where 100 episodes are used because its computational cost per episode is an order of magnitude higher than that of the other observe-then-commit environments. Every grid point is evaluated on one common tuning stream, seed $7$, disjoint from the five evaluation seeds and reset for each candidate so that candidates face the same episodes, and ties go to the smallest weight reaching the maximum (\\texttt{tune\\_\\allowbreak info\\_\\allowbreak gain\\_\\allowbreak weight} in \\texttt{experiments/\\allowbreak run\\_\\allowbreak experiment.py}). Each tuned weight is therefore a selection on one stream of $200$ or $100$ episodes and carries that stream's sampling noise. Seed $7$ is also the first held-out seed of Section~\\ref{sec:budget_frontier}, which evaluates only the calibrated family and never a tuned baseline. This tuned baseline weight is a different quantity from the shadow price $w^*(B)$ of Section~\\ref{sec:budget} and from the thresholds of Proposition~\\ref{prop:nearopt}, which share the star notation. The Pareto analysis (Section~\\ref{sec:pareto}), which traces mean reward against success as $w$ varies, sweeps a wider eleven-weight grid, listed in that section, and reports the reward-maximizing weight $w^*_{\\mathrm{ret}}$. The two criteria can select different weights, and both are reported so that a reader can see which one a comparison uses. Section~\\ref{sec:budget} then offers a third way to fix the weight, reading it off a sensing budget as the crossing threshold $w^*(B)$, estimated by the bracket of adjacent grid weights between which the agent's induced sensing usage crosses that budget.",
+      "new": "Planning+IG uses EFE's tree search at the same horizon, adding $wI_a(b)$ to observation values. It represents explicit information rewards in POMDP-IR and $\\rho$-POMDPs \\citep{spaan2015,araya2010}. \\citet{satsangi2018} prove equivalence of those formulations for piecewise-linear convex belief rewards, a result we do not invoke for the concave expected-IG reward here. Proposition~\\ref{prop:equivalence} identifies EFE with Planning+IG at $w{=}1$, so within this shared implementation tuned-weight comparisons isolate the weight. The \\texttt{pymdp} check \\citep{heins2022} is qualitative consistency evidence, not certified numerical equivalence (Appendix~\\ref{app:pymdp}).\n\nEpistemic-only sets $\\mathcal{G}(\\text{commit})=0$, comparing information gain with sensing cost without reward-aware stopping. When it commits, it chooses the belief-argmax state. No observation's information gain clears its cost on Tiger, Diagnosis, Bandit, or Tileworld, so it commits from the prior at chance accuracy. Testbed's cheaper observation is the exception, where the ablation matches Planning on observations and success (Appendices~\\ref{app:full_tables} and~\\ref{app:testbed}).\n\nMyopic ($\\rho{=}0,H{=}1$) can observe because its lookahead includes one observation followed by a commit, capturing instrumental value of information without an epistemic bonus. Greedy samples unchecked rocks in RockSample and diagnoses from the prior without tests in Inspection. The IDS adaptation minimizes squared expected regret divided by information about the optimal commit \\citep{russo2014}, with its fidelity limits and results in Appendix~\\ref{app:ids}. Posterior-vote draws $100$ states from the belief and votes over their optimal actions. It approaches a deterministic most-likely-state rule, unlike Thompson sampling, which acts optimally for one posterior draw and retains probability matching. The CSV label \\texttt{ThompsonSamplingAgent} denotes posterior-vote.\n\nInfo Gain and Planning+IG are success-tuned within their own classes over $\\{0.1,0.5,1,2,5,10,20,50,100\\}$. Each candidate uses $200$ episodes, or $100$ on the more expensive Tileworld, on the common tuning stream $7$, reset for every candidate. Ties select the smallest weight (\\texttt{tune\\_\\allowbreak info\\_\\allowbreak gain\\_\\allowbreak weight}, \\texttt{experiments/\\allowbreak run\\_\\allowbreak experiment.py}). The selected $w^*_{\\mathrm{succ}}$ therefore carries single-stream sampling noise. This stream is disjoint from the five evaluation seeds. Although seed $7$ also appears in Section~\\ref{sec:budget_frontier}'s held-out set, that study evaluates only the calibrated family, never a tuned baseline. Section~\\ref{sec:pareto}'s separate eleven-weight sweep selects reward-maximizing $w^*_{\\mathrm{ret}}$. Neither tuning quantity is the budget crossing $w^*(B)$ or Proposition~\\ref{prop:nearopt}'s thresholds, despite the shared star notation. Section~\\ref{sec:budget} instead estimates $w^*(B)$ by adjacent grid weights whose usage crosses the target.",
+      "source_line": 1760,
+      "rationale": "Four paragraphs currently reteach agent mechanics and all three meanings of the weight. Preserve every meaningful distinction and selection detail in half the space.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1757-1766",
+        "paper/full_paper_jair.tex:314-342",
+        "reviews/polish_2026-10-01/independent_acceptance.md"
+      ],
+      "preserved": [
+        "PWLC citation boundary",
+        "Epistemic-only Testbed exception",
+        "Posterior-vote is not Thompson sampling and legacy CSV identity",
+        "Own-class tuning, exact grid, sample sizes, seed reset, tie rule, noise, and seed-7 overlap disclosure"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 642
+    },
+    {
+      "id": "AC14",
+      "title": "Controller implementations: distinguish the three versions compactly",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "Three versions of this controller appear in the article, and it matters which one each statement is about. The first is the projected decaying-step controller, the recursion~\\eqref{eq:dual_update} with a finite $w_{\\max}$ and $\\delta > 0$. It is the algorithm Proposition~\\ref{prop:pi5} covers, and it is the algorithm every reported run executes, with $w_{\\max}{=}100$, the top of the swept weight grid, and $\\delta{=}0.02$ (\\texttt{DualWeightAgent} in \\texttt{rho\\_\\allowbreak aif/\\allowbreak agents/\\allowbreak dual\\_\\allowbreak descent.py} with \\texttt{max\\_\\allowbreak weight} set, wrapping \\texttt{dual\\_\\allowbreak update} in \\texttt{rho\\_\\allowbreak aif/\\allowbreak budget.py}). No reported iterate exceeded $3.1$, more than an order of magnitude below $w_{\\max}$, so the upper bound was never reached, although the projection remained in force. The second is the released library default, which sets no upper projection and uses a constant step ($\\delta{=}0$). The proposition covers neither of those two departures, and no result in this article is reported for that default. The third is the reset-on-shift heuristic described below, which the proposition also does not cover.",
+      "new": "Proposition~\\ref{prop:pi5} covers the projected decaying-step update~\\eqref{eq:dual_update}, with finite $w_{\\max}$ and $\\delta>0$. Every reported run uses $w_{\\max}{=}100$ and $\\delta{=}0.02$ (\\texttt{DualWeightAgent} in \\texttt{rho\\_\\allowbreak aif/\\allowbreak agents/\\allowbreak dual\\_\\allowbreak descent.py}, wrapping \\texttt{dual\\_\\allowbreak update} in \\texttt{rho\\_\\allowbreak aif/\\allowbreak budget.py}). No reported iterate exceeds $3.1$, so the upper projection never activates. The released default instead has no upper projection and a constant step ($\\delta{=}0$). No reported result uses that default, and the proposition covers neither departure. The reset-on-shift heuristic below is also outside its scope.",
+      "source_line": 1790,
+      "rationale": "Keep all operational/theorem distinctions, omitting a long three-part introduction.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1779-1803",
+        "rho_aif/agents/dual_descent.py",
+        "rho_aif/budget.py"
+      ],
+      "preserved": [
+        "Reported projection and decay parameters",
+        "Library-default differences",
+        "No theorem claim for reset or default",
+        "The direct proof following this paragraph is untouched"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 80
+    },
+    {
+      "id": "AC15",
+      "title": "Reset scope: remove repeated stochastic-approximation narration",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "The \\emph{reset-on-shift} variant of the controller watches the usage of the most recent episodes. When that usage persistently misses the budget after the step size has already decayed below half its initial value, it restarts the episode counter $t$ in the step schedule of~\\eqref{eq:dual_update} at zero, so that the step size jumps back to $\\eta_0$ and the controller can move quickly again. Resetting the decay clock mid-run in this way breaks the trajectory into a sequence of Robbins--Monro-style segments stitched together by a change-detection heuristic, rather than a single non-increasing step schedule. The proposition therefore does not cover the reset-on-shift variant when that variant is treated as a single run.\n\nThe proposition's scope has one further limit. It is conditional on a single, sign-consistent crossing of $B$. It is silent when $U$ crosses $B$ more than once, which the discussion after Proposition~\\ref{prop:pi2} shows to be a real possibility, since the usage staircase need not be monotone.",
+      "new": "The \\emph{reset-on-shift} heuristic monitors recent usage. If it persistently misses the budget after the step has decayed below half its initial value, the heuristic resets the schedule's episode counter to zero, restoring step $\\eta_0$. This interrupts the single decaying schedule, so Proposition~\\ref{prop:pi5} does not cover the complete reset run. It also requires one sign-consistent budget crossing and is silent on curves with multiple crossings, which Proposition~\\ref{prop:pi2}'s discussion shows can occur.",
+      "source_line": 1801,
+      "rationale": "Preserve why the guarantee does not apply while eliminating the analogy to stitched Robbins-Monro segments.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1801-1803",
+        "paper/full_paper_jair.tex:1898-1907"
+      ],
+      "preserved": [
+        "Reset trigger, restored step",
+        "Whole-run theorem exclusion",
+        "Multiple-crossing limitation"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 86
+    },
+    {
+      "id": "AC16",
+      "title": "Prior-art positioning: preserve all attribution and the primitive",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "Our weight $w$ is calibrated within the Planning+IG family so that expected sensing usage meets a stated target, and it is not the Lagrange multiplier of the usage cap in problem~\\eqref{eq:budgeted} (Section~\\ref{sec:budget_theory}). We do not claim novelty for the underlying idea of adjusting a scalar price until a resource quantity meets a target. That idea is classical in constrained MDPs \\citep{altman1999}, rational inattention \\citep{sims2003,matejka2015}, and SAC temperature auto-tuning \\citep{haarnoja2018sac}. Sims \\citep{sims2003} models agents with finite Shannon capacity, and Mat\\v{e}jka and McKay \\citep{matejka2015} derive discrete-choice logits from costly information acquisition. Both take an information-processing constraint as the primitive. We take an operational sensing budget as the primitive and recover the Planning+IG weight that implements it. \\citet{kim2011cpomdp} extend constrained dynamic programming to partial observability directly, showing that optimal constrained POMDP policies can require randomization and giving point-based dynamic programming over belief and admissible-cost pairs. Their method is not a Lagrangian one. It enforces the cost bound inside the point-based pruning of dominated value vectors at each collected belief point, exactly with a minimax quadratically constrained program or approximately with a linear program, rather than pricing it. Their constraints are exogenous costs enforced offline. The usage target here is also stated on a non-epistemic quantity, the count of sensing actions or their cumulative cost, rather than on information gained. What differs is that the price $w$ on belief-computed information gain is set offline by the grid solve of Section~\\ref{sec:budget_solve} or adjusted online by the controller of Section~\\ref{sec:pi5} until expected sensing usage meets the target.",
+      "new": "The calibrated $w$ meets a sensing target within Planning+IG and is not the multiplier of the usage cap in~\\eqref{eq:budgeted}. Adjusting a scalar price to meet a resource target is classical in constrained MDPs \\citep{altman1999}, rational inattention \\citep{sims2003,matejka2015}, and SAC temperature tuning \\citep{haarnoja2018sac}. Sims models finite Shannon capacity, and Mat\\v{e}jka and McKay derive discrete-choice logits from costly information acquisition. Their primitive is information processing, whereas ours is observation count or cumulative sensing cost.\n\n\\citet{kim2011cpomdp} handle partial observability through point-based dynamic programming over belief and admissible-cost pairs, allowing randomized policies. Their method enforces exogenous costs during pruning, exactly with a minimax quadratically constrained program or approximately with a linear program. It does not use a Lagrangian price. Here a weight on belief-computed information gain is instead selected offline (Section~\\ref{sec:budget_solve}) or adjusted online (Section~\\ref{sec:pi5}) to meet expected sensing usage.",
+      "source_line": 1808,
+      "rationale": "Remove repeated explanations of the operational target while preserving what each cited line of work contributes.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1805-1820",
+        "paper/full_paper_jair.tex:464-473",
+        "reviews/polish_2026-10-01/independent_acceptance.md"
+      ],
+      "preserved": [
+        "Every citation and source-specific distinction",
+        "Kim method is not Lagrangian",
+        "w is not usage-cap multiplier",
+        "Offline and online routes"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 115
+    },
+    {
+      "id": "AC17",
+      "title": "Experimental design positioning: keep the distinct objectives",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "Adaptive test selection is also the subject of sequential Bayesian experimental design (SBED), which chooses the next experiment to maximize expected information gain about a latent parameter, then updates and repeats \\citep{lindley1956}. Recent work amortizes this loop with a learned design policy so that near-optimal adaptive experiments run in real time \\citep{foster2021dad}. SBED's design objective is expected information gain about the latent alone. Ours is the scalarized $R + wI$ objective, task reward plus information gain at weight $w$, with $w$ chosen inside the single-price receding-horizon family so that expected sensing usage equals a stated budget. Information gain is the quantity the weight prices, and sensing usage, in observation count or cumulative cost, is the quantity the budget controls. Reward at the calibrated weight is then a measured outcome, not a design target. The two objectives coincide only in the limit of a weight large enough that information gain dominates both sensing cost and task reward in the scalarized objective. In that limit the test chosen is the one expected information gain alone would select. Otherwise the budgeted objective declines an informative test that an SBED policy would take, because the decision variable here is how much to test, not only which test to run next.",
+      "new": "Sequential Bayesian experimental design (SBED) repeatedly selects an experiment for expected information gain and updates the latent-parameter belief \\citep{lindley1956}. Learned design policies can amortize this loop for real-time use \\citep{foster2021dad}. Our objective is $R+wI$, with $w$ calibrated within the single-price receding-horizon family to an expected sensing target. Information gain is priced, sensing count or cost is controlled, and reward is measured rather than targeted. The objectives coincide only when information gain dominates both task reward and sensing cost. Otherwise our policy may decline an informative test SBED would choose: the budget controls how much to test as well as which test to take.",
+      "source_line": 1816,
+      "rationale": "Retain source-specific comparison and limiting condition, omitting repeated definitions of the same scalarization.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1816"
+      ],
+      "preserved": [
+        "Lindley and Foster attribution",
+        "Information versus sensing versus reward roles",
+        "Large-weight limiting comparison"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 103
+    },
+    {
+      "id": "AC18",
+      "title": "Budget calibration cost: retain the inconvenient comparison with tuning",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "The budgeted formulation carries one cost. Estimating the usage curve $U(w)$ well enough to solve $U(w){=}B$ offline requires sweeping $w$ over a grid and running episodes at each point, which is at least as much sampling as the direct per-task weight tuning this paper criticizes. The budgeted formulation does not save that sampling. What it buys instead is a design primitive a practitioner can state (a sensing budget in observation count or cost) rather than a weight they must guess, and an online controller (Proposition~\\ref{prop:pi5}) that skips the offline curve and, under that proposition's conditions, converges from interaction alone to the budget crossing point. Scale equivariance (Proposition~\\ref{prop:pi1}) lets a count-usage curve computed at one reward scale transfer across pure reward-and-cost rescalings without recomputation, and a cost-usage curve transfer after rescaling by the same factor. That is a property of the planner and its weight, not of how the weight was chosen, and it carries a directly tuned weight $w$ to $\\alpha w$ under the same rescaling and tie-break assumptions, on a weight grid rescaled with the rewards (Section~\\ref{subsec:formal_rho_equiv}). The contribution is thus not generic Lagrangian duality, which is prior art in all of these literatures, but its concrete operationalization for budgeted $\\rho$-POMDP sensing.",
+      "new": "Offline calibration still requires a weight sweep and at least as much sampling as direct per-task tuning. Its benefit is an interpretable input, expected observation count or cost, rather than saved computation. The online controller avoids the offline curve under Proposition~\\ref{prop:pi5}'s convergence conditions. Scale equivariance transfers count-usage curves across pure reward-and-cost rescaling and cost-usage curves after the same rescaling. This property also transfers a directly tuned $w$ to $\\alpha w$, provided the tie-break assumptions and rescaled grid hold (Proposition~\\ref{prop:pi1}). The contribution is this operational calibration for budgeted $\\rho$-POMDP sensing, not generic Lagrangian duality.",
+      "source_line": 1820,
+      "rationale": "Keep the sampling-cost disadvantage and symmetry with direct tuning, reducing repeated restatements of the contribution.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1820",
+        "paper/full_paper_jair.tex:384-409"
+      ],
+      "preserved": [
+        "No offline sampling advantage",
+        "Conditional online alternative",
+        "Count/cost distinction",
+        "Equivariance applies equally to direct tuning"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 110
+    },
+    {
+      "id": "AC19",
+      "title": "Protocol appendix opening: avoid repeating the main experiment section",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "This appendix gives the full environment definitions and evaluation protocols summarized in Section~\\ref{sec:experiments}. Tiger, Diagnosis, Bandit, and Tileworld follow the observe-then-commit structure of Section~\\ref{sec:methodology}, in which a variable-length run of observation actions ends in a single terminal commit action and the hidden state never changes. RockSample and Structural Inspection are factored observation POMDPs in the sense of Proposition~\\ref{prop:factored}, whose observation, navigation, and exploitation actions interleave within an episode, which is why the paper also calls them interleaved observe-act settings.\n\nWe call Tiger, Diagnosis, and Bandit the core environments. They run at the full protocol of 1{,}000 episodes per seed across 5 random seeds ($\\{42,\\allowbreak  123,\\allowbreak  456,\\allowbreak  789,\\allowbreak  1024\\}$) for a total of 5{,}000 episodes. They anchor the main results table, and they are the three environments on which the near-optimal SARSOP reference of Section~\\ref{sec:sarsop} is computed. Tileworld and Structural Inspection use 500 episodes per seed, and each RockSample instance uses the protocol stated in its table caption. The same agent on the same environment is also evaluated in other batteries, among them the Pareto sweep, the SARSOP and CPOMDP studies, and the shadow-price atlas, each under the episode count and seeding rule its own section states, so its usage and reward differ slightly from one battery to the next. Tiger EFE, for example, averages $4.20$ observations in Table~\\ref{tab:main} and $4.32$ in Table~\\ref{tab:sarsop}. Where a comparison does cross batteries, as the committed-reference column of Table~\\ref{tab:budget_frontier} does, the text says so.\n\nThe rest of the protocol concerns how results are aggregated and tested. Each reported reward, success rate, and observation count is the mean over all episodes of all seeds. Pairwise statistical comparisons are seed-level Welch $t$-tests, which aggregate each seed's episodes to one mean and then test across the 5 seeds, with Holm--Bonferroni correction for multiple comparisons (Appendix~\\ref{app:stats}). Bootstrap confidence intervals for the core-environment means, computed under the protocol given in the same appendix, are in the file \\texttt{results\\_\\allowbreak bootstrap\\_\\allowbreak ci.csv} of the code repository. Comparison against POMCP is in Appendix~\\ref{app:pomcp}. That appendix includes a scaling analysis over POMCP's simulation budget, meaning the number of simulated rollouts it runs per decision, a quantity distinct from the sensing budget $B$ of Section~\\ref{sec:budget}, with wall-clock timing at 500--5{,}000 simulations per decision. Full specifications are in Appendix~\\ref{app:envs}, and all environments are implemented as Gymnasium \\citep{towers2024} environments, Gymnasium being a widely used Python interface for reinforcement-learning environments.",
+      "new": "Section~\\ref{sec:experiments} gives the environment progression and main protocol. Tiger, Diagnosis, Bandit, and Tileworld have a fixed hidden state and a terminal commit. RockSample and Inspection interleave observation, navigation, and exploitation under Proposition~\\ref{prop:factored}.\n\nThe core environments, Tiger, Diagnosis, and Bandit, use $1{,}000$ episodes per seed over $\\{42,123,456,789,1024\\}$ and support the SARSOP comparison. Tileworld and Inspection use $500$ per seed, with RockSample counts in its captions. Other batteries state their own episode counts and seeding rules, so estimates are not interchangeable: Tiger EFE uses $4.20$ observations in Table~\\ref{tab:main} and $4.32$ in Table~\\ref{tab:sarsop}. Cross-battery comparisons are identified explicitly, including Table~\\ref{tab:budget_frontier}'s committed-reference column.\n\nMeans aggregate episodes across seeds. Primary tests use per-seed Welch comparisons and Holm--Bonferroni correction (Appendix~\\ref{app:stats}), with core bootstrap intervals archived in \\texttt{results\\_\\allowbreak bootstrap\\_\\allowbreak ci.csv}. Appendix~\\ref{app:pomcp} varies POMCP's computational budget from $500$ to $5{,}000$ simulations per decision, distinct from sensing budget $B$. Specifications are in Appendix~\\ref{app:envs}. All environments use the Gymnasium Python interface \\citep{towers2024}.",
+      "source_line": 1826,
+      "rationale": "Leave operational details while cutting introductory repetitions already adjacent in the main Experiments section.",
+      "evidence": [
+        "paper/full_paper_jair.tex:475-491",
+        "paper/full_paper_jair.tex:1823-1831"
+      ],
+      "preserved": [
+        "All main sample sizes/seeds",
+        "Cross-battery provenance warning and concrete example",
+        "Statistical unit and bootstrap archive",
+        "Computational versus sensing budget",
+        "Gymnasium attribution"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 240
+    },
+    {
+      "id": "AC20",
+      "title": "OTC environment descriptions: one concise definition each",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "\\paragraph{Tiger} \\citep{kaelbling1998}. A tiger waits behind one of two doors, so the hidden state takes two values. The single observation action, listen, reports the tiger's door correctly with probability 0.85. The two commit actions open one door or the other and end the episode. A correct commit pays $+10$, an incorrect one $-100$, and each listen costs $-1$. Because there is only one sensor, Tiger poses no choice of what to observe, only whether to observe again.\n\n\\paragraph{Sequential diagnosis} (Diagnosis in tables and figures). Exactly one of $N{=}4$ hidden conditions is present, and the agent's task is to name it. There are $K{=}2$ binary tests (accuracy 0.80). Each test splits the four conditions into two groups along its own partition and reports, with that accuracy, which group contains the true condition, so the two tests together can identify any condition. There are $N$ diagnose actions, one per condition, each of which commits and ends the episode. A correct diagnosis pays $+10$, an incorrect one $-50$, and each test costs $-1$. Unlike Tiger, the agent must choose which test to run.\n\n\\paragraph{Structured bandit} (Bandit in tables and figures). One of $K{=}4$ arms is the best, and which one it is forms the hidden state. The bandit is structured in the sense that this single hidden variable, rather than an independent unknown payoff per arm, ties the arms together, so evidence about one arm is evidence about the others. Each of the $K$ inspect actions (accuracy 0.80, cost $-0.5$) targets one arm and returns a noisy yes/no signal about whether that arm is the best. Each of the $K$ pull actions commits to an arm and ends the episode. Pulling the best arm pays $+10$, and pulling any other arm pays $+1$. As in Diagnosis, the agent must choose which arm to inspect.\n\n\\paragraph{Tileworld.} Tileworld is a spatial generalization of Diagnosis. An $N{\\times}N$ grid ($N{=}6$, $|S|{=}36$) hides a single target tile, and the hidden state is the cell that tile occupies. Each scan action asks a yes/no question about one binary digit of the target's row index or of its column index, and that question splits the grid in two, into the cells whose digit is 0 and the cells whose digit is 1. Three binary digits suffice to write any of the six row indices, and likewise for the six column indices. Three scans for the row digits and three for the column digits therefore give the $K{=}6$ scan actions, which together pin down the cell. Each scan alone tells the agent only which side of its own split the target lies on, and each returns its answer as a noisy binary signal (accuracy $0.80$, cost $-1$). Each of the $N^2$ commit actions declares one cell as the target's location and ends the episode (correct $+10$, incorrect $-50$). Appendix~\\ref{app:envs} and Figure~\\ref{fig:tw_belief} label this action collect, following the implementation. Because the belief lives on the grid itself, its evolution over an episode can be drawn directly, as shown later in Figure~\\ref{fig:tw_comparison}.",
+      "new": "\\paragraph{Tiger} \\citep{kaelbling1998}. A tiger is hidden behind one of two doors. Listening identifies its door with probability $0.85$ at cost $1$. Opening a door commits and ends the episode, paying $+10$ if correct and $-100$ otherwise. The only sensing choice is whether to listen again.\n\n\\paragraph{Sequential diagnosis.} Diagnosis has one of $N{=}4$ hidden conditions. Its $K{=}2$ binary tests, each with accuracy $0.80$ and cost $1$, query different partitions that together distinguish all conditions. Naming the condition ends the episode, paying $+10$ if correct and $-50$ otherwise.\n\n\\paragraph{Structured bandit.} Bandit has one hidden variable identifying the best of $K{=}4$ arms, so evidence about one arm also bears on the others. Inspecting an arm gives a noisy yes/no signal of whether it is best (accuracy $0.80$, cost $0.5$). A terminal pull pays $+10$ for the best arm and $+1$ otherwise.\n\n\\paragraph{Tileworld.} A single target occupies an $N{\\times}N$ grid ($N{=}6$, $|S|{=}36$). Each scan queries one binary digit of its row or column index (accuracy $0.80$, cost $1$). Three row bits and three column bits give six complementary partitions that jointly identify the cell. A terminal collect action declares a cell, paying $+10$ if correct and $-50$ otherwise. Figure~\\ref{fig:tw_comparison} shows belief evolution.",
+      "source_line": 1832,
+      "rationale": "Remove duplicated explanations of binary partitioning and terminal actions. The table and main section still give every parameter, and this paragraph keeps semantic structure.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1116-1180",
+        "paper/full_paper_jair.tex:1832-1838"
+      ],
+      "preserved": [
+        "Tiger citation and single sensor",
+        "Diagnosis complementary tests",
+        "Single hidden best-arm variable",
+        "Tileworld bit partitions and collect semantics",
+        "All rewards, costs and accuracies"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 301
+    },
+    {
+      "id": "AC21",
+      "title": "RockSample differences: retain six precise departures in less space",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "This is a cost-modified variant of \\citet{smith2004}'s benchmark, not the original, and it differs in six respects that a reader comparing against published RockSample numbers must know. First, every action including checks carries the $-0.5$ cost. The original charges for neither moves nor checks. It pays $+10$ for sampling a good rock, $-10$ for sampling a bad one, and $+10$ for reaching the exit, with all other moves free, so the only thing penalizing a long path there is the discount factor. Second, rock positions are fixed per instance, as in the original, but are our own choice rather than the specific maps used in the published instances. Third, returns are reported undiscounted, with episodes truncating at the $N^2{+}10K$ step cap stated in Appendix~\\ref{app:envs}, whereas the original relies on its discount factor instead.\n\nThe next two differences concern the dynamics. Fourth, the exit action grants its reward from any cell rather than only at the east edge. This makes exit an unconditional outside option, that is, a fallback of known value the agent can take at any moment from wherever it stands. The POMCP analysis in Appendix~\\ref{app:rocksample} turns on this fact. POMCP's search tree values each action by the mean of the returns of the simulations that pass through it (a mean backup). A guaranteed exit payoff available at every cell is the fixed alternative against which every one of those averaged estimates is measured. Fifth, the hidden rock-quality vector stays fixed when a rock is sampled. In the original, sampling a good rock turns it bad. Here, which rocks have already been sampled is tracked outside the hidden state, and the agent can recover that list from its own action history and its fully observable position. A re-sample is therefore recognized without any change to the hidden state. Re-sampling a collected rock therefore earns zero sampling reward rather than the bad-rock penalty, although the action still pays the $-0.5$ cost that every action pays. This fixity is what Proposition~\\ref{prop:factored}'s application to RockSample relies on.\n\nSixth, the check sensor differs in both its close-range accuracy and its tail. Efficiency is the original paper's name for the sensor's reliability as a function of range. The original sensor is exact at range zero, blends toward chance as its efficiency decays with Euclidean distance, and never reaches chance at any finite range. The accuracy of our check sensor starts at $0.95$, and it is the accuracy value itself that halves with every $4$ cells of distance and is then floored at $0.5$ (\\texttt{rho\\_\\allowbreak aif/\\allowbreak environments/\\allowbreak rocksample.py}). The decay meets that floor at a range of $3.7$ cells, a little short of one full halving distance because the accuracy starts at $0.95$ rather than at $1$. Since a binary observation with accuracy $0.5$ is a coin flip, our sensor is exactly uninformative beyond $3.7$ cells rather than asymptotically so.\n\nThe undiscounted, check-charging reward model is what makes sensing usage directly interpretable as a budget in Section~\\ref{sec:budget}, which is why we adopt it. But it means the absolute returns reported here are not comparable to RockSample values in the literature. We use $|S|$ throughout for the number of hidden-state configurations ($2^K$ rock-quality vectors), excluding the fully observable agent position, so our $|S|{=}2{,}048$ for RS[11,11] is not the convention under which the literature quotes larger state counts for the same instance.",
+      "new": "Our cost-modified RockSample differs from \\citet{smith2004} in six respects. Every action costs $0.5$, whereas the original charges neither moves nor checks. Rock positions are fixed but use our maps. Returns are undiscounted, with the $N^2+10K$ episode cap of Appendix~\\ref{app:envs}, rather than limited by discounting. Exit pays from any cell instead of only the east edge, providing the unconditional $+9.50$ outside option relevant to POMCP's mean-backup analysis (Appendix~\\ref{app:rocksample}).\n\nHidden rock qualities remain fixed after sampling, whereas the original turns a sampled good rock bad. Observable sample history identifies collected rocks, whose re-sampling gives zero sampling reward while still costing $0.5$. This preserves the hidden state required by Proposition~\\ref{prop:factored}.\n\nFinally, the sensor starts at accuracy $0.95$ and halves that accuracy every four cells of Euclidean distance, floored at $0.5$ (\\texttt{rho\\_\\allowbreak aif/\\allowbreak environments/\\allowbreak rocksample.py}). It becomes exactly uninformative beyond approximately $3.7$ cells. The original starts at perfect accuracy and approaches chance asymptotically as sensor efficiency decays, never reaching it at finite range.\n\nCharging checks under undiscounted returns makes sensing usage interpretable as a budget, but these modifications preclude comparison of absolute returns with published RockSample results. Our state counts include only the $2^K$ hidden quality vectors, excluding observable position, so RS[11,11]'s $|S|{=}2{,}048$ follows a different convention from larger literature counts.",
+      "source_line": 1842,
+      "rationale": "Compress the six-departure narrative without dropping any departure, payoff, support condition, or published-benchmark warning.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1842-1850",
+        "rho_aif/environments/rocksample.py",
+        "paper/full_paper_jair.tex:1457-1470"
+      ],
+      "preserved": [
+        "All six differences",
+        "Hidden-state and re-sample mechanics",
+        "Every-action cost, anytime exit and UCT relevance",
+        "Sensor finite-range floor versus original tail",
+        "Non-comparable return and state-count conventions"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 348
+    },
+    {
+      "id": "AC22",
+      "title": "SARSOP mechanics: avoid repeating the build appendix",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "This subsection gives the mechanics and archives behind Section~\\ref{sec:sarsop}, which compares the canonical $w{=}1$ agent's reward and sensing usage with SARSOP \\citep{kurniawati2008} on the three core observe-then-commit environments. The benchmarks are exported to the Cassandra \\texttt{.pomdp} format, the plain-text model file that offline POMDP solvers read, through one export path that reads the hidden-state, action-layout, and observation-model definitions the agents already use (Appendix~\\ref{app:sarsop_build}). The solver stops once the gap between its upper and lower bounds on the value of the initial belief falls below $10^{-3}$, in under one second per environment at $\\gamma{=}0.999$.\n\nWhat the solver returns is an alpha-vector policy, a finite set of vectors over states, each of which defines a linear function of the belief. The value of a belief is the largest of these linear functions evaluated at that belief, and the vector that attains the maximum names the action to take. We evaluate that policy in-simulator through the same episode runner used for the other observe-then-commit agents, so the agents compared in Table~\\ref{tab:sarsop} share mechanics and metrics exactly. Table~\\ref{tab:sarsop} reports the full protocol ($5$ seeds $\\times$ $500$ episodes).\n\nOn Tiger, SARSOP and EFE select identical actions on every episode. Tiger offers only one observation action, so both policies face the same listen-or-commit choice at every belief. On that choice the near-optimal policy and the EFE policy coincide exactly. On Diagnosis and Bandit the two show no statistically significant reward difference at our sample sizes, with the Diagnosis means differing by about $0.6$ SE, and their usage differs by less than $0.1$ observations (Table~\\ref{tab:sarsop}).",
+      "new": "Section~\\ref{sec:sarsop} compares EFE with SARSOP \\citep{kurniawati2008} on the three core environments ($5$ seeds $\\times$ $500$ episodes). The generic Cassandra \\texttt{.pomdp} export and shared in-simulator runner are described in Appendix~\\ref{app:sarsop_build}. At $\\gamma{=}0.999$, the solver closes the initial-belief upper/lower value-bound gap below $10^{-3}$ in under one second per environment. Its alpha-vector policy selects the action attached to the state-value vector with largest inner product with the belief.\n\nTiger's SARSOP and EFE actions coincide episode by episode. Diagnosis and Bandit show no significant reward difference at this sample size and differ by fewer than $0.1$ observations (Table~\\ref{tab:sarsop}). The equivalence tests below assess a stronger claim than non-rejection.",
+      "source_line": 1912,
+      "rationale": "The build/export appendix already gives the duplicated pipeline. Retain convergence tolerance, evaluation protocol, policy semantics and null-results interpretation.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1635-1638",
+        "paper/full_paper_jair.tex:1909-1928",
+        "reviews/polish_2026-10-01/evidence_acceptance.md"
+      ],
+      "preserved": [
+        "SARSOP citation and approximate solver setup",
+        "Initial-belief bound tolerance",
+        "Same simulator/evaluation protocol",
+        "Identity versus non-significance distinctions"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 154
+    },
+    {
+      "id": "AC23",
+      "title": "TOST design: concise margin provenance and pairing rationale",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "A non-significant difference is not evidence of equivalence, since a small sample can fail to reject any difference at all. We therefore formalize the comparison with a fixed-margin two one-sided tests (TOST) procedure \\citep{schuirmann1987}, which tests two null hypotheses, that the true reward difference is at least the margin in the positive direction and that it is at least the margin in the negative direction, so that rejecting both places the true difference inside the margin. The margin was set equal to the cost of one sensing action in each environment, which is $\\pm 1.0$ reward for Tiger and Diagnosis and $\\pm 0.5$ for Bandit, a value fixed by each environment's own cost parameter. The test itself was added after an earlier comparison of the same two policies on the same canonical seeds, one without any equivalence test, had been inspected, so the margin was chosen with that comparison known and the five-seed test is retrospective rather than prospectively predeclared. The fifteen seeds that the $n{=}20$ robustness study below adds to the canonical five were fixed before that study was run, after the margin, and are the prospective part of this evidence. It is an operational margin for this domain, not a universal equivalence standard.\n\nTwo choices in the test mechanics need stating, the unit of analysis and the decision not to pair. Each of the two one-sided tests is an unpaired Welch $t$-test on per-seed means ($n{=}5$ seeds, $500$ episodes per seed) rather than on pooled episode-level values, so degrees of freedom reflect independent seeds. We do not pair by seed index even though EFE and SARSOP share a nominal seed list. The reason is not that shared seeds leave the trajectories uncorrelated, which does not follow in general, since $\\mathrm{Var}(X - Y) = \\mathrm{Var}(X) + \\mathrm{Var}(Y) - 2\\,\\mathrm{Cov}(X, Y)$ and a shared seed can induce positive covariance. On Tiger the two policies take identical actions on every episode, so their trajectories are perfectly correlated and a paired test would report a zero difference with zero variance. On Diagnosis and Bandit the two policies diverge on many episodes and consume the environment's random draws in different orders, so the covariance is partial and unknown. Treating the two samples as independent is the conservative choice when the covariance is positive, since it can only overstate the variance of the difference and so make the equivalence test harder to pass, and it is what the reported $p$-values assume. Pairing would be the sharper design where the randomness is genuinely shared, and a paired analysis of the per-seed differences is reported below as a sensitivity check, next to the $n{=}20$ robustness study.",
+      "new": "Fixed-margin two one-sided tests (TOST) \\citep{schuirmann1987} assess whether the reward difference lies strictly inside $\\pm1.0$ on Tiger and Diagnosis or $\\pm0.5$ on Bandit, the cost of one sensing action. Rejecting both one-sided nulls supports equivalence within that operational margin. The five-seed margins were chosen after inspecting an earlier comparison on the same canonical seeds, so this test is retrospective. The fifteen additional seeds in the $n{=}20$ check below were fixed after the margin and before that study ran, providing the prospective part of the evidence. The margin is domain-specific, not a universal equivalence standard.\n\nEach one-sided test is an unpaired Welch test on per-seed means ($n{=}5$, $500$ episodes per seed). Sharing seed labels does not make trajectories independent: Tiger's are identical, whereas Diagnosis and Bandit consume random draws in different orders. The resulting covariance is not known from the design alone. Treating the samples as independent is conservative only when that covariance is positive, since $\\mathrm{Var}(X-Y)=\\mathrm{Var}(X)+\\mathrm{Var}(Y)-2\\mathrm{Cov}(X,Y)$. The paired sensitivity analysis below checks the effect on inference using per-seed differences. Episode matching is addressed separately.",
+      "source_line": 1918,
+      "rationale": "Retain retrospective/prospective provenance, units of analysis, and the conditional nature of conservativeness, without a repeated tutorial on nominal seeding.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1917-1927",
+        "reviews/polish_2026-10-01/evidence_audit.md",
+        "results/results_tost_sarsop.csv",
+        "results/results_tost_sarsop_per_seed.csv"
+      ],
+      "preserved": [
+        "Citation and exact three margins",
+        "Retrospective five seeds and prospective additional fifteen",
+        "Unpaired Welch per seed, not episode",
+        "Covariance identity and conditional conservativeness",
+        "Seed pairing is not episode matching"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 266
+    },
+    {
+      "id": "AC24",
+      "title": "Core appendix opening: preserve controls without reprinting main conclusions",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "Table~\\ref{tab:main} compares four of the six core agents of Table~\\ref{tab:agents} on Tiger, Diagnosis, and Bandit, the EFE agent at its derived weight $w{=}1$, the reward-only baselines Myopic ($H{=}1$) and same-horizon Planning, and Planning+IG at its success-tuned weight $w^*_{\\mathrm{succ}}$. Together they test whether EFE's untuned epistemic term buys anything over reward-only planning at the same depth, and whether it gives anything up against a tuned information bonus.\n\nTable~\\ref{tab:main} uses seed-level reward SE, whereas Appendix~\\ref{app:full_tables} reports pooled episode-level SE. The committed CSVs carry both. Pooled SE is smaller for some cells and larger for others, depending on within-seed and between-seed variation. The full tables omit untuned Info Gain rows that are bit-identical to Myopic and Tiger's pymdp-AIF row, which is bit-identical to Posterior-vote on all reported metrics (\\texttt{results\\_\\allowbreak tiger.csv}).\n\nOn Tiger (single observation action), EFE and same-horizon Planning coincide exactly, a measured fact rather than a structural necessity. At $w{=}1$ the epistemic term is in reward units, one reward unit per bit (Section~\\ref{subsec:formal_rho_equiv}), and because Tiger's hidden state takes only two values one listen gains at most one bit, so it moves an action's value by at most one reward unit. At Tiger's stakes ($+10$, $-100$) that margin never flips a decision that reward does not already dictate in these runs, and since both agents run the same finite-horizon recursion over the same belief with the same fixed tie-break rule, they select the same actions. The trajectories are bit-identical (Table~\\ref{tab:main}, confirmed by \\texttt{results\\_\\allowbreak tiger\\_\\allowbreak stats.csv}, where the difference is $0$ with $p{=}1$ and $d{=}0$ on every metric). With no weight selection at all, EFE reaches within a fraction of a percentage point of the success rate that Planning+IG attains only after a weight search.\n\nThe Epistemic-only ablation (Table~\\ref{tab:agents}) commits immediately rather than over-exploring. On Tiger, Diagnosis, and Bandit alike it takes zero observations and succeeds at each environment's chance level ($49.7\\%$, $24.7\\%$, and $24.7\\%$ respectively), and on Tileworld $6{\\times}6$ it likewise commits immediately and matches Myopic's chance-level performance exactly ($2.9\\%$, Appendix~\\ref{app:full_tables}). Pure information gain without reward alignment produces degenerate non-exploration here, not the catastrophic over-exploration a naive information-seeking ablation might suggest. Either way, the pragmatic term is essential.\n\nOn Diagnosis and Bandit, EFE Pareto-dominates same-horizon Planning with the seed-level tests of Section~\\ref{sec:results}, while success-tuned Planning+IG ($w^*{=}50$ on Diagnosis, $w^*{=}20$ on Bandit) reaches near-ceiling success at a reward cost from over-exploration (Table~\\ref{tab:main}). EFE is the competitive untuned trade-off rather than uniquely best on every metric.",
+      "new": "Table~\\ref{tab:main} compares Myopic, same-horizon Planning, EFE, and success-tuned Planning+IG. Appendix~\\ref{app:full_tables} adds the remaining baselines and pooled episode-level SE, while the main table uses seed-level SE. Both are in the CSVs and neither is necessarily smaller. The full tables omit untuned Info Gain rows identical to Myopic and Tiger's \\texttt{pymdp}-AIF row identical to Posterior-vote (\\texttt{results\\_\\allowbreak tiger.csv}).\n\nTiger's EFE/Planning identity is measured, not structural. One listen contributes at most one bit, hence one reward unit at the implemented weight, and never changes the reward-based choice at these stakes with shared recursion and tie-breaking. The trajectories match on every metric (\\texttt{results\\_\\allowbreak tiger\\_\\allowbreak stats.csv}). On Diagnosis and Bandit, EFE Pareto-dominates Planning under Section~\\ref{sec:results}'s tests, while success-tuned weights buy greater accuracy at a reward cost.\n\nEpistemic-only commits immediately at chance success on Tiger, Diagnosis, Bandit, and Tileworld-$6{\\times}6$ ($49.7\\%$, $24.7\\%$, $24.7\\%$, and $2.9\\%$). Removing reward-aware stopping therefore causes non-exploration here (Table~\\ref{tab:agents}, Appendix~\\ref{app:full_tables}).",
+      "source_line": 1994,
+      "rationale": "Keep uncertainty provenance, duplicate-row omissions, measured identity, and negative ablation evidence while consolidating main-text repetition.",
+      "evidence": [
+        "paper/full_paper_jair.tex:715-752",
+        "paper/full_paper_jair.tex:898-1002",
+        "paper/full_paper_jair.tex:1991-2005"
+      ],
+      "preserved": [
+        "Both SE conventions and non-ordering",
+        "Exact omitted rows",
+        "Conditional Tiger identity",
+        "Negative ablation with all chance rates",
+        "Reward/success trade-off"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 256
+    },
+    {
+      "id": "AC25",
+      "title": "Effect sizes: preserve aggregation warning and all qualitative findings",
+      "kind": "guarded_replacement",
+      "paths": [
+        "paper/full_paper_jair.tex",
+        "paper/full_paper.tex"
+      ],
+      "expected_occurrences_per_file": 1,
+      "old": "Effect sizes clarify where the differences lie, using the conventional interpretation bands listed in Table~\\ref{tab:effect_sizes}. On reward, Cohen's $d$ between EFE and same-horizon Planning is negligible on Tiger, Diagnosis, and Bandit, exactly $0$ on Tiger, where the two agents tie, and $|d| < 0.15$ at the pooled episode level on Diagnosis and Bandit, where both agents already achieve reasonable returns once they explore enough. The gap that remains is whether an agent gathers enough evidence before it commits, and it shows in success rate, where $d$ is around $0.33$ on Diagnosis and $0.40$ on Bandit (Appendix~\\ref{app:stats}), values in the small band. EFE raises success rate, the objective that Planning under-serves, without sacrificing reward, the Pareto dominance above in effect-size terms.\n\nTwo statistical conventions govern how we read those numbers. First, with a balanced design, meaning equal episodes per seed for both agents in a comparison, the seed-level and pooled point estimates of the mean difference coincide exactly, so agreement in sign is guaranteed by construction rather than an independent check. What the seed-level test adds is a significance decision computed from only 5 independent replications instead of 5,000 pseudo-replications. On that stricter test, among the EFE against Planning comparisons on the three core environments, every pooled comparison that was significant after Holm--Bonferroni correction, which is Diagnosis and Bandit on both metrics, remains significant at the seed level. The one negligible pooled comparison in that set, Tiger EFE against Planning, is non-significant at both levels.\n\nSecond, seed-level Cohen's $d$ magnitudes are not comparable to the pooled values, since they are computed from the standard deviation of only 5 seed means per group. That much smaller and noisier denominator mechanically inflates $|d|$ by roughly one to two orders of magnitude, factors of about $6$ to $90$ across the committed comparisons (Appendix~\\ref{app:stats} and the committed \\texttt{*\\_\\allowbreak stats.csv} files, which carry a seed-level $d$ column for completeness). We therefore do not interpret seed-level $d$ magnitudes and rely on the seed-level $p$-values and confidence intervals above.\n\nLarge reward effects ($|d| > 0.8$) appear where Planning fails to explore sufficiently. The clearest case is the $8{\\times}8$ Tileworld grid of Section~\\ref{sec:tileworld}, where at the lookahead horizon used there reward-only Planning takes no scans at all. Tileworld $8{\\times}8$ gives pooled episode-level $|d| = 1.13$ (\\texttt{results\\_\\allowbreak tileworld\\_\\allowbreak 8x8\\_\\allowbreak stats.csv}). Against the over-exploring success-tuned baselines, Info Gain and Planning+IG at their tuned weights, the largest reward effect across the tested environments is medium, $d{=}0.69$ on Testbed (Table~\\ref{tab:effect_sizes}). At the $6{\\times}6$ grid that Table~\\ref{tab:tileworld} reports, the same EFE against Planning comparison is negligible at $d \\approx 0.01$, since Planning and EFE scan similarly often at that smaller scale.",
+      "new": "Pooled episode-level effect sizes distinguish small reward changes from success gains (Table~\\ref{tab:effect_sizes}). EFE versus Planning has reward $d{=}0$ on Tiger and $|d|<0.15$ on Diagnosis and Bandit, with success $d\\approx0.33$ and $0.40$ on the latter two. These small success effects accompany the reward Pareto dominance reported above.\n\nEqual episodes per seed make seed-level and pooled mean differences identical, so matching signs provide no independent check. Seed-level tests use five independent replications rather than $5{,}000$ episodes. Diagnosis and Bandit retain Holm significance on reward and success at that level, while Tiger remains an exact tie. We do not interpret seed-level Cohen's $d$: the smaller, noisy standard deviation of five means inflates magnitudes by roughly $6$--$90$ times relative to pooled values in the committed \\texttt{*\\_\\allowbreak stats.csv} files. Inference instead uses seed-level $p$-values and confidence intervals.\n\nThe large EFE/Planning reward effect occurs on Tileworld-$8{\\times}8$ ($|d|{=}1.13$, \\texttt{results\\_\\allowbreak tileworld\\_\\allowbreak 8x8\\_\\allowbreak stats.csv}), where Planning takes no scans at the tested horizon. At $6{\\times}6$ both scan and the effect is negligible ($d\\approx0.01$). Against success-tuned Info Gain and Planning+IG, the largest reward effect is medium, $d{=}0.69$ on Testbed.",
+      "source_line": 2008,
+      "rationale": "Consolidate statistical cautions and table commentary without removing any negative or null comparison.",
+      "evidence": [
+        "paper/full_paper_jair.tex:1260-1310",
+        "paper/full_paper_jair.tex:2007-2014",
+        "results/results_tileworld_8x8_stats.csv"
+      ],
+      "preserved": [
+        "Episode-level effect-size interpretation only",
+        "Balanced-design sign agreement is tautological",
+        "Small-n pseudo-replication warning",
+        "6–90 inflation disclosure",
+        "Large Tileworld effect tied to non-scanning horizon control",
+        "Medium tuned-baseline exception"
+      ],
+      "depends_on": [],
+      "source_word_reduction": 258
+    },
+    {
+      "id": "AC26",
+      "title": "Remove duplicated Tileworld EFE belief strip",
+      "kind": "atomic_group",
+      "edits": [
+        {
+          "paths": [
+            "paper/full_paper_jair.tex"
+          ],
+          "old": "\\begin{figure}[htbp]\n\\centering\n\\includegraphics[width=\\linewidth]{figures/fig_tileworld_belief.pdf}\n\\caption{Belief evolution within an EFE episode on the $6{\\times}6$ Tileworld. Panels (a)--(g) show belief probability over the 36 grid cells on a shared square-root color scale (colorbar, darker = higher probability). Black outlines mark the cell group queried by each scan, each panel's title reports that scan's noisy binary readout as $\\mathrm{obs}{=}\\mathrm{A}$ or $\\mathrm{obs}{=}\\mathrm{B}$ naming which half of the queried group the signal favors, and the black-edged white star marks the target tile in every panel. Belief concentrates toward the target, and in the final panel a black-stroked white ring marks the committed cell.}\n\\label{fig:tw_belief}\n\\Description{Two rows of six-by-six grid heatmaps labeled (a) through (g), with a horizontal colorbar decoding belief probability on a square-root color scale. Panel (a) is the uniform prior. Panels (b) through (f) outline the queried cell group in black while belief concentrates, with each panel's title also reporting the noisy binary outcome of that scan as obs equals A or obs equals B, naming which half of the outlined group the scan's signal favors, and with one cell reaching 0.47 in panel (e) and the cell beside it reaching a dark red 0.73 in panel (f). A black-edged white star marks the target tile in every panel. Panel (g) shows the collect step, where a black-stroked white ring around the star-marked target indicates a correct commit.}\n\\end{figure}",
+          "new": "",
+          "expected_occurrences_per_file": 1
+        },
+        {
+          "paths": [
+            "paper/full_paper.tex"
+          ],
+          "old": "\\begin{figure}[htbp]\n\\centering\n\\includegraphics[width=\\linewidth]{figures/fig_tileworld_belief.pdf}\n\\caption{Belief evolution within an EFE episode on the $6{\\times}6$ Tileworld. Panels (a)--(g) show belief probability over the 36 grid cells on a shared square-root color scale (colorbar, darker = higher probability). Black outlines mark the cell group queried by each scan, each panel's title reports that scan's noisy binary readout as $\\mathrm{obs}{=}\\mathrm{A}$ or $\\mathrm{obs}{=}\\mathrm{B}$ naming which half of the queried group the signal favors, and the black-edged white star marks the target tile in every panel. Belief concentrates toward the target, and in the final panel a black-stroked white ring marks the committed cell.}\n\\label{fig:tw_belief}\n\\end{figure}",
+          "new": "",
+          "expected_occurrences_per_file": 1
+        },
+        {
+          "paths": [
+            "paper/full_paper_jair.tex",
+            "paper/full_paper.tex"
+          ],
+          "old": "Figures~\\ref{fig:tw_belief} and~\\ref{fig:belief_heatmap} follow belief within single episodes on the $6{\\times}6$ Tileworld and on extended Diagnosis instances. EFE narrows by partition. Early tests eliminate large groups of states and later tests discriminate among what is left. Reward-only Planning commits earlier and, over the battery, less accurately (Section~\\ref{sec:results} and Figure~\\ref{fig:obs_scaling}), though in the plotted episode its fourteenth observation already leaves the belief concentrated on the true state. InfoGain-Tuned keeps testing past the point where further tests pay for themselves in reward.",
+          "new": "Figure~\\ref{fig:belief_heatmap} follows illustrative Diagnosis episodes. Planning commits correctly after $14$ observations, EFE after $29$, and InfoGain-Tuned after $32$. These episodes were not selected to represent typical lengths. The battery-level comparisons appear in Section~\\ref{sec:results} and Figure~\\ref{fig:obs_scaling}. Tileworld's corresponding belief evolution is shown once, with all three agents, in Figure~\\ref{fig:tw_comparison}.",
+          "expected_occurrences_per_file": 1
+        },
+        {
+          "paths": [
+            "paper/full_paper_jair.tex",
+            "paper/full_paper.tex"
+          ],
+          "old": "To test whether EFE's advantage extends to larger state spaces, we turn to Tileworld, the spatial generalization of Diagnosis defined in Section~\\ref{sec:experiments}, and vary its grid size $N$ below. Tileworld projects the Diagnosis partition structure onto an $N{\\times}N$ grid ($|S|{=}N^2$), producing spatially interpretable belief evolution (Figure~\\ref{fig:tw_comparison}, with step-by-step belief strips in Appendix~\\ref{app:tw_belief}).",
+          "new": "Tileworld projects Diagnosis's partitions onto an $N{\\times}N$ grid ($|S|{=}N^2$). Figure~\\ref{fig:tw_comparison} compares agents' belief evolution on one episode. The scaling and partition studies below test the dependence on grid size and observation structure.",
+          "expected_occurrences_per_file": 1
+        }
+      ],
+      "depends_on": [
+        "AC20"
+      ],
+      "optional": true,
+      "rationale": "The standalone strip and EFE row of the retained agent-comparison figure replay the same deterministically selected episode and sample the same five scan steps. The standalone adds only a drawn uniform prior, already stated in the retained caption.",
+      "evidence": [
+        "experiments/run_tileworld.py:69-129",
+        "rho_aif/render_tileworld.py:205-235",
+        "rho_aif/render_tileworld.py:299-337",
+        "paper/full_paper_jair.tex:1081-1100",
+        "paper/full_paper_jair.tex:2051-2055",
+        "pdftotext -layout of both committed PDFs confirms identical EFE steps 1,4,8,11,15 and commit at 16, reward -5.0"
+      ],
+      "preserved": [
+        "The EFE episode, scan steps and final commit survive in Figure fig:tw_comparison",
+        "The uniform prior is stated in the surviving caption",
+        "Diagnosis illustrative/non-typical caveat and successful Planning example remain",
+        "All empirical aggregate tables and CSVs remain"
+      ],
+      "dependency_repair": "Apply AC20 first, which removes the fig:tw_belief pointer from the Tileworld definition. Apply all four edits here together (the figure block has a JAIR-only Description and therefore separate old spans per master). Keep app:tw_belief as the existing Belief Evolution subsection label (harmless, no remaining incoming reference). Retain the unused PDF and producer on disk for reproducibility. Regenerate the source package dependency list normally; do not delete source artifacts.",
+      "source_line": 1084,
+      "source_word_reduction": 276
+    }
+  ],
+  "validation": {
+    "unique_old_spans_in_both_masters": true,
+    "sequential_dry_run": true,
+    "main_text_unchanged": true,
+    "formal_proof_environments_byte_preserved": true,
+    "direct_controller_proof_byte_preserved": true,
+    "displayed_math_count_unchanged": 29,
+    "jair_checklist_byte_preserved": true,
+    "citation_key_set_preserved": true,
+    "removed_label": "fig:tw_belief",
+    "removed_label_has_no_references": true,
+    "prose_semicolons_added": false,
+    "manuscript_files_written": false,
+    "pdf_compilation": false,
+    "experiments_run": false
+  }
+}

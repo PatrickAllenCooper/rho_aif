@@ -1,0 +1,73 @@
+........................................................................ [ 13%]
+........................................................................ [ 26%]
+........................................................................ [ 40%]
+........................................................................ [ 53%]
+........................................................................ [ 66%]
+........................................................................ [ 80%]
+........................................................................ [ 93%]
+....................................                                     [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:64
+  /Users/pat/code/rho_aif/.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:64: PyparsingDeprecationWarning: 'oneOf' deprecated - use 'one_of'
+    prop = Group((name + Suppress("=") + comma_separated(value)) | oneOf(_CONSTANTS))
+
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:85
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:85
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:85
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:85
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:85
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:85
+  /Users/pat/code/rho_aif/.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:85: PyparsingDeprecationWarning: 'parseString' deprecated - use 'parse_string'
+    parse = parser.parseString(pattern)
+
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:89
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:89
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:89
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:89
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:89
+.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:89
+  /Users/pat/code/rho_aif/.venv/lib/python3.9/site-packages/matplotlib/_fontconfig_pattern.py:89: PyparsingDeprecationWarning: 'resetCache' deprecated - use 'reset_cache'
+    parser.resetCache()
+
+.venv/lib/python3.9/site-packages/matplotlib/_mathtext.py:45
+  /Users/pat/code/rho_aif/.venv/lib/python3.9/site-packages/matplotlib/_mathtext.py:45: PyparsingDeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
+
+tests/test_holm_bonferroni.py::TestRegressionAgainstZeroVariance::test_zero_variance_pair_does_not_suppress_a_real_effect
+tests/test_stats_seed.py::test_seed_level_ttest_runs
+  /Users/pat/code/rho_aif/.venv/lib/python3.9/site-packages/scipy/stats/_axis_nan_policy.py:531: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
+    res = hypotest_fun_out(*samples, **kwds)
+
+tests/test_navigation.py::TestNavigationScalingRunner::test_run_navigation_scaling_smoke
+  /Users/pat/code/rho_aif/.venv/lib/python3.9/site-packages/scipy/stats/_stats_py.py:1087: RuntimeWarning: divide by zero encountered in divide
+    var *= np.divide(n, n-ddof)  # to avoid error on division by zero
+
+tests/test_navigation.py::TestNavigationScalingRunner::test_run_navigation_scaling_smoke
+  /Users/pat/code/rho_aif/.venv/lib/python3.9/site-packages/scipy/stats/_stats_py.py:1087: RuntimeWarning: invalid value encountered in scalar multiply
+    var *= np.divide(n, n-ddof)  # to avoid error on division by zero
+
+tests/test_navigation.py::TestNavigationScalingRunner::test_run_navigation_scaling_smoke
+  /Users/pat/code/rho_aif/.venv/lib/python3.9/site-packages/numpy/_core/fromnumeric.py:4008: RuntimeWarning: Degrees of freedom <= 0 for slice
+    return _methods._var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+
+tests/test_navigation.py::TestNavigationScalingRunner::test_run_navigation_scaling_smoke
+  /Users/pat/code/rho_aif/.venv/lib/python3.9/site-packages/numpy/_core/_methods.py:210: RuntimeWarning: invalid value encountered in scalar divide
+    ret = ret.dtype.type(ret / rcount)
+
+tests/test_rocksample_holm.py::test_families_are_instance_and_metric
+tests/test_rocksample_holm.py::test_families_are_instance_and_metric
+  /Users/pat/code/rho_aif/experiments/run_rocksample.py:301: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise an error in a future version of pandas. Value '[True]' has dtype incompatible with float64, please explicitly cast to a compatible dtype first.
+    df.loc[idx, out] = holm_bonferroni(df.loc[idx, col].tolist())
+
+tests/test_rocksample_holm.py::test_larger_family_is_stricter
+tests/test_rocksample_holm.py::test_larger_family_is_stricter
+  /Users/pat/code/rho_aif/experiments/run_rocksample.py:301: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise an error in a future version of pandas. Value '[True, False]' has dtype incompatible with float64, please explicitly cast to a compatible dtype first.
+    df.loc[idx, out] = holm_bonferroni(df.loc[idx, col].tolist())
+
+tests/test_rocksample_holm.py::test_larger_family_is_stricter
+tests/test_rocksample_holm.py::test_larger_family_is_stricter
+  /Users/pat/code/rho_aif/experiments/run_rocksample.py:301: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise an error in a future version of pandas. Value '[False, False, False]' has dtype incompatible with float64, please explicitly cast to a compatible dtype first.
+    df.loc[idx, out] = holm_bonferroni(df.loc[idx, col].tolist())
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+540 passed, 26 warnings in 167.63s (0:02:47)

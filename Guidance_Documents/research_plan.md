@@ -1044,3 +1044,7 @@ Each significant change should be committed to version control with clear docume
 
 
 **2026-10-01, public sensor extension and concision started (ledger 9.17.60).** Pat selected a public dataset. The accepted baseline is preserved, and a UCI Gas Sensor Drift protocol is frozen before calibration/evaluation. Targets are researcher-defined 2/4/8 sensor accesses, with learned likelihoods, direct equality/cap references, fixed-count controls, and later-period transfer. CPU only. Acceptance requires honest provenance, independent auditing and reproducible artifacts, not favorable outcomes. Verdict: HOLD pending execution and manuscript integration.
+
+**Public-data pre-evaluation checkpoint (2026-10-01).** Implementation has passed independent protocol and numerical audits. Training-only preparation finds no exact duplicate/overlap records, and reconstruction matches hashes. The CPU smoke is about 147 MB and estimates 30.6 seconds for policy replay. All targets remain fixed at 2/4/8. The separate concision audit preserves proofs and resolves all numeric advisories, with an interim 104-page JAIR build (references p32) before new results. No calibration/test performance inspected yet. Stage remains HOLD pending evaluation and final review.
+
+Pre-evaluation complete-suite validation: **540 passed**, with 26 existing warnings, in 167.63 seconds. Protocol and code are ready for the frozen calibration/evaluation sequence.
