@@ -116,9 +116,9 @@ def main():
         data=cal if group=='calibration' else evaluation;rows=cr if group=='calibration' else er
         for name,chosen in selected.items():
             q=mixture_vector(chosen,names)
-            record={'partition':group,'method':name,'budget':chosen['budget'],'n_cases':int(mask.sum()),'feasible_on_calibration':q is not None}
+            record={'partition':group,'method':name,'budget':chosen['budget'],'n_cases':int(mask.sum()),'feasible_on_calibration':q is not None,
+                    'data_available':bool(np.any(mask))}
             if q is None or not np.any(mask):
-                record['available']=bool(np.any(mask))
                 summaries.append(record);continue
             vectors={key:q@data[key][:,mask] for key in data}
             for key,v in vectors.items():record[key]=float(np.mean(v))
@@ -167,11 +167,11 @@ def main():
     for name,sel in selected.items():
         records=[r for r in summaries if r['method']==name and r['partition'] in [f'batch{b}' for b in cfg['shift_batches']]]
         if len(records)!=len(cfg['shift_batches']) or any('correctness' not in r for r in records):continue
-        mean={'partition':'shift_equal_batch','method':name,'budget':sel['budget'],'n_cases':sum(r['n_cases'] for r in records),'feasible_on_calibration':True}
+        mean={'partition':'shift_equal_batch','method':name,'budget':sel['budget'],'n_cases':sum(r['n_cases'] for r in records),'feasible_on_calibration':True,'data_available':True}
         for key in ('correctness','usage','reward','log_loss','brier','balanced_accuracy'):
             mean[key]=float(np.mean([r[key] for r in records]))
         mean['usage_error']=None if sel['budget'] is None else mean['usage']-sel['budget'];summaries.append(mean)
-    fields=['partition','method','budget','n_cases','feasible_on_calibration','available','correctness','usage','usage_error','reward','balanced_accuracy','log_loss','brier']
+    fields=['partition','method','budget','n_cases','feasible_on_calibration','data_available','correctness','usage','usage_error','reward','balanced_accuracy','log_loss','brier']
     with (ROOT/'results/results_real_sensor_summary.csv').open('w') as f:
         writer=csv.DictWriter(f,fieldnames=fields);writer.writeheader();writer.writerows(summaries)
     with (OUT/'per_class.csv').open('w') as f:

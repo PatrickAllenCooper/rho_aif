@@ -1,0 +1,35 @@
+{
+  "artifact_sha256": {
+    "paper/full_paper_jair.tex": "99d85005390f091fbacb56fe136a538f8502850184be717d15b2b486ecfd6e07",
+    "paper/full_paper.tex": "7e9e0c8b58dd6d16fd502aa8dfbec0dc7d652446e894927782298feb6b10a655",
+    "paper/full_paper_jair.pdf": "e704787ebc2d911c607bc74820e08b30285abc48403dcfa7412fde1b74752d8c",
+    "paper/full_paper.pdf": "7f9c67a6cff650595faa6a3b01f9b6d02bb8fe75b653c0242d36c4e20479aa63",
+    "paper/rho_aif_jair_overleaf_2026-09-28.zip": "40b4276754239c04bcf027791419e7cffefcda0ac4dfdb6ba63e63f8611a36be"
+  },
+  "full_paper_jair": {
+    "pages": 108,
+    "reference_start_pages": [
+      33
+    ],
+    "figures": 25,
+    "tables": 28,
+    "critical_diagnostics": []
+  },
+  "full_paper": {
+    "pages": 136,
+    "reference_start_pages": [],
+    "figures": 25,
+    "tables": 28,
+    "critical_diagnostics": []
+  },
+  "legacy_manifest_sha256": "96c2cdfeab1bebefa5e9053ed9a13e8053f71d22a4784b830b0bc6a6d9f400c4",
+  "legacy_assets_unchanged": true,
+  "overleaf": {
+    "files": 39,
+    "figures": 25,
+    "tables": 9,
+    "fresh_compile": true,
+    "identical_pdf_text": true,
+    "pdf_sha256": "4192b59efc824862727fbe1350976e8aead057f11e0c45844db74ffee433087a"
+  }
+}

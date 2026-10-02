@@ -1,0 +1,125 @@
+note: Running TeX ...
+warning: full_paper.tex:58: Underfull \vbox (badness 3417) has occurred while \output is active
+warning: full_paper.tex:97: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:370: Underfull \hbox (badness 1152) in paragraph at lines 367--370
+warning: full_paper.tex:437: Underfull \hbox (badness 1852) in paragraph at lines 436--437
+warning: full_paper.tex:474: Underfull \hbox (badness 1418) in paragraph at lines 473--474
+warning: full_paper.tex:474: Underfull \hbox (badness 1286) in paragraph at lines 473--474
+warning: full_paper.tex:555: Underfull \vbox (badness 1102) has occurred while \output is active
+warning: full_paper.tex:730: Underfull \vbox (badness 5316) has occurred while \output is active
+warning: full_paper.tex:1564: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:1715: Underfull \vbox (badness 5105) has occurred while \output is active
+warning: full_paper.tex:1721: Underfull \vbox (badness 5105) has occurred while \output is active
+warning: full_paper.tex:1875: Underfull \vbox (badness 1122) has occurred while \output is active
+warning: full_paper.tex:1875: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2045: Underfull \hbox (badness 10000) in paragraph at lines 2045--2045
+warning: full_paper.tex:2048: Underfull \hbox (badness 10000) in paragraph at lines 2048--2048
+warning: full_paper.tex:2050: Underfull \hbox (badness 7203) in paragraph at lines 2050--2050
+warning: full_paper.tex:2052: Underfull \hbox (badness 1067) in paragraph at lines 2051--2052
+warning: full_paper.tex:2121: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2198: Underfull \vbox (badness 5105) has occurred while \output is active
+warning: full_paper.tex:2249: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2306: Underfull \hbox (badness 5417) in paragraph at lines 2305--2306
+warning: full_paper.tex:2306: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2338: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2340: Underfull \hbox (badness 2635) in paragraph at lines 2339--2340
+warning: full_paper.tex:2351: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2355: Underfull \hbox (badness 3657) in paragraph at lines 2354--2355
+warning: full_paper.tex:2355: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2357: Underfull \hbox (badness 4013) in paragraph at lines 2356--2357
+warning: full_paper.tex:2357: Underfull \hbox (badness 2635) in paragraph at lines 2356--2357
+warning: full_paper.tex:2357: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1418) in paragraph at lines 5--5
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1024) in paragraph at lines 5--5
+warning: full_paper.tex:2369: Underfull \vbox (badness 4279) has occurred while \output is active
+warning: full_paper.tex:2372: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2481: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2491: Underfull \vbox (badness 1102) has occurred while \output is active
+warning: full_paper.tex:2508: Underfull \vbox (badness 5316) has occurred while \output is active
+warning: full_paper.tex:2556: Underfull \hbox (badness 1286) in paragraph at lines 2555--2556
+warning: full_paper.tex:2556: Underfull \vbox (badness 10000) has occurred while \output is active
+note: Rerunning TeX because "full_paper.aux" changed ...
+warning: full_paper.tex:58: Underfull \vbox (badness 3417) has occurred while \output is active
+warning: full_paper.tex:97: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:370: Underfull \hbox (badness 1152) in paragraph at lines 367--370
+warning: full_paper.tex:437: Underfull \hbox (badness 1852) in paragraph at lines 436--437
+warning: full_paper.tex:474: Underfull \hbox (badness 1418) in paragraph at lines 473--474
+warning: full_paper.tex:474: Underfull \hbox (badness 1286) in paragraph at lines 473--474
+warning: full_paper.tex:566: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:1564: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:1703: Underfull \hbox (badness 1014) in paragraph at lines 1702--1703
+warning: full_paper.tex:1715: Underfull \vbox (badness 5105) has occurred while \output is active
+warning: full_paper.tex:1721: Underfull \vbox (badness 5105) has occurred while \output is active
+warning: full_paper.tex:1875: Underfull \vbox (badness 1122) has occurred while \output is active
+warning: full_paper.tex:1875: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2045: Underfull \hbox (badness 10000) in paragraph at lines 2045--2045
+warning: full_paper.tex:2048: Underfull \hbox (badness 10000) in paragraph at lines 2048--2048
+warning: full_paper.tex:2050: Underfull \hbox (badness 7203) in paragraph at lines 2050--2050
+warning: full_paper.tex:2052: Underfull \hbox (badness 1067) in paragraph at lines 2051--2052
+warning: full_paper.tex:2121: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2198: Underfull \vbox (badness 5105) has occurred while \output is active
+warning: full_paper.tex:2249: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2306: Underfull \hbox (badness 5417) in paragraph at lines 2305--2306
+warning: full_paper.tex:2306: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2338: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2340: Underfull \hbox (badness 2635) in paragraph at lines 2339--2340
+warning: full_paper.tex:2351: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2355: Underfull \hbox (badness 3657) in paragraph at lines 2354--2355
+warning: full_paper.tex:2355: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2357: Underfull \hbox (badness 4013) in paragraph at lines 2356--2357
+warning: full_paper.tex:2357: Underfull \hbox (badness 2635) in paragraph at lines 2356--2357
+warning: full_paper.tex:2357: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1418) in paragraph at lines 5--5
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1024) in paragraph at lines 5--5
+warning: full_paper.tex:2369: Underfull \vbox (badness 4279) has occurred while \output is active
+warning: full_paper.tex:2372: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2481: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2491: Underfull \vbox (badness 1102) has occurred while \output is active
+warning: full_paper.tex:2508: Underfull \vbox (badness 5316) has occurred while \output is active
+warning: full_paper.tex:2556: Underfull \hbox (badness 1286) in paragraph at lines 2555--2556
+warning: full_paper.tex:2556: Underfull \vbox (badness 10000) has occurred while \output is active
+note: Rerunning TeX because "full_paper.aux" changed ...
+warning: full_paper.tex:58: Underfull \vbox (badness 3417) has occurred while \output is active
+warning: full_paper.tex:97: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:370: Underfull \hbox (badness 1152) in paragraph at lines 367--370
+warning: full_paper.tex:437: Underfull \hbox (badness 1852) in paragraph at lines 436--437
+warning: full_paper.tex:474: Underfull \hbox (badness 1418) in paragraph at lines 473--474
+warning: full_paper.tex:474: Underfull \hbox (badness 1286) in paragraph at lines 473--474
+warning: full_paper.tex:566: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:1564: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:1703: Underfull \hbox (badness 1014) in paragraph at lines 1702--1703
+warning: full_paper.tex:1715: Underfull \vbox (badness 5105) has occurred while \output is active
+warning: full_paper.tex:1721: Underfull \vbox (badness 5105) has occurred while \output is active
+warning: full_paper.tex:1875: Underfull \vbox (badness 1122) has occurred while \output is active
+warning: full_paper.tex:1875: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2045: Underfull \hbox (badness 10000) in paragraph at lines 2045--2045
+warning: full_paper.tex:2048: Underfull \hbox (badness 10000) in paragraph at lines 2048--2048
+warning: full_paper.tex:2050: Underfull \hbox (badness 7203) in paragraph at lines 2050--2050
+warning: full_paper.tex:2052: Underfull \hbox (badness 1067) in paragraph at lines 2051--2052
+warning: full_paper.tex:2121: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2198: Underfull \vbox (badness 5105) has occurred while \output is active
+warning: full_paper.tex:2249: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2306: Underfull \hbox (badness 5417) in paragraph at lines 2305--2306
+warning: full_paper.tex:2306: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2338: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2340: Underfull \hbox (badness 2635) in paragraph at lines 2339--2340
+warning: full_paper.tex:2351: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2355: Underfull \hbox (badness 3657) in paragraph at lines 2354--2355
+warning: full_paper.tex:2355: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2357: Underfull \hbox (badness 4013) in paragraph at lines 2356--2357
+warning: full_paper.tex:2357: Underfull \hbox (badness 2635) in paragraph at lines 2356--2357
+warning: full_paper.tex:2357: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1418) in paragraph at lines 5--5
+warning: tables/budget_frontier.tex:5: Underfull \hbox (badness 1024) in paragraph at lines 5--5
+warning: full_paper.tex:2369: Underfull \vbox (badness 4279) has occurred while \output is active
+warning: full_paper.tex:2372: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: full_paper.tex:2481: Underfull \vbox (badness 2158) has occurred while \output is active
+warning: full_paper.tex:2491: Underfull \vbox (badness 1102) has occurred while \output is active
+warning: full_paper.tex:2508: Underfull \vbox (badness 5316) has occurred while \output is active
+warning: full_paper.tex:2556: Underfull \hbox (badness 1286) in paragraph at lines 2555--2556
+warning: full_paper.tex:2556: Underfull \vbox (badness 10000) has occurred while \output is active
+warning: warnings were issued by the TeX engine; use --print and/or --keep-logs for details.
+note: Running xdvipdfmx ...
+note: Writing `full_paper.log` (26.4970703125 KiB)
+note: Writing `full_paper.pdf` (988.2861328125 KiB)
+note: Skipped writing 2 intermediate files (use --keep-intermediates to keep them)

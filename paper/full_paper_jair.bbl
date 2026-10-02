@@ -421,6 +421,76 @@
       \field{title}{Expected free energy as belief-dependent utility for $\rho$-{POMDP}s}
       \field{year}{2026}
     \endentry
+    \entry{covert2023}{inproceedings}{}{}
+      \name{author}{6}{}{%
+        {{un=0,uniquepart=base,hash=ff327eaaf06fc950fd0a966958ebc60c}{%
+           family={Covert},
+           familyi={C\bibinitperiod},
+           given={Ian\bibnamedelima Connick},
+           giveni={I\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6a28836da6cd8151c60cc469fb05bc13}{%
+           family={Qiu},
+           familyi={Q\bibinitperiod},
+           given={Wei},
+           giveni={W\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=412751ebfc916d0c611afaf00848070e}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Mingyu},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=07541a4d31b0a5428e93723d03926063}{%
+           family={Kim},
+           familyi={K\bibinitperiod},
+           given={Na\bibnamedelima Yoon},
+           giveni={N\bibinitperiod\bibinitdelim Y\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1afb955d6ac701b3cc1b65bdf2e059fc}{%
+           family={White},
+           familyi={W\bibinitperiod},
+           given={Nathan\bibnamedelima J.},
+           giveni={N\bibinitperiod\bibinitdelim J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ee964079d93879aaef2382a5fff343d3}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Su-In},
+           giveni={S\bibinithyphendelim I\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {PMLR}%
+      }
+      \strng{namehash}{6c09f568cb6df7101f3279c2f5f1a4c8}
+      \strng{fullhash}{dc1bbd6c361bfbbf2e5fdd17a976f71e}
+      \strng{fullhashraw}{dc1bbd6c361bfbbf2e5fdd17a976f71e}
+      \strng{bibnamehash}{dc1bbd6c361bfbbf2e5fdd17a976f71e}
+      \strng{authorbibnamehash}{dc1bbd6c361bfbbf2e5fdd17a976f71e}
+      \strng{authornamehash}{6c09f568cb6df7101f3279c2f5f1a4c8}
+      \strng{authorfullhash}{dc1bbd6c361bfbbf2e5fdd17a976f71e}
+      \strng{authorfullhashraw}{dc1bbd6c361bfbbf2e5fdd17a976f71e}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 40th International Conference on Machine Learning}
+      \field{series}{Proceedings of Machine Learning Research}
+      \field{title}{Learning to Maximize Mutual Information for Dynamic Feature Selection}
+      \field{volume}{202}
+      \field{year}{2023}
+      \field{pages}{6424\bibrangedash 6447}
+      \range{pages}{24}
+      \verb{urlraw}
+      \verb https://proceedings.mlr.press/v202/covert23a.html
+      \endverb
+      \verb{url}
+      \verb https://proceedings.mlr.press/v202/covert23a.html
+      \endverb
+    \endentry
     \entry{dacosta2020}{article}{}{}
       \name{author}{6}{ul=2}{%
         {{un=0,uniquepart=base,hash=b50fa8786dcabbe048b41d423f27fa26}{%
@@ -2953,6 +3023,102 @@
       \field{booktitle}{ICLR Workshop on Bridging AI and Cognitive Science}
       \field{title}{Reinforcement learning through active inference}
       \field{year}{2020}
+    \endentry
+    \entry{vergara2012data}{misc}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=edffc4c1771e5a034dcb1a2aa1033d74}{%
+           family={Vergara},
+           familyi={V\bibinitperiod},
+           given={Alexander},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {UCI Machine Learning Repository}%
+      }
+      \strng{namehash}{edffc4c1771e5a034dcb1a2aa1033d74}
+      \strng{fullhash}{edffc4c1771e5a034dcb1a2aa1033d74}
+      \strng{fullhashraw}{edffc4c1771e5a034dcb1a2aa1033d74}
+      \strng{bibnamehash}{edffc4c1771e5a034dcb1a2aa1033d74}
+      \strng{authorbibnamehash}{edffc4c1771e5a034dcb1a2aa1033d74}
+      \strng{authornamehash}{edffc4c1771e5a034dcb1a2aa1033d74}
+      \strng{authorfullhash}{edffc4c1771e5a034dcb1a2aa1033d74}
+      \strng{authorfullhashraw}{edffc4c1771e5a034dcb1a2aa1033d74}
+      \field{sortinit}{V}
+      \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Dataset}
+      \field{title}{Gas Sensor Array Drift Dataset}
+      \field{year}{2012}
+      \verb{doi}
+      \verb 10.24432/C5RP6W
+      \endverb
+    \endentry
+    \entry{vergara2012}{article}{}{}
+      \name{author}{6}{ul=1}{%
+        {{un=0,uniquepart=base,hash=edffc4c1771e5a034dcb1a2aa1033d74}{%
+           family={Vergara},
+           familyi={V\bibinitperiod},
+           given={Alexander},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c0078601cd40facef1043b8a989dd580}{%
+           family={Vembu},
+           familyi={V\bibinitperiod},
+           given={Shankar},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=196546b488534056515919b3ef7dff47}{%
+           family={Ayhan},
+           familyi={A\bibinitperiod},
+           given={Tuba},
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=f034d9477e44f8d52c681b6ea592333c}{%
+           family={Ryan},
+           familyi={R\bibinitperiod},
+           given={Margaret\bibnamedelima A.},
+           giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=be609c3b98651a338ff7151ffe0ede61}{%
+           family={Homer},
+           familyi={H\bibinitperiod},
+           given={Margie\bibnamedelima L.},
+           giveni={M\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a73c4782c57c5cc971b99d7ce0fdd534}{%
+           family={Huerta},
+           familyi={H\bibinitperiod},
+           given={Ramón},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{53dce6ce57595185b0284a39068c3afe}
+      \strng{fullhash}{8a3233c94320bd808b7399fd480738dd}
+      \strng{fullhashraw}{8a3233c94320bd808b7399fd480738dd}
+      \strng{bibnamehash}{8a3233c94320bd808b7399fd480738dd}
+      \strng{authorbibnamehash}{8a3233c94320bd808b7399fd480738dd}
+      \strng{authornamehash}{53dce6ce57595185b0284a39068c3afe}
+      \strng{authorfullhash}{8a3233c94320bd808b7399fd480738dd}
+      \strng{authorfullhashraw}{8a3233c94320bd808b7399fd480738dd}
+      \field{sortinit}{V}
+      \field{sortinithash}{afb52128e5b4dc4b843768c0113d673b}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Sensors and Actuators B: Chemical}
+      \field{title}{Chemical gas sensor drift compensation using classifier ensembles}
+      \field{volume}{166--167}
+      \field{year}{2012}
+      \field{pages}{320\bibrangedash 329}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1016/j.snb.2012.01.074
+      \endverb
     \endentry
     \entry{walraven2024}{article}{}{}
       \name{author}{3}{}{%

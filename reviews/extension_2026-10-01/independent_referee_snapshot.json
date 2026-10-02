@@ -1,0 +1,15 @@
+{
+  "review_utc": "2026-10-02T01:19:21.819466+00:00",
+  "recommendation": "ACCEPT",
+  "sha256": {
+    "paper/full_paper_jair.tex": "99d85005390f091fbacb56fe136a538f8502850184be717d15b2b486ecfd6e07",
+    "paper/full_paper.tex": "7e9e0c8b58dd6d16fd502aa8dfbec0dc7d652446e894927782298feb6b10a655",
+    "paper/full_paper_jair.pdf": "e704787ebc2d911c607bc74820e08b30285abc48403dcfa7412fde1b74752d8c",
+    "paper/full_paper.pdf": "7f9c67a6cff650595faa6a3b01f9b6d02bb8fe75b653c0242d36c4e20479aa63",
+    "paper/full_paper_jair.bib": "c436b27d4b69f727a091c239c2f447620d81eae4651458d63b7a921874460b16",
+    "experiments/protocols/gas_sensor_2026-10-01.md": "9a06f780e124b09a197ad1fac5c4da390bc724c88cdce0ed651f972c357c4d12",
+    "results/results_real_sensor_summary.csv": "d060e6851e44428bca81aaf233d3b722a2b0d922905737a67a30808c0a09bcf2",
+    "results/real_sensor_2026-10-01/analysis.json": "4d20fa9bb79d0410e4d80fa7e5994c66442b5d97b022910e38cd9c44266b102b",
+    "figures/real_sensor_transfer.pdf": "c9298c3b08cd6a2dd376cd15c5897b18fc03603c488cb895621c46282322b0ce"
+  }
+}

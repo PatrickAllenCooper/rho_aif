@@ -1,0 +1,62 @@
+{
+  "verdict": "All 16 numeric advisories resolved; zero numerical defects.",
+  "metadata_reanalysis_checks": {
+    "results/real_sensor_2026-10-01/bootstrap_batch7.npz": true,
+    "results/real_sensor_2026-10-01/bootstrap.npz": true,
+    "results/real_sensor_2026-10-01/bootstrap_batch9.npz": true,
+    "results/real_sensor_2026-10-01/bootstrap_batch8.npz": true,
+    "results/real_sensor_2026-10-01/bootstrap_batch10.npz": true,
+    "results/real_sensor_2026-10-01/seeded_mixture_realizations.npz": true,
+    "results/real_sensor_2026-10-01/per_class.csv": true,
+    "all_numeric_summary_cells_exact": true
+  },
+  "advisories": [
+    {
+      "occurrences": 2,
+      "printed": "13.68",
+      "source": "results/real_sensor_2026-10-01/evaluation/complete.json:seconds",
+      "value": 13.680395834,
+      "resolution": "Correct rounding of 13.680395834 seconds, not a summary-CSV field."
+    },
+    {
+      "occurrences": 2,
+      "printed": "5.90",
+      "source": "results/real_sensor_2026-10-01/analysis.json:seconds",
+      "value": 5.903115292000001,
+      "resolution": "Correct rounding of the preserved-schema re-analysis runtime; initial 6.119177042-second analysis remains archived."
+    },
+    {
+      "occurrences": 6,
+      "printed": "98.333%",
+      "value": 98.33333333333333,
+      "source": "Frozen protocol H1; analyze_real_sensor_study.py bootstrap_calibration interval(error,1-.05/len(targets))",
+      "resolution": "Correct nominal Bonferroni interval level, rounded. Six manuscript instances, three per master; not empirical CSV data."
+    },
+    {
+      "occurrences": 2,
+      "printed": "0.41328",
+      "value": 0.4132804757185329,
+      "source": "selection.json:selected.crossing_B4.weights.w06",
+      "resolution": "Correctly rounded fixed upper endpoint probability, independently reconstructed from calibration arrays."
+    },
+    {
+      "occurrences": 2,
+      "printed": "0.22276",
+      "value": 0.22276029055690125,
+      "source": "selection.json:selected.crossing_B8.weights.w14",
+      "resolution": "Correctly rounded fixed upper endpoint probability, independently reconstructed from calibration arrays."
+    },
+    {
+      "occurrences": 1,
+      "printed": "10.24432",
+      "source": "https://archive.ics.uci.edu/dataset/224/gas+sensor+array+drift+dataset",
+      "resolution": "DOI prefix of dataset DOI 10.24432/C5RP6W, verified against primary UCI citation; not a numerical result."
+    },
+    {
+      "occurrences": 1,
+      "printed": "10.1016",
+      "source": "https://api.crossref.org/works/10.1016/j.snb.2012.01.074",
+      "resolution": "DOI prefix of 10.1016/j.snb.2012.01.074. Independently fetched publisher-deposited metadata confirms Vergara et al., Chemical gas sensor drift compensation using classifier ensembles, Sensors and Actuators B: Chemical 166\u2013167:320\u2013329 (2012)."
+    }
+  ]
+}

@@ -1,0 +1,429 @@
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:123: RuntimeWarning: divide by zero encountered in matmul
+  vectors={key:q@data[key][:,mask] for key in data}
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:123: RuntimeWarning: overflow encountered in matmul
+  vectors={key:q@data[key][:,mask] for key in data}
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:123: RuntimeWarning: invalid value encountered in matmul
+  vectors={key:q@data[key][:,mask] for key in data}
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:80: RuntimeWarning: divide by zero encountered in matmul
+  usage=cal['usage']@cweights;reward=cal['reward']@cweights
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:80: RuntimeWarning: overflow encountered in matmul
+  usage=cal['usage']@cweights;reward=cal['reward']@cweights
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:80: RuntimeWarning: invalid value encountered in matmul
+  usage=cal['usage']@cweights;reward=cal['reward']@cweights
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:82: RuntimeWarning: divide by zero encountered in matmul
+  means={key:test[key]@tweights for key in ('correctness','usage','reward')}
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:82: RuntimeWarning: overflow encountered in matmul
+  means={key:test[key]@tweights for key in ('correctness','usage','reward')}
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:82: RuntimeWarning: invalid value encountered in matmul
+  means={key:test[key]@tweights for key in ('correctness','usage','reward')}
+2026-10-02T01:10:28.902084+00:00 bootstrap 200/2000
+2026-10-02T01:10:29.380821+00:00 bootstrap 400/2000
+2026-10-02T01:10:29.844979+00:00 bootstrap 600/2000
+2026-10-02T01:10:30.333276+00:00 bootstrap 800/2000
+2026-10-02T01:10:30.816534+00:00 bootstrap 1000/2000
+2026-10-02T01:10:31.277718+00:00 bootstrap 1200/2000
+2026-10-02T01:10:31.739229+00:00 bootstrap 1400/2000
+2026-10-02T01:10:32.231135+00:00 bootstrap 1600/2000
+2026-10-02T01:10:32.720446+00:00 bootstrap 1800/2000
+2026-10-02T01:10:33.186383+00:00 bootstrap 2000/2000
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:155: RuntimeWarning: divide by zero encountered in matmul
+  means={key:value@res for key,value in candidate.items()}
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:155: RuntimeWarning: overflow encountered in matmul
+  means={key:value@res for key,value in candidate.items()}
+/Users/pat/code/rho_aif/experiments/analyze_real_sensor_study.py:155: RuntimeWarning: invalid value encountered in matmul
+  means={key:value@res for key,value in candidate.items()}
+{
+  "2": {
+    "usage_error_interval": {
+      "lower": null,
+      "upper": null,
+      "valid_replicates": 0,
+      "failed_replicates": 2000
+    },
+    "comparisons": {
+      "direct_target": {
+        "correctness": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "usage": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "reward": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        }
+      },
+      "cmi": {
+        "correctness": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "usage": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "reward": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        }
+      },
+      "weight_target": {
+        "correctness": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "usage": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "reward": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        }
+      },
+      "direct_cap": {
+        "correctness": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "usage": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "reward": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        }
+      },
+      "weight_cap": {
+        "correctness": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "usage": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "reward": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        }
+      },
+      "order": {
+        "correctness": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "usage": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        },
+        "reward": {
+          "lower": null,
+          "upper": null,
+          "valid_replicates": 0,
+          "failed_replicates": 2000
+        }
+      }
+    },
+    "usage_within_margin": false
+  },
+  "4": {
+    "usage_error_interval": {
+      "lower": -0.2096900960742247,
+      "upper": 0.2553966271871885,
+      "valid_replicates": 2000,
+      "failed_replicates": 0
+    },
+    "comparisons": {
+      "direct_target": {
+        "correctness": {
+          "lower": -0.02933498664641821,
+          "upper": -0.008275221608543009,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": -0.0915856720997278,
+          "upper": 0.19020318372179232,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.03230361367768411,
+          "upper": -0.007642436846466816,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      },
+      "cmi": {
+        "correctness": {
+          "lower": -0.028674136060879887,
+          "upper": -0.0028191770592826664,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": -0.17485001165290423,
+          "upper": 0.2086382999765585,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.031782064427199185,
+          "upper": -0.00029126506821513414,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      },
+      "weight_target": {
+        "correctness": {
+          "lower": -0.02860742347161099,
+          "upper": -0.01119040403440665,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": -0.040482700209344455,
+          "upper": 0.08458543607166069,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.02963562859344315,
+          "upper": -0.011013869754193082,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      },
+      "direct_cap": {
+        "correctness": {
+          "lower": -0.03491341745852936,
+          "upper": -0.0055323235581405065,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": 1.2311715271399069,
+          "upper": 1.944818614409534,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.06778302091533397,
+          "upper": -0.03790782671548387,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      },
+      "weight_cap": {
+        "correctness": {
+          "lower": -0.02980270924633703,
+          "upper": -0.009996406362458835,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": 0.3286208975463393,
+          "upper": 0.7848868782105406,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.04462880160592367,
+          "upper": -0.019834281864940788,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      },
+      "order": {
+        "correctness": {
+          "lower": 0.09380205932237022,
+          "upper": 0.13209538155386494,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": -0.17485001165290423,
+          "upper": 0.2086382999765585,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": 0.09209603667545309,
+          "upper": 0.13288149579102018,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      }
+    },
+    "usage_within_margin": true
+  },
+  "8": {
+    "usage_error_interval": {
+      "lower": -0.36179539771959773,
+      "upper": 0.410857064577971,
+      "valid_replicates": 2000,
+      "failed_replicates": 0
+    },
+    "comparisons": {
+      "direct_target": {
+        "correctness": {
+          "lower": -0.047870195045955584,
+          "upper": -0.02906543960694327,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": -0.2382467143245661,
+          "upper": 0.3332902983439888,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.05095779872316706,
+          "upper": -0.027603975042211334,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      },
+      "cmi": {
+        "correctness": {
+          "lower": -0.04648122767868418,
+          "upper": -0.016550447239824243,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": -0.3071114667280305,
+          "upper": 0.350773340035431,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.048942551625327436,
+          "upper": -0.01558157159974636,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      },
+      "weight_target": {
+        "correctness": {
+          "lower": -0.027168377730105765,
+          "upper": -0.015328412258152605,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": -0.17035886251586954,
+          "upper": 0.12672938032695158,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.027614781692951194,
+          "upper": -0.013989976840731532,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      },
+      "direct_cap": {
+        "correctness": {
+          "lower": -0.07698675496688756,
+          "upper": -0.042071740654300534,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": 5.149963790291083,
+          "upper": 6.071618842567786,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.18919749827706833,
+          "upper": -0.15390280903627726,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      },
+      "weight_cap": {
+        "correctness": {
+          "lower": -0.07315018036935335,
+          "upper": -0.044119830674824854,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": 4.295909313771338,
+          "upper": 4.9311428059010165,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.16746538769041494,
+          "upper": -0.13380208217558465,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      },
+      "order": {
+        "correctness": {
+          "lower": -0.016452994585547148,
+          "upper": 0.005168495963198087,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "usage": {
+          "lower": -0.3071114667280305,
+          "upper": 0.350773340035431,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        },
+        "reward": {
+          "lower": -0.01873515954718351,
+          "upper": 0.006723606006845868,
+          "valid_replicates": 2000,
+          "failed_replicates": 0
+        }
+      }
+    },
+    "usage_within_margin": true
+  }
+}

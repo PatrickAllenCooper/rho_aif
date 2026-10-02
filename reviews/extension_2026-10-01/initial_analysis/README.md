@@ -1,0 +1,1 @@
+Initial analysis preserved before renaming the ambiguous available CSV column to data_available and populating it on all rows. This metadata repair changes no policy, selection, metric, bootstrap draw, interval or inference. All archived numerical arrays must reproduce byte-for-byte.

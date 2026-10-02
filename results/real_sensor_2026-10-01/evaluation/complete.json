@@ -1,0 +1,882 @@
+{
+  "started": "2026-10-02T01:00:27.422829+00:00",
+  "finished": "2026-10-02T01:00:41.103239+00:00",
+  "seconds": 13.680395834,
+  "rows": 9185,
+  "rows_sha256": "35b6002d60ce3590abc700b55471d86e05aafb1a31890989d8768262e92e00ae",
+  "run_identity_sha256": "e5ce1479830650f73692d98163fc0de8a8b12bb8f70388b911c93e153f1151b6",
+  "provenance": {
+    "utc": "2026-10-02T01:00:41.161535+00:00",
+    "git_revision": "5a3a79dbed66039729c36dfad8e9269d2fb56c50",
+    "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+    "numpy": "2.0.2",
+    "scipy": "1.13.1",
+    "sklearn": "1.6.1",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "machine": "arm64",
+    "cpu_count": 18,
+    "source_sha256": {
+      "rho_aif/real_sensor.py": "4ad857dead774fe11e6f81f0c23a8ccc561ff356aabbac566abd6448291e1455",
+      "rho_aif/budget.py": "5b4deef0ed8d6d271ac85c1b938aec92d6a4a8206b56b388f6865d6decea0d21",
+      "experiments/run_real_sensor_study.py": "a48ded58ea6a04c0f462e438233264393bddcd4badb69064393f3af5ed618484",
+      "experiments/analyze_real_sensor_study.py": "3a82681722a628e6b2d7d2a941c4a5e5cb975ae2219604c8b90c28436e0e7c92"
+    },
+    "thread_limits": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    }
+  },
+  "policies": [
+    {
+      "name": "w00",
+      "policy": {
+        "name": "w00",
+        "kind": "weight",
+        "weight": 0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2389197919999999,
+      "archive_sha256": "3d6a61aaf23940c75c646b309a4c962769afe5451d4f30fbd09f5a74e022e3f8",
+      "usage": 4.63157321720196,
+      "accuracy": 0.5035383777898748,
+      "reward": 0.4109069134458356
+    },
+    {
+      "name": "w01",
+      "policy": {
+        "name": "w01",
+        "kind": "weight",
+        "weight": 0.00390625,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.23807866600000005,
+      "archive_sha256": "b6e140b498b8b0c3276806166fffd828c9ac007a84d839415734828e9943bff6",
+      "usage": 4.658791507893304,
+      "accuracy": 0.5037561241154056,
+      "reward": 0.4105802939575394
+    },
+    {
+      "name": "w02",
+      "policy": {
+        "name": "w02",
+        "kind": "weight",
+        "weight": 0.0078125,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2368006250000001,
+      "archive_sha256": "a8ea23de149dc7bd26c466228f27ce7a31abcff9413a1a5b112dfff76e5f2223",
+      "usage": 4.617637452367991,
+      "accuracy": 0.5134458356015242,
+      "reward": 0.4210930865541644
+    },
+    {
+      "name": "w03",
+      "policy": {
+        "name": "w03",
+        "kind": "weight",
+        "weight": 0.015625,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.23828533299999988,
+      "archive_sha256": "f0f188e4804b9416e0930cc1c09b6444f1c5d33f64d12b62254f6b54d00a06e4",
+      "usage": 4.639412084921067,
+      "accuracy": 0.5134458356015242,
+      "reward": 0.42065759390310287
+    },
+    {
+      "name": "w04",
+      "policy": {
+        "name": "w04",
+        "kind": "weight",
+        "weight": 0.03125,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2475621669999999,
+      "archive_sha256": "838e6472eb3dd71dbaefe548e956b53b81db1895199b4d0fa4b398f7edc7197c",
+      "usage": 4.905715841045183,
+      "accuracy": 0.5133369624387588,
+      "reward": 0.41522264561785516
+    },
+    {
+      "name": "w05",
+      "policy": {
+        "name": "w05",
+        "kind": "weight",
+        "weight": 0.0625,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.25355587499999976,
+      "archive_sha256": "f50c86e052423ebe6297d667bf1dfbf40d840a7f67cb55c010498fd39dca9875",
+      "usage": 5.130865541643985,
+      "accuracy": 0.5076755579749592,
+      "reward": 0.40505824714207944
+    },
+    {
+      "name": "w06",
+      "policy": {
+        "name": "w06",
+        "kind": "weight",
+        "weight": 0.125,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2691068750000003,
+      "archive_sha256": "283369a6254b14042be406a2fc6d30122c1ecb532ee8cd821eb9b99b64a961e4",
+      "usage": 5.750244964616222,
+      "accuracy": 0.5017964071856288,
+      "reward": 0.38679150789330424
+    },
+    {
+      "name": "w07",
+      "policy": {
+        "name": "w07",
+        "kind": "weight",
+        "weight": 0.25,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2879905840000001,
+      "archive_sha256": "8bb90c0d51b2d74bb7a3942e74d4c711ac25f5b716c73a1cac4fe2916228c4ce",
+      "usage": 6.481437125748503,
+      "accuracy": 0.4938486663037561,
+      "reward": 0.3642199237887861
+    },
+    {
+      "name": "w08",
+      "policy": {
+        "name": "w08",
+        "kind": "weight",
+        "weight": 0.5,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.30072454199999976,
+      "archive_sha256": "57e234ec424b8406b1b8eca3e65f45f0d018e8e18ba8f4e80f4fc20b5eea57ac",
+      "usage": 7.087098530212303,
+      "accuracy": 0.49504627109417526,
+      "reward": 0.3533043004899292
+    },
+    {
+      "name": "w09",
+      "policy": {
+        "name": "w09",
+        "kind": "weight",
+        "weight": 0.6931471805599453,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.31135449999999976,
+      "archive_sha256": "be43c17cbbc0fbe4ca87f2032f51be1fbf21d455d96c87587acc4f3fc59fbcf5",
+      "usage": 7.533151878062058,
+      "accuracy": 0.49504627109417526,
+      "reward": 0.34438323353293404
+    },
+    {
+      "name": "w10",
+      "policy": {
+        "name": "w10",
+        "kind": "weight",
+        "weight": 1,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.3174220000000001,
+      "archive_sha256": "cabdc394ccbe22ca2e935b9e290954f92f77cf411f236d7abd3ed01a9e1b6776",
+      "usage": 7.8545454545454545,
+      "accuracy": 0.49580838323353293,
+      "reward": 0.3387174741426238
+    },
+    {
+      "name": "w11",
+      "policy": {
+        "name": "w11",
+        "kind": "weight",
+        "weight": 2.0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.32767912499999996,
+      "archive_sha256": "9f73149ae31fc5d2e52da18880257471e28b1bb298559502d4d22cd309479c60",
+      "usage": 8.399346761023407,
+      "accuracy": 0.494393032117583,
+      "reward": 0.32640609689711486
+    },
+    {
+      "name": "w12",
+      "policy": {
+        "name": "w12",
+        "kind": "weight",
+        "weight": 4.0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.3387372500000003,
+      "archive_sha256": "0793f39ae09a5c4bc3cf294ee74f4962758aa9338b7f556d159dfbbcd1e4b9e1",
+      "usage": 9.149373979314099,
+      "accuracy": 0.4906913445835602,
+      "reward": 0.30770386499727814
+    },
+    {
+      "name": "w13",
+      "policy": {
+        "name": "w13",
+        "kind": "weight",
+        "weight": 8.0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.35670037499999996,
+      "archive_sha256": "dbd2a67069decca2726a5a857404863eb0f3a2449854497db1d73ebf1233c4da",
+      "usage": 9.826347305389222,
+      "accuracy": 0.4884050081654872,
+      "reward": 0.2918780620577027
+    },
+    {
+      "name": "w14",
+      "policy": {
+        "name": "w14",
+        "kind": "weight",
+        "weight": 16.0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.3593237500000006,
+      "archive_sha256": "c83fbe2fe3de5757a406a9457ccebfee4598a731b0727dd87c9b7d0ddb8862fa",
+      "usage": 10.10364725095264,
+      "accuracy": 0.48709853021230265,
+      "reward": 0.2850255851932499
+    },
+    {
+      "name": "w15",
+      "policy": {
+        "name": "w15",
+        "kind": "weight",
+        "weight": 32.0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.3764719999999997,
+      "archive_sha256": "a701143b94a59ad920db138e16568ae0b1ee09d007bc4654563995436a27a538",
+      "usage": 10.84594447468699,
+      "accuracy": 0.48677191072400655,
+      "reward": 0.2698530212302667
+    },
+    {
+      "name": "w16",
+      "policy": {
+        "name": "w16",
+        "kind": "weight",
+        "weight": 64.0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.38191816700000025,
+      "archive_sha256": "66bbd88bccaed4910c507498e200c6b10d413f93fe7a6ea6fce0e5aed4aff691",
+      "usage": 11.1886771910724,
+      "accuracy": 0.48622754491017967,
+      "reward": 0.2624540010887316
+    },
+    {
+      "name": "w17",
+      "policy": {
+        "name": "w17",
+        "kind": "weight",
+        "weight": 128.0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.3922032920000005,
+      "archive_sha256": "03c67b096318beb26a5d090446018134b4852bf499ebb7104c4a036e19eb7a9b",
+      "usage": 11.757866086009798,
+      "accuracy": 0.4793685356559608,
+      "reward": 0.24421121393576484
+    },
+    {
+      "name": "w18",
+      "policy": {
+        "name": "w18",
+        "kind": "weight",
+        "weight": 256.0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.3963169999999998,
+      "archive_sha256": "0b1df3e9df4a7e1bde49d209cdb1fdf7210af746959cd78e3731c886a3d4d8ac",
+      "usage": 12.193794229722373,
+      "accuracy": 0.47664670658682634,
+      "reward": 0.2327708219923789
+    },
+    {
+      "name": "d00",
+      "policy": {
+        "name": "d00",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -2.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.43726829100000053,
+      "archive_sha256": "4c82ccc099e87242f0979693e54d9111152df566ed6bbf961b9b49d69a0b2d0b",
+      "usage": 16.0,
+      "accuracy": 0.46369080021774634,
+      "reward": 0.14369080021774627
+    },
+    {
+      "name": "d01",
+      "policy": {
+        "name": "d01",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -1.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.4392065840000008,
+      "archive_sha256": "4c82ccc099e87242f0979693e54d9111152df566ed6bbf961b9b49d69a0b2d0b",
+      "usage": 16.0,
+      "accuracy": 0.46369080021774634,
+      "reward": 0.14369080021774627
+    },
+    {
+      "name": "d02",
+      "policy": {
+        "name": "d02",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.5,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.43978208399999996,
+      "archive_sha256": "4c82ccc099e87242f0979693e54d9111152df566ed6bbf961b9b49d69a0b2d0b",
+      "usage": 16.0,
+      "accuracy": 0.46369080021774634,
+      "reward": 0.14369080021774627
+    },
+    {
+      "name": "d03",
+      "policy": {
+        "name": "d03",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.25,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.44084416699999984,
+      "archive_sha256": "4c82ccc099e87242f0979693e54d9111152df566ed6bbf961b9b49d69a0b2d0b",
+      "usage": 16.0,
+      "accuracy": 0.46369080021774634,
+      "reward": 0.14369080021774627
+    },
+    {
+      "name": "d04",
+      "policy": {
+        "name": "d04",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.125,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.43845891700000017,
+      "archive_sha256": "4c82ccc099e87242f0979693e54d9111152df566ed6bbf961b9b49d69a0b2d0b",
+      "usage": 16.0,
+      "accuracy": 0.46369080021774634,
+      "reward": 0.14369080021774627
+    },
+    {
+      "name": "d05",
+      "policy": {
+        "name": "d05",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.0625,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.43889587500000005,
+      "archive_sha256": "4c82ccc099e87242f0979693e54d9111152df566ed6bbf961b9b49d69a0b2d0b",
+      "usage": 16.0,
+      "accuracy": 0.46369080021774634,
+      "reward": 0.14369080021774627
+    },
+    {
+      "name": "d06",
+      "policy": {
+        "name": "d06",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.03125,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.43720725000000016,
+      "archive_sha256": "4c82ccc099e87242f0979693e54d9111152df566ed6bbf961b9b49d69a0b2d0b",
+      "usage": 16.0,
+      "accuracy": 0.46369080021774634,
+      "reward": 0.14369080021774627
+    },
+    {
+      "name": "d07",
+      "policy": {
+        "name": "d07",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.02,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2885561669999994,
+      "archive_sha256": "6579a9d2e5a72da10438e33dd66ad9bee52afaa67adb4ad890ea4296c07637af",
+      "usage": 6.521720195971693,
+      "accuracy": 0.503320631464344,
+      "reward": 0.3728862275449102
+    },
+    {
+      "name": "d08",
+      "policy": {
+        "name": "d08",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.015625,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2611227079999985,
+      "archive_sha256": "e6236d7aad0f54745541ac431cba35d284eacd6ced64cb7fc5a996107bf4e6e0",
+      "usage": 5.480457267283614,
+      "accuracy": 0.49373979314099076,
+      "reward": 0.38413064779531836
+    },
+    {
+      "name": "d09",
+      "policy": {
+        "name": "d09",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.0078125,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.25064933300000014,
+      "archive_sha256": "ee14116664806841cda0074cce069569d5150ad139edc6bdf548eaacb67f1fd1",
+      "usage": 5.022972237343494,
+      "accuracy": 0.5037561241154056,
+      "reward": 0.4032966793685356
+    },
+    {
+      "name": "d10",
+      "policy": {
+        "name": "d10",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.00390625,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.23865066599999984,
+      "archive_sha256": "cfc068438deb51a10e292168d47f744fe8d3d754e0d680e42ea38085ccdaed81",
+      "usage": 4.67751769188895,
+      "accuracy": 0.5037561241154056,
+      "reward": 0.41020577027762656
+    },
+    {
+      "name": "d11",
+      "policy": {
+        "name": "d11",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.001953125,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2371384999999986,
+      "archive_sha256": "b9439e3fb894ef9da394a2aa2a7f5487bb54192d287e51b8bee6b02b013cf480",
+      "usage": 4.651279259662493,
+      "accuracy": 0.5037561241154056,
+      "reward": 0.41073053892215566
+    },
+    {
+      "name": "d12",
+      "policy": {
+        "name": "d12",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": -0.0009765625,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2378542500000016,
+      "archive_sha256": "2915e8b2341d6ea3131263f4f422e46cf131184e2ce4f422e4fdcffb8edfaf1d",
+      "usage": 4.650952640174197,
+      "accuracy": 0.5037561241154056,
+      "reward": 0.4107370713119216
+    },
+    {
+      "name": "d13",
+      "policy": {
+        "name": "d13",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.23613558300000115,
+      "archive_sha256": "3d6a61aaf23940c75c646b309a4c962769afe5451d4f30fbd09f5a74e022e3f8",
+      "usage": 4.63157321720196,
+      "accuracy": 0.5035383777898748,
+      "reward": 0.4109069134458356
+    },
+    {
+      "name": "d14",
+      "policy": {
+        "name": "d14",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0.0009765625,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2335304580000006,
+      "archive_sha256": "e8f83a9c726b4222fb5b80bc73aa691ea890040c73d1b6ff2f2a198d9ef4f840",
+      "usage": 4.540010887316276,
+      "accuracy": 0.5043004899292325,
+      "reward": 0.41350027218290686
+    },
+    {
+      "name": "d15",
+      "policy": {
+        "name": "d15",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0.001953125,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.23220287500000047,
+      "archive_sha256": "89ef3bd15b1f518d812ea10c7f6c8cb1a63b377e121b352776c4934452289eca",
+      "usage": 4.478606423516603,
+      "accuracy": 0.5041916167664671,
+      "reward": 0.41461948829613493
+    },
+    {
+      "name": "d16",
+      "policy": {
+        "name": "d16",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0.00390625,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.22943775000000066,
+      "archive_sha256": "8319bfb005541073614dd7b9c41867746b8dabe237ce96681c5d028557a2a12d",
+      "usage": 4.382035928143712,
+      "accuracy": 0.5037561241154056,
+      "reward": 0.41611540555253124
+    },
+    {
+      "name": "d17",
+      "policy": {
+        "name": "d17",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0.0078125,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.21280724999999912,
+      "archive_sha256": "3b762ab5f1d9fdfd86d26ddacd8e6567d2f2762e593dbf3922d7be0742dbcaf6",
+      "usage": 3.7512248230811105,
+      "accuracy": 0.5146434403919434,
+      "reward": 0.4396189439303212
+    },
+    {
+      "name": "d18",
+      "policy": {
+        "name": "d18",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0.015625,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.20962808300000013,
+      "archive_sha256": "ee24f432ef4ff019f02fb2982b2955f206b8286a2279298a40ab2cff3be05c75",
+      "usage": 3.6821992378878607,
+      "accuracy": 0.5139902014153511,
+      "reward": 0.4403462166575939
+    },
+    {
+      "name": "d19",
+      "policy": {
+        "name": "d19",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0.03125,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.2029836249999999,
+      "archive_sha256": "3603a9d7afaf98b31cfc8dc171c5d1ad183b6fb848aad3c18fd1f26eecd0ad51",
+      "usage": 3.4789330430048993,
+      "accuracy": 0.5149700598802395,
+      "reward": 0.4453913990201415
+    },
+    {
+      "name": "d20",
+      "policy": {
+        "name": "d20",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0.0625,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.18766625000000126,
+      "archive_sha256": "984ce1e0ff29dd480a84fb72ceef94c5729592e72f831df2a6784b69670d23a4",
+      "usage": 3.063255307566685,
+      "accuracy": 0.5200870985302123,
+      "reward": 0.45882199237887855
+    },
+    {
+      "name": "d21",
+      "policy": {
+        "name": "d21",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0.125,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.1746946670000007,
+      "archive_sha256": "fd8c5b161f61c2ec5527e05aa4067d6c26d4b73109f939478bd09ae343e625a7",
+      "usage": 2.747305389221557,
+      "accuracy": 0.4914534567229178,
+      "reward": 0.43650734893848664
+    },
+    {
+      "name": "d22",
+      "policy": {
+        "name": "d22",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0.25,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.10478362500000138,
+      "archive_sha256": "82717a1d9a89bc90791d3332f061a81c0f64667b16981cc773576c2b1132ba6c",
+      "usage": 1.134349482852477,
+      "accuracy": 0.3993467610234077,
+      "reward": 0.37665977136635825
+    },
+    {
+      "name": "d23",
+      "policy": {
+        "name": "d23",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 0.5,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.052200750000000795,
+      "archive_sha256": "437c6c88d04df6afc55990295836fba7544b35a19136b4a3f9452659e2aca8dc",
+      "usage": 0.0,
+      "accuracy": 0.18160043549265106,
+      "reward": 0.18160043549265106
+    },
+    {
+      "name": "d24",
+      "policy": {
+        "name": "d24",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 1.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.051737334000000246,
+      "archive_sha256": "437c6c88d04df6afc55990295836fba7544b35a19136b4a3f9452659e2aca8dc",
+      "usage": 0.0,
+      "accuracy": 0.18160043549265106,
+      "reward": 0.18160043549265106
+    },
+    {
+      "name": "d25",
+      "policy": {
+        "name": "d25",
+        "kind": "direct",
+        "weight": 0.0,
+        "penalty": 2.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.05131533399999988,
+      "archive_sha256": "437c6c88d04df6afc55990295836fba7544b35a19136b4a3f9452659e2aca8dc",
+      "usage": 0.0,
+      "accuracy": 0.18160043549265106,
+      "reward": 0.18160043549265106
+    },
+    {
+      "name": "cmi2",
+      "policy": {
+        "name": "cmi2",
+        "kind": "fixed_cmi",
+        "weight": 0.0,
+        "penalty": 0.0,
+        "count": 2,
+        "order": null
+      },
+      "seconds": 0.09799204099999947,
+      "archive_sha256": "fce1bd6a38ed65924735fad5ac197e31bf73ee6ab38447c07bf6b44ccfa0c53f",
+      "usage": 2.0,
+      "accuracy": 0.45269461077844314,
+      "reward": 0.41269461077844316
+    },
+    {
+      "name": "order2",
+      "policy": {
+        "name": "order2",
+        "kind": "fixed_order",
+        "weight": 0.0,
+        "penalty": 0.0,
+        "count": 2,
+        "order": null
+      },
+      "seconds": 0.003810500000000161,
+      "archive_sha256": "0cd2ae2accb358dfed7123e16a51ab714d08e1d900ce842a165a2d367bfd8739",
+      "usage": 2.0,
+      "accuracy": 0.3632008709853021,
+      "reward": 0.3232008709853022
+    },
+    {
+      "name": "cmi4",
+      "policy": {
+        "name": "cmi4",
+        "kind": "fixed_cmi",
+        "weight": 0.0,
+        "penalty": 0.0,
+        "count": 4,
+        "order": null
+      },
+      "seconds": 0.18131704199999987,
+      "archive_sha256": "ee60d092dea32f2bc064f1770fa2077261102b3ef8ebf4bbd61e0a3779bc174e",
+      "usage": 4.0,
+      "accuracy": 0.5028851388132826,
+      "reward": 0.42288513881328255
+    },
+    {
+      "name": "order4",
+      "policy": {
+        "name": "order4",
+        "kind": "fixed_order",
+        "weight": 0.0,
+        "penalty": 0.0,
+        "count": 4,
+        "order": null
+      },
+      "seconds": 0.004914832999999064,
+      "archive_sha256": "36ba865131e7fc7520ff5db26227d71a98dbfd72fed899624869d8911383e992",
+      "usage": 4.0,
+      "accuracy": 0.4264561785519869,
+      "reward": 0.34645617855198696
+    },
+    {
+      "name": "cmi8",
+      "policy": {
+        "name": "cmi8",
+        "kind": "fixed_cmi",
+        "weight": 0.0,
+        "penalty": 0.0,
+        "count": 8,
+        "order": null
+      },
+      "seconds": 0.3123962500000008,
+      "archive_sha256": "8f8699f9d04dbd8709f454a66f1a24a969e5f18f8194c7786e1bfcb1bcdb1c63",
+      "usage": 8.0,
+      "accuracy": 0.5074578116494284,
+      "reward": 0.34745781164942835
+    },
+    {
+      "name": "order8",
+      "policy": {
+        "name": "order8",
+        "kind": "fixed_order",
+        "weight": 0.0,
+        "penalty": 0.0,
+        "count": 8,
+        "order": null
+      },
+      "seconds": 0.00704012499999962,
+      "archive_sha256": "9d77330c0dd32604e2598b069cdcca04ae41971978c9dd2597784b12a8b8a02d",
+      "usage": 8.0,
+      "accuracy": 0.4738160043549265,
+      "reward": 0.31381600435492646
+    },
+    {
+      "name": "zero",
+      "policy": {
+        "name": "zero",
+        "kind": "zero",
+        "weight": 0.0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.002755667000000628,
+      "archive_sha256": "44d30abc1a93f4549ec0ec4559fc65c041c68f56b3f93465710bc0e6ce2a5125",
+      "usage": 0.0,
+      "accuracy": 0.18160043549265106,
+      "reward": 0.18160043549265106
+    },
+    {
+      "name": "all",
+      "policy": {
+        "name": "all",
+        "kind": "all",
+        "weight": 0.0,
+        "penalty": 0.0,
+        "count": null,
+        "order": null
+      },
+      "seconds": 0.010898457999999778,
+      "archive_sha256": "73fd6bed5a7bfdc958d8dcfdb64a1a4e6a6d8a6c52f12ef9481659cca4b92d42",
+      "usage": 16.0,
+      "accuracy": 0.46369080021774634,
+      "reward": 0.14369080021774627
+    }
+  ],
+  "peak_rss_platform_units": 185860096
+}

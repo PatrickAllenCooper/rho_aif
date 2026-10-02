@@ -14,6 +14,20 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- A predeclared public-data study on UCI Gas Sensor Array Drift, with
+  training-only learned likelihoods, actual-record replay, fixed 2/4/8-access
+  targets, direct-penalty and fixed-count controls, calibration-reselection
+  bootstrap intervals, and frozen later-batch transfer. Code, per-case
+  archives, independent reconstruction, and all failed targets and adverse
+  comparisons are retained. The optional `sensor-study` extra pins
+  scikit-learn 1.6.1. All stages run on CPUs.
+- A compact transfer-and-accuracy figure and a shorter main narrative in
+  both manuscripts. JAIR references begin on page 33 rather than 38, with
+  108 pages overall rather than 111 despite the new study. The previously reviewed
+  pre-extension draft is preserved under
+  `paper/legacy/2026-10-01_pre_external_study/`. Two independent final
+  reviewers recommend ACCEPT. The 540-test suite and isolated Overleaf
+  build pass.
 - `experiments/run_tost_sarsop.py --episode-seeding` resets each episode at
   `seed * 10000 + episode`, so both policies face matched episodes
   (`results/results_tost_sarsop_episode_paired*.csv`).

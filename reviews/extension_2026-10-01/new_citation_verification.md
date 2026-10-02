@@ -1,0 +1,9 @@
+# New source verification
+
+Verified 2026-10-01 before manuscript insertion.
+
+- `vergara2012data`: UCI's [primary record](https://archive.ics.uci.edu/dataset/224/gas+sensor+array+drift+dataset) gives Alexander Vergara, 2012, *Gas Sensor Array Drift Dataset*, DOI10.24432/C5RP6W. It directly states13,910 records,16sensors, six gases,128features ordered in consecutive eight-descriptor sensor blocks, ten chronological batches and the corrected batch10. Download hyperlink was read from this record. No grouping was inferred from performance.
+- `vergara2012`: publisher metadata registered with Crossref at [DOI10.1016/j.snb.2012.01.074](https://doi.org/10.1016/j.snb.2012.01.074) confirms Alexander Vergara, Shankar Vembu, Tuba Ayhan, Margaret A. Ryan, Margie L. Homer, Ramón Huerta, *Chemical gas sensor drift compensation using classifier ensembles*, *Sensors and Actuators B: Chemical*166–167,320–329,2012. Publisher direct fetch returned403, so bibliographic fields were checked against its deposited primary metadata.
+- `covert2023`: [PMLR's primary conference record](https://proceedings.mlr.press/v202/covert23a.html) confirms Ian Connick Covert, Wei Qiu, Mingyu Lu, Na Yoon Kim, Nathan J White, Su-In Lee, *Learning to Maximize Mutual Information for Dynamic Feature Selection*, ICML2023, PMLR202,6424–6447. Its abstract explicitly describes greedy conditional-mutual-information selection and learned amortized approximation. The manuscript cites this lineage but does not claim to reproduce that neural method or compare with its published numbers.
+
+The different 2013 wind-tunnel archive critiqued by Dennler etal. is not the selected UCI224 dataset. No defect in UCI224 is inferred from that critique. The new experiment's dependence and collection limits are stated independently from the information actually supplied by the chosen archive.

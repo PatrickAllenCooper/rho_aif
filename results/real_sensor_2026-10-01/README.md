@@ -24,9 +24,12 @@ python experiments/run_real_sensor_study.py smoke
 python experiments/run_real_sensor_study.py calibrate
 python experiments/run_real_sensor_study.py evaluate
 python experiments/analyze_real_sensor_study.py
+python experiments/build_real_sensor_figure.py
 ```
 
 The stages refuse to overwrite a completed run. Interrupted policy replay can resume only when the model, encoded records, protocol, source modules, registry, and frozen selections match its checkpoint identity. The first command fits only the training rows when no archived model exists. The smoke uses at most 128 training cases and checks the CPU time envelope. No GPU is used.
+
+The figure command reads the archived analysis and writes `figures/real_sensor_transfer.pdf` and `.png`. It does not rerun policies or recompute intervals.
 
 To recompute summaries from the archived policy trajectories, preserve `analysis.json`, `bootstrap*.npz`, `seeded_mixture_realizations.npz`, `per_class.csv`, and `results/results_real_sensor_summary.csv`, then run the analysis command. It validates trajectory, row, and model hashes before computing summaries. Re-analysis does not run episodes or refit the model.
 
@@ -42,3 +45,9 @@ To recompute summaries from the archived policy trajectories, preserve `analysis
 The record count does not certify independence of laboratory exposures. Uncertainty is conditional on one trained model and exchangeability within batch/class strata. It excludes retraining, unobserved trial dependence, and new instruments or sites. Later-period rows reflect both measurement and class-composition changes.
 
 Training produced NumPy/Accelerate warnings on this host. Independent broadcast-distance and non-BLAS checks recovered all 56,800 training sensor assignments and likelihood counts exactly. Identity-matrix controls reproduced the warnings while returning exact identities. The [numerical audit](../../reviews/extension_2026-10-01/numerics_and_analysis_readiness.md) records the evidence and avoids silently treating warnings as model failure or ignoring them.
+
+## Final findings
+
+The sampled information-weight family cannot attain two accesses on calibration. The four- and eight-access mixtures use 4.006 and 8.019 accesses on within-period test cases and pass their predeclared half-access interval criterion. The requirement to pass all three targets fails. Accuracy is 80.23% and 76.28%, below direct equality mixtures at 82.11% and 80.18% and exact-count greedy-information policies at 81.71% and 79.47%. Every later batch exceeds both usage targets. These findings concern one fitted model and retrospective access to recorded observations.
+
+The [independent evidence audit](../../reviews/extension_2026-10-01/independent_evidence_final_review.md) reconstructs all summary cells and all 2,000 calibration-reselection bootstrap draws without importing the study's policy or runner modules. Final manuscript, code, data and package fingerprints are indexed in the [review record](../../reviews/extension_2026-10-01/README.md).
