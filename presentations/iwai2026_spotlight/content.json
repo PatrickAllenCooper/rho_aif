@@ -1,0 +1,82 @@
+{
+  "scripts": [
+    "Somewhere on this grid is a hidden target. The agent can buy a noisy scan, or choose one cell and end the search. A wrong choice is costly. Scanning forever is costly too.\n\nOur accepted paper asks how expected free energy connects two questions: what should the agent learn, and when should it act?",
+    "Start with equal probability across the grid. This scan asks whether the target is in the top half. It is eighty percent accurate, so a positive signal puts eighty percent of the probability in that half. The target itself stays fixed.\n\nFor the reward-based recursion we study, minimizing EFE is equivalent to planning with reward plus expected information gain. That is a rho-POMDP with belief-dependent utility.\n\nThe result requires exact Bayesian updates, matched horizons and units, and the stated reward convention. Weight one is not a universal exchange rate between arbitrary rewards and information.",
+    "Now enlarge the grid to eight by eight, with planning limited to a two-step horizon.\n\nThe reward-only planner takes no scans and succeeds just one point four percent of the time. Weight-one EFE keeps scanning and reaches about sixty-nine percent.\n\nA much larger information weight reaches almost ninety-eight percent, but its extra scans reduce net reward.\n\nThese are updated measurements from one thousand episodes across five seeds. They expose a shallow-planning limitation, not a failure of reward-only planning at every depth. At smaller grid sizes, the reward-only and EFE agents perform similarly.",
+    "Our subsequent work asks how to calibrate that weight to an expected sensing target.\n\nMeasure usage across weights. When two policies straddle the target, a mixture can match it on calibration data.\n\nAcross twelve attainable target cases in three other simulated tasks, held-out mean error is at most zero point one three observations. These targets come from calibration curves.\n\nThis is expected usage, not a per-episode cap or a guarantee of maximum reward. On recorded sensor data, the policies overspend on later batches.\n\nPlease visit our poster to discuss these trade-offs."
+  ],
+  "times": [
+    "0:00–0:28",
+    "0:28–1:17",
+    "1:17–2:08",
+    "2:08–2:54"
+  ],
+  "word_counts": [
+    54,
+    94,
+    92,
+    91
+  ],
+  "titles": [
+    "The sensing decision",
+    "EFE as belief-dependent utility",
+    "More certainty can cost more",
+    "A target for expected sensing usage"
+  ],
+  "tileworld": {
+    "Planning": {
+      "grid_size": "8",
+      "num_states": "64",
+      "agent": "Planning",
+      "success_rate": "0.014",
+      "mean_reward": "-49.16",
+      "mean_scans": "0.0",
+      "se_reward_seed_level": "0.1749285568453599",
+      "se_success_seed_level": "0.0029154759474226497",
+      "n_seeds": "5",
+      "sec_per_episode": "0.003995697021484375",
+      "planning_horizon": "2.0",
+      "info_gain_weight": "",
+      "seed_list": "42|123|456|789|1024",
+      "episodes_per_seed": "200",
+      "git_sha": "82ed4eb",
+      "generated_utc": "2026-08-20T05:48:53Z"
+    },
+    "Planning+IG": {
+      "grid_size": "8",
+      "num_states": "64",
+      "agent": "Planning+IG",
+      "success_rate": "0.978",
+      "mean_reward": "-30.84",
+      "mean_scans": "39.52",
+      "se_reward_seed_level": "0.3865747017071865",
+      "se_success_seed_level": "0.0058309518948453055",
+      "n_seeds": "5",
+      "sec_per_episode": "0.8901529469490052",
+      "planning_horizon": "2.0",
+      "info_gain_weight": "100.0",
+      "seed_list": "42|123|456|789|1024",
+      "episodes_per_seed": "200",
+      "git_sha": "82ed4eb",
+      "generated_utc": "2026-08-20T05:48:53Z"
+    },
+    "EFE": {
+      "grid_size": "8",
+      "num_states": "64",
+      "agent": "EFE",
+      "success_rate": "0.694",
+      "mean_reward": "-25.856",
+      "mean_scans": "17.496",
+      "se_reward_seed_level": "0.6770273258886972",
+      "se_success_seed_level": "0.010416333327999818",
+      "n_seeds": "5",
+      "sec_per_episode": "0.4080959050655365",
+      "planning_horizon": "2.0",
+      "info_gain_weight": "",
+      "seed_list": "42|123|456|789|1024",
+      "episodes_per_seed": "200",
+      "git_sha": "82ed4eb",
+      "generated_utc": "2026-08-20T05:48:53Z"
+    }
+  }
+}

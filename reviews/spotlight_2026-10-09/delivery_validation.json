@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-09",
+  "verdict": "PASS",
+  "artifact_revision": "v7",
+  "files": {
+    "presentations/iwai2026_spotlight/output/iwai2026_spotlight_2026-10-09.pptx": "54e5cd8b03fb16254fdef8d98ec84abe65bf2ca383328100c96aa348b0071992",
+    "presentations/iwai2026_spotlight/output/iwai2026_spotlight_2026-10-09.pdf": "60803e9731dfe44a76038d06fa3fd051710b0a22c31635f00123d221bc68e5ae",
+    "presentations/iwai2026_spotlight/output/iwai2026_spotlight_script_2026-10-09.pdf": "12b223a8c20ae50048bf5fe290c1182185897015cb74da2d3a012dc30659e555",
+    "presentations/iwai2026_spotlight/output/iwai2026_spotlight_script_2026-10-09.md": "f69e87f473c9998e69981af674e56ca0c139c09dd260dabc0c02ed91c07a9677"
+  },
+  "source_files": {
+    "paper/paper_iwai2026_abridged.tex": "3226fabfa48a99a2a1bb96d32f84528b39e5a67e725f515f7e1e82e41fa6d2f1",
+    "paper/full_paper_jair.tex": "db283e6949d6a018a1bbed7fb93c4291b0b5b25dbf0fab63d2b43978da4fb9a9",
+    "results/results_tileworld_scaling.csv": "df715fc1cba14a66a8b7b94bc9bcecfda2f5f56788ca3219ebc3f6caaaf01ccd",
+    "results/results_budget_frontier.csv": "70f1ff1311172c897ce5b4981f0a8e3d918663da95f34803bf3b30a9fed35c60",
+    "results/results_real_sensor_summary.csv": "d060e6851e44428bca81aaf233d3b722a2b0d922905737a67a30808c0a09bcf2",
+    "rho_aif/environments/tileworld.py": "093fbb23d318f1545c027fb3a0fd263ef1938bd6dd4f061cf071a1fff7b570a2"
+  },
+  "slide_count": 4,
+  "script_words": 331,
+  "script_pdf_pages": 2,
+  "slide_pdf_pages": 4,
+  "media_parts": [],
+  "external_package_relationships": [],
+  "speaker_notes_match_script": true,
+  "csv_snapshot_exact_match": true,
+  "reward_cost_identity_passes": true,
+  "fonts": [
+    "Arial",
+    "Courier New"
+  ],
+  "native_powerpoint_inspection": "All v6 slides visually checked in Microsoft PowerPoint. v7 differs only in chart-axis headroom; changed chart checked again in native PowerPoint. No repair prompt.",
+  "pdf_visual_inspection": "All four v6 pages checked by root and both independent reviewers. Changed v7 page3 rechecked; other slides unchanged. Rehearsal PDF text confirmed complete on two pages.",
+  "test_suite": "541 passed, 26 existing warnings, 174.71 seconds",
+  "timing": "2:54 rehearsal guide, not a measured speaking duration",
+  "network_needed_to_present": false,
+  "submission_performed": false
+}
