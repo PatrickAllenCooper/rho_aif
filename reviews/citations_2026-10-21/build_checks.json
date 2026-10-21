@@ -1,0 +1,48 @@
+{
+  "full_paper_jair": {
+    "pages": 51,
+    "changed_pages": [
+      4,
+      5,
+      14,
+      49
+    ],
+    "overfull_boxes": 0,
+    "undefined_references": 0,
+    "missing_characters": 0,
+    "latex_errors": 0
+  },
+  "full_paper": {
+    "pages": 66,
+    "changed_pages": [
+      5,
+      6,
+      18
+    ],
+    "overfull_boxes": 0,
+    "undefined_references": 0,
+    "missing_characters": 0,
+    "latex_errors": 0
+  },
+  "visual_inspection": {
+    "status": "passed",
+    "reviewer": "root",
+    "jair_pages": [
+      4,
+      5,
+      14,
+      49
+    ],
+    "lncs_pages": [
+      5,
+      6,
+      18
+    ],
+    "checks": [
+      "new wording readable",
+      "citation rendering intact",
+      "no clipped or overlapping text",
+      "page count unchanged"
+    ]
+  }
+}

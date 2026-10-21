@@ -1,0 +1,210 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1162/neco.a.1491",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "b49801d1941e0a797407ac3b6807404906c9c17a0eea7c71ef7c338b8ad27f54",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          6,
+          21
+        ]
+      ],
+      "date-time": "2026-06-21T04:16:27Z",
+      "timestamp": 1782015387758,
+      "version": "3.54.5"
+    },
+    "publisher": "MIT Press",
+    "issue": "3",
+    "short-container-title": [],
+    "published-print": {
+      "date-parts": [
+        [
+          2026,
+          2,
+          27
+        ]
+      ]
+    },
+    "DOI": "10.1162/neco.a.1491",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2026,
+          2,
+          4
+        ]
+      ],
+      "date-time": "2026-02-04T21:32:03Z",
+      "timestamp": 1770240723000
+    },
+    "page": "439-469",
+    "title": [
+      "Reframing the Expected Free Energy: Four Formulations and a Unification"
+    ],
+    "prefix": "10.1162",
+    "volume": "38",
+    "author": [
+      {
+        "given": "Théophile",
+        "family": "Champion",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "University of Birmingham, School of Psychology and School of Computer Science, Birmingham B15 2TT, UK txc314@alumni.bham.ac.uk"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Howard",
+        "family": "Bowman",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "University of Birmingham, School of Psychology and School of Computer Science, Birmingham B15 2TT, UK"
+          },
+          {
+            "name": "University College London, Wellcome Centre for Human Neuroimaging (honorary), London WC1N 3AR, UK H.Bowman@bham.ac.uk"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Dimitrije",
+        "family": "Marković",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Technische Universität Dresden, Department of Psychology, Dresden 01069, Germany dimitrije.markovic@tu-dresden.de"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Marek",
+        "family": "Grześ",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "University of Kent, School of Computing, Canterbury CT2 7NZ, UK m.grzes@kent.ac.uk"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "281",
+    "published-online": {
+      "date-parts": [
+        [
+          2026,
+          2,
+          27
+        ]
+      ]
+    },
+    "container-title": [
+      "Neural Computation"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://direct.mit.edu/neco/article-pdf/38/3/439/2579378/neco.a.1491.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "syndication"
+      },
+      {
+        "URL": "https://direct.mit.edu/neco/article-pdf/38/3/439/2579378/neco.a.1491.pdf",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2026,
+          2,
+          27
+        ]
+      ],
+      "date-time": "2026-02-27T20:16:04Z",
+      "timestamp": 1772223364000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://direct.mit.edu/neco/article/38/3/439/135158/Reframing-the-Expected-Free-Energy-Four"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2026,
+          2,
+          27
+        ]
+      ]
+    },
+    "journal-issue": {
+      "issue": "3",
+      "published-online": {
+        "date-parts": [
+          [
+            2026,
+            2,
+            27
+          ]
+        ]
+      },
+      "published-print": {
+        "date-parts": [
+          [
+            2026,
+            2,
+            27
+          ]
+        ]
+      }
+    },
+    "URL": "https://doi.org/10.1162/neco.a.1491",
+    "relation": {},
+    "ISSN": [
+      "0899-7667",
+      "1530-888X"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2026,
+          2,
+          27
+        ]
+      ]
+    }
+  }
+}

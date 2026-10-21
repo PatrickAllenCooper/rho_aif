@@ -1,0 +1,138 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1609/icaps.v28i1.13882",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "4797f574e5f874181dac71032458913922448889d958ae7c0b421f770077da1b",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          17
+        ]
+      ],
+      "date-time": "2026-10-17T16:41:06Z",
+      "timestamp": 1792255266895,
+      "version": "4.4.0"
+    },
+    "publisher": "Association for the Advancement of Artificial Intelligence (AAAI)",
+    "short-container-title": [
+      "ICAPS"
+    ],
+    "DOI": "10.1609/icaps.v28i1.13882",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2022,
+          9,
+          27
+        ]
+      ],
+      "date-time": "2022-09-27T20:05:18Z",
+      "timestamp": 1664309118000
+    },
+    "page": "259-263",
+    "title": [
+      "Online Algorithms for POMDPs with Continuous State, Action, and Observation Spaces"
+    ],
+    "prefix": "10.1609",
+    "volume": "28",
+    "author": [
+      {
+        "given": "Zachary",
+        "family": "Sunberg",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Mykel",
+        "family": "Kochenderfer",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "9382",
+    "published-online": {
+      "date-parts": [
+        [
+          2018,
+          6,
+          15
+        ]
+      ]
+    },
+    "container-title": [
+      "Proceedings of the International Conference on Automated Planning and Scheduling"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://ojs.aaai.org/index.php/ICAPS/article/download/13882/13731",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://ojs.aaai.org/index.php/ICAPS/article/download/13882/13731",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2022,
+          9,
+          27
+        ]
+      ],
+      "date-time": "2022-09-27T20:05:18Z",
+      "timestamp": 1664309118000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://ojs.aaai.org/index.php/ICAPS/article/view/13882"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2018,
+          6,
+          15
+        ]
+      ]
+    },
+    "URL": "https://doi.org/10.1609/icaps.v28i1.13882",
+    "relation": {},
+    "ISSN": [
+      "2334-0843",
+      "2334-0835"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2018,
+          6,
+          15
+        ]
+      ]
+    }
+  }
+}

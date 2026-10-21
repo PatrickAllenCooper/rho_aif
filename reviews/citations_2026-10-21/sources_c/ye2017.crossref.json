@@ -1,0 +1,167 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1613/jair.5328",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "3f45609548faa11b416fc14e007fb0c6c37f0d4aaecc3b0398417dd7da48cde9",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          16
+        ]
+      ],
+      "date-time": "2026-10-16T07:43:59Z",
+      "timestamp": 1792136639164,
+      "version": "4.4.0"
+    },
+    "publisher": "AI Access Foundation",
+    "short-container-title": [
+      "jair"
+    ],
+    "DOI": "10.1613/jair.5328",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2018,
+          7,
+          18
+        ]
+      ],
+      "date-time": "2018-07-18T11:41:36Z",
+      "timestamp": 1531914096000
+    },
+    "page": "231-266",
+    "title": [
+      "DESPOT: Online POMDP Planning with Regularization"
+    ],
+    "prefix": "10.1613",
+    "volume": "58",
+    "author": [
+      {
+        "given": "Nan",
+        "family": "Ye",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Adhiraj",
+        "family": "Somani",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "David",
+        "family": "Hsu",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Wee Sun",
+        "family": "Lee",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "16860",
+    "published-online": {
+      "date-parts": [
+        [
+          2017,
+          1,
+          26
+        ]
+      ]
+    },
+    "container-title": [
+      "Journal of Artificial Intelligence Research"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://jair.org/index.php/jair/article/download/11043/26215",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://jair.org/index.php/jair/article/download/11043/26216",
+        "content-type": "application/postscript",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://jair.org/index.php/jair/article/download/11043/26215",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2019,
+          10,
+          10
+        ]
+      ],
+      "date-time": "2019-10-10T18:22:25Z",
+      "timestamp": 1570731745000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://jair.org/index.php/jair/article/view/11043"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2017,
+          1,
+          26
+        ]
+      ]
+    },
+    "URL": "https://doi.org/10.1613/jair.5328",
+    "relation": {},
+    "ISSN": [
+      "1076-9757"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2017,
+          1,
+          26
+        ]
+      ]
+    }
+  }
+}

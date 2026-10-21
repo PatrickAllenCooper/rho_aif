@@ -1,0 +1,184 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1162/neco_a_01357",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "61c81065d7ed5205e3bdf9f2012cf7f1fcb71e1f2bce16be39cb0853abc2f66d",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          20
+        ]
+      ],
+      "date-time": "2026-10-20T22:28:36Z",
+      "timestamp": 1792535316505,
+      "version": "4.5.0"
+    },
+    "publisher": "MIT Press",
+    "issue": "3",
+    "short-container-title": [
+      "Neural Computation"
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          2021,
+          3
+        ]
+      ]
+    },
+    "DOI": "10.1162/neco_a_01357",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2021,
+          1,
+          5
+        ]
+      ],
+      "date-time": "2021-01-05T22:38:38Z",
+      "timestamp": 1609886318000
+    },
+    "page": "674-712",
+    "title": [
+      "Active Inference: Demystified and Compared"
+    ],
+    "prefix": "10.1162",
+    "volume": "33",
+    "author": [
+      {
+        "given": "Noor",
+        "family": "Sajid",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Wellcome Centre for Human Neuroimaging, UCL Queen Square Institute of Neurology, London, WC1N 3AR, U.K."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Philip J.",
+        "family": "Ball",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Machine Learning Research Group, Department of Engineering Science, University of Oxford, Oxford OX1 3PJ, U.K."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Thomas",
+        "family": "Parr",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Wellcome Centre for Human Neuroimaging, UCL Queen Square Institute of Neurology, London, WC1N 3AR, U.K."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Karl J.",
+        "family": "Friston",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Wellcome Centre for Human Neuroimaging, UCL Queen Square Institute of Neurology, London, WC1N 3AR, U.K."
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "281",
+    "container-title": [
+      "Neural Computation"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://www.mitpressjournals.org/doi/pdf/10.1162/neco_a_01357",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2023,
+          10,
+          16
+        ]
+      ],
+      "date-time": "2023-10-16T23:40:30Z",
+      "timestamp": 1697499630000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://direct.mit.edu/neco/article/33/3/674-712/97486"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2021,
+          3
+        ]
+      ]
+    },
+    "journal-issue": {
+      "issue": "3",
+      "published-print": {
+        "date-parts": [
+          [
+            2021,
+            3
+          ]
+        ]
+      }
+    },
+    "alternative-id": [
+      "10.1162/neco_a_01357"
+    ],
+    "URL": "https://doi.org/10.1162/neco_a_01357",
+    "relation": {},
+    "ISSN": [
+      "0899-7667",
+      "1530-888X"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2021,
+          3
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,1422 @@
+{
+  "audit_date": "2026-10-21",
+  "timezone": "America/Denver",
+  "reviewer": "independent_agent_A",
+  "scope": "23 bibliography entries, all 39 citation-key uses; includes cited inputs scan (rocksample_main.tex has no citations).",
+  "baseline_commit": "68a9c137c4529675b3fe097ccda351e464dc3afc",
+  "baseline_tex_sha256": "c260180b50f5845132a6aeba50150373cf5ae5f74331feb9d5490aeae77d65c2",
+  "baseline_bib_sha256": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592",
+  "final_rechecked_tex_sha256": "5b86fb4963cb04b65926ef86d0da58c14a4c1a37db3b7f14810941b038eafd1f",
+  "final_rechecked_bib_sha256": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592",
+  "summary": {
+    "entries": 23,
+    "citation_key_uses": 39,
+    "fabricated_references_found": 0,
+    "incorrect_bibliographic_fields_found": 0,
+    "citation_uses_fully_supported": 35,
+    "citation_uses_partially_verified_access_limited": 4,
+    "required_source_edits_identified_by_this_reviewer": 0,
+    "scope_note": "Authenticity is verified for all entries. Four uses have explicitly bounded primary-text/policy verification; a real but inaccessible source is not marked fabricated. This citation audit is not a JAIR acceptance decision."
+  },
+  "records": [
+    {
+      "key": "altman1999",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://www-sop.inria.fr/members/Eitan.Altman/mdp1.html",
+        "https://www-sop.inria.fr/members/Eitan.Altman/PAPERS/cont.txt"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Altman, E.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Constrained Markov Decision Processes",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "publisher": {
+          "status": "verified",
+          "manuscript_value": "Chapman \\& Hall/CRC",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "1999",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "claim": "CMDPs use resource costs and Lagrange multipliers.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Rational inattention constrains or prices information capacity \\citep{sims2003,matejka2015}. Constrained MDPs use Lagrange multipliers on expected resource costs \\citep{altman1999}, and constrained POMDP methods track admissible cost alongside belief \\citep{kim2011cpomdp}. Automatic temperature tuning in soft actor-critic drives policy entropy toward a target \\citep{haarnoja2018sac}. These provide close conceptual precedents for resource control. Our weight multiplies information gain, however, while the target concerns observation count or cost. It is not generally the multiplier of a sensing-cap constraint. Section~\\ref{sec:budget_positioning} gives the detailed distinctions, including the difference from a dual formulation of EFE itself \\citep{kouw2026bethe}. The contribution is an operational calibration for this policy family, its exact scale transformation under stated assumptions, and explicit treatment of finite-grid crossings and usage gaps.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 350,
+          "claim": "Randomization is classical in constrained control.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "and otherwise choose $w_{\\mathrm{lo}}$, retaining that policy for the episode. Linearity gives expected usage exactly $B$ for these population endpoint usages. This is one randomized policy, not an interval of scalar prices or a constrained-reward optimum. It attains gap targets that no single weight can, consistent with the need for randomization in constrained MDPs and POMDPs \\citep{altman1999,kim2011cpomdp}.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "claim": "Final wording gives conceptual precedents in information prices/resource constraints.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Information prices and resource constraints are classical in constrained MDPs \\citep{altman1999}, rational inattention \\citep{sims2003,matejka2015}, and SAC \\citep{haarnoja2018sac}. Here one information weight controls sensing usage across episodes. It differs from an information constraint internal to EFE \\citep{kouw2026bethe} and per-node constrained-POMDP dual ascent \\citep{stocco2024recursive}. The contribution is the calibration procedure for this policy family, with count/cost equivariance, grid crossings, endpoint mixtures and conditional stationary convergence.",
+          "changed_from_original_baseline": true
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 561,
+          "claim": "Finite-state constrained-MDP duality cannot simply be assumed for a continuous belief MDP.",
+          "verdict": "partially_verified_access_limited",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "At budget $B$, the reference is the feasible envelope of the sampled policy points, obtained by maximizing their mixture reward subject to mixture usage at most $B$. A solution uses at most two sampled policies. Policies below the target remain eligible, and the reference is flat at the largest sampled reward once the cap is slack. This is a linear program over measured points, not equal-usage interpolation. The solver is approximate, the penalty grid is finite, and reward and usage are Monte Carlo estimates. Consequently the envelope is neither a certified population bound nor the full constrained frontier. We do not assume that finite-state strong-duality results \\citep{altman1999} automatically extend to the continuous belief MDP. Appendix~\\ref{app:cpomdp_details} identifies the evaluated policies and reference records.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "The parent changed line 454 from resource-price adaptation to information prices and resource constraints during the audit; final wording was rechecked.",
+      "access_limitations": "Full book theorems and their exact hypotheses were not accessible in this pass. General attribution is supported by author-hosted contents; the strong-duality qualification at line 561 is appropriately cautious but not a freshly checked book theorem.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Author-hosted book page and complete contents identify the 1999 Chapman & Hall/CRC book. Chapters 3.3–3.5 and 4.3–4.4 explicitly cover constrained control, Lagrangian/dual LP formulations and randomization. The contents separate finite and infinite MDPs."
+    },
+    {
+      "key": "araya2010",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://proceedings.neurips.cc/paper/2010/hash/68053af2923e00204c3ca7c6a3150cf7-Abstract.html",
+        "https://proceedings.neurips.cc/paper_files/paper/2010/file/68053af2923e00204c3ca7c6a3150cf7-Paper.pdf"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Araya-L\\'{o}pez, M. and Buffet, O. and Thomas, V. and Charpillet, F.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "A {POMDP} extension with belief-dependent rewards",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "booktitle": {
+          "status": "verified",
+          "manuscript_value": "Advances in Neural Information Processing Systems",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2010",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 104,
+          "claim": "Belief-dependent reward extension.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "An engineer designing an inspection policy may need to specify how much testing the system should perform before deciding whether to repair or release an item. A standard partially observable Markov decision process (POMDP) values a test through its effect on expected task reward. A $\\rho$-POMDP additionally rewards properties of the agent's belief, allowing information gain to have explicit value \\citep{araya2010}. This introduces a practical choice: how much weight should information gain receive relative to reward?",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 137,
+          "claim": "Original rho notation and convex approximation machinery.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "\\citet{araya2010} introduced $\\rho$-POMDPs with belief-dependent rewards. Their $\\rho$ denotes the whole reward, whereas we reserve it for an information term added to the ordinary task reward. Convex belief rewards support convex value functions and piecewise-linear convex approximations. Expected information gain is concave in the belief, so that machinery does not apply directly. \\citet{fehr2018} treat non-convex rewards under a Lipschitz hypothesis, and \\citet{benchetrit2025} develop an anytime planner for continuous spaces. For a finite observation model, strictly positive likelihoods make expected information gain Lipschitz on the belief simplex. Zero likelihoods, including noiseless sensing, can violate this condition. Our exact tree recursion does not rely on that approximation guarantee.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 204,
+          "claim": "Belief/action reward Bellman framework.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "At $d=H$, the value is the best commit value. Write $R(b,a):=\\sum_s b(s)R(s,a)$ for expected immediate reward and $V^*(b,d):=\\max_a V(a,b,d)$ for the optimal belief-state value. This is a $\\rho$-POMDP Bellman recursion with an action-dependent belief utility, as permitted by \\citet{araya2010}. The proposition identifies the two recursions when $\\beta=1$ fixes the exchange rate at one reward unit per nat of log preference. A separately normalized preference distribution needs the qualification following the proposition.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 293,
+          "claim": "Reward-plus-information planning is an established construction.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Planning+IG is the central baseline and represents the familiar information-reward construction in POMDP-IR and $\\rho$-POMDPs \\citep{spaan2015,araya2010,satsangi2018}. By Proposition~\\ref{prop:equivalence}, its difference from EFE is the chosen weight.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Official PDF byline resolves abbreviated author names in the HTML record. Section 3.1 defines the full belief/action reward; theorem 3.1 and section 4 cover convex values and PWLC approximation. This supports the manuscript distinction between the original full reward and its own information-only rho."
+    },
+    {
+      "key": "bellemare2016",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://proceedings.neurips.cc/paper_files/paper/2016/hash/afda332245e2af431fb7b672a68b659d-Abstract.html"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Bellemare, M. and Srinivasan, S. and Ostrovski, G. and Schaul, T. and Saxton, D. and Munos, R.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Unifying count-based exploration and intrinsic motivation",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "booktitle": {
+          "status": "verified",
+          "manuscript_value": "Advances in Neural Information Processing Systems",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2016",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "Count-based exploration supplies an exploration bonus.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} provide an earlier typology of computational intrinsic motivation. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention.",
+          "changed_from_original_baseline": true
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "Official full abstract was sufficient for this broad attribution; algorithm derivations were not re-audited.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Official NeurIPS record lists the six authors in manuscript order and describes density-model pseudo-counts used for exploration bonuses."
+    },
+    {
+      "key": "bernardo1979",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1214/aos/1176344689",
+        "https://www.uv.es/~bernardo/publications.html",
+        "https://www.uv.es/~bernardo/1979AS.pdf"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Bernardo, J.~M.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Expected information as expected utility",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "The Annals of Statistics",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "7",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "number": {
+          "status": "verified",
+          "manuscript_value": "3",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "686--690",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "1979",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 122,
+          "claim": "Log scoring supplies the exact identification used in this paper.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Active inference identifies a particular point in this policy family. Its Expected Free Energy (EFE) objective combines pragmatic value with expected information gain \\citep{friston2015,parr2019}. For the recursive, reward-based objective specified here, minimizing EFE is equivalent to maximizing reward plus information gain at $w=1$. The reward--information identification is exact under log scoring \\citep{bernardo1979}. For ordinary task rewards it depends on the declared reward convention and the treatment of the preference normalizer. The coefficient is therefore an untuned default under shared units, not a scale-invariant calibration. In particular, $w=1$ belongs to the level set of its implicit budget $U(1)$, but need not equal that budget's crossing threshold.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 142,
+          "claim": "Expected improvement of unit log score equals EIG.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Classical value of information measures the improvement an observation can bring to a decision \\citep{howard1966}. Bayesian experimental design instead commonly selects observations by expected information gain \\citep{lindley1956,foster2021dad}. The criteria coincide under a particular reward model: when the reward is a proper log score, the expected improvement in score is the expected information gain \\citep{bernardo1979}. This supplies the exact reward--information identification used here. Sequential experimental design is also the closest structural analogue to our observe-then-commit setting.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 227,
+          "claim": "The log-score case gives Z=1 under the manuscript normalization.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Setting $\\beta=1$ assigns one nat to each reward unit. A path scoring $T$ outcomes also accumulates $-T\\ln Z$ in log-preference. Since observe-then-commit paths have different lengths, this term can be policy-dependent. It vanishes for a log-scoring reward with $Z=1$ \\citep{bernardo1979}, or cancels when every path scores the same number of outcomes under a common preference distribution. We do not impose that fixed-length construction. Proposition~\\ref{prop:equivalence} therefore proves equivalence for the reward-based recursion as written, conditional on its pragmatic identification, rather than deriving it from general normalized preferences.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1263,
+          "claim": "Log scoring is a cited nontrivial tool.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "\\item Appropriate citations are given for all non-trivial theoretical tools and techniques. \\textbf{Yes.} Log scoring \\citep{bernardo1979}, the Robbins--Monro recursion \\citep{robbins1951}, classical almost-sure extensions \\citep{blum1954}, background on constrained stochastic approximation \\citep{kushner1978}, and the sophisticated-inference Bellman-optimality result \\citep{dacosta2020b} that the recursive agent is built on.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "Z=1 follows directly from the manuscript unit-log-score algebra, rather than being represented as a verbatim theorem of Bernardo. For A log p+B, the utility improvement is A times EIG; the manuscript specifies the unit log score.",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "All five pages of the author-hosted scan were rendered and visually inspected. Sections 2–4 define information gain and logarithmic proper utility; the final derivation identifies expected utility increase with a positive constant times EIG. Unit log score gives the manuscript identity."
+    },
+    {
+      "key": "benchetrit2025",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://arxiv.org/abs/2502.02549"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Benchetrit, R. and Lev-Yehudi, I. and Zhitnikov, A. and Indelman, V.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Anytime incremental $\\rho${POMDP} planning in continuous spaces",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "eprint": {
+          "status": "verified",
+          "manuscript_value": "2502.02549",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "archivePrefix": {
+          "status": "verified",
+          "manuscript_value": "arXiv",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2025",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 137,
+          "claim": "An anytime planner extends rho-POMDP planning to continuous spaces.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "\\citet{araya2010} introduced $\\rho$-POMDPs with belief-dependent rewards. Their $\\rho$ denotes the whole reward, whereas we reserve it for an information term added to the ordinary task reward. Convex belief rewards support convex value functions and piecewise-linear convex approximations. Expected information gain is concave in the belief, so that machinery does not apply directly. \\citet{fehr2018} treat non-convex rewards under a Lipschitz hypothesis, and \\citet{benchetrit2025} develop an anytime planner for continuous spaces. For a finite observation model, strictly positive likelihoods make expected information gain Lipschitz on the belief simplex. Zero likelihoods, including noiseless sensing, can violate this condition. Our exact tree recursion does not rely on that approximation guarantee.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "Verified as an arXiv work, not as an accepted/published IJCAI paper. Bibliography claims only arXiv.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "The author-deposited arXiv record verifies all four authors, title and 2025 submission. Its abstract describes an anytime incremental rho-POMDP planner in continuous spaces."
+    },
+    {
+      "key": "blum1954",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1214/aoms/1177728794"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Blum, J.~R.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Approximation methods which converge with probability one",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "The Annals of Mathematical Statistics",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "25",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "number": {
+          "status": "verified",
+          "manuscript_value": "2",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "382--386",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "1954",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 447,
+          "claim": "Historical almost-sure extensions of stochastic approximation.",
+          "verdict": "partially_verified_access_limited",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "The update is a projected Robbins--Monro recursion \\citep{robbins1951}, with classical almost-sure extensions due to \\citet{blum1954} and constrained treatments in \\citet{kushner1978}. Appendix~\\ref{app:theory_controller} proves this bounded scalar case directly by a supermartingale argument, including discontinuous curves. Kronecker's lemma gives the running-average result for the harmonic schedule above. The theorem is conditional on one sign-consistent crossing and does not cover an arbitrary nonmonotone usage curve.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1263,
+          "claim": "Classical almost-sure extensions cited as background.",
+          "verdict": "partially_verified_access_limited",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "\\item Appropriate citations are given for all non-trivial theoretical tools and techniques. \\textbf{Yes.} Log scoring \\citep{bernardo1979}, the Robbins--Monro recursion \\citep{robbins1951}, classical almost-sure extensions \\citep{blum1954}, background on constrained stochastic approximation \\citep{kushner1978}, and the sophisticated-inference Bellman-optimality result \\citep{dacosta2020b} that the recursive agent is built on.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "Project Euclid DOI, article and legacy PDF routes, and JSTOR were inaccessible. Indexed secondary abstract corroborates the historical connection but was not substituted for primary-text verification. Both uses remain primary-text access-limited; the manuscript separately proves its bounded scalar result.",
+      "unsuccessful_access_attempts": [
+        "https://projecteuclid.org/download/pdf_1/euclid.aoms/1177728794",
+        "https://doi.org/10.1214/aoms/1177728794",
+        "https://www.jstor.org/stable/2236739"
+      ],
+      "source_evidence": "Publisher-deposited Crossref metadata exactly verifies Julius R. Blum, title, Annals of Mathematical Statistics 25(2), 382–386, 1954. The title supports almost-sure convergence as its subject. The original text and abstract were not successfully retrieved."
+    },
+    {
+      "key": "boutilier2002",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://research.google/pubs/a-pomdp-formulation-of-preference-elicitation-problems/",
+        "https://www.cs.toronto.edu/~cebly/Papers/pefa-abs.html",
+        "https://www.cs.toronto.edu/~cebly/Papers/_download_/pefa.pdf"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Boutilier, C.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "A {POMDP} formulation of preference elicitation problems",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "booktitle": {
+          "status": "verified",
+          "manuscript_value": "AAAI Conference on Artificial Intelligence",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "239--246",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2002",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 139,
+          "claim": "Sequential preference elicitation retains state-dependent rewards.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "POMDPs with information rewards were developed for active cooperative perception \\citep{spaan2015}, and their relation to $\\rho$-POMDPs is discussed by \\citet{satsangi2018}. Earlier preference-elicitation work selected queries by sequential value of information while retaining state-dependent rewards \\citep{boutilier2002}. These approaches establish the motivation for valuing information explicitly. Our focus is the coefficient on that value and its relation to expected sensing usage.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Author-hosted full paper section 3.1 uses utility functions as hidden states, query costs, and state-dependent terminal decision rewards. Section 3 distinguishes sequential elicitation from myopic expected value of information."
+    },
+    {
+      "key": "burda2019",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://www.research.ed.ac.uk/en/publications/exploration-by-random-network-distillation/"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Burda, Y. and Edwards, H. and Storkey, A. and Klimov, O.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Exploration by random network distillation",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "booktitle": {
+          "status": "verified",
+          "manuscript_value": "International Conference on Learning Representations",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2019",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "RND uses an exploration bonus.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} provide an earlier typology of computational intrinsic motivation. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention.",
+          "changed_from_original_baseline": true
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "OpenReview direct access was blocked; institutional author record and full abstract independently support this narrow attribution. 2019 is conference year, not 2018 preprint year.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Coauthor institutional publication record verifies all four authors, ICLR 2019 and exact title. The complete abstract describes a neural-network prediction-error exploration bonus and combining intrinsic and extrinsic rewards."
+    },
+    {
+      "key": "champion2024",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1162/NECO.a.1491",
+        "https://kar.kent.ac.uk/113953/",
+        "https://kar.kent.ac.uk/113953/1/theophile26reframing.pdf"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Champion, T. and Bowman, H. and Markovi\\'{c}, D. and Grze\\'{s}, M.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Reframing the expected free energy: Four formulations and a unification",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "Neural Computation",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "38",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "number": {
+          "status": "verified",
+          "manuscript_value": "3",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "439--469",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2026",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "claim": "Root definitions impose restrictions and produce distinct EFE formulations.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Several distinct constructions occur under the EFE name. \\citet{millidge2021} distinguish EFE from a naive future extension of variational free energy and propose Free Energy of the Expected Future (FEEF). \\citet{champion2024} examine which EFE expressions follow from common root definitions and the restrictions those roots impose on prior preferences. \\citet{devries2025} derive EFE-based planning from a model augmented with preference and epistemic priors. The generalised free energy of \\citet{parr2019} is another distinct functional. Our equivalence concerns only the recursive, reward-based objective defined in Section~\\ref{sec:methodology}, with expected information gain about the hidden state as its epistemic term. It does not assert an unchanged coefficient for these alternative constructions. Broader comparisons with decision-theoretic objectives include an EFE optimality-gap analysis \\citep{wei2024voi} and a survey of formal equivalences \\citep{sweeney2026equivalences}.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 220,
+          "claim": "The manuscript explicitly scopes its EFE decomposition instead of claiming universal equivalence.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Negating the objective gives the Bellman maximization (proof in Appendix~\\ref{app:proof}). This identifies the specified recursive EFE agent with Planning+IG at $w=1$ under the stated convention. It is a notational bridge, not a reward-optimality theorem. Unlike the $\\beta\\to\\infty$ limit of \\citet{dacosta2020b}, it retains full information weight. It concerns the information-gain and pragmatic-value formulation among those related by \\citet{champion2024}, with the scope and approximation restrictions described in Related Work and Appendix~\\ref{app:theory_setup}.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "Citation-key suffix 2024 is historical and not a false publication year. Printed year 2026 is correct.",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Publisher metadata and author institutional record verify 2026, Neural Computation 38(3), 439–469 and all four authors. The abstract/full author manuscript discuss distinct EFE root definitions and associated restrictions on preference distributions."
+    },
+    {
+      "key": "cooper2026iwai",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://arxiv.org/abs/2607.16981",
+        "https://arxiv.org/html/2607.16981v1",
+        "https://iwaiworkshop.github.io/",
+        "https://iwaiworkshop.github.io/docs/IWAI_2026_program_detailed.pdf"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Cooper, P. and Velasquez, A.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Expected free energy as belief-dependent utility for $\\rho$-{POMDP}s",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "booktitle": {
+          "status": "verified",
+          "manuscript_value": "Proceedings of the 7th International Workshop on Active Inference (IWAI 2026)",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "series": {
+          "status": "verified_as_planned_not_published",
+          "manuscript_value": "Communications in Computer and Information Science",
+          "detail": "Workshop site and arXiv comment support planned CCIS proceedings; no published volume was established."
+        },
+        "publisher": {
+          "status": "verified_as_planned_not_published",
+          "manuscript_value": "Springer",
+          "detail": "Workshop site and arXiv comment support planned CCIS proceedings; no published volume was established."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2026",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "note": {
+          "status": "verified_as_planned_not_published",
+          "manuscript_value": "To appear",
+          "detail": "Workshop site and arXiv comment support planned CCIS proceedings; no published volume was established."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 128,
+          "claim": "Accepted workshop version contains EFE results and benchmarks; journal adds budget and related analyses and revises older size claim.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "An abridged version was accepted at IWAI 2026 \\citep{cooper2026iwai}. It contains the EFE equivalence results and their benchmark evaluation. The budgeted formulation, scale-equivariance and controller results, budget experiments, and distractor and destructive-sensing analyses are extensions. We also revise the workshop version's claim that the advantage grows with state-space size and observation-action count, which RockSample[11,11] does not support.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "Do not replace To appear with invented proceedings volume/pages. Official event has already occurred as of audit date; existence does not depend solely on future-event claims.",
+      "access_limitations": "No published Springer volume, DOI or pagination was independently located. Acceptance and planned CCIS publication are verified; actual proceedings publication is not. Existing To appear note is appropriate. Exact abridged conference version length is based on user-provided acceptance context, not inferred from the 41-page arXiv preprint.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "ArXiv verifies title, Cooper/Velasquez and the July 2026 manuscript. Its sections contain EFE equivalence and benchmarks, including the older state-space-size claim. Official IWAI program lists the title and Patrick Cooper; workshop site identifies CCIS proceedings. User-supplied acceptance is separate corroboration."
+    },
+    {
+      "key": "dacosta2020",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1016/j.jmp.2020.102447",
+        "https://arxiv.org/abs/2001.07203",
+        "https://arxiv.org/pdf/2001.07203"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Da~Costa, L. and Parr, T. and Sajid, N. and Veselic, S. and Neacsu, V. and Friston, K.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Active inference on discrete state-spaces: A synthesis",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "Journal of Mathematical Psychology",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "99",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "102447",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2020",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "claim": "EFE combines pragmatic and epistemic terms.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "ArXiv journal-reference text labels the journal 2021; publisher-deposited journal metadata gives December 2020 and agrees with bibliography. No correction warranted.",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Publisher metadata verifies 2020, volume 99, article 102447 and six authors. Full author PDF section 7 decomposes EFE into extrinsic expected log evidence and intrinsic information gain."
+    },
+    {
+      "key": "dacosta2020b",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1162/neco_a_01574",
+        "https://discovery.ucl.ac.uk/id/eprint/10168059/1/neco_a_01574.pdf",
+        "https://arxiv.org/abs/2009.08111",
+        "https://arxiv.org/html/2009.08111v4"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Da~Costa, L. and Sajid, N. and Parr, T. and Friston, K. and Smith, R.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Reward maximization through discrete active inference",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "Neural Computation",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "35",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "number": {
+          "status": "verified",
+          "manuscript_value": "5",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "807--852",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2023",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "claim": "Finite-horizon recursive Bellman-optimality limit requires precise reward preferences and exact inference.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 183,
+          "claim": "Recursive choices are closed loop, conditional on future states/beliefs.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "$Q(o_\\tau\\mid\\pi)$ predicts observations under policy $\\pi$, while $Q(s_\\tau\\mid\\pi)$ and $Q(s_\\tau\\mid o_\\tau,\\pi)$ are the corresponding prior and posterior beliefs. The parameters $C$ specify the preference distribution $P(\\cdot\\mid C)$, which is distinct from the observation model conditioned on state and action. Minimization favors preferred outcomes and informative observations. Following the recursive, closed-loop formulation associated with sophisticated inference \\citep{friston2021,dacosta2020b}, we evaluate actions from the current belief and replan after every observation.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 220,
+          "claim": "Specific reward-based recursive EFE form is scoped.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Negating the objective gives the Bellman maximization (proof in Appendix~\\ref{app:proof}). This identifies the specified recursive EFE agent with Planning+IG at $w=1$ under the stated convention. It is a notational bridge, not a reward-optimality theorem. Unlike the $\\beta\\to\\infty$ limit of \\citet{dacosta2020b}, it retains full information weight. It concerns the information-gain and pragmatic-value formulation among those related by \\citet{champion2024}, with the scope and approximation restrictions described in Related Work and Appendix~\\ref{app:theory_setup}.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1263,
+          "claim": "Recursive inference/Bellman result is relevant prior theoretical work.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "\\item Appropriate citations are given for all non-trivial theoretical tools and techniques. \\textbf{Yes.} Log scoring \\citep{bernardo1979}, the Robbins--Monro recursion \\citep{robbins1951}, classical almost-sure extensions \\citep{blum1954}, background on constrained stochastic approximation \\citep{kushner1978}, and the sophisticated-inference Bellman-optimality result \\citep{dacosta2020b} that the recursive agent is built on.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "2023 is the journal year, despite historical key 2020b; title maximization follows the published US spelling.",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Full text section 4.3 theorem 16 gives finite-horizon recursive Bellman optimality in the zero-temperature preference limit. Section 5.2 explicitly extends to known-model POMDPs with exact inference. The manuscript retains these qualifications and rejects finite-weight reward optimality."
+    },
+    {
+      "key": "devries2025",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://arxiv.org/abs/2504.14898",
+        "https://arxiv.org/html/2504.14898v4"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "de~Vries, Bert and Nuijten, Wouter and van~de~Laar, Thijs\n                   and Kouw, Wouter and Adamiat, Sepideh and Nisslbeck, Tim\n                   and Lukashchuk, Mykola and Nguyen, Hoang Minh Huu\n                   and Hidalgo~Araya, Marco and Tr{\\'e}sor, Rapha{\\\"e}l\n                   and Jenneskens, Thijs and Nikoloska, Ivana\n                   and Subramanian, Raaja Ganapathy and van~Erp, Bart\n                   and Bagaev, Dmitry and Podusenko, Albert",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Expected free energy-based planning as variational inference",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "eprint": {
+          "status": "verified",
+          "manuscript_value": "2504.14898",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "archivePrefix": {
+          "status": "verified",
+          "manuscript_value": "arXiv",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2025",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "claim": "EFE-based planning can be derived using preference and epistemic priors.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Several distinct constructions occur under the EFE name. \\citet{millidge2021} distinguish EFE from a naive future extension of variational free energy and propose Free Energy of the Expected Future (FEEF). \\citet{champion2024} examine which EFE expressions follow from common root definitions and the restrictions those roots impose on prior preferences. \\citet{devries2025} derive EFE-based planning from a model augmented with preference and epistemic priors. The generalised free energy of \\citet{parr2019} is another distinct functional. Our equivalence concerns only the recursive, reward-based objective defined in Section~\\ref{sec:methodology}, with expected information gain about the hidden state as its epistemic term. It does not assert an unchanged coefficient for these alternative constructions. Broader comparisons with decision-theoretic objectives include an EFE optimality-gap analysis \\citep{wei2024voi} and a survey of formal equivalences \\citep{sweeney2026equivalences}.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "The earlier and others omission is no longer present. Wouter Kouw is fourth, and all 13 authors after the first three are now included.",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "ArXiv v4 verifies all 16 authors in bibliography order, title and 2025 date. Full abstract/model discussion derives planning from an augmented generative model with preference and epistemic priors."
+    },
+    {
+      "key": "duff2002",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://scholarworks.umass.edu/dissertations/AAI3039353/"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Duff, M.~O.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Optimal learning: Computational procedures for {B}ayes-adaptive {M}arkov decision processes",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "school": {
+          "status": "verified",
+          "manuscript_value": "University of Massachusetts Amherst",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2002",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "Bayes-adaptive planning addresses model uncertainty.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} provide an earlier typology of computational intrinsic motivation. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention.",
+          "changed_from_original_baseline": true
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "Full dissertation was not retrieved; the complete institutional abstract is sufficient for the broad claim made.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "University thesis record verifies Michael O’Gordon Duff, exact title, 2002 PhD and institution. Its full abstract describes exploration/exploitation through Bayesian treatment of unknown model parameters and hyperstates."
+    },
+    {
+      "key": "fehr2018",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://proceedings.neurips.cc/paper_files/paper/2018/hash/de7f47e09c8e05e6021ababdf6bc58e7-Abstract.html",
+        "https://proceedings.neurips.cc/paper_files/paper/2018/file/de7f47e09c8e05e6021ababdf6bc58e7-Paper.pdf"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Fehr, M. and Buffet, O. and Thomas, V. and Dibangoye, J.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "$\\rho$-{POMDP}s have {L}ipschitz-continuous $\\epsilon$-optimal value functions",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "booktitle": {
+          "status": "verified",
+          "manuscript_value": "Advances in Neural Information Processing Systems",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2018",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 137,
+          "claim": "Nonconvex belief rewards can be treated under the Lipschitz hypothesis.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "\\citet{araya2010} introduced $\\rho$-POMDPs with belief-dependent rewards. Their $\\rho$ denotes the whole reward, whereas we reserve it for an information term added to the ordinary task reward. Convex belief rewards support convex value functions and piecewise-linear convex approximations. Expected information gain is concave in the belief, so that machinery does not apply directly. \\citet{fehr2018} treat non-convex rewards under a Lipschitz hypothesis, and \\citet{benchetrit2025} develop an anytime planner for continuous spaces. For a finite observation model, strictly positive likelihoods make expected information gain Lipschitz on the belief simplex. Zero likelihoods, including noiseless sensing, can violate this condition. Our exact tree recursion does not rely on that approximation guarantee.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Official proceedings metadata and full text verify four authors, title/year and a Lipschitz reward assumption. The paper treats rewards beyond convex functions and finite-horizon approximation; the manuscript explicitly states the Lipschitz hypothesis and does not rely on this guarantee."
+    },
+    {
+      "key": "foster2021dad",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://proceedings.mlr.press/v139/foster21a.html",
+        "https://proceedings.mlr.press/v139/foster21a/foster21a.pdf"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Foster, A. and Ivanova, D.~R. and Malik, I. and Rainforth, T.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Deep adaptive design: Amortizing sequential {B}ayesian experimental design",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "booktitle": {
+          "status": "verified",
+          "manuscript_value": "International Conference on Machine Learning",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "3384--3395",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "publisher": {
+          "status": "verified",
+          "manuscript_value": "PMLR",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2021",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 142,
+          "claim": "Bayesian experimental design commonly optimizes expected information gain.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Classical value of information measures the improvement an observation can bring to a decision \\citep{howard1966}. Bayesian experimental design instead commonly selects observations by expected information gain \\citep{lindley1956,foster2021dad}. The criteria coincide under a particular reward model: when the reward is a proper log score, the expected improvement in score is the expected information gain \\citep{bernardo1979}. This supplies the exact reward--information identification used here. Sequential experimental design is also the closest structural analogue to our observe-then-commit setting.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Official PMLR metadata verifies all four authors and pages 3384–3395. Section 2 defines expected information gain as mutual information; section 2.1 describes sequential adaptation."
+    },
+    {
+      "key": "fountas2020",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://proceedings.neurips.cc/paper/2020/hash/865dfbde8a344b44095495f3591f7407-Abstract.html"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Fountas, Z. and Sajid, N. and Mediano, P.~A.~M. and Friston, K.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Deep active inference agents using {M}onte-{C}arlo methods",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "booktitle": {
+          "status": "verified",
+          "manuscript_value": "Advances in Neural Information Processing Systems",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2020",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 153,
+          "claim": "Deep active-inference models can use Monte Carlo search.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Scaling work combines active inference with deep models, reinforcement-learning objectives, and Monte Carlo tree search \\citep{fountas2020,tschantz2020,maisto2025}. Our MCTS-EFE variant follows this direction. Its controls test exploration constants, rollout choices, and two internal components, while leaving exact beliefs, exact commit values, and EFE leaf evaluation coupled (Appendix~\\ref{app:pomcp}).",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "This collective citation is not read as claiming every referenced paper implements every listed scaling method.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Official NeurIPS record verifies title/year and four authors. Full abstract describes deep active inference using neural networks and Monte Carlo tree search, supporting its place in the collective scaling-work citation."
+    },
+    {
+      "key": "friston2010",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1038/nrn2787",
+        "https://pubmed.ncbi.nlm.nih.gov/20068583/"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Friston, K.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "The free-energy principle: a unified brain theory?",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "Nature Reviews Neuroscience",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "11",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "number": {
+          "status": "verified",
+          "manuscript_value": "2",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "127--138",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2010",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "claim": "Active inference relates action and perception to variational inference.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "Nature full text was inaccessible; publisher metadata plus complete indexed primary abstract support the broad background claim.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Publisher-deposited metadata and the full PubMed record verify single author, title, 2010, 11(2), 127–138. Abstract describes the free-energy account linking action and perception."
+    },
+    {
+      "key": "friston2015",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1080/17588928.2015.1020053",
+        "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A25689102&format=json&resultType=core"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Friston, K. and Rigoli, F. and Ognibene, D. and Mathys, C. and FitzGerald, T. and Pezzulo, G.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Active inference and epistemic value",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "Cognitive Neuroscience",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "6",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "number": {
+          "status": "verified",
+          "manuscript_value": "4",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "187--214",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2015",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 122,
+          "claim": "EFE motivates pragmatic/epistemic comparison.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Active inference identifies a particular point in this policy family. Its Expected Free Energy (EFE) objective combines pragmatic value with expected information gain \\citep{friston2015,parr2019}. For the recursive, reward-based objective specified here, minimizing EFE is equivalent to maximizing reward plus information gain at $w=1$. The reward--information identification is exact under log scoring \\citep{bernardo1979}. For ordinary task rewards it depends on the declared reward convention and the treatment of the preference normalizer. The coefficient is therefore an untuned default under shared units, not a scale-invariant calibration. In particular, $w=1$ belongs to the level set of its implicit budget $U(1)$, but need not equal that budget's crossing threshold.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "claim": "EFE combines pragmatic and epistemic terms.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "Publisher full text was inaccessible; retrieved deposited abstract is directly sufficient for these general claims.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Publisher metadata and freshly retrieved Europe PMC full abstract verify all six authors and 2015, 6(4), 187–214. Abstract explicitly decomposes negative EFE into extrinsic expected utility and epistemic information gain."
+    },
+    {
+      "key": "friston2021",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1162/neco_a_01351",
+        "https://discovery.ucl.ac.uk/id/eprint/10124606/"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Friston, K. and Da~Costa, L. and Hafner, D. and Hesp, C. and Parr, T.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Sophisticated inference",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "Neural Computation",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "33",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "number": {
+          "status": "verified",
+          "manuscript_value": "3",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "713--763",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2021",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "claim": "Sophisticated inference conditions future choices on future beliefs.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal.",
+          "changed_from_original_baseline": false
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 183,
+          "claim": "The adopted EFE recursion is closed loop.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "$Q(o_\\tau\\mid\\pi)$ predicts observations under policy $\\pi$, while $Q(s_\\tau\\mid\\pi)$ and $Q(s_\\tau\\mid o_\\tau,\\pi)$ are the corresponding prior and posterior beliefs. The parameters $C$ specify the preference distribution $P(\\cdot\\mid C)$, which is distinct from the observation model conditioned on state and action. Minimization favors preferred outcomes and informative observations. Following the recursive, closed-loop formulation associated with sophisticated inference \\citep{friston2021,dacosta2020b}, we evaluate actions from the current belief and replan after every observation.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Publisher metadata verifies all five authors and 33(3), 713–763, 2021. Institutional complete abstract describes recursive inference about future beliefs. Da Costa full text additionally spells out the cited sophisticated recursive scheme."
+    },
+    {
+      "key": "ghavamzadeh2015",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1561/2200000049",
+        "https://arxiv.org/abs/1609.04436"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Ghavamzadeh, M. and Mannor, S. and Pineau, J. and Tamar, A.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "{B}ayesian reinforcement learning: A survey",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "Foundations and Trends in Machine Learning",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "8",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "number": {
+          "status": "verified",
+          "manuscript_value": "5--6",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "359--483",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2015",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "Bayesian RL supplies background on model uncertainty.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} provide an earlier typology of computational intrinsic motivation. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention.",
+          "changed_from_original_baseline": true
+        }
+      ],
+      "findings": [],
+      "notes": "ArXiv journal-reference text gives final page 492, but publisher-deposited final pagination is 483. Bibliography follows publisher and should stay unchanged.",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Publisher metadata verifies four authors, journal 8(5–6), 359–483, 2015. Abstract surveys Bayesian treatment of uncertainty, including model-based and model-free methods. Manuscript primarily is a broad characterization, not a claim that all Bayesian RL is model-based."
+    },
+    {
+      "key": "guez2013",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1613/jair.4117",
+        "https://www.jair.org/index.php/jair/article/view/10853"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Guez, A. and Silver, D. and Dayan, P.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Scalable and efficient {B}ayes-adaptive reinforcement learning based on {M}onte-{C}arlo tree search",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "Journal of Artificial Intelligence Research",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "48",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "841--883",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2013",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "Bayes-adaptive planning models uncertainty about dynamics.",
+          "verdict": "supported",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} provide an earlier typology of computational intrinsic motivation. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention.",
+          "changed_from_original_baseline": true
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "None material for the actual manuscript attribution.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "Publisher record and complete abstract verify all three authors, title, JAIR 48, 841–883, 2013. Abstract explicitly describes planning with model uncertainty via Bayes-adaptive Monte Carlo search."
+    },
+    {
+      "key": "gundersen2024jair",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1613/jair.1.16905",
+        "https://www.jair.org/index.php/jair/article/view/16905",
+        "https://ai.dmi.unibas.ch/papers/gundersen-et-al-jair2024.pdf"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "status": "verified",
+          "manuscript_value": "Gundersen, O.~E. and Helmert, M. and Hoos, H.",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "title": {
+          "status": "verified",
+          "manuscript_value": "Improving reproducibility in {AI} research: Four mechanisms adopted by {JAIR}",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "journal": {
+          "status": "verified",
+          "manuscript_value": "Journal of Artificial Intelligence Research",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "volume": {
+          "status": "verified",
+          "manuscript_value": "81",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "pages": {
+          "status": "verified",
+          "manuscript_value": "1019--1041",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        },
+        "year": {
+          "status": "verified",
+          "manuscript_value": "2024",
+          "detail": "Compared with freshly retrieved primary record; capitalization/TeX escaping and abbreviated given names normalized."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1244,
+          "claim": "JAIR requires a submission reproducibility checklist; manuscript says it will not be part of accepted version.",
+          "verdict": "partially_verified_access_limited",
+          "evidence": "See source_evidence and primary_urls_checked for the source passage supporting this use; the per-use claim and any limitation are explicit here.",
+          "source_line_at_final_recheck": "This appendix answers the JAIR reproducibility checklist \\citep{gundersen2024jair} for the submission version of this article, as required for review. It is not part of the accepted version.",
+          "changed_from_original_baseline": false
+        }
+      ],
+      "findings": [],
+      "notes": "",
+      "access_limitations": "The checklist requirement is directly verified. The adjacent statement about removal from an accepted version was not independently located in the retrieved portions of this article; confirm against current JAIR author instructions rather than attributing that detail to the abstract.",
+      "unsuccessful_access_attempts": [],
+      "source_evidence": "JAIR metadata and author-hosted published PDF verify all three authors, title, volume 81, 1019–1041, 2024. Abstract and section 3 state that submitting authors complete a reproducibility checklist."
+    }
+  ]
+}

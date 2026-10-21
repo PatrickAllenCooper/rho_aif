@@ -1,0 +1,155 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1016/s0304-3932(03)00029-1",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "b2254daaffef4ac1696ac9c837431627ebf3f34fe844a96e201de0537195b16a",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          20
+        ]
+      ],
+      "date-time": "2026-10-20T11:26:38Z",
+      "timestamp": 1792495598075,
+      "version": "4.5.0"
+    },
+    "publisher": "Elsevier BV",
+    "issue": "3",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2003,
+              4,
+              1
+            ]
+          ],
+          "date-time": "2003-04-01T00:00:00Z",
+          "timestamp": 1049155200000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+      }
+    ],
+    "short-container-title": [
+      "Journal of Monetary Economics"
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          2003,
+          4
+        ]
+      ]
+    },
+    "DOI": "10.1016/s0304-3932(03)00029-1",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2003,
+          5,
+          12
+        ]
+      ],
+      "date-time": "2003-05-12T22:21:41Z",
+      "timestamp": 1052778101000
+    },
+    "page": "665-690",
+    "title": [
+      "Implications of rational inattention"
+    ],
+    "prefix": "10.1016",
+    "volume": "50",
+    "author": [
+      {
+        "given": "Christopher A.",
+        "family": "Sims",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "78",
+    "container-title": [
+      "Journal of Monetary Economics"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S0304393203000291?httpAccept=text/xml",
+        "content-type": "text/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S0304393203000291?httpAccept=text/plain",
+        "content-type": "text/plain",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2020,
+          3,
+          19
+        ]
+      ],
+      "date-time": "2020-03-19T18:08:00Z",
+      "timestamp": 1584641280000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://linkinghub.elsevier.com/retrieve/pii/S0304393203000291"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2003,
+          4
+        ]
+      ]
+    },
+    "journal-issue": {
+      "issue": "3",
+      "published-print": {
+        "date-parts": [
+          [
+            2003,
+            4
+          ]
+        ]
+      }
+    },
+    "alternative-id": [
+      "S0304393203000291"
+    ],
+    "URL": "https://doi.org/10.1016/s0304-3932(03)00029-1",
+    "relation": {},
+    "ISSN": [
+      "0304-3932"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2003,
+          4
+        ]
+      ]
+    }
+  }
+}

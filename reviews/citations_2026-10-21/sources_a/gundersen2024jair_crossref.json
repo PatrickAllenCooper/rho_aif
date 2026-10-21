@@ -1,0 +1,153 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1613/jair.1.16905",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "2464651169166fd90c93d99c3011df7fe0d3791cf37767bdf6cd69726cbd0f12",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          9,
+          24
+        ]
+      ],
+      "date-time": "2026-09-24T18:50:34Z",
+      "timestamp": 1790275834679,
+      "version": "4.1.0"
+    },
+    "publisher": "AI Access Foundation",
+    "short-container-title": [
+      "jair"
+    ],
+    "DOI": "10.1613/jair.1.16905",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2024,
+          12,
+          29
+        ]
+      ],
+      "date-time": "2024-12-29T03:36:51Z",
+      "timestamp": 1735443411000
+    },
+    "page": "1019-1041",
+    "title": [
+      "Improving Reproducibility in AI Research: Four Mechanisms Adopted by JAIR"
+    ],
+    "prefix": "10.1613",
+    "volume": "81",
+    "author": [
+      {
+        "given": "Odd Erik",
+        "family": "Gundersen",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0009-0008-8462-350X",
+        "authenticated-orcid": false,
+        "given": "Malte",
+        "family": "Helmert",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-0629-0099",
+        "authenticated-orcid": false,
+        "given": "Holger",
+        "family": "Hoos",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "16860",
+    "published-online": {
+      "date-parts": [
+        [
+          2024,
+          12,
+          27
+        ]
+      ]
+    },
+    "container-title": [
+      "Journal of Artificial Intelligence Research"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://jair.org/index.php/jair/article/download/16905/27112",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://jair.org/index.php/jair/article/download/16905/27112",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2024,
+          12,
+          29
+        ]
+      ],
+      "date-time": "2024-12-29T03:36:51Z",
+      "timestamp": 1735443411000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://jair.org/index.php/jair/article/view/16905"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2024,
+          12,
+          27
+        ]
+      ]
+    },
+    "URL": "https://doi.org/10.1613/jair.1.16905",
+    "relation": {},
+    "ISSN": [
+      "1076-9757"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2024,
+          12,
+          27
+        ]
+      ]
+    }
+  }
+}

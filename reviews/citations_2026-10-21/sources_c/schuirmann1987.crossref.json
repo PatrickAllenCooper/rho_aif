@@ -1,0 +1,170 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1007/bf01068419",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "7dbc8bbb6c0e5cb46cefa8d99a7e27f8292ca4227b52d0bd55e7ec0534d11def",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          21
+        ]
+      ],
+      "date-time": "2026-10-21T13:47:07Z",
+      "timestamp": 1792590427602,
+      "version": "4.5.0"
+    },
+    "publisher": "Springer Science and Business Media LLC",
+    "issue": "6",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              1987,
+              12,
+              1
+            ]
+          ],
+          "date-time": "1987-12-01T00:00:00Z",
+          "timestamp": 565315200000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "http://www.springer.com/tdm"
+      }
+    ],
+    "short-container-title": [
+      "Journal of Pharmacokinetics and Biopharmaceutics"
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          1987,
+          12
+        ]
+      ]
+    },
+    "DOI": "10.1007/bf01068419",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2005,
+          1,
+          29
+        ]
+      ],
+      "date-time": "2005-01-29T13:08:12Z",
+      "timestamp": 1107004092000
+    },
+    "page": "657-680",
+    "title": [
+      "A comparison of the Two One-Sided Tests Procedure and the Power Approach for assessing the equivalence of average bioavailability"
+    ],
+    "prefix": "10.1007",
+    "volume": "15",
+    "author": [
+      {
+        "given": "Donald J.",
+        "family": "Schuirmann",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "297",
+    "published-online": {
+      "date-parts": [
+        [
+          1987,
+          12,
+          1
+        ]
+      ]
+    },
+    "container-title": [
+      "Journal of Pharmacokinetics and Biopharmaceutics"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "http://link.springer.com/content/pdf/10.1007/BF01068419.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://link.springer.com/article/10.1007/BF01068419/fulltext.html",
+        "content-type": "text/html",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://link.springer.com/content/pdf/10.1007/BF01068419",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2019,
+          4,
+          30
+        ]
+      ],
+      "date-time": "2019-04-30T02:06:21Z",
+      "timestamp": 1556589981000
+    },
+    "resource": {
+      "primary": {
+        "URL": "http://link.springer.com/10.1007/BF01068419"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          1987,
+          12
+        ]
+      ]
+    },
+    "journal-issue": {
+      "issue": "6",
+      "published-print": {
+        "date-parts": [
+          [
+            1987,
+            12
+          ]
+        ]
+      }
+    },
+    "alternative-id": [
+      "BF01068419"
+    ],
+    "URL": "https://doi.org/10.1007/bf01068419",
+    "relation": {},
+    "ISSN": [
+      "0090-466X"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          1987,
+          12
+        ]
+      ]
+    }
+  }
+}

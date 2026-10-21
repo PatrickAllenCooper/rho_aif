@@ -1,0 +1,189 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1038/nrn2787",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "324fd071dd74b76c1307001a586fd1852b2ba9a6991997c27c8f3f3c3b293373",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          21
+        ]
+      ],
+      "date-time": "2026-10-21T03:30:32Z",
+      "timestamp": 1792553432731,
+      "version": "4.5.0"
+    },
+    "publisher": "Springer Science and Business Media LLC",
+    "issue": "2",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2010,
+              1,
+              13
+            ]
+          ],
+          "date-time": "2010-01-13T00:00:00Z",
+          "timestamp": 1263340800000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "https://www.springer.com/tdm"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2010,
+              1,
+              13
+            ]
+          ],
+          "date-time": "2010-01-13T00:00:00Z",
+          "timestamp": 1263340800000
+        },
+        "content-version": "vor",
+        "delay-in-days": 0,
+        "URL": "https://www.springer.com/tdm"
+      }
+    ],
+    "short-container-title": [
+      "Nat Rev Neurosci"
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          2010,
+          2
+        ]
+      ]
+    },
+    "DOI": "10.1038/nrn2787",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2010,
+          1,
+          13
+        ]
+      ],
+      "date-time": "2010-01-13T04:40:46Z",
+      "timestamp": 1263357646000
+    },
+    "page": "127-138",
+    "title": [
+      "The free-energy principle: a unified brain theory?"
+    ],
+    "prefix": "10.1038",
+    "volume": "11",
+    "author": [
+      {
+        "given": "Karl",
+        "family": "Friston",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "297",
+    "published-online": {
+      "date-parts": [
+        [
+          2010,
+          1,
+          13
+        ]
+      ]
+    },
+    "container-title": [
+      "Nature Reviews Neuroscience"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://www.nature.com/articles/nrn2787.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://www.nature.com/articles/nrn2787",
+        "content-type": "text/html",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://www.nature.com/articles/nrn2787.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2024,
+          3,
+          22
+        ]
+      ],
+      "date-time": "2024-03-22T15:21:11Z",
+      "timestamp": 1711120871000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://www.nature.com/articles/nrn2787"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2010,
+          1,
+          13
+        ]
+      ]
+    },
+    "journal-issue": {
+      "issue": "2",
+      "published-print": {
+        "date-parts": [
+          [
+            2010,
+            2
+          ]
+        ]
+      }
+    },
+    "alternative-id": [
+      "BFnrn2787"
+    ],
+    "URL": "https://doi.org/10.1038/nrn2787",
+    "relation": {},
+    "ISSN": [
+      "1471-003X",
+      "1471-0048"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2010,
+          1,
+          13
+        ]
+      ]
+    }
+  }
+}

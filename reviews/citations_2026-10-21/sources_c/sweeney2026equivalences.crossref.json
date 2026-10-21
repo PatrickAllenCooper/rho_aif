@@ -1,0 +1,194 @@
+{
+  "source_url": "https://api.crossref.org/works/10.3390/e28010001",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "6a28a00b4fc870990d554ea1f03bc107662a606ed44ade6f522b5f8d970ca92f",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          8,
+          18
+        ]
+      ],
+      "date-time": "2026-08-18T04:39:26Z",
+      "timestamp": 1787027966197,
+      "version": "build-2736575974"
+    },
+    "publisher": "MDPI AG",
+    "issue": "1",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2025,
+              12,
+              19
+            ]
+          ],
+          "date-time": "2025-12-19T00:00:00Z",
+          "timestamp": 1766102400000
+        },
+        "content-version": "vor",
+        "delay-in-days": 0,
+        "URL": "https://creativecommons.org/licenses/by/4.0/"
+      }
+    ],
+    "short-container-title": [
+      "Entropy"
+    ],
+    "DOI": "10.3390/e28010001",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2025,
+          12,
+          19
+        ]
+      ],
+      "date-time": "2025-12-19T12:59:57Z",
+      "timestamp": 1766149197000
+    },
+    "page": "1",
+    "title": [
+      "Decision, Inference, and Information: Formal Equivalences Under Active Inference"
+    ],
+    "prefix": "10.3390",
+    "volume": "28",
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0009-0007-9465-5516",
+        "authenticated-orcid": false,
+        "given": "Patrick",
+        "family": "Sweeney",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Centre for Complex Systems, The University of Sydney, Sydney, NSW 2006, Australia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-0220-3253",
+        "authenticated-orcid": false,
+        "given": "Jaime",
+        "family": "Ruiz-Serra",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Centre for Complex Systems, The University of Sydney, Sydney, NSW 2006, Australia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-2199-2515",
+        "authenticated-orcid": false,
+        "given": "Michael S.",
+        "family": "Harré",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Centre for Complex Systems, The University of Sydney, Sydney, NSW 2006, Australia"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "1968",
+    "published-online": {
+      "date-parts": [
+        [
+          2025,
+          12,
+          19
+        ]
+      ]
+    },
+    "container-title": [
+      "Entropy"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://www.mdpi.com/1099-4300/28/1/1/pdf",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2025,
+          12,
+          26
+        ]
+      ],
+      "date-time": "2025-12-26T05:10:56Z",
+      "timestamp": 1766725856000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://www.mdpi.com/1099-4300/28/1/1"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2025,
+          12,
+          19
+        ]
+      ]
+    },
+    "journal-issue": {
+      "issue": "1",
+      "published-online": {
+        "date-parts": [
+          [
+            2026,
+            1
+          ]
+        ]
+      }
+    },
+    "alternative-id": [
+      "e28010001"
+    ],
+    "URL": "https://doi.org/10.3390/e28010001",
+    "relation": {},
+    "ISSN": [
+      "1099-4300"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2025,
+          12,
+          19
+        ]
+      ]
+    }
+  }
+}

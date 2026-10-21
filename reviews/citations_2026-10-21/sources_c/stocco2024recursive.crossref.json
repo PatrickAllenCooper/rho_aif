@@ -1,0 +1,161 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1609/icaps.v34i1.31518",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "6057faa43d36399cb03b2b3232a8ffe98d6aeb7707af5c31079419b840c5d9da",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2024,
+          5,
+          31
+        ]
+      ],
+      "date-time": "2024-05-31T00:29:34Z",
+      "timestamp": 1717115374155
+    },
+    "publisher": "Association for the Advancement of Artificial Intelligence (AAAI)",
+    "short-container-title": [
+      "ICAPS"
+    ],
+    "DOI": "10.1609/icaps.v34i1.31518",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2024,
+          5,
+          30
+        ]
+      ],
+      "date-time": "2024-05-30T13:13:11Z",
+      "timestamp": 1717074791000
+    },
+    "page": "565-569",
+    "title": [
+      "Addressing Myopic Constrained POMDP Planning with Recursive Dual Ascent"
+    ],
+    "prefix": "10.1609",
+    "volume": "34",
+    "author": [
+      {
+        "given": "Paula",
+        "family": "Stocco",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "role": "author",
+            "vocabulary": "crossref"
+          }
+        ]
+      },
+      {
+        "given": "Suhas",
+        "family": "Chundi",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "role": "author",
+            "vocabulary": "crossref"
+          }
+        ]
+      },
+      {
+        "given": "Arec",
+        "family": "Jamgochian",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "role": "author",
+            "vocabulary": "crossref"
+          }
+        ]
+      },
+      {
+        "given": "Mykel J.",
+        "family": "Kochenderfer",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "role": "author",
+            "vocabulary": "crossref"
+          }
+        ]
+      }
+    ],
+    "member": "9382",
+    "published-online": {
+      "date-parts": [
+        [
+          2024,
+          5,
+          30
+        ]
+      ]
+    },
+    "container-title": [
+      "Proceedings of the International Conference on Automated Planning and Scheduling"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://ojs.aaai.org/index.php/ICAPS/article/download/31518/33678",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://ojs.aaai.org/index.php/ICAPS/article/download/31518/33678",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2024,
+          5,
+          30
+        ]
+      ],
+      "date-time": "2024-05-30T13:13:15Z",
+      "timestamp": 1717074795000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://ojs.aaai.org/index.php/ICAPS/article/view/31518"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2024,
+          5,
+          30
+        ]
+      ]
+    },
+    "URL": "https://doi.org/10.1609/icaps.v34i1.31518",
+    "relation": {},
+    "ISSN": [
+      "2334-0843",
+      "2334-0835"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2024,
+          5,
+          30
+        ]
+      ]
+    }
+  }
+}

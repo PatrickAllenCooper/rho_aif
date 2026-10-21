@@ -1,0 +1,728 @@
+{
+  "date": "2026-10-21",
+  "baseline_commit": "68a9c137c4529675b3fe097ccda351e464dc3afc",
+  "auditors": {
+    "a": {
+      "entries": 23,
+      "uses": 39
+    },
+    "b": {
+      "entries": 23,
+      "uses": 34
+    },
+    "c": {
+      "entries": 23,
+      "uses": 38
+    }
+  },
+  "entries": 69,
+  "citation_clusters": 84,
+  "individual_citation_uses": 111,
+  "missing_audit_entries_or_uses": [],
+  "uncited_bibliography_entries": [],
+  "bibliography_unchanged": true,
+  "fabricated_references_found": 0,
+  "mirrored_attribution_corrections": 3,
+  "jair_only_unsupported_policy_sentences_removed": 1,
+  "source_disagreements": [
+    "schmidhuber1991: publisher pages 222\u2013228 vs author HTML 222\u2013227",
+    "ghavamzadeh2015: publisher pages 359\u2013483 vs arXiv journal-ref 359\u2013492",
+    "houthooft2016: duplicate author on landing page; official PDF matches bibliography"
+  ],
+  "bounded_verification_limits": [
+    "Blum primary full text inaccessible; identity and metadata verified",
+    "Altman complete book theorem hypotheses not freshly reread; author record/contents checked",
+    "Howard original scan read on third-party host; publisher metadata separately verified",
+    "Lindley content checked by root in primary Russian translation; English original blocked"
+  ],
+  "hashes": {
+    "paper/full_paper_jair.tex": "347e2ace9164aa4256b471b2487deb1cb8258b2078fc3f16029c4f03e95bbf9a",
+    "paper/full_paper.tex": "326fe1a69322c416bea55658ba39ab30aef0ee6a58d7d61f32ca2a6611ab56ba",
+    "paper/full_paper_jair.bib": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592",
+    "paper/full_paper_jair.pdf": "31338450b17644231c5e4c4263c2b492e3021df1deda73c0194b36916502e1ba",
+    "paper/full_paper.pdf": "289af343318fbedec0ea495964db2587726a338e0410883cfd5894ccc36f00e8",
+    "paper/rho_aif_jair_overleaf_2026-10-21.zip": "19e8e5ced9fc762306b185c81f2059a71f697d7890d09e99912cda19da9d87f2"
+  },
+  "records": [
+    {
+      "key": "altman1999",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 4,
+      "primary_urls": [
+        "https://www-sop.inria.fr/members/Eitan.Altman/mdp1.html",
+        "https://www-sop.inria.fr/members/Eitan.Altman/PAPERS/cont.txt"
+      ]
+    },
+    {
+      "key": "araya2010",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 4,
+      "primary_urls": [
+        "https://proceedings.neurips.cc/paper/2010/hash/68053af2923e00204c3ca7c6a3150cf7-Abstract.html",
+        "https://proceedings.neurips.cc/paper_files/paper/2010/file/68053af2923e00204c3ca7c6a3150cf7-Paper.pdf"
+      ]
+    },
+    {
+      "key": "bellemare2016",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://proceedings.neurips.cc/paper_files/paper/2016/hash/afda332245e2af431fb7b672a68b659d-Abstract.html"
+      ]
+    },
+    {
+      "key": "benchetrit2025",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://arxiv.org/abs/2502.02549"
+      ]
+    },
+    {
+      "key": "bernardo1979",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 4,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1214/aos/1176344689",
+        "https://www.uv.es/~bernardo/publications.html",
+        "https://www.uv.es/~bernardo/1979AS.pdf"
+      ]
+    },
+    {
+      "key": "blum1954",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1214/aoms/1177728794"
+      ]
+    },
+    {
+      "key": "boutilier2002",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://research.google/pubs/a-pomdp-formulation-of-preference-elicitation-problems/",
+        "https://www.cs.toronto.edu/~cebly/Papers/pefa-abs.html",
+        "https://www.cs.toronto.edu/~cebly/Papers/_download_/pefa.pdf"
+      ]
+    },
+    {
+      "key": "burda2019",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://www.research.ed.ac.uk/en/publications/exploration-by-random-network-distillation/"
+      ]
+    },
+    {
+      "key": "champion2024",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1162/NECO.a.1491",
+        "https://kar.kent.ac.uk/113953/",
+        "https://kar.kent.ac.uk/113953/1/theophile26reframing.pdf"
+      ]
+    },
+    {
+      "key": "cooper2026iwai",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://arxiv.org/abs/2607.16981",
+        "https://arxiv.org/html/2607.16981v1",
+        "https://iwaiworkshop.github.io/",
+        "https://iwaiworkshop.github.io/docs/IWAI_2026_program_detailed.pdf"
+      ]
+    },
+    {
+      "key": "covert2023",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://proceedings.mlr.press/v202/covert23a.html"
+      ]
+    },
+    {
+      "key": "dacosta2020",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1016/j.jmp.2020.102447",
+        "https://arxiv.org/abs/2001.07203",
+        "https://arxiv.org/pdf/2001.07203"
+      ]
+    },
+    {
+      "key": "dacosta2020b",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 4,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1162/neco_a_01574",
+        "https://discovery.ucl.ac.uk/id/eprint/10168059/1/neco_a_01574.pdf",
+        "https://arxiv.org/abs/2009.08111",
+        "https://arxiv.org/html/2009.08111v4"
+      ]
+    },
+    {
+      "key": "devries2025",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://arxiv.org/abs/2504.14898",
+        "https://arxiv.org/html/2504.14898v4"
+      ]
+    },
+    {
+      "key": "duff2002",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://scholarworks.umass.edu/dissertations/AAI3039353/"
+      ]
+    },
+    {
+      "key": "fehr2018",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://proceedings.neurips.cc/paper_files/paper/2018/hash/de7f47e09c8e05e6021ababdf6bc58e7-Abstract.html",
+        "https://proceedings.neurips.cc/paper_files/paper/2018/file/de7f47e09c8e05e6021ababdf6bc58e7-Paper.pdf"
+      ]
+    },
+    {
+      "key": "foster2021dad",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://proceedings.mlr.press/v139/foster21a.html",
+        "https://proceedings.mlr.press/v139/foster21a/foster21a.pdf"
+      ]
+    },
+    {
+      "key": "fountas2020",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://proceedings.neurips.cc/paper/2020/hash/865dfbde8a344b44095495f3591f7407-Abstract.html"
+      ]
+    },
+    {
+      "key": "friston2010",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1038/nrn2787",
+        "https://pubmed.ncbi.nlm.nih.gov/20068583/"
+      ]
+    },
+    {
+      "key": "friston2015",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1080/17588928.2015.1020053",
+        "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A25689102&format=json&resultType=core"
+      ]
+    },
+    {
+      "key": "friston2021",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1162/neco_a_01351",
+        "https://discovery.ucl.ac.uk/id/eprint/10124606/"
+      ]
+    },
+    {
+      "key": "ghavamzadeh2015",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1561/2200000049",
+        "https://arxiv.org/abs/1609.04436"
+      ]
+    },
+    {
+      "key": "guez2013",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1613/jair.4117",
+        "https://www.jair.org/index.php/jair/article/view/10853"
+      ]
+    },
+    {
+      "key": "gundersen2024jair",
+      "audit": "a.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1613/jair.1.16905",
+        "https://www.jair.org/index.php/jair/article/view/16905",
+        "https://ai.dmi.unibas.ch/papers/gundersen-et-al-jair2024.pdf"
+      ]
+    },
+    {
+      "key": "haarnoja2018",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://proceedings.mlr.press/v80/haarnoja18b.html"
+      ]
+    },
+    {
+      "key": "haarnoja2018sac",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 3,
+      "primary_urls": [
+        "https://arxiv.org/abs/1812.05905",
+        "https://arxiv.org/html/1812.05905v2"
+      ]
+    },
+    {
+      "key": "houthooft2016",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://proceedings.neurips.cc/paper/2016/hash/abd815286ba1007abfbb8415b83ae2cf-Abstract.html",
+        "https://proceedings.neurips.cc/paper_files/paper/2016/file/abd815286ba1007abfbb8415b83ae2cf-Paper.pdf"
+      ]
+    },
+    {
+      "key": "howard1966",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1109/TSSC.1966.300074"
+      ]
+    },
+    {
+      "key": "kaelbling1998",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1016/S0004-3702(98)00023-X",
+        "https://people.csail.mit.edu/lpk/papers/aij98-pomdp.pdf"
+      ]
+    },
+    {
+      "key": "kim2011cpomdp",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 3,
+      "primary_urls": [
+        "https://pure.kaist.ac.kr/en/publications/point-based-value-iteration-for-constrained-pomdps/",
+        "https://www.ijcai.org/Proceedings/11/Papers/329.pdf"
+      ]
+    },
+    {
+      "key": "kouw2026bethe",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 2,
+      "primary_urls": [
+        "https://arxiv.org/abs/2608.17167"
+      ]
+    },
+    {
+      "key": "kurniawati2008",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 2,
+      "primary_urls": [
+        "https://www.roboticsproceedings.org/rss04/p9.html"
+      ]
+    },
+    {
+      "key": "kushner1978",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1007/978-1-4684-9352-8",
+        "https://link.springer.com/book/10.1007/978-1-4684-9352-8",
+        "https://link.springer.com/content/pdf/bfm:978-1-4684-9352-8/1"
+      ]
+    },
+    {
+      "key": "laouar2026voi",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1609/icaps.v36i1.42824",
+        "https://arxiv.org/abs/2604.01434"
+      ]
+    },
+    {
+      "key": "levine2018",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://arxiv.org/abs/1805.00909"
+      ]
+    },
+    {
+      "key": "lindley1956",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1214/aoms/1177728069"
+      ]
+    },
+    {
+      "key": "maisto2025",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1016/j.neucom.2024.129319",
+        "https://arxiv.org/abs/2103.13860",
+        "https://iris.cnr.it/retrieve/1d947b32-cbcf-4136-8299-07721aa765d8/1-s2.0-S0925231224020903-main.pdf"
+      ]
+    },
+    {
+      "key": "matejka2015",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 2,
+      "primary_urls": [
+        "https://www.aeaweb.org/articles?id=10.1257/aer.20130047"
+      ]
+    },
+    {
+      "key": "millidge2020",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://link.springer.com/chapter/10.1007/978-3-030-64919-7_1"
+      ]
+    },
+    {
+      "key": "millidge2021",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1162/neco_a_01354",
+        "https://arxiv.org/abs/2004.08128"
+      ]
+    },
+    {
+      "key": "oudeyer2007",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://www.frontiersin.org/journals/neurorobotics/articles/10.3389/neuro.12.006.2007/full"
+      ]
+    },
+    {
+      "key": "parr2019",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 3,
+      "primary_urls": [
+        "https://link.springer.com/article/10.1007/s00422-019-00805-w",
+        "https://link.springer.com/content/pdf/10.1007/s00422-019-00805-w.pdf",
+        "https://api.crossref.org/works/10.1007/s00422-019-00805-w"
+      ]
+    },
+    {
+      "key": "parr2022",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://mitpress.mit.edu/9780262045353/active-inference/"
+      ]
+    },
+    {
+      "key": "pathak2017",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://proceedings.mlr.press/v70/pathak17a.html"
+      ]
+    },
+    {
+      "key": "pineau2003",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://publications.ri.cmu.edu/point-based-value-iteration-an-anytime-algorithm-for-pomdps"
+      ]
+    },
+    {
+      "key": "rawlik2012",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://www.roboticsproceedings.org/rss08/p45.html",
+        "https://www.research.ed.ac.uk/en/publications/on-stochastic-optimal-control-and-reinforcement-learning-by-appro/"
+      ]
+    },
+    {
+      "key": "robbins1951",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1214/aoms/1177729586",
+        "https://www.columbia.edu/~ww2040/8100F16/RM51.pdf"
+      ]
+    },
+    {
+      "key": "russo2014",
+      "audit": "b.json",
+      "authenticity": "verified",
+      "uses": 1,
+      "primary_urls": [
+        "https://proceedings.neurips.cc/paper_files/paper/2014/hash/90720a2fcc41f9332e6a1558da327089-Abstract.html",
+        "https://arxiv.org/abs/1403.5556"
+      ]
+    },
+    {
+      "key": "sajid2021",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1162/neco_a_01357"
+      ]
+    },
+    {
+      "key": "satsangi2018",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1007/s10514-017-9666-5",
+        "https://link.springer.com/article/10.1007/s10514-017-9666-5"
+      ]
+    },
+    {
+      "key": "schmidhuber1991",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.7551/mitpress/3115.003.0030",
+        "https://people.idsia.ch/~juergen/curiositysab/curiositysab.html",
+        "https://people.idsia.ch/~juergen/curiositysab/node2.html"
+      ]
+    },
+    {
+      "key": "schuirmann1987",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1007/bf01068419",
+        "https://link.springer.com/article/10.1007/BF01068419"
+      ]
+    },
+    {
+      "key": "shani2013",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1007/s10458-012-9200-2",
+        "https://link.springer.com/article/10.1007/s10458-012-9200-2"
+      ]
+    },
+    {
+      "key": "silver2010",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 3,
+      "primary_urls": [
+        "https://papers.nips.cc/paper_files/paper/2010/hash/edfbe1afcf9246bb0d40eb4d8027d90f-Abstract.html",
+        "https://papers.nips.cc/paper_files/paper/2010/file/edfbe1afcf9246bb0d40eb4d8027d90f-Paper.pdf"
+      ]
+    },
+    {
+      "key": "sims2003",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1016/s0304-3932(03)00029-1",
+        "https://collaborate.princeton.edu/en/publications/implications-of-rational-inattention/"
+      ]
+    },
+    {
+      "key": "smallwood1973",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1287/opre.21.5.1071"
+      ]
+    },
+    {
+      "key": "smith2004",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 4,
+      "primary_urls": [
+        "https://arxiv.org/abs/1207.4166",
+        "https://arxiv.org/pdf/1207.4166"
+      ]
+    },
+    {
+      "key": "spaan2015",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1007/s10458-014-9279-8",
+        "https://link.springer.com/article/10.1007/s10458-014-9279-8"
+      ]
+    },
+    {
+      "key": "stocco2024recursive",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1609/icaps.v34i1.31518",
+        "https://ojs.aaai.org/index.php/ICAPS/article/view/31518"
+      ]
+    },
+    {
+      "key": "sunberg2018",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1609/icaps.v28i1.13882",
+        "https://arxiv.org/abs/1709.06196",
+        "https://arxiv.org/pdf/1709.06196"
+      ]
+    },
+    {
+      "key": "sweeney2026equivalences",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.3390/e28010001",
+        "https://pubmed.ncbi.nlm.nih.gov/41593908/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC12840411/"
+      ]
+    },
+    {
+      "key": "todorov2007",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://papers.nips.cc/paper_files/paper/2006/hash/d806ca13ca3449af72a1ea5aedbed26a-Abstract.html",
+        "https://papers.nips.cc/paper_files/paper/2006/file/d806ca13ca3449af72a1ea5aedbed26a-Paper.pdf"
+      ]
+    },
+    {
+      "key": "towers2024",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://arxiv.org/abs/2407.17032"
+      ]
+    },
+    {
+      "key": "tschantz2020",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://arxiv.org/abs/2002.12636",
+        "https://baicsworkshop.github.io/papers.html"
+      ]
+    },
+    {
+      "key": "vergara2012",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 2,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1016/j.snb.2012.01.074",
+        "https://archive.ics.uci.edu/dataset/224/gas+sensor+array+drift+dataset"
+      ]
+    },
+    {
+      "key": "vergara2012data",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 4,
+      "primary_urls": [
+        "https://archive.ics.uci.edu/dataset/224/gas+sensor+array+drift+dataset"
+      ]
+    },
+    {
+      "key": "walraven2024",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1007/s10458-024-09683-4",
+        "https://link.springer.com/article/10.1007/s10458-024-09683-4"
+      ]
+    },
+    {
+      "key": "wei2024voi",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://arxiv.org/abs/2408.06542"
+      ]
+    },
+    {
+      "key": "ye2017",
+      "audit": "c.json",
+      "authenticity": "verified_real_work",
+      "uses": 1,
+      "primary_urls": [
+        "https://api.crossref.org/works/10.1613/jair.5328"
+      ]
+    }
+  ]
+}

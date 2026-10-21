@@ -1,0 +1,78 @@
+[
+  {
+    "key": "bernardo1979_pdf",
+    "url": "https://projecteuclid.org/journals/annals-of-statistics/volume-7/issue-3/Expected-Information-as-Expected-Utility/10.1214/aos/1176344689.pdf",
+    "resolved_url": "https://projecteuclid.org/journals/annals-of-statistics/volume-7/issue-3/Expected-Information-as-Expected-Utility/10.1214/aos/1176344689.pdf",
+    "bytes": 1163,
+    "type": "text/html",
+    "file": "reviews/citations_2026-10-21/sources_a/bernardo1979_pdf.html"
+  },
+  {
+    "key": "blum1954_pdf",
+    "url": "https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-25/issue-2/Approximation-Methods-which-Converge-with-Probability-one/10.1214/aoms/1177728794.pdf",
+    "resolved_url": "https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-25/issue-2/Approximation-Methods-which-Converge-with-Probability-one/10.1214/aoms/1177728794.pdf",
+    "bytes": 1163,
+    "type": "text/html",
+    "file": "reviews/citations_2026-10-21/sources_a/blum1954_pdf.html"
+  },
+  {
+    "key": "boutilier2002_pdf",
+    "url": "https://www.cs.toronto.edu/~cebly/Papers/aaai02.pdf",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "key": "altman1999_toc",
+    "url": "https://www-sop.inria.fr/members/Eitan.Altman/PAPERS/cont.txt",
+    "resolved_url": "https://www-sop.inria.fr/members/Eitan.Altman/PAPERS/cont.txt",
+    "bytes": 5086,
+    "type": "text/plain",
+    "file": "reviews/citations_2026-10-21/sources_a/altman1999_toc.txt"
+  },
+  {
+    "key": "friston2010_pdf",
+    "url": "https://www.fil.ion.ucl.ac.uk/~karl/The%20free-energy%20principle%20-%20a%20unified%20brain%20theory.pdf",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "key": "bernardo_home",
+    "url": "https://www.uv.es/~bernardo/",
+    "resolved_url": "https://www.uv.es/~bernardo/",
+    "bytes": 4112,
+    "type": "text/html",
+    "file": "reviews/citations_2026-10-21/sources_a/bernardo_home.html"
+  },
+  {
+    "key": "gundersen2024_pdf",
+    "url": "https://www.jair.org/index.php/jair/article/download/16905/27112",
+    "error": "HTTP Error 503: Service Temporarily Unavailable"
+  },
+  {
+    "key": "dacosta2020b_pdf",
+    "url": "https://discovery.ucl.ac.uk/id/eprint/10168059/1/neco_a_01574.pdf",
+    "error": "HTTP Error 503: Service Unavailable"
+  },
+  {
+    "key": "cooper2026_html",
+    "url": "https://arxiv.org/html/2607.16981v1",
+    "resolved_url": "https://arxiv.org/html/2607.16981v1",
+    "bytes": 708593,
+    "type": "text/html; charset=utf-8",
+    "file": "reviews/citations_2026-10-21/sources_a/cooper2026_html.html"
+  },
+  {
+    "key": "devries2025_html",
+    "url": "https://arxiv.org/html/2504.14898v4",
+    "resolved_url": "https://arxiv.org/html/2504.14898v4",
+    "bytes": 261495,
+    "type": "text/html; charset=utf-8",
+    "file": "reviews/citations_2026-10-21/sources_a/devries2025_html.html"
+  },
+  {
+    "key": "dacosta2020_pdf",
+    "url": "https://arxiv.org/pdf/2001.07203",
+    "resolved_url": "https://arxiv.org/pdf/2001.07203",
+    "bytes": 7216059,
+    "type": "application/pdf",
+    "file": "reviews/citations_2026-10-21/sources_a/dacosta2020_pdf.pdf"
+  }
+]

@@ -1,0 +1,1192 @@
+{
+  "audit_date": "2026-10-21",
+  "baseline_commit": "68a9c137c4529675b3fe097ccda351e464dc3afc",
+  "baseline_sha256": {
+    "paper/full_paper_jair.tex": "c260180b50f5845132a6aeba50150373cf5ae5f74331feb9d5490aeae77d65c2",
+    "paper/full_paper_jair.bib": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592"
+  },
+  "scope": "23 assigned bibliography entries; every citation occurrence in master plus its table input; authenticity, metadata and attributed claims. No source edits.",
+  "summary": {
+    "authenticated_entries": 23,
+    "fabricated_entries_found": 0,
+    "bibliographic_corrections_required": 0,
+    "attribution_precision_fixes": 3,
+    "primary_text_gap_keys": [
+      "lindley1956"
+    ],
+    "unofficial_original_scan_keys": [
+      "howard1966"
+    ],
+    "attribution_precision_fixes_resolved": 3,
+    "remaining_attribution_fixes": 0
+  },
+  "records": [
+    {
+      "key": "haarnoja2018",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://proceedings.mlr.press/v80/haarnoja18b.html"
+      ],
+      "metadata_evidence": "Title and four authors in correct order match PMLR. ICML 2018; optional omitted pages are 1861–1870 in volume 80.",
+      "claim_support_evidence": "Official abstract describes off-policy maximum-entropy actor–critic maximizing expected reward plus policy entropy.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "SAC is an algorithmic instance of maximum-entropy control.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Haarnoja, T. and Zhou, A. and Abbeel, P. and Levine, S.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Soft actor-critic: Off-policy maximum entropy deep reinforcement learning with a stochastic actor",
+          "verdict": "matches_primary_record"
+        },
+        "booktitle": {
+          "manuscript_value": "International Conference on Machine Learning",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2018",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "haarnoja2018sac",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://arxiv.org/abs/1812.05905",
+        "https://arxiv.org/html/1812.05905v2"
+      ],
+      "metadata_evidence": "Title, all 11 authors/order and arXiv identifier match. 2018 is v1 date; v2 is January 2019, which does not invalidate cited preprint year.",
+      "claim_support_evidence": "Introduction and §§5–6 derive automatic temperature tuning; eq.(11) imposes a minimum expected entropy target and eqs.(17)–(18)/Algorithm 1 give dual temperature adjustment.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "claim": "Automatic temperature tuning drives policy entropy toward a target.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 421,
+          "claim": "Manuscript adapts the SAC update, substituting sensing usage for entropy.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "claim": "SAC is a precedent for information pricing and constraints.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Haarnoja, T. and Zhou, A. and Hartikainen, K. and Tucker, G. and Ha, S. and Tan, J. and Kumar, V. and Zhu, H. and Gupta, A. and Abbeel, P. and Levine, S.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Soft actor-critic algorithms and applications",
+          "verdict": "matches_primary_record"
+        },
+        "eprint": {
+          "manuscript_value": "1812.05905",
+          "verdict": "matches_primary_record"
+        },
+        "archivePrefix": {
+          "manuscript_value": "arXiv",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2018",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "houthooft2016",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://proceedings.neurips.cc/paper/2016/hash/abd815286ba1007abfbb8415b83ae2cf-Abstract.html",
+        "https://proceedings.neurips.cc/paper_files/paper/2016/file/abd815286ba1007abfbb8415b83ae2cf-Paper.pdf"
+      ],
+      "metadata_evidence": "Actual proceedings PDF title page confirms exactly the six listed authors and order. Landing page incorrectly duplicates Xi Chen, so PDF controls. Title and NIPS 2016 match.",
+      "claim_support_evidence": "Abstract and paper §2 define information gain about dynamics as a weighted reward augmentation. The model-uncertainty distinction in manuscript is appropriate.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "VIME uses a weighted exploration bonus.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [
+        "Official NeurIPS landing-page author list duplicates Xi Chen. The underlying official PDF confirms the manuscript list, so no bibliography correction is needed."
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Houthooft, R. and Chen, X. and Duan, Y. and Schulman, J. and De~Turck, F. and Abbeel, P.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "{VIME}: Variational information maximizing exploration",
+          "verdict": "matches_primary_record"
+        },
+        "booktitle": {
+          "manuscript_value": "Advances in Neural Information Processing Systems",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2016",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "howard1966",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1109/TSSC.1966.300074"
+      ],
+      "metadata_evidence": "Fresh publisher-deposited Crossref record confirms title, Ronald Howard, IEEE Transactions on Systems Science and Cybernetics, 2(1), 22–26, 1966. Original scan separately shows Ronald A. Howard.",
+      "claim_support_evidence": "Original journal scan/OCR, p.24, eq.(13), defines expected value of clairvoyance as the improvement in expected profit; pp.25–26 discuss imperfect information and experimental programs. This supports the manuscript’s broad decision-value characterization.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 142,
+          "claim": "Classical VOI measures improvement an observation can bring to a decision.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [
+        "IEEE article and abstract endpoints were blocked (JavaScript/bot challenge/418). Content checked in publicly readable original journal scan/OCR hosted by Scribd, not its AI-enhanced title/summary. That is primary textual material on an unofficial host; exact publisher-byte equivalence was not established."
+      ],
+      "other_urls_checked": [
+        "https://www.scribd.com/document/320139530/Howard-1966-Information-Value-Theory",
+        "https://ieeexplore.ieee.org/document/4082064/",
+        "https://ieeexplore.ieee.org/abstract/document/4082064"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Howard, R.~A.",
+          "verdict": "matches_Crossref_identity_and_original_scan_initials"
+        },
+        "title": {
+          "manuscript_value": "Information value theory",
+          "verdict": "matches_primary_record"
+        },
+        "journal": {
+          "manuscript_value": "IEEE Transactions on Systems Science and Cybernetics",
+          "verdict": "matches_primary_record"
+        },
+        "volume": {
+          "manuscript_value": "2",
+          "verdict": "matches_primary_record"
+        },
+        "number": {
+          "manuscript_value": "1",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "22--26",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "1966",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "kaelbling1998",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1016/S0004-3702(98)00023-X",
+        "https://people.csail.mit.edu/lpk/papers/aij98-pomdp.pdf"
+      ],
+      "metadata_evidence": "Crossref and MIT author-hosted journal PDF confirm exact title, all three authors/order, 1998, Artificial Intelligence 101(1–2), 99–134.",
+      "claim_support_evidence": "Intro/§3 establish decision making under partial observability. §5.1 explicitly gives Tiger two states, accuracy .85, listen cost 1, good door +10, bad door −100. Original problem resets after opening; manuscript clearly uses its own terminal-commit variant.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "claim": "POMDPs formalize decision making under state uncertainty.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 467,
+          "claim": "Tiger benchmark and numeric observation/reward parameters.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Kaelbling, L.~P. and Littman, M.~L. and Cassandra, A.~R.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Planning and acting in partially observable stochastic domains",
+          "verdict": "matches_primary_record"
+        },
+        "journal": {
+          "manuscript_value": "Artificial Intelligence",
+          "verdict": "matches_primary_record"
+        },
+        "volume": {
+          "manuscript_value": "101",
+          "verdict": "matches_primary_record"
+        },
+        "number": {
+          "manuscript_value": "1--2",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "99--134",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "1998",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "kim2011cpomdp",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://pure.kaist.ac.kr/en/publications/point-based-value-iteration-for-constrained-pomdps/",
+        "https://www.ijcai.org/Proceedings/11/Papers/329.pdf"
+      ],
+      "metadata_evidence": "Institutional record and official PDF confirm title, Dongho Kim/Jaesong Lee/Kee-Eung Kim/Pascal Poupart order, IJCAI 2011, pages 1968–1974.",
+      "claim_support_evidence": "Abstract and §§2–3 present cost-constrained belief-space dynamic programming and randomized policies. §2.2 example and §5.1 show deterministic policies can be suboptimal; general policies select actions by belief and remaining cost.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "claim": "CPOMDP methods track admissible cost alongside belief.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 350,
+          "claim": "Randomization can be needed in constrained POMDPs.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 456,
+          "claim": "A CPOMDP solver may randomize belief-dependently and outperform an episode-fixed weight mixture.",
+          "support_verdict": "supported_as_structural_inference",
+          "evidence": "The cited paper supplies the broader randomized class; it does not experimentally compare against this manuscript’s specific mixture. Manuscript says may, which is appropriate."
+        }
+      ],
+      "findings": [],
+      "access_limitations": [
+        "Initial IJCAI PDF request timed out, but retry succeeded and full text was checked."
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Kim, D. and Lee, J. and Kim, K.-E. and Poupart, P.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Point-based value iteration for constrained {POMDP}s",
+          "verdict": "matches_primary_record"
+        },
+        "booktitle": {
+          "manuscript_value": "International Joint Conference on Artificial Intelligence",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "1968--1974",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2011",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "kouw2026bethe",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://arxiv.org/abs/2608.17167"
+      ],
+      "metadata_evidence": "Exact title, sole author Wouter M. Kouw, arXiv ID and August 17 2026 initial date match.",
+      "claim_support_evidence": "Abstract explicitly imposes an information constraint on the Bethe functional, introduces a corresponding KKT multiplier, and identifies EFE at a specific multiplier. This is not an observation-count constraint.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "claim": "A dual formulation of EFE itself is distinct from the manuscript’s sensing calibration.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "claim": "Information constraint internal to EFE differs from episode-level sensing control.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Kouw, W.~M.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Expected free energy as an information constraint on the {B}ethe {L}agrangian",
+          "verdict": "matches_primary_record"
+        },
+        "eprint": {
+          "manuscript_value": "2608.17167",
+          "verdict": "matches_primary_record"
+        },
+        "archivePrefix": {
+          "manuscript_value": "arXiv",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2026",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "kurniawati2008",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://www.roboticsproceedings.org/rss04/p9.html"
+      ],
+      "metadata_evidence": "Official RSS IV proceedings record verifies exact SARSOP title, Hanna Kurniawati/David Hsu/Wee Sun Lee, 2008 and venue.",
+      "claim_support_evidence": "Abstract describes point-based planning exploiting optimally reachable belief spaces. Manuscript explicitly calls its SARSOP result near-optimal rather than certified exact; local solver build/precision are manuscript facts, not attributed to source.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "claim": "SARSOP is a point-based offline solver on reachable beliefs.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 550,
+          "claim": "SARSOP reference solver identification.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Kurniawati, H. and Hsu, D. and Lee, W.~S.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "{SARSOP}: Efficient point-based {POMDP} planning by approximating optimally reachable belief spaces",
+          "verdict": "matches_primary_record"
+        },
+        "booktitle": {
+          "manuscript_value": "Robotics: Science and Systems",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2008",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "laouar2026voi",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1609/icaps.v36i1.42824",
+        "https://arxiv.org/abs/2604.01434"
+      ],
+      "metadata_evidence": "Fresh Crossref publisher record confirms title, Zakariya Laouar/Qi Heng Ho/Zachary Sunberg order, ICAPS 2026, 152–160; volume36 issue1 are optional absent fields. Manuscript Z. initial matches primary deposited name.",
+      "claim_support_evidence": "Publisher-deposited abstract describes VOIMCP avoiding observation branching when decision VOI is low. The distinction from adding information gain to the planning reward is accurate.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "claim": "VOIMCP selectively skips observation branches with low expected decision value.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [
+        "AAAI article endpoint returned 503. Fresh Crossref DOI record includes full publisher-deposited abstract and publication metadata; arXiv independently authenticates the work."
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Laouar, Z. and Ho, Q.~H. and Sunberg, Z.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Leveraging the value of information in {POMDP} planning",
+          "verdict": "matches_primary_record"
+        },
+        "booktitle": {
+          "manuscript_value": "International Conference on Automated Planning and Scheduling",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "152--160",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2026",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "levine2018",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://arxiv.org/abs/1805.00909"
+      ],
+      "metadata_evidence": "Exact title, sole author Sergey Levine, arXiv ID and May2018 initial year match.",
+      "claim_support_evidence": "Abstract explicitly relates maximum-entropy reinforcement learning to exact inference under deterministic dynamics and variational inference under stochastic dynamics. Manuscript makes a broad relation, not unconditional exact-equivalence claim.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "Control-as-inference relates maximum-entropy control to probabilistic inference.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Levine, S.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Reinforcement learning and control as probabilistic inference: Tutorial and review",
+          "verdict": "matches_primary_record"
+        },
+        "eprint": {
+          "manuscript_value": "1805.00909",
+          "verdict": "matches_primary_record"
+        },
+        "archivePrefix": {
+          "manuscript_value": "arXiv",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2018",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "lindley1956",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1214/aoms/1177728069"
+      ],
+      "metadata_evidence": "Fresh publisher-deposited Crossref record confirms exact title, D.V. Lindley, Annals of Mathematical Statistics 27(4), 986–1005, December1956.",
+      "claim_support_evidence": "Primary full text and abstract could not be retrieved by this auditor. Secondary transcriptions of the abstract are consistent with the claimed experimental-design use, but are not treated as fresh primary verification.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 142,
+          "claim": "Bayesian experimental design commonly selects observations by expected information gain.",
+          "support_verdict": "primary_text_verification_incomplete"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [
+        "English original on Project Euclid/JSTOR remains blocked. Repeated independent Mathnet publisher PDF and record opens timed out, including root-provided successful web reference ID. This subset auditor does not claim to have read the translation. Root separately reports direct publisher-hosted Russian translation evidence supporting the manuscript; see cross-auditor follow-up below."
+      ],
+      "other_urls_checked": [
+        "https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-27/issue-4/On-a-Measure-of-the-Information-Provided-by-an-Experiment/10.1214/aoms/1177728069.full",
+        "https://projecteuclid.org/download/pdf_1/euclid.aoms/1177728069",
+        "https://www.jstor.org/stable/2237191",
+        "https://www.mathnet.ru/eng/mat101",
+        "https://www.mathnet.ru/php/getFT.phtml?jrnid=mat&option_lang=eng&paperid=101&what=fullt"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Lindley, D.~V.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "On a measure of the information provided by an experiment",
+          "verdict": "matches_primary_record"
+        },
+        "journal": {
+          "manuscript_value": "The Annals of Mathematical Statistics",
+          "verdict": "matches_primary_record"
+        },
+        "volume": {
+          "manuscript_value": "27",
+          "verdict": "matches_primary_record"
+        },
+        "number": {
+          "manuscript_value": "4",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "986--1005",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "1956",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true,
+      "cross_auditor_followup": {
+        "auditor": "/root",
+        "reported_primary_url": "https://www.mathnet.ru/php/getFT.phtml?jrnid=mat&option_lang=eng&paperid=101&what=fullt",
+        "source_type": "Publisher-hosted Russian translation of original article",
+        "reported_evidence": "Printed p.88 §2 states the experimental rule to choose the experiment with greatest expected increase in information; printed p.90 Definitions 1–2 and equations (6)–(7) define observed and expected information gain.",
+        "verification_status": "Verified by root, not independently retrieved by subset-B auditor; root consolidation owns final source check."
+      }
+    },
+    {
+      "key": "maisto2025",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1016/j.neucom.2024.129319",
+        "https://arxiv.org/abs/2103.13860",
+        "https://iris.cnr.it/retrieve/1d947b32-cbcf-4136-8299-07721aa765d8/1-s2.0-S0925231224020903-main.pdf"
+      ],
+      "metadata_evidence": "Crossref and institutional journal PDF confirm title, all four authors/order, Neurocomputing623, article129319, 2025. DOI includes2024 and preprint begins2021; printed journal year2025 is correct.",
+      "claim_support_evidence": "Journal abstract and AcT Algorithm1 combine active inference planning with sampled tree search; this supports grouped scaling-work characterization. Manuscript does not attribute all deep/RL/MCTS elements individually to this source.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 153,
+          "claim": "Scaling active inference includes tree-search methods.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [
+        "ScienceDirect article page gave403, resolved via author institution’s journal PDF and Crossref."
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Maisto, D. and Gregoretti, F. and Friston, K.~J. and Pezzulo, G.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Active inference tree search in large {POMDP}s",
+          "verdict": "matches_primary_record"
+        },
+        "journal": {
+          "manuscript_value": "Neurocomputing",
+          "verdict": "matches_primary_record"
+        },
+        "volume": {
+          "manuscript_value": "623",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "129319",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2025",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "matejka2015",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://www.aeaweb.org/articles?id=10.1257/aer.20130047"
+      ],
+      "metadata_evidence": "Official AEA record confirms full title, Filip Matějka/Alisdair McKay order, American Economic Review105(1),272–298, January2015.",
+      "claim_support_evidence": "Abstract models costly information acquisition through rational inattention. Supports information pricing/capacity, but abstract does not support online adaptation of a price parameter.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "claim": "Rational inattention constrains or prices information capacity.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "claim": "Information prices and resource constraints are classical in rational inattention.",
+          "support_verdict": "supported_after_revision",
+          "evidence": "This source supports costly information acquisition, not an online update rule.",
+          "baseline_claim": "Resource-price adaptation is classical in rational inattention.",
+          "post_fix_checked_in_both_masters": true
+        }
+      ],
+      "findings": [
+        {
+          "severity": "minor_attribution_precision",
+          "line": 454,
+          "recommendation": "Replace the broad adaptation claim with Information prices and resource constraints are classical in constrained MDPs and rational inattention; reserve adaptation specifically for SAC or another source that actually derives an update.",
+          "status": "resolved_and_independently_rechecked_2026-10-21"
+        }
+      ],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Mat\\v{e}jka, F. and McKay, A.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Rational inattention to discrete choices: A new foundation for the multinomial logit model",
+          "verdict": "matches_primary_record"
+        },
+        "journal": {
+          "manuscript_value": "American Economic Review",
+          "verdict": "matches_primary_record"
+        },
+        "volume": {
+          "manuscript_value": "105",
+          "verdict": "matches_primary_record"
+        },
+        "number": {
+          "manuscript_value": "1",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "272--298",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2015",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "millidge2020",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://link.springer.com/chapter/10.1007/978-3-030-64919-7_1"
+      ],
+      "metadata_evidence": "Official Springer chapter verifies title, all four authors/order, IWAI2020, Springer, pp3–11 and December18,2020.",
+      "claim_support_evidence": "Abstract explicitly locates primary AIF/CAI difference in how rewards/goals are encoded in generative models and consequent objective/exploration differences.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "Control-as-inference treats value differently from active inference.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [
+        "Full chapter is subscription-only; official abstract directly supports the single broad attributed claim."
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Millidge, B. and Tschantz, A. and Seth, A.~K. and Buckley, C.~L.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "On the relationship between active inference and control as inference",
+          "verdict": "matches_primary_record"
+        },
+        "booktitle": {
+          "manuscript_value": "International Workshop on Active Inference",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "3--11",
+          "verdict": "matches_primary_record"
+        },
+        "publisher": {
+          "manuscript_value": "Springer",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2020",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "millidge2021",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1162/neco_a_01354",
+        "https://arxiv.org/abs/2004.08128"
+      ],
+      "metadata_evidence": "Fresh publisher-deposited Crossref verifies title, three authors/order, Neural Computation33(2),447–482, February2021. arXiv2020 is preprint date only.",
+      "claim_support_evidence": "Publisher-deposited full abstract explicitly distinguishes EFE from future VFE, says naive extension discourages exploration, and introduces FEEF.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "claim": "Distinguishes EFE from naive future VFE and proposes FEEF.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [
+        "MIT direct article open gave403. Crossref includes full publisher-deposited abstract and complete metadata; arXiv independently authenticates content."
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Millidge, B. and Tschantz, A. and Buckley, C.~L.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Whence the expected free energy?",
+          "verdict": "matches_primary_record"
+        },
+        "journal": {
+          "manuscript_value": "Neural Computation",
+          "verdict": "matches_primary_record"
+        },
+        "volume": {
+          "manuscript_value": "33",
+          "verdict": "matches_primary_record"
+        },
+        "number": {
+          "manuscript_value": "2",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "447--482",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2021",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "oudeyer2007",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://www.frontiersin.org/journals/neurorobotics/articles/10.3389/neuro.12.006.2007/full"
+      ],
+      "metadata_evidence": "Official full text confirms title, Pierre-Yves Oudeyer/Frederic Kaplan, Frontiers in Neurorobotics1:6, November2,2007.",
+      "claim_support_evidence": "Abstract and formal typology classify intrinsic-motivation mechanisms. It predates VIME(2016), Pathak(2017), and RND(2019), so cannot literally survey those named methods.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "Oudeyer and Kaplan provide an earlier typology of computational intrinsic motivation.",
+          "support_verdict": "supported_after_revision",
+          "baseline_claim": "Oudeyer2007 survey these intrinsic signals after a list of 2016–2019 methods.",
+          "post_fix_checked_in_both_masters": true
+        }
+      ],
+      "findings": [
+        {
+          "severity": "minor_attribution_precision",
+          "line": 156,
+          "recommendation": "Use: Oudeyer and Kaplan (2007) provide an earlier typology of computational intrinsic motivation. This preserves the legitimate citation without implying coverage of later algorithms.",
+          "status": "resolved_and_independently_rechecked_2026-10-21"
+        }
+      ],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Oudeyer, P.-Y. and Kaplan, F.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "What is intrinsic motivation? {A} typology of computational approaches",
+          "verdict": "matches_primary_record"
+        },
+        "journal": {
+          "manuscript_value": "Frontiers in Neurorobotics",
+          "verdict": "matches_primary_record"
+        },
+        "volume": {
+          "manuscript_value": "1",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "6",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2007",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "parr2019",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://link.springer.com/article/10.1007/s00422-019-00805-w",
+        "https://link.springer.com/content/pdf/10.1007/s00422-019-00805-w.pdf",
+        "https://api.crossref.org/works/10.1007/s00422-019-00805-w"
+      ],
+      "metadata_evidence": "Publisher full text/Crossref verify title, Thomas Parr/Karl J.Friston, Biological Cybernetics113(5–6),495–513,2019.",
+      "claim_support_evidence": "Equation(10) decomposes EFE into epistemic/extrinsic terms; introduction and discussion distinguish generalized free energy with explicit future-outcome beliefs from expected free energy. The manuscript’s limited equivalence claim is correctly separated.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 122,
+          "claim": "EFE combines pragmatic value and expected information gain.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "claim": "EFE combines pragmatic and epistemic terms.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "claim": "Generalized free energy is a distinct functional.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Parr, T. and Friston, K.~J.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Generalised free energy and active inference",
+          "verdict": "matches_primary_record"
+        },
+        "journal": {
+          "manuscript_value": "Biological Cybernetics",
+          "verdict": "matches_primary_record"
+        },
+        "volume": {
+          "manuscript_value": "113",
+          "verdict": "matches_primary_record"
+        },
+        "number": {
+          "manuscript_value": "5--6",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "495--513",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2019",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "parr2022",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://mitpress.mit.edu/9780262045353/active-inference/"
+      ],
+      "metadata_evidence": "Official publisher verifies exact title/subtitle, Thomas Parr/Giovanni Pezzulo/Karl J.Friston order, MITPress, March29,2022. New paperback2025 does not alter first edition year.",
+      "claim_support_evidence": "Publisher description characterizes perception, planning and action as probabilistic inference under free-energy minimization; sufficient for broad introductory use.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "claim": "Active inference casts perception and action as variational inference.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Parr, T. and Pezzulo, G. and Friston, K.~J.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Active Inference: The Free Energy Principle in Mind, Brain, and Behavior",
+          "verdict": "matches_primary_record"
+        },
+        "publisher": {
+          "manuscript_value": "MIT Press",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2022",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "pathak2017",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://proceedings.mlr.press/v70/pathak17a.html"
+      ],
+      "metadata_evidence": "Official PMLR record confirms title, Deepak Pathak/Pulkit Agrawal/Alexei A.Efros/Trevor Darrell order, ICML2017. Optional omitted pages2778–2787.",
+      "claim_support_evidence": "Abstract describes curiosity as intrinsic reward from learned prediction error. Supports placement among exploration-bonus methods.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "Curiosity-based exploration uses intrinsic reward bonuses.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Pathak, D. and Agrawal, P. and Efros, A.~A. and Darrell, T.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Curiosity-driven exploration by self-supervised prediction",
+          "verdict": "matches_primary_record"
+        },
+        "booktitle": {
+          "manuscript_value": "International Conference on Machine Learning",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2017",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "pineau2003",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://publications.ri.cmu.edu/point-based-value-iteration-an-anytime-algorithm-for-pomdps"
+      ],
+      "metadata_evidence": "CMU institutional record verifies exact title, Joelle Pineau/Geoffrey Gordon/Sebastian Thrun, IJCAI2003.",
+      "claim_support_evidence": "Abstract describes approximating value iteration on representative belief points chosen with stochastic trajectories.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "claim": "PBVI approximates value functions on reachable beliefs.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Pineau, J. and Gordon, G. and Thrun, S.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Point-based value iteration: An anytime algorithm for {POMDP}s",
+          "verdict": "matches_primary_record"
+        },
+        "booktitle": {
+          "manuscript_value": "International Joint Conference on Artificial Intelligence",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2003",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "rawlik2012",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://www.roboticsproceedings.org/rss08/p45.html",
+        "https://www.research.ed.ac.uk/en/publications/on-stochastic-optimal-control-and-reinforcement-learning-by-appro/"
+      ],
+      "metadata_evidence": "Official RSS record verifies title, Konrad Rawlik/Marc Toussaint/Sethu Vijayakumar, RSS2012. Edinburgh confirms2012 conference version; later2013 IJCAI version exists but does not make this entry false.",
+      "claim_support_evidence": "Institutional abstract directly formulates stochastic optimal control as KL-divergence minimization and describes approximate inference and model-free algorithms.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "claim": "KL-minimizing control is an algorithmic control-as-inference instance.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Rawlik, K. and Toussaint, M. and Vijayakumar, S.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "On stochastic optimal control and reinforcement learning by approximate inference",
+          "verdict": "matches_primary_record"
+        },
+        "booktitle": {
+          "manuscript_value": "Robotics: Science and Systems",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2012",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "robbins1951",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1214/aoms/1177729586",
+        "https://www.columbia.edu/~ww2040/8100F16/RM51.pdf"
+      ],
+      "metadata_evidence": "Crossref and university-hosted original journal scan confirm exact title, Herbert Robbins/Sutton Monro, Annals of Mathematical Statistics22(3),400–407, September1951.",
+      "claim_support_evidence": "Original §3 eq.(7) is the stochastic root-finding recursion with target minus response. It establishes convergence in probability/quadratic mean under its assumptions. Manuscript separately attributes later almost-sure/constrained extensions and supplies its own proof, so it does not overclaim original result.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 447,
+          "claim": "Controller is a projected Robbins–Monro recursion.",
+          "support_verdict": "supported"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1263,
+          "claim": "Checklist cites Robbins–Monro as a nontrivial theoretical tool.",
+          "support_verdict": "supported"
+        }
+      ],
+      "findings": [],
+      "access_limitations": [
+        "Euclid/JSTOR direct text blocked; original journal scan on Columbia site successfully read."
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Robbins, H. and Monro, S.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "A stochastic approximation method",
+          "verdict": "matches_primary_record"
+        },
+        "journal": {
+          "manuscript_value": "The Annals of Mathematical Statistics",
+          "verdict": "matches_primary_record"
+        },
+        "volume": {
+          "manuscript_value": "22",
+          "verdict": "matches_primary_record"
+        },
+        "number": {
+          "manuscript_value": "3",
+          "verdict": "matches_primary_record"
+        },
+        "pages": {
+          "manuscript_value": "400--407",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "1951",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    },
+    {
+      "key": "russo2014",
+      "authenticity_status": "verified",
+      "primary_urls_checked": [
+        "https://proceedings.neurips.cc/paper_files/paper/2014/hash/90720a2fcc41f9332e6a1558da327089-Abstract.html",
+        "https://arxiv.org/abs/1403.5556"
+      ],
+      "metadata_evidence": "Official NIPS2014 record verifies exact title and Daniel Russo/Benjamin VanRoy author order.",
+      "claim_support_evidence": "Abstract defines the ratio of squared expected single-period regret to mutual information about the optimal action, not plain regret/information ratio. Follow-up: fresh arXiv abstract independently confirms the edited squared-expected-regret/information formulation; selecting an action distribution is the correct IDS minimization domain.",
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 146,
+          "claim": "IDS selects an action distribution minimizing squared expected one-period regret divided by expected information gain about the optimal action.",
+          "support_verdict": "supported_after_revision",
+          "baseline_claim": "IDS trades instantaneous regret and information gain through their ratio.",
+          "post_fix_checked_in_both_masters": true
+        }
+      ],
+      "findings": [
+        {
+          "severity": "minor_attribution_precision",
+          "line": 146,
+          "recommendation": "State that IDS minimizes the ratio of squared expected single-period regret to expected information gain.",
+          "status": "resolved_and_independently_rechecked_2026-10-21"
+        }
+      ],
+      "access_limitations": [],
+      "metadata_field_verdicts": {
+        "author": {
+          "manuscript_value": "Russo, D. and Van~Roy, B.",
+          "verdict": "matches_primary_record"
+        },
+        "title": {
+          "manuscript_value": "Learning to optimize via information-directed sampling",
+          "verdict": "matches_primary_record"
+        },
+        "booktitle": {
+          "manuscript_value": "Advances in Neural Information Processing Systems",
+          "verdict": "matches_primary_record"
+        },
+        "year": {
+          "manuscript_value": "2014",
+          "verdict": "matches_primary_record"
+        }
+      },
+      "all_citation_occurrences_accounted_for": true
+    }
+  ],
+  "post_fix_review": {
+    "date": "2026-10-21",
+    "verdict": "All three source-attribution precision corrections accepted after independent reread in both masters. No further wording change required for subset B.",
+    "jair_lines": [
+      146,
+      156,
+      454
+    ],
+    "lncs_lines": [
+      99,
+      109,
+      407
+    ],
+    "sha256": {
+      "paper/full_paper_jair.tex": "5b86fb4963cb04b65926ef86d0da58c14a4c1a37db3b7f14810941b038eafd1f",
+      "paper/full_paper_jair.bib": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592",
+      "paper/full_paper.tex": "326fe1a69322c416bea55658ba39ab30aef0ee6a58d7d61f32ca2a6611ab56ba"
+    },
+    "unresolved_auditor_access_limit": "Lindley primary text could not be independently fetched by this subset auditor despite Mathnet retries. Root independently retrieved the publisher-hosted Russian translation and reports direct support; see root consolidation for its verified evidence."
+  }
+}

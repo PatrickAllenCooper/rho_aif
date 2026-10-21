@@ -1,0 +1,149 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1007/978-1-4684-9352-8",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "1cb341ad899c62b113f00615847bb94c98f428808c95af43f939061a35b2d195",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          14
+        ]
+      ],
+      "date-time": "2026-10-14T11:27:42Z",
+      "timestamp": 1791977262269,
+      "version": "4.4.0"
+    },
+    "publisher": "Springer New York",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              1978,
+              1,
+              1
+            ]
+          ],
+          "date-time": "1978-01-01T00:00:00Z",
+          "timestamp": 252460800000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "http://www.springer.com/tdm"
+      }
+    ],
+    "short-container-title": [],
+    "published-print": {
+      "date-parts": [
+        [
+          1978
+        ]
+      ]
+    },
+    "DOI": "10.1007/978-1-4684-9352-8",
+    "type": "book",
+    "created": {
+      "date-parts": [
+        [
+          2012,
+          5,
+          13
+        ]
+      ],
+      "date-time": "2012-05-13T21:13:28Z",
+      "timestamp": 1336943608000
+    },
+    "title": [
+      "Stochastic Approximation Methods for Constrained and Unconstrained Systems"
+    ],
+    "prefix": "10.1007",
+    "author": [
+      {
+        "given": "Harold J.",
+        "family": "Kushner",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Dean S.",
+        "family": "Clark",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "297",
+    "container-title": [
+      "Applied Mathematical Sciences"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "http://link.springer.com/content/pdf/10.1007/978-1-4684-9352-8.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://link.springer.com/content/pdf/10.1007/978-1-4684-9352-8",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2019,
+          4,
+          4
+        ]
+      ],
+      "date-time": "2019-04-04T10:26:30Z",
+      "timestamp": 1554373590000
+    },
+    "resource": {
+      "primary": {
+        "URL": "http://link.springer.com/10.1007/978-1-4684-9352-8"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          1978
+        ]
+      ]
+    },
+    "ISBN": [
+      "9780387903415",
+      "9781468493528"
+    ],
+    "URL": "https://doi.org/10.1007/978-1-4684-9352-8",
+    "relation": {},
+    "ISSN": [
+      "0066-5452"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          1978
+        ]
+      ]
+    }
+  }
+}

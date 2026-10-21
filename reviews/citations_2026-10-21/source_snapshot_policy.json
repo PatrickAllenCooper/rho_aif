@@ -1,0 +1,167 @@
+{
+  "date": "2026-10-21",
+  "purpose": "Retain bibliographic verification fields and source fingerprints without copying article abstracts or unrelated reference lists into the repository. Claim-support paraphrases and checked URLs remain in reviewer reports.",
+  "omitted_fields": [
+    "abstract",
+    "reference",
+    "other fields not used for bibliographic identity"
+  ],
+  "snapshots": [
+    {
+      "path": "sources_a/bernardo1979_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1214/aos/1176344689",
+      "original_response_sha256": "2da94d192daac0db6a693a06fb02ce3f762ec1fa17e2564eb2a5c1f4900f1497",
+      "retained_snapshot_sha256": "26118dc5c794f0795929add948a1f7decac4084456fd9df47923037278e458f8"
+    },
+    {
+      "path": "sources_a/blum1954_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1214/aoms/1177728794",
+      "original_response_sha256": "b99decfe1d54357caf1c11abda66dca921bf7f40c2cdbdac1a251419989f7f87",
+      "retained_snapshot_sha256": "bc0e40d6c6e8c05f97bb69ebdf761f5bc219d47b487a8363beea927e942db32a"
+    },
+    {
+      "path": "sources_a/champion2024_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1162/neco.a.1491",
+      "original_response_sha256": "b49801d1941e0a797407ac3b6807404906c9c17a0eea7c71ef7c338b8ad27f54",
+      "retained_snapshot_sha256": "fe991a4e03cf8d4705605b21d99d9f420fc4f00ee658150f052431904b910888"
+    },
+    {
+      "path": "sources_a/dacosta2020_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1016/j.jmp.2020.102447",
+      "original_response_sha256": "30c0ade4f8eac9d874fd5e7e2a2cab42b00269cabf46f24edb3337fd7586f4d9",
+      "retained_snapshot_sha256": "cc5bc467efbde777af482acc359cc5fd84914c6e0689c489ae20a34dcadcc182"
+    },
+    {
+      "path": "sources_a/dacosta2020b_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1162/neco_a_01574",
+      "original_response_sha256": "4a975c1aa37bfceb08dd4940862f529582bd9d660bf8ee57bf260be864c1ff8b",
+      "retained_snapshot_sha256": "dbf52a66f0e63fc30f116e2f5bd6c570d5fb9bb02a1988878d744ccea827dd91"
+    },
+    {
+      "path": "sources_a/friston2010_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1038/nrn2787",
+      "original_response_sha256": "324fd071dd74b76c1307001a586fd1852b2ba9a6991997c27c8f3f3c3b293373",
+      "retained_snapshot_sha256": "8d40a7be0098b6e0a47bf68da64752548b9fd9cbda0c30326d4177c79324c8e5"
+    },
+    {
+      "path": "sources_a/friston2015_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1080/17588928.2015.1020053",
+      "original_response_sha256": "aee35b40483e62d41d92facd51dac769dbd3398ca5ab1022e9990f499b82dc20",
+      "retained_snapshot_sha256": "7dc4a028fff049fb1663b9d55ffdb49b687a8b8ea9568703d2899d001d277948"
+    },
+    {
+      "path": "sources_a/friston2021_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1162/neco_a_01351",
+      "original_response_sha256": "b1a757774aa415fe90a37d38a89b943336a2235050884df0135e98413710780c",
+      "retained_snapshot_sha256": "14bb4b7cd980d90a5f2d02f453c516e698e3b7d53b002783468b071e8eaf9f68"
+    },
+    {
+      "path": "sources_a/ghavamzadeh2015_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1561/2200000049",
+      "original_response_sha256": "465f2de2b3f23ba77ce27e76cea80c4025fa3b12712da6dc794ae972caa344b9",
+      "retained_snapshot_sha256": "cd65a3a0731b9c822dbcb1e553da55102b04ee9564d8315a60637da0609f024f"
+    },
+    {
+      "path": "sources_a/guez2013_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1613/jair.4117",
+      "original_response_sha256": "a999263d5049216ac5fc23053e8f6cefacb0ce0aa1ad7dfdd36d39d238245443",
+      "retained_snapshot_sha256": "d6e66bf10b8a9e5fd8e47ba4ba90c034a83182d24fc78e86f30bf072dc92e170"
+    },
+    {
+      "path": "sources_a/gundersen2024jair_crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1613/jair.1.16905",
+      "original_response_sha256": "2464651169166fd90c93d99c3011df7fe0d3791cf37767bdf6cd69726cbd0f12",
+      "retained_snapshot_sha256": "d55661b185413ccc83cbaa120882671adf9d6e2b694f1f1c3fece8e1acb08d00"
+    },
+    {
+      "path": "sources_c/kushner1978.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1007/978-1-4684-9352-8",
+      "original_response_sha256": "1cb341ad899c62b113f00615847bb94c98f428808c95af43f939061a35b2d195",
+      "retained_snapshot_sha256": "f2ebe45f069dff3288d6f4645655149b003368d7d78d709a519c7d5cfdfcf280"
+    },
+    {
+      "path": "sources_c/sajid2021.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1162/neco_a_01357",
+      "original_response_sha256": "61c81065d7ed5205e3bdf9f2012cf7f1fcb71e1f2bce16be39cb0853abc2f66d",
+      "retained_snapshot_sha256": "9bae3b6799a5a2f2d7b9cb34dd3db21aac0ad6f537e2a4367f556768ae7c854a"
+    },
+    {
+      "path": "sources_c/satsangi2018.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1007/s10514-017-9666-5",
+      "original_response_sha256": "cbc892eeeb3958441c4a162e2573217b02fe1b474f7f69627f71da49b066e1c2",
+      "retained_snapshot_sha256": "b6aead16ab149570e4b41a25a37cf51e4af97de81b72fdd4d4793fa2f6ced67d"
+    },
+    {
+      "path": "sources_c/schmidhuber1991.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.7551/mitpress/3115.003.0030",
+      "original_response_sha256": "7b6bf16c6163499a16ed0cb115475fc19b162bed2f094493c6a3460673609b2f",
+      "retained_snapshot_sha256": "371f18dc390b1b421fdc5bf114a39c01ca33f277d1f7d16ac92bc0de4f7acbcf"
+    },
+    {
+      "path": "sources_c/schuirmann1987.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1007/bf01068419",
+      "original_response_sha256": "7dbc8bbb6c0e5cb46cefa8d99a7e27f8292ca4227b52d0bd55e7ec0534d11def",
+      "retained_snapshot_sha256": "701e5fd732e65c83b404abeada10ae051f1bbbff1a13c5c7317f68c8d83cad11"
+    },
+    {
+      "path": "sources_c/shani2013.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1007/s10458-012-9200-2",
+      "original_response_sha256": "5183c3931050da38547e8dcac22ebbea663a2ba6a48ba6dbe13ea4f444857506",
+      "retained_snapshot_sha256": "92b64687cc756f21c01bc37f8cdcde6ced9dc2eccc68f31d2d1fb81203defed3"
+    },
+    {
+      "path": "sources_c/sims2003.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1016/s0304-3932(03)00029-1",
+      "original_response_sha256": "b2254daaffef4ac1696ac9c837431627ebf3f34fe844a96e201de0537195b16a",
+      "retained_snapshot_sha256": "b13c287337decb5b6a01670dd655ebbb2957d3d77232b958137f429edb445d33"
+    },
+    {
+      "path": "sources_c/smallwood1973.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1287/opre.21.5.1071",
+      "original_response_sha256": "337e018e6a57edabe4c6d66dd23af7f53e016c0b07ec9c972f7a0e033b491cee",
+      "retained_snapshot_sha256": "38a85929ada39dcc1bf36d7d7fc0c498d91245bc534bc88d1f446943ffe2a56f"
+    },
+    {
+      "path": "sources_c/spaan2015.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1007/s10458-014-9279-8",
+      "original_response_sha256": "c364eef42848285a8160fcf3d5a3d28096eea02bfaa482f13ef323250a65fe52",
+      "retained_snapshot_sha256": "18e9275de33b486685abbb447870f1376e24643a8576dc35ffc14702ec20b984"
+    },
+    {
+      "path": "sources_c/stocco2024recursive.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1609/icaps.v34i1.31518",
+      "original_response_sha256": "6057faa43d36399cb03b2b3232a8ffe98d6aeb7707af5c31079419b840c5d9da",
+      "retained_snapshot_sha256": "2354670ca1daa8a4dd246bfe71167d6e90590dc7585b7c706b63997cfe867427"
+    },
+    {
+      "path": "sources_c/sunberg2018.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1609/icaps.v28i1.13882",
+      "original_response_sha256": "4797f574e5f874181dac71032458913922448889d958ae7c0b421f770077da1b",
+      "retained_snapshot_sha256": "aef9a40407a91a388570672d01671536e07682371704d4f8f19269cfacbef2aa"
+    },
+    {
+      "path": "sources_c/sweeney2026equivalences.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.3390/e28010001",
+      "original_response_sha256": "6a28a00b4fc870990d554ea1f03bc107662a606ed44ade6f522b5f8d970ca92f",
+      "retained_snapshot_sha256": "1e170baff1d1fa727ec71b1f6d25c3650ac3b60bde5c380af6d59f3f9958348b"
+    },
+    {
+      "path": "sources_c/vergara2012.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1016/j.snb.2012.01.074",
+      "original_response_sha256": "2e36e4f5de27c7378e2b9d5b4dbb9ed6790ffff82759ad4a32f890767022f075",
+      "retained_snapshot_sha256": "0ffa489623a63374097d77d7f0b89d9b06f53c66c06e5ec207ef6145240dd4f4"
+    },
+    {
+      "path": "sources_c/walraven2024.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1007/s10458-024-09683-4",
+      "original_response_sha256": "d80a4f248684a6d25b169a63a45e77413573f7cc130f72e48914f076966194b8",
+      "retained_snapshot_sha256": "b28b26154f713fc634a11d7794ec91fb90bd0560d9da12f480fa5519248efe1e"
+    },
+    {
+      "path": "sources_c/ye2017.crossref.json",
+      "source_url": "https://api.crossref.org/works/10.1613/jair.5328",
+      "original_response_sha256": "3f45609548faa11b416fc14e007fb0c6c37f0d4aaecc3b0398417dd7da48cde9",
+      "retained_snapshot_sha256": "5fc8c7e1770ff1f3a65de8a3f9d077a17b1ff43601c78ca8d7f051417f69ae29"
+    }
+  ]
+}

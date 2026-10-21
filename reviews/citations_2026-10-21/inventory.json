@@ -1,0 +1,1120 @@
+{
+  "date": "2026-10-21",
+  "baseline_commit": "68a9c137c4529675b3fe097ccda351e464dc3afc",
+  "source_sha256": "c260180b50f5845132a6aeba50150373cf5ae5f74331feb9d5490aeae77d65c2",
+  "bibliography_sha256": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592",
+  "entry_count": 69,
+  "citation_clusters": 84,
+  "key_uses": 111,
+  "missing_keys": [],
+  "uncited_keys": [],
+  "entries": [
+    {
+      "key": "altman1999",
+      "type": "book",
+      "bib_line": 10,
+      "entry": "@book{altman1999,\n  author    = {Altman, E.},\n  title     = {Constrained Markov Decision Processes},\n  publisher = {Chapman \\& Hall/CRC},\n  year      = {1999}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "paragraph": "Rational inattention constrains or prices information capacity \\citep{sims2003,matejka2015}. Constrained MDPs use Lagrange multipliers on expected resource costs \\citep{altman1999}, and constrained POMDP methods track admissible cost alongside belief \\citep{kim2011cpomdp}. Automatic temperature tuning in soft actor-critic drives policy entropy toward a target \\citep{haarnoja2018sac}. These provide close conceptual precedents for resource control. Our weight multiplies information gain, however, while the target concerns observation count or cost. It is not generally the multiplier of a sensing-cap constraint. Section~\\ref{sec:budget_positioning} gives the detailed distinctions, including the difference from a dual formulation of EFE itself \\citep{kouw2026bethe}. The contribution is an operational calibration for this policy family, its exact scale transformation under stated assumptions, and explicit treatment of finite-grid crossings and usage gaps."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 350,
+          "paragraph": "and otherwise choose $w_{\\mathrm{lo}}$, retaining that policy for the episode. Linearity gives expected usage exactly $B$ for these population endpoint usages. This is one randomized policy, not an interval of scalar prices or a constrained-reward optimum. It attains gap targets that no single weight can, consistent with the need for randomization in constrained MDPs and POMDPs \\citep{altman1999,kim2011cpomdp}."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "paragraph": "Resource-price adaptation is classical in constrained MDPs \\citep{altman1999}, rational inattention \\citep{sims2003,matejka2015}, and SAC \\citep{haarnoja2018sac}. Here one information weight controls sensing usage across episodes. It differs from an information constraint internal to EFE \\citep{kouw2026bethe} and per-node constrained-POMDP dual ascent \\citep{stocco2024recursive}. The contribution is the calibration procedure for this policy family, with count/cost equivariance, grid crossings, endpoint mixtures and conditional stationary convergence."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 561,
+          "paragraph": "At budget $B$, the reference is the feasible envelope of the sampled policy points, obtained by maximizing their mixture reward subject to mixture usage at most $B$. A solution uses at most two sampled policies. Policies below the target remain eligible, and the reference is flat at the largest sampled reward once the cap is slack. This is a linear program over measured points, not equal-usage interpolation. The solver is approximate, the penalty grid is finite, and reward and usage are Monte Carlo estimates. Consequently the envelope is neither a certified population bound nor the full constrained frontier. We do not assume that finite-state strong-duality results \\citep{altman1999} automatically extend to the continuous belief MDP. Appendix~\\ref{app:cpomdp_details} identifies the evaluated policies and reference records."
+        }
+      ]
+    },
+    {
+      "key": "araya2010",
+      "type": "inproceedings",
+      "bib_line": 17,
+      "entry": "@inproceedings{araya2010,\n  author    = {Araya-L\\'{o}pez, M. and Buffet, O. and Thomas, V. and Charpillet, F.},\n  title     = {A {POMDP} extension with belief-dependent rewards},\n  booktitle = {Advances in Neural Information Processing Systems},\n  year      = {2010}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 104,
+          "paragraph": "An engineer designing an inspection policy may need to specify how much testing the system should perform before deciding whether to repair or release an item. A standard partially observable Markov decision process (POMDP) values a test through its effect on expected task reward. A $\\rho$-POMDP additionally rewards properties of the agent's belief, allowing information gain to have explicit value \\citep{araya2010}. This introduces a practical choice: how much weight should information gain receive relative to reward?"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 137,
+          "paragraph": "\\citet{araya2010} introduced $\\rho$-POMDPs with belief-dependent rewards. Their $\\rho$ denotes the whole reward, whereas we reserve it for an information term added to the ordinary task reward. Convex belief rewards support convex value functions and piecewise-linear convex approximations. Expected information gain is concave in the belief, so that machinery does not apply directly. \\citet{fehr2018} treat non-convex rewards under a Lipschitz hypothesis, and \\citet{benchetrit2025} develop an anytime planner for continuous spaces. For a finite observation model, strictly positive likelihoods make expected information gain Lipschitz on the belief simplex. Zero likelihoods, including noiseless sensing, can violate this condition. Our exact tree recursion does not rely on that approximation guarantee."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 204,
+          "paragraph": "At $d=H$, the value is the best commit value. Write $R(b,a):=\\sum_s b(s)R(s,a)$ for expected immediate reward and $V^*(b,d):=\\max_a V(a,b,d)$ for the optimal belief-state value. This is a $\\rho$-POMDP Bellman recursion with an action-dependent belief utility, as permitted by \\citet{araya2010}. The proposition identifies the two recursions when $\\beta=1$ fixes the exchange rate at one reward unit per nat of log preference. A separately normalized preference distribution needs the qualification following the proposition."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 293,
+          "paragraph": "Planning+IG is the central baseline and represents the familiar information-reward construction in POMDP-IR and $\\rho$-POMDPs \\citep{spaan2015,araya2010,satsangi2018}. By Proposition~\\ref{prop:equivalence}, its difference from EFE is the chosen weight."
+        }
+      ]
+    },
+    {
+      "key": "bellemare2016",
+      "type": "inproceedings",
+      "bib_line": 24,
+      "entry": "@inproceedings{bellemare2016,\n  author    = {Bellemare, M. and Srinivasan, S. and Ostrovski, G. and Schaul, T. and Saxton, D. and Munos, R.},\n  title     = {Unifying count-based exploration and intrinsic motivation},\n  booktitle = {Advances in Neural Information Processing Systems},\n  year      = {2016}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "bernardo1979",
+      "type": "article",
+      "bib_line": 31,
+      "entry": "@article{bernardo1979,\n  author  = {Bernardo, J.~M.},\n  title   = {Expected information as expected utility},\n  journal = {The Annals of Statistics},\n  volume  = {7},\n  number  = {3},\n  pages   = {686--690},\n  year    = {1979}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 122,
+          "paragraph": "Active inference identifies a particular point in this policy family. Its Expected Free Energy (EFE) objective combines pragmatic value with expected information gain \\citep{friston2015,parr2019}. For the recursive, reward-based objective specified here, minimizing EFE is equivalent to maximizing reward plus information gain at $w=1$. The reward--information identification is exact under log scoring \\citep{bernardo1979}. For ordinary task rewards it depends on the declared reward convention and the treatment of the preference normalizer. The coefficient is therefore an untuned default under shared units, not a scale-invariant calibration. In particular, $w=1$ belongs to the level set of its implicit budget $U(1)$, but need not equal that budget's crossing threshold."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 142,
+          "paragraph": "Classical value of information measures the improvement an observation can bring to a decision \\citep{howard1966}. Bayesian experimental design instead commonly selects observations by expected information gain \\citep{lindley1956,foster2021dad}. The criteria coincide under a particular reward model: when the reward is a proper log score, the expected improvement in score is the expected information gain \\citep{bernardo1979}. This supplies the exact reward--information identification used here. Sequential experimental design is also the closest structural analogue to our observe-then-commit setting."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 227,
+          "paragraph": "Setting $\\beta=1$ assigns one nat to each reward unit. A path scoring $T$ outcomes also accumulates $-T\\ln Z$ in log-preference. Since observe-then-commit paths have different lengths, this term can be policy-dependent. It vanishes for a log-scoring reward with $Z=1$ \\citep{bernardo1979}, or cancels when every path scores the same number of outcomes under a common preference distribution. We do not impose that fixed-length construction. Proposition~\\ref{prop:equivalence} therefore proves equivalence for the reward-based recursion as written, conditional on its pragmatic identification, rather than deriving it from general normalized preferences."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1263,
+          "paragraph": "\\item Appropriate citations are given for all non-trivial theoretical tools and techniques. \\textbf{Yes.} Log scoring \\citep{bernardo1979}, the Robbins--Monro recursion \\citep{robbins1951}, classical almost-sure extensions \\citep{blum1954}, background on constrained stochastic approximation \\citep{kushner1978}, and the sophisticated-inference Bellman-optimality result \\citep{dacosta2020b} that the recursive agent is built on."
+        }
+      ]
+    },
+    {
+      "key": "benchetrit2025",
+      "type": "misc",
+      "bib_line": 41,
+      "entry": "@misc{benchetrit2025,\n  author        = {Benchetrit, R. and Lev-Yehudi, I. and Zhitnikov, A. and Indelman, V.},\n  title         = {Anytime incremental $\\rho${POMDP} planning in continuous spaces},\n  eprint        = {2502.02549},\n  archivePrefix = {arXiv},\n  year          = {2025}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 137,
+          "paragraph": "\\citet{araya2010} introduced $\\rho$-POMDPs with belief-dependent rewards. Their $\\rho$ denotes the whole reward, whereas we reserve it for an information term added to the ordinary task reward. Convex belief rewards support convex value functions and piecewise-linear convex approximations. Expected information gain is concave in the belief, so that machinery does not apply directly. \\citet{fehr2018} treat non-convex rewards under a Lipschitz hypothesis, and \\citet{benchetrit2025} develop an anytime planner for continuous spaces. For a finite observation model, strictly positive likelihoods make expected information gain Lipschitz on the belief simplex. Zero likelihoods, including noiseless sensing, can violate this condition. Our exact tree recursion does not rely on that approximation guarantee."
+        }
+      ]
+    },
+    {
+      "key": "blum1954",
+      "type": "article",
+      "bib_line": 49,
+      "entry": "@article{blum1954,\n  author  = {Blum, J.~R.},\n  title   = {Approximation methods which converge with probability one},\n  journal = {The Annals of Mathematical Statistics},\n  volume  = {25},\n  number  = {2},\n  pages   = {382--386},\n  year    = {1954}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 447,
+          "paragraph": "The update is a projected Robbins--Monro recursion \\citep{robbins1951}, with classical almost-sure extensions due to \\citet{blum1954} and constrained treatments in \\citet{kushner1978}. Appendix~\\ref{app:theory_controller} proves this bounded scalar case directly by a supermartingale argument, including discontinuous curves. Kronecker's lemma gives the running-average result for the harmonic schedule above. The theorem is conditional on one sign-consistent crossing and does not cover an arbitrary nonmonotone usage curve."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1263,
+          "paragraph": "\\item Appropriate citations are given for all non-trivial theoretical tools and techniques. \\textbf{Yes.} Log scoring \\citep{bernardo1979}, the Robbins--Monro recursion \\citep{robbins1951}, classical almost-sure extensions \\citep{blum1954}, background on constrained stochastic approximation \\citep{kushner1978}, and the sophisticated-inference Bellman-optimality result \\citep{dacosta2020b} that the recursive agent is built on."
+        }
+      ]
+    },
+    {
+      "key": "boutilier2002",
+      "type": "inproceedings",
+      "bib_line": 59,
+      "entry": "@inproceedings{boutilier2002,\n  author    = {Boutilier, C.},\n  title     = {A {POMDP} formulation of preference elicitation problems},\n  booktitle = {AAAI Conference on Artificial Intelligence},\n  pages     = {239--246},\n  year      = {2002}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 139,
+          "paragraph": "POMDPs with information rewards were developed for active cooperative perception \\citep{spaan2015}, and their relation to $\\rho$-POMDPs is discussed by \\citet{satsangi2018}. Earlier preference-elicitation work selected queries by sequential value of information while retaining state-dependent rewards \\citep{boutilier2002}. These approaches establish the motivation for valuing information explicitly. Our focus is the coefficient on that value and its relation to expected sensing usage."
+        }
+      ]
+    },
+    {
+      "key": "burda2019",
+      "type": "inproceedings",
+      "bib_line": 67,
+      "entry": "@inproceedings{burda2019,\n  author    = {Burda, Y. and Edwards, H. and Storkey, A. and Klimov, O.},\n  title     = {Exploration by random network distillation},\n  booktitle = {International Conference on Learning Representations},\n  year      = {2019}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "champion2024",
+      "type": "article",
+      "bib_line": 74,
+      "entry": "@article{champion2024,\n  author  = {Champion, T. and Bowman, H. and Markovi\\'{c}, D. and Grze\\'{s}, M.},\n  title   = {Reframing the expected free energy: Four formulations and a unification},\n  journal = {Neural Computation},\n  volume  = {38},\n  number  = {3},\n  pages   = {439--469},\n  year    = {2026}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "paragraph": "Several distinct constructions occur under the EFE name. \\citet{millidge2021} distinguish EFE from a naive future extension of variational free energy and propose Free Energy of the Expected Future (FEEF). \\citet{champion2024} examine which EFE expressions follow from common root definitions and the restrictions those roots impose on prior preferences. \\citet{devries2025} derive EFE-based planning from a model augmented with preference and epistemic priors. The generalised free energy of \\citet{parr2019} is another distinct functional. Our equivalence concerns only the recursive, reward-based objective defined in Section~\\ref{sec:methodology}, with expected information gain about the hidden state as its epistemic term. It does not assert an unchanged coefficient for these alternative constructions. Broader comparisons with decision-theoretic objectives include an EFE optimality-gap analysis \\citep{wei2024voi} and a survey of formal equivalences \\citep{sweeney2026equivalences}."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 220,
+          "paragraph": "Negating the objective gives the Bellman maximization (proof in Appendix~\\ref{app:proof}). This identifies the specified recursive EFE agent with Planning+IG at $w=1$ under the stated convention. It is a notational bridge, not a reward-optimality theorem. Unlike the $\\beta\\to\\infty$ limit of \\citet{dacosta2020b}, it retains full information weight. It concerns the information-gain and pragmatic-value formulation among those related by \\citet{champion2024}, with the scope and approximation restrictions described in Related Work and Appendix~\\ref{app:theory_setup}."
+        }
+      ]
+    },
+    {
+      "key": "cooper2026iwai",
+      "type": "inproceedings",
+      "bib_line": 84,
+      "entry": "@inproceedings{cooper2026iwai,\n  author    = {Cooper, P. and Velasquez, A.},\n  title     = {Expected free energy as belief-dependent utility for $\\rho$-{POMDP}s},\n  booktitle = {Proceedings of the 7th International Workshop on Active Inference (IWAI 2026)},\n  series    = {Communications in Computer and Information Science},\n  publisher = {Springer},\n  year      = {2026},\n  note    = {To appear},\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 128,
+          "paragraph": "An abridged version was accepted at IWAI 2026 \\citep{cooper2026iwai}. It contains the EFE equivalence results and their benchmark evaluation. The budgeted formulation, scale-equivariance and controller results, budget experiments, and distractor and destructive-sensing analyses are extensions. We also revise the workshop version's claim that the advantage grows with state-space size and observation-action count, which RockSample[11,11] does not support."
+        }
+      ]
+    },
+    {
+      "key": "dacosta2020",
+      "type": "article",
+      "bib_line": 94,
+      "entry": "@article{dacosta2020,\n  author  = {Da~Costa, L. and Parr, T. and Sajid, N. and Veselic, S. and Neacsu, V. and Friston, K.},\n  title   = {Active inference on discrete state-spaces: A synthesis},\n  journal = {Journal of Mathematical Psychology},\n  volume  = {99},\n  pages   = {102447},\n  year    = {2020}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "paragraph": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal."
+        }
+      ]
+    },
+    {
+      "key": "dacosta2020b",
+      "type": "article",
+      "bib_line": 103,
+      "entry": "@article{dacosta2020b,\n  author  = {Da~Costa, L. and Sajid, N. and Parr, T. and Friston, K. and Smith, R.},\n  title   = {Reward maximization through discrete active inference},\n  journal = {Neural Computation},\n  volume  = {35},\n  number  = {5},\n  pages   = {807--852},\n  year    = {2023}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "paragraph": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 183,
+          "paragraph": "$Q(o_\\tau\\mid\\pi)$ predicts observations under policy $\\pi$, while $Q(s_\\tau\\mid\\pi)$ and $Q(s_\\tau\\mid o_\\tau,\\pi)$ are the corresponding prior and posterior beliefs. The parameters $C$ specify the preference distribution $P(\\cdot\\mid C)$, which is distinct from the observation model conditioned on state and action. Minimization favors preferred outcomes and informative observations. Following the recursive, closed-loop formulation associated with sophisticated inference \\citep{friston2021,dacosta2020b}, we evaluate actions from the current belief and replan after every observation."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 220,
+          "paragraph": "Negating the objective gives the Bellman maximization (proof in Appendix~\\ref{app:proof}). This identifies the specified recursive EFE agent with Planning+IG at $w=1$ under the stated convention. It is a notational bridge, not a reward-optimality theorem. Unlike the $\\beta\\to\\infty$ limit of \\citet{dacosta2020b}, it retains full information weight. It concerns the information-gain and pragmatic-value formulation among those related by \\citet{champion2024}, with the scope and approximation restrictions described in Related Work and Appendix~\\ref{app:theory_setup}."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1263,
+          "paragraph": "\\item Appropriate citations are given for all non-trivial theoretical tools and techniques. \\textbf{Yes.} Log scoring \\citep{bernardo1979}, the Robbins--Monro recursion \\citep{robbins1951}, classical almost-sure extensions \\citep{blum1954}, background on constrained stochastic approximation \\citep{kushner1978}, and the sophisticated-inference Bellman-optimality result \\citep{dacosta2020b} that the recursive agent is built on."
+        }
+      ]
+    },
+    {
+      "key": "devries2025",
+      "type": "misc",
+      "bib_line": 113,
+      "entry": "@misc{devries2025,\n  author        = {de~Vries, Bert and Nuijten, Wouter and van~de~Laar, Thijs\n                   and Kouw, Wouter and Adamiat, Sepideh and Nisslbeck, Tim\n                   and Lukashchuk, Mykola and Nguyen, Hoang Minh Huu\n                   and Hidalgo~Araya, Marco and Tr{\\'e}sor, Rapha{\\\"e}l\n                   and Jenneskens, Thijs and Nikoloska, Ivana\n                   and Subramanian, Raaja Ganapathy and van~Erp, Bart\n                   and Bagaev, Dmitry and Podusenko, Albert},\n  title         = {Expected free energy-based planning as variational inference},\n  eprint        = {2504.14898},\n  archivePrefix = {arXiv},\n  year          = {2025}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "paragraph": "Several distinct constructions occur under the EFE name. \\citet{millidge2021} distinguish EFE from a naive future extension of variational free energy and propose Free Energy of the Expected Future (FEEF). \\citet{champion2024} examine which EFE expressions follow from common root definitions and the restrictions those roots impose on prior preferences. \\citet{devries2025} derive EFE-based planning from a model augmented with preference and epistemic priors. The generalised free energy of \\citet{parr2019} is another distinct functional. Our equivalence concerns only the recursive, reward-based objective defined in Section~\\ref{sec:methodology}, with expected information gain about the hidden state as its epistemic term. It does not assert an unchanged coefficient for these alternative constructions. Broader comparisons with decision-theoretic objectives include an EFE optimality-gap analysis \\citep{wei2024voi} and a survey of formal equivalences \\citep{sweeney2026equivalences}."
+        }
+      ]
+    },
+    {
+      "key": "duff2002",
+      "type": "phdthesis",
+      "bib_line": 127,
+      "entry": "@phdthesis{duff2002,\n  author = {Duff, M.~O.},\n  title  = {Optimal learning: Computational procedures for {B}ayes-adaptive {M}arkov decision processes},\n  school = {University of Massachusetts Amherst},\n  year   = {2002}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "fehr2018",
+      "type": "inproceedings",
+      "bib_line": 134,
+      "entry": "@inproceedings{fehr2018,\n  author    = {Fehr, M. and Buffet, O. and Thomas, V. and Dibangoye, J.},\n  title     = {$\\rho$-{POMDP}s have {L}ipschitz-continuous $\\epsilon$-optimal value functions},\n  booktitle = {Advances in Neural Information Processing Systems},\n  year      = {2018}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 137,
+          "paragraph": "\\citet{araya2010} introduced $\\rho$-POMDPs with belief-dependent rewards. Their $\\rho$ denotes the whole reward, whereas we reserve it for an information term added to the ordinary task reward. Convex belief rewards support convex value functions and piecewise-linear convex approximations. Expected information gain is concave in the belief, so that machinery does not apply directly. \\citet{fehr2018} treat non-convex rewards under a Lipschitz hypothesis, and \\citet{benchetrit2025} develop an anytime planner for continuous spaces. For a finite observation model, strictly positive likelihoods make expected information gain Lipschitz on the belief simplex. Zero likelihoods, including noiseless sensing, can violate this condition. Our exact tree recursion does not rely on that approximation guarantee."
+        }
+      ]
+    },
+    {
+      "key": "foster2021dad",
+      "type": "inproceedings",
+      "bib_line": 141,
+      "entry": "@inproceedings{foster2021dad,\n  author    = {Foster, A. and Ivanova, D.~R. and Malik, I. and Rainforth, T.},\n  title     = {Deep adaptive design: Amortizing sequential {B}ayesian experimental design},\n  booktitle = {International Conference on Machine Learning},\n  pages     = {3384--3395},\n  publisher = {PMLR},\n  year      = {2021}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 142,
+          "paragraph": "Classical value of information measures the improvement an observation can bring to a decision \\citep{howard1966}. Bayesian experimental design instead commonly selects observations by expected information gain \\citep{lindley1956,foster2021dad}. The criteria coincide under a particular reward model: when the reward is a proper log score, the expected improvement in score is the expected information gain \\citep{bernardo1979}. This supplies the exact reward--information identification used here. Sequential experimental design is also the closest structural analogue to our observe-then-commit setting."
+        }
+      ]
+    },
+    {
+      "key": "fountas2020",
+      "type": "inproceedings",
+      "bib_line": 150,
+      "entry": "@inproceedings{fountas2020,\n  author    = {Fountas, Z. and Sajid, N. and Mediano, P.~A.~M. and Friston, K.},\n  title     = {Deep active inference agents using {M}onte-{C}arlo methods},\n  booktitle = {Advances in Neural Information Processing Systems},\n  year      = {2020}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 153,
+          "paragraph": "Scaling work combines active inference with deep models, reinforcement-learning objectives, and Monte Carlo tree search \\citep{fountas2020,tschantz2020,maisto2025}. Our MCTS-EFE variant follows this direction. Its controls test exploration constants, rollout choices, and two internal components, while leaving exact beliefs, exact commit values, and EFE leaf evaluation coupled (Appendix~\\ref{app:pomcp})."
+        }
+      ]
+    },
+    {
+      "key": "friston2010",
+      "type": "article",
+      "bib_line": 157,
+      "entry": "@article{friston2010,\n  author  = {Friston, K.},\n  title   = {The free-energy principle: a unified brain theory?},\n  journal = {Nature Reviews Neuroscience},\n  volume  = {11},\n  number  = {2},\n  pages   = {127--138},\n  year    = {2010}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "paragraph": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal."
+        }
+      ]
+    },
+    {
+      "key": "friston2015",
+      "type": "article",
+      "bib_line": 167,
+      "entry": "@article{friston2015,\n  author  = {Friston, K. and Rigoli, F. and Ognibene, D. and Mathys, C. and FitzGerald, T. and Pezzulo, G.},\n  title   = {Active inference and epistemic value},\n  journal = {Cognitive Neuroscience},\n  volume  = {6},\n  number  = {4},\n  pages   = {187--214},\n  year    = {2015}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 122,
+          "paragraph": "Active inference identifies a particular point in this policy family. Its Expected Free Energy (EFE) objective combines pragmatic value with expected information gain \\citep{friston2015,parr2019}. For the recursive, reward-based objective specified here, minimizing EFE is equivalent to maximizing reward plus information gain at $w=1$. The reward--information identification is exact under log scoring \\citep{bernardo1979}. For ordinary task rewards it depends on the declared reward convention and the treatment of the preference normalizer. The coefficient is therefore an untuned default under shared units, not a scale-invariant calibration. In particular, $w=1$ belongs to the level set of its implicit budget $U(1)$, but need not equal that budget's crossing threshold."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "paragraph": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal."
+        }
+      ]
+    },
+    {
+      "key": "friston2021",
+      "type": "article",
+      "bib_line": 177,
+      "entry": "@article{friston2021,\n  author  = {Friston, K. and Da~Costa, L. and Hafner, D. and Hesp, C. and Parr, T.},\n  title   = {Sophisticated inference},\n  journal = {Neural Computation},\n  volume  = {33},\n  number  = {3},\n  pages   = {713--763},\n  year    = {2021}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "paragraph": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 183,
+          "paragraph": "$Q(o_\\tau\\mid\\pi)$ predicts observations under policy $\\pi$, while $Q(s_\\tau\\mid\\pi)$ and $Q(s_\\tau\\mid o_\\tau,\\pi)$ are the corresponding prior and posterior beliefs. The parameters $C$ specify the preference distribution $P(\\cdot\\mid C)$, which is distinct from the observation model conditioned on state and action. Minimization favors preferred outcomes and informative observations. Following the recursive, closed-loop formulation associated with sophisticated inference \\citep{friston2021,dacosta2020b}, we evaluate actions from the current belief and replan after every observation."
+        }
+      ]
+    },
+    {
+      "key": "ghavamzadeh2015",
+      "type": "article",
+      "bib_line": 187,
+      "entry": "@article{ghavamzadeh2015,\n  author  = {Ghavamzadeh, M. and Mannor, S. and Pineau, J. and Tamar, A.},\n  title   = {{B}ayesian reinforcement learning: A survey},\n  journal = {Foundations and Trends in Machine Learning},\n  volume  = {8},\n  number  = {5--6},\n  pages   = {359--483},\n  year    = {2015}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "guez2013",
+      "type": "article",
+      "bib_line": 197,
+      "entry": "@article{guez2013,\n  author  = {Guez, A. and Silver, D. and Dayan, P.},\n  title   = {Scalable and efficient {B}ayes-adaptive reinforcement learning based on {M}onte-{C}arlo tree search},\n  journal = {Journal of Artificial Intelligence Research},\n  volume  = {48},\n  pages   = {841--883},\n  year    = {2013}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "gundersen2024jair",
+      "type": "article",
+      "bib_line": 206,
+      "entry": "@article{gundersen2024jair,\n  author  = {Gundersen, O.~E. and Helmert, M. and Hoos, H.},\n  title   = {Improving reproducibility in {AI} research: Four mechanisms adopted by {JAIR}},\n  journal = {Journal of Artificial Intelligence Research},\n  volume  = {81},\n  pages   = {1019--1041},\n  year    = {2024}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1244,
+          "paragraph": "This appendix answers the JAIR reproducibility checklist \\citep{gundersen2024jair} for the submission version of this article, as required for review. It is not part of the accepted version."
+        }
+      ]
+    },
+    {
+      "key": "haarnoja2018",
+      "type": "inproceedings",
+      "bib_line": 215,
+      "entry": "@inproceedings{haarnoja2018,\n  author    = {Haarnoja, T. and Zhou, A. and Abbeel, P. and Levine, S.},\n  title     = {Soft actor-critic: Off-policy maximum entropy deep reinforcement learning with a stochastic actor},\n  booktitle = {International Conference on Machine Learning},\n  year      = {2018}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "haarnoja2018sac",
+      "type": "misc",
+      "bib_line": 222,
+      "entry": "@misc{haarnoja2018sac,\n  author        = {Haarnoja, T. and Zhou, A. and Hartikainen, K. and Tucker, G. and Ha, S. and Tan, J. and Kumar, V. and Zhu, H. and Gupta, A. and Abbeel, P. and Levine, S.},\n  title         = {Soft actor-critic algorithms and applications},\n  eprint        = {1812.05905},\n  archivePrefix = {arXiv},\n  year          = {2018},\n  }",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "paragraph": "Rational inattention constrains or prices information capacity \\citep{sims2003,matejka2015}. Constrained MDPs use Lagrange multipliers on expected resource costs \\citep{altman1999}, and constrained POMDP methods track admissible cost alongside belief \\citep{kim2011cpomdp}. Automatic temperature tuning in soft actor-critic drives policy entropy toward a target \\citep{haarnoja2018sac}. These provide close conceptual precedents for resource control. Our weight multiplies information gain, however, while the target concerns observation count or cost. It is not generally the multiplier of a sensing-cap constraint. Section~\\ref{sec:budget_positioning} gives the detailed distinctions, including the difference from a dual formulation of EFE itself \\citep{kouw2026bethe}. The contribution is an operational calibration for this policy family, its exact scale transformation under stated assumptions, and explicit treatment of finite-grid crossings and usage gaps."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 421,
+          "paragraph": "A reward-scale change moves the count-budget crossing. To adjust without a fresh grid sweep, we adapt SAC's automatic temperature update \\citep{haarnoja2018sac}, replacing the policy-entropy target by a sensing target. After episode $t$ with observed usage $U_t$, update"
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "paragraph": "Resource-price adaptation is classical in constrained MDPs \\citep{altman1999}, rational inattention \\citep{sims2003,matejka2015}, and SAC \\citep{haarnoja2018sac}. Here one information weight controls sensing usage across episodes. It differs from an information constraint internal to EFE \\citep{kouw2026bethe} and per-node constrained-POMDP dual ascent \\citep{stocco2024recursive}. The contribution is the calibration procedure for this policy family, with count/cost equivariance, grid crossings, endpoint mixtures and conditional stationary convergence."
+        }
+      ]
+    },
+    {
+      "key": "houthooft2016",
+      "type": "inproceedings",
+      "bib_line": 230,
+      "entry": "@inproceedings{houthooft2016,\n  author    = {Houthooft, R. and Chen, X. and Duan, Y. and Schulman, J. and De~Turck, F. and Abbeel, P.},\n  title     = {{VIME}: Variational information maximizing exploration},\n  booktitle = {Advances in Neural Information Processing Systems},\n  year      = {2016}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "howard1966",
+      "type": "article",
+      "bib_line": 237,
+      "entry": "@article{howard1966,\n  author  = {Howard, R.~A.},\n  title   = {Information value theory},\n  journal = {IEEE Transactions on Systems Science and Cybernetics},\n  volume  = {2},\n  number  = {1},\n  pages   = {22--26},\n  year    = {1966}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 142,
+          "paragraph": "Classical value of information measures the improvement an observation can bring to a decision \\citep{howard1966}. Bayesian experimental design instead commonly selects observations by expected information gain \\citep{lindley1956,foster2021dad}. The criteria coincide under a particular reward model: when the reward is a proper log score, the expected improvement in score is the expected information gain \\citep{bernardo1979}. This supplies the exact reward--information identification used here. Sequential experimental design is also the closest structural analogue to our observe-then-commit setting."
+        }
+      ]
+    },
+    {
+      "key": "kaelbling1998",
+      "type": "article",
+      "bib_line": 247,
+      "entry": "@article{kaelbling1998,\n  author  = {Kaelbling, L.~P. and Littman, M.~L. and Cassandra, A.~R.},\n  title   = {Planning and acting in partially observable stochastic domains},\n  journal = {Artificial Intelligence},\n  volume  = {101},\n  number  = {1--2},\n  pages   = {99--134},\n  year    = {1998}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "paragraph": "POMDPs formalize decision-making under state uncertainty \\citep{smallwood1973,kaelbling1998}. Point-based offline solvers approximate the value function on reachable beliefs, including PBVI, HSVI, and SARSOP \\citep{pineau2003,smith2004,kurniawati2008,shani2013}. Online solvers plan from the current belief. POMCP uses Monte Carlo tree search with UCB1 action selection and rollout evaluation \\citep{silver2010}, DESPOT searches regularized sparse belief trees \\citep{ye2017}, and POMCPOW uses progressive widening for continuous spaces \\citep{sunberg2018}. Value of Information Monte Carlo planning selectively skips observation branches with low expected decision value \\citep{laouar2026voi}. Our planner instead adds expected information gain to the objective. These are different uses of information within planning, and our comparisons do not establish superiority over state-of-the-art POMDP solvers generally."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 467,
+          "paragraph": "Tiger \\citep{kaelbling1998} has two hidden states, one listen action of accuracy $0.85$ and cost $1$, and terminal door choices paying $+10$ or $-100$. Diagnosis has four possible conditions, two binary tests of accuracy $0.80$ and cost $1$, and a terminal diagnosis paying $+10$ or $-50$. Each test partitions the conditions differently. Bandit has four arms and a single hidden variable identifying the best arm. An inspection targets one arm, has accuracy $0.80$, and costs $0.5$. A terminal pull pays $+10$ for the best arm and $+1$ otherwise. Tileworld hides one target on a $6{\\times}6$ grid. Its six noisy binary scans query bits of the target's row or column index, each with accuracy $0.80$ and cost $1$. Declaring a cell pays $+10$ or $-50$."
+        }
+      ]
+    },
+    {
+      "key": "kim2011cpomdp",
+      "type": "inproceedings",
+      "bib_line": 257,
+      "entry": "@inproceedings{kim2011cpomdp,\n  author    = {Kim, D. and Lee, J. and Kim, K.-E. and Poupart, P.},\n  title     = {Point-based value iteration for constrained {POMDP}s},\n  booktitle = {International Joint Conference on Artificial Intelligence},\n  pages     = {1968--1974},\n  year      = {2011}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "paragraph": "Rational inattention constrains or prices information capacity \\citep{sims2003,matejka2015}. Constrained MDPs use Lagrange multipliers on expected resource costs \\citep{altman1999}, and constrained POMDP methods track admissible cost alongside belief \\citep{kim2011cpomdp}. Automatic temperature tuning in soft actor-critic drives policy entropy toward a target \\citep{haarnoja2018sac}. These provide close conceptual precedents for resource control. Our weight multiplies information gain, however, while the target concerns observation count or cost. It is not generally the multiplier of a sensing-cap constraint. Section~\\ref{sec:budget_positioning} gives the detailed distinctions, including the difference from a dual formulation of EFE itself \\citep{kouw2026bethe}. The contribution is an operational calibration for this policy family, its exact scale transformation under stated assumptions, and explicit treatment of finite-grid crossings and usage gaps."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 350,
+          "paragraph": "and otherwise choose $w_{\\mathrm{lo}}$, retaining that policy for the episode. Linearity gives expected usage exactly $B$ for these population endpoint usages. This is one randomized policy, not an interval of scalar prices or a constrained-reward optimum. It attains gap targets that no single weight can, consistent with the need for randomization in constrained MDPs and POMDPs \\citep{altman1999,kim2011cpomdp}."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 456,
+          "paragraph": "A constrained-POMDP solver may randomize belief-dependently and outperform a mixture that fixes one weight for each episode \\citep{kim2011cpomdp}. Our references use sampled SARSOP policies and estimated feasibility, with approximation, sampling and selection uncertainty. The shallow RockSample reference does not reach EFE's operating region (Appendix~\\ref{app:theory_positioning})."
+        }
+      ]
+    },
+    {
+      "key": "kouw2026bethe",
+      "type": "misc",
+      "bib_line": 265,
+      "entry": "@misc{kouw2026bethe,\n  author        = {Kouw, W.~M.},\n  title         = {Expected free energy as an information constraint on the {B}ethe {L}agrangian},\n  eprint        = {2608.17167},\n  archivePrefix = {arXiv},\n  year          = {2026}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "paragraph": "Rational inattention constrains or prices information capacity \\citep{sims2003,matejka2015}. Constrained MDPs use Lagrange multipliers on expected resource costs \\citep{altman1999}, and constrained POMDP methods track admissible cost alongside belief \\citep{kim2011cpomdp}. Automatic temperature tuning in soft actor-critic drives policy entropy toward a target \\citep{haarnoja2018sac}. These provide close conceptual precedents for resource control. Our weight multiplies information gain, however, while the target concerns observation count or cost. It is not generally the multiplier of a sensing-cap constraint. Section~\\ref{sec:budget_positioning} gives the detailed distinctions, including the difference from a dual formulation of EFE itself \\citep{kouw2026bethe}. The contribution is an operational calibration for this policy family, its exact scale transformation under stated assumptions, and explicit treatment of finite-grid crossings and usage gaps."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "paragraph": "Resource-price adaptation is classical in constrained MDPs \\citep{altman1999}, rational inattention \\citep{sims2003,matejka2015}, and SAC \\citep{haarnoja2018sac}. Here one information weight controls sensing usage across episodes. It differs from an information constraint internal to EFE \\citep{kouw2026bethe} and per-node constrained-POMDP dual ascent \\citep{stocco2024recursive}. The contribution is the calibration procedure for this policy family, with count/cost equivariance, grid crossings, endpoint mixtures and conditional stationary convergence."
+        }
+      ]
+    },
+    {
+      "key": "kurniawati2008",
+      "type": "inproceedings",
+      "bib_line": 273,
+      "entry": "@inproceedings{kurniawati2008,\n  author    = {Kurniawati, H. and Hsu, D. and Lee, W.~S.},\n  title     = {{SARSOP}: Efficient point-based {POMDP} planning by approximating optimally reachable belief spaces},\n  booktitle = {Robotics: Science and Systems},\n  year      = {2008}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "paragraph": "POMDPs formalize decision-making under state uncertainty \\citep{smallwood1973,kaelbling1998}. Point-based offline solvers approximate the value function on reachable beliefs, including PBVI, HSVI, and SARSOP \\citep{pineau2003,smith2004,kurniawati2008,shani2013}. Online solvers plan from the current belief. POMCP uses Monte Carlo tree search with UCB1 action selection and rollout evaluation \\citep{silver2010}, DESPOT searches regularized sparse belief trees \\citep{ye2017}, and POMCPOW uses progressive widening for continuous spaces \\citep{sunberg2018}. Value of Information Monte Carlo planning selectively skips observation branches with low expected decision value \\citep{laouar2026voi}. Our planner instead adds expected information gain to the objective. These are different uses of information within planning, and our comparisons do not establish superiority over state-of-the-art POMDP solvers generally."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 550,
+          "paragraph": "To determine whether $w{=}1$ is reward-competitive at its natural operating point, we compare EFE with SARSOP \\citep{kurniawati2008} on Tiger, Diagnosis, and Bandit. The original APPL solver is built from source, each environment is exported through a common model path, and the solve uses precision $10^{-3}$ at $\\gamma{=}0.999$. The returned alpha-vector policy is evaluated in the same simulator as EFE at five seeds and $500$ episodes per seed. SARSOP is a near-optimal reference, not a certified exact solution to the reported Monte Carlo comparison. Build and export details appear in Appendix~\\ref{app:sarsop_build}."
+        }
+      ]
+    },
+    {
+      "key": "laouar2026voi",
+      "type": "inproceedings",
+      "bib_line": 280,
+      "entry": "@inproceedings{laouar2026voi,\n  author    = {Laouar, Z. and Ho, Q.~H. and Sunberg, Z.},\n  title     = {Leveraging the value of information in {POMDP} planning},\n  booktitle = {International Conference on Automated Planning and Scheduling},\n  pages     = {152--160},\n  year      = {2026}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "paragraph": "POMDPs formalize decision-making under state uncertainty \\citep{smallwood1973,kaelbling1998}. Point-based offline solvers approximate the value function on reachable beliefs, including PBVI, HSVI, and SARSOP \\citep{pineau2003,smith2004,kurniawati2008,shani2013}. Online solvers plan from the current belief. POMCP uses Monte Carlo tree search with UCB1 action selection and rollout evaluation \\citep{silver2010}, DESPOT searches regularized sparse belief trees \\citep{ye2017}, and POMCPOW uses progressive widening for continuous spaces \\citep{sunberg2018}. Value of Information Monte Carlo planning selectively skips observation branches with low expected decision value \\citep{laouar2026voi}. Our planner instead adds expected information gain to the objective. These are different uses of information within planning, and our comparisons do not establish superiority over state-of-the-art POMDP solvers generally."
+        }
+      ]
+    },
+    {
+      "key": "levine2018",
+      "type": "misc",
+      "bib_line": 288,
+      "entry": "@misc{levine2018,\n  author        = {Levine, S.},\n  title         = {Reinforcement learning and control as probabilistic inference: Tutorial and review},\n  eprint        = {1805.00909},\n  archivePrefix = {arXiv},\n  year          = {2018}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "lindley1956",
+      "type": "article",
+      "bib_line": 296,
+      "entry": "@article{lindley1956,\n  author  = {Lindley, D.~V.},\n  title   = {On a measure of the information provided by an experiment},\n  journal = {The Annals of Mathematical Statistics},\n  volume  = {27},\n  number  = {4},\n  pages   = {986--1005},\n  year    = {1956}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 142,
+          "paragraph": "Classical value of information measures the improvement an observation can bring to a decision \\citep{howard1966}. Bayesian experimental design instead commonly selects observations by expected information gain \\citep{lindley1956,foster2021dad}. The criteria coincide under a particular reward model: when the reward is a proper log score, the expected improvement in score is the expected information gain \\citep{bernardo1979}. This supplies the exact reward--information identification used here. Sequential experimental design is also the closest structural analogue to our observe-then-commit setting."
+        }
+      ]
+    },
+    {
+      "key": "maisto2025",
+      "type": "article",
+      "bib_line": 306,
+      "entry": "@article{maisto2025,\n  author  = {Maisto, D. and Gregoretti, F. and Friston, K.~J. and Pezzulo, G.},\n  title   = {Active inference tree search in large {POMDP}s},\n  journal = {Neurocomputing},\n  volume  = {623},\n  pages   = {129319},\n  year    = {2025}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 153,
+          "paragraph": "Scaling work combines active inference with deep models, reinforcement-learning objectives, and Monte Carlo tree search \\citep{fountas2020,tschantz2020,maisto2025}. Our MCTS-EFE variant follows this direction. Its controls test exploration constants, rollout choices, and two internal components, while leaving exact beliefs, exact commit values, and EFE leaf evaluation coupled (Appendix~\\ref{app:pomcp})."
+        }
+      ]
+    },
+    {
+      "key": "matejka2015",
+      "type": "article",
+      "bib_line": 315,
+      "entry": "@article{matejka2015,\n  author  = {Mat\\v{e}jka, F. and McKay, A.},\n  title   = {Rational inattention to discrete choices: A new foundation for the multinomial logit model},\n  journal = {American Economic Review},\n  volume  = {105},\n  number  = {1},\n  pages   = {272--298},\n  year    = {2015}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "paragraph": "Rational inattention constrains or prices information capacity \\citep{sims2003,matejka2015}. Constrained MDPs use Lagrange multipliers on expected resource costs \\citep{altman1999}, and constrained POMDP methods track admissible cost alongside belief \\citep{kim2011cpomdp}. Automatic temperature tuning in soft actor-critic drives policy entropy toward a target \\citep{haarnoja2018sac}. These provide close conceptual precedents for resource control. Our weight multiplies information gain, however, while the target concerns observation count or cost. It is not generally the multiplier of a sensing-cap constraint. Section~\\ref{sec:budget_positioning} gives the detailed distinctions, including the difference from a dual formulation of EFE itself \\citep{kouw2026bethe}. The contribution is an operational calibration for this policy family, its exact scale transformation under stated assumptions, and explicit treatment of finite-grid crossings and usage gaps."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "paragraph": "Resource-price adaptation is classical in constrained MDPs \\citep{altman1999}, rational inattention \\citep{sims2003,matejka2015}, and SAC \\citep{haarnoja2018sac}. Here one information weight controls sensing usage across episodes. It differs from an information constraint internal to EFE \\citep{kouw2026bethe} and per-node constrained-POMDP dual ascent \\citep{stocco2024recursive}. The contribution is the calibration procedure for this policy family, with count/cost equivariance, grid crossings, endpoint mixtures and conditional stationary convergence."
+        }
+      ]
+    },
+    {
+      "key": "millidge2020",
+      "type": "inproceedings",
+      "bib_line": 325,
+      "entry": "@inproceedings{millidge2020,\n  author    = {Millidge, B. and Tschantz, A. and Seth, A.~K. and Buckley, C.~L.},\n  title     = {On the relationship between active inference and control as inference},\n  booktitle = {International Workshop on Active Inference},\n  pages     = {3--11},\n  publisher = {Springer},\n  year      = {2020}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "millidge2021",
+      "type": "article",
+      "bib_line": 334,
+      "entry": "@article{millidge2021,\n  author  = {Millidge, B. and Tschantz, A. and Buckley, C.~L.},\n  title   = {Whence the expected free energy?},\n  journal = {Neural Computation},\n  volume  = {33},\n  number  = {2},\n  pages   = {447--482},\n  year    = {2021}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "paragraph": "Several distinct constructions occur under the EFE name. \\citet{millidge2021} distinguish EFE from a naive future extension of variational free energy and propose Free Energy of the Expected Future (FEEF). \\citet{champion2024} examine which EFE expressions follow from common root definitions and the restrictions those roots impose on prior preferences. \\citet{devries2025} derive EFE-based planning from a model augmented with preference and epistemic priors. The generalised free energy of \\citet{parr2019} is another distinct functional. Our equivalence concerns only the recursive, reward-based objective defined in Section~\\ref{sec:methodology}, with expected information gain about the hidden state as its epistemic term. It does not assert an unchanged coefficient for these alternative constructions. Broader comparisons with decision-theoretic objectives include an EFE optimality-gap analysis \\citep{wei2024voi} and a survey of formal equivalences \\citep{sweeney2026equivalences}."
+        }
+      ]
+    },
+    {
+      "key": "oudeyer2007",
+      "type": "article",
+      "bib_line": 344,
+      "entry": "@article{oudeyer2007,\n  author  = {Oudeyer, P.-Y. and Kaplan, F.},\n  title   = {What is intrinsic motivation? {A} typology of computational approaches},\n  journal = {Frontiers in Neurorobotics},\n  volume  = {1},\n  pages   = {6},\n  year    = {2007}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "parr2019",
+      "type": "article",
+      "bib_line": 353,
+      "entry": "@article{parr2019,\n  author  = {Parr, T. and Friston, K.~J.},\n  title   = {Generalised free energy and active inference},\n  journal = {Biological Cybernetics},\n  volume  = {113},\n  number  = {5--6},\n  pages   = {495--513},\n  year    = {2019}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 122,
+          "paragraph": "Active inference identifies a particular point in this policy family. Its Expected Free Energy (EFE) objective combines pragmatic value with expected information gain \\citep{friston2015,parr2019}. For the recursive, reward-based objective specified here, minimizing EFE is equivalent to maximizing reward plus information gain at $w=1$. The reward--information identification is exact under log scoring \\citep{bernardo1979}. For ordinary task rewards it depends on the declared reward convention and the treatment of the preference normalizer. The coefficient is therefore an untuned default under shared units, not a scale-invariant calibration. In particular, $w=1$ belongs to the level set of its implicit budget $U(1)$, but need not equal that budget's crossing threshold."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "paragraph": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "paragraph": "Several distinct constructions occur under the EFE name. \\citet{millidge2021} distinguish EFE from a naive future extension of variational free energy and propose Free Energy of the Expected Future (FEEF). \\citet{champion2024} examine which EFE expressions follow from common root definitions and the restrictions those roots impose on prior preferences. \\citet{devries2025} derive EFE-based planning from a model augmented with preference and epistemic priors. The generalised free energy of \\citet{parr2019} is another distinct functional. Our equivalence concerns only the recursive, reward-based objective defined in Section~\\ref{sec:methodology}, with expected information gain about the hidden state as its epistemic term. It does not assert an unchanged coefficient for these alternative constructions. Broader comparisons with decision-theoretic objectives include an EFE optimality-gap analysis \\citep{wei2024voi} and a survey of formal equivalences \\citep{sweeney2026equivalences}."
+        }
+      ]
+    },
+    {
+      "key": "parr2022",
+      "type": "book",
+      "bib_line": 363,
+      "entry": "@book{parr2022,\n  author    = {Parr, T. and Pezzulo, G. and Friston, K.~J.},\n  title     = {Active Inference: The Free Energy Principle in Mind, Brain, and Behavior},\n  publisher = {MIT Press},\n  year      = {2022}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 149,
+          "paragraph": "Active inference casts perception and action as variational inference \\citep{friston2010,parr2022}. EFE combines pragmatic and epistemic terms \\citep{friston2015,parr2019,dacosta2020}. Its recursive sophisticated-inference form conditions future choices on future beliefs \\citep{friston2021}. \\citet{dacosta2020b} prove reward-Bellman optimality for finite-horizon recursive inference in the limit of precise reward-encoding preferences, with exact state estimation. That limiting result does not imply that a fixed finite information weight is reward-optimal."
+        }
+      ]
+    },
+    {
+      "key": "pathak2017",
+      "type": "inproceedings",
+      "bib_line": 370,
+      "entry": "@inproceedings{pathak2017,\n  author    = {Pathak, D. and Agrawal, P. and Efros, A.~A. and Darrell, T.},\n  title     = {Curiosity-driven exploration by self-supervised prediction},\n  booktitle = {International Conference on Machine Learning},\n  year      = {2017}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "pineau2003",
+      "type": "inproceedings",
+      "bib_line": 377,
+      "entry": "@inproceedings{pineau2003,\n  author    = {Pineau, J. and Gordon, G. and Thrun, S.},\n  title     = {Point-based value iteration: An anytime algorithm for {POMDP}s},\n  booktitle = {International Joint Conference on Artificial Intelligence},\n  year      = {2003}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "paragraph": "POMDPs formalize decision-making under state uncertainty \\citep{smallwood1973,kaelbling1998}. Point-based offline solvers approximate the value function on reachable beliefs, including PBVI, HSVI, and SARSOP \\citep{pineau2003,smith2004,kurniawati2008,shani2013}. Online solvers plan from the current belief. POMCP uses Monte Carlo tree search with UCB1 action selection and rollout evaluation \\citep{silver2010}, DESPOT searches regularized sparse belief trees \\citep{ye2017}, and POMCPOW uses progressive widening for continuous spaces \\citep{sunberg2018}. Value of Information Monte Carlo planning selectively skips observation branches with low expected decision value \\citep{laouar2026voi}. Our planner instead adds expected information gain to the objective. These are different uses of information within planning, and our comparisons do not establish superiority over state-of-the-art POMDP solvers generally."
+        }
+      ]
+    },
+    {
+      "key": "rawlik2012",
+      "type": "inproceedings",
+      "bib_line": 384,
+      "entry": "@inproceedings{rawlik2012,\n  author    = {Rawlik, K. and Toussaint, M. and Vijayakumar, S.},\n  title     = {On stochastic optimal control and reinforcement learning by approximate inference},\n  booktitle = {Robotics: Science and Systems},\n  year      = {2012}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "robbins1951",
+      "type": "article",
+      "bib_line": 391,
+      "entry": "@article{robbins1951,\n  author  = {Robbins, H. and Monro, S.},\n  title   = {A stochastic approximation method},\n  journal = {The Annals of Mathematical Statistics},\n  volume  = {22},\n  number  = {3},\n  pages   = {400--407},\n  year    = {1951}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 447,
+          "paragraph": "The update is a projected Robbins--Monro recursion \\citep{robbins1951}, with classical almost-sure extensions due to \\citet{blum1954} and constrained treatments in \\citet{kushner1978}. Appendix~\\ref{app:theory_controller} proves this bounded scalar case directly by a supermartingale argument, including discontinuous curves. Kronecker's lemma gives the running-average result for the harmonic schedule above. The theorem is conditional on one sign-consistent crossing and does not cover an arbitrary nonmonotone usage curve."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1263,
+          "paragraph": "\\item Appropriate citations are given for all non-trivial theoretical tools and techniques. \\textbf{Yes.} Log scoring \\citep{bernardo1979}, the Robbins--Monro recursion \\citep{robbins1951}, classical almost-sure extensions \\citep{blum1954}, background on constrained stochastic approximation \\citep{kushner1978}, and the sophisticated-inference Bellman-optimality result \\citep{dacosta2020b} that the recursive agent is built on."
+        }
+      ]
+    },
+    {
+      "key": "russo2014",
+      "type": "inproceedings",
+      "bib_line": 401,
+      "entry": "@inproceedings{russo2014,\n  author    = {Russo, D. and Van~Roy, B.},\n  title     = {Learning to optimize via information-directed sampling},\n  booktitle = {Advances in Neural Information Processing Systems},\n  year      = {2014}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 146,
+          "paragraph": "Information-directed sampling (IDS) trades instantaneous regret against information gain through their ratio, rather than through a fixed additive coefficient \\citep{russo2014}. \\citet{walraven2024} connect active inference with information gathering in POMDPs. Our contribution within this setting is to define and evaluate a calibration procedure for the weight in a specified $\\rho$-POMDP policy family."
+        }
+      ]
+    },
+    {
+      "key": "sajid2021",
+      "type": "article",
+      "bib_line": 408,
+      "entry": "@article{sajid2021,\n  author  = {Sajid, N. and Ball, P.~J. and Parr, T. and Friston, K.~J.},\n  title   = {Active inference: Demystified and compared},\n  journal = {Neural Computation},\n  volume  = {33},\n  number  = {3},\n  pages   = {674--712},\n  year    = {2021}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "satsangi2018",
+      "type": "article",
+      "bib_line": 418,
+      "entry": "@article{satsangi2018,\n  author  = {Satsangi, Y. and Whiteson, S. and Oliehoek, F.~A. and Spaan, M.~T.~J.},\n  title   = {Exploiting submodular value functions for scaling up active perception},\n  journal = {Autonomous Robots},\n  volume  = {42},\n  number  = {2},\n  pages   = {209--233},\n  year    = {2018}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 139,
+          "paragraph": "POMDPs with information rewards were developed for active cooperative perception \\citep{spaan2015}, and their relation to $\\rho$-POMDPs is discussed by \\citet{satsangi2018}. Earlier preference-elicitation work selected queries by sequential value of information while retaining state-dependent rewards \\citep{boutilier2002}. These approaches establish the motivation for valuing information explicitly. Our focus is the coefficient on that value and its relation to expected sensing usage."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 293,
+          "paragraph": "Planning+IG is the central baseline and represents the familiar information-reward construction in POMDP-IR and $\\rho$-POMDPs \\citep{spaan2015,araya2010,satsangi2018}. By Proposition~\\ref{prop:equivalence}, its difference from EFE is the chosen weight."
+        }
+      ]
+    },
+    {
+      "key": "schmidhuber1991",
+      "type": "inproceedings",
+      "bib_line": 428,
+      "entry": "@inproceedings{schmidhuber1991,\n  author    = {Schmidhuber, J.},\n  title     = {A possibility for implementing curiosity and boredom in model-building neural controllers},\n  booktitle = {Proc.\\ International Conference on Simulation of Adaptive Behavior},\n  pages     = {222--228},\n  year      = {1991}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "schuirmann1987",
+      "type": "article",
+      "bib_line": 436,
+      "entry": "@article{schuirmann1987,\n  author  = {Schuirmann, D.~J.},\n  title   = {A comparison of the two one-sided tests procedure and the power approach for assessing the equivalence of average bioavailability},\n  journal = {Journal of Pharmacokinetics and Biopharmaceutics},\n  volume  = {15},\n  number  = {6},\n  pages   = {657--680},\n  year    = {1987}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 552,
+          "paragraph": "Fixed-margin two one-sided tests (TOST) \\citep{schuirmann1987} assess reward equivalence within one observation's cost, $\\pm1.0$ on Tiger and Diagnosis and $\\pm0.5$ on Bandit. The five-seed unpaired Welch TOST rejects both nulls on all three environments after Holm correction. Its margins were chosen after a canonical-seed comparison was inspected, so it is retrospective. The fifteen additional seeds in the $n=20$ check were fixed after the margin and before that study ran, and all three equivalence conclusions persist."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1290,
+          "paragraph": "\\item Appropriately chosen statistical hypothesis tests are used to establish statistical significance in the presence of noise effects. \\textbf{Yes.} Confidence intervals and seed-level $t$-tests (\\texttt{tests/\\allowbreak test\\_\\allowbreak stats\\_\\allowbreak seed.py}) are used rather than point-estimate comparisons alone. The SARSOP comparison of Section~\\ref{sec:sarsop} is additionally backed by a fixed-margin TOST equivalence test \\citep{schuirmann1987}. The near-optimal CPOMDP reference of Section~\\ref{sec:cpomdp} reports the measured reward gap to a sampled cap-feasible reference from a Lagrangian-penalized SARSOP sweep. It is evaluated by simulation and is not a certified optimality bound."
+        }
+      ]
+    },
+    {
+      "key": "shani2013",
+      "type": "article",
+      "bib_line": 446,
+      "entry": "@article{shani2013,\n  author  = {Shani, G. and Pineau, J. and Kaplow, R.},\n  title   = {A survey of point-based {POMDP} solvers},\n  journal = {Autonomous Agents and Multi-Agent Systems},\n  volume  = {27},\n  number  = {1},\n  pages   = {1--51},\n  year    = {2013}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "paragraph": "POMDPs formalize decision-making under state uncertainty \\citep{smallwood1973,kaelbling1998}. Point-based offline solvers approximate the value function on reachable beliefs, including PBVI, HSVI, and SARSOP \\citep{pineau2003,smith2004,kurniawati2008,shani2013}. Online solvers plan from the current belief. POMCP uses Monte Carlo tree search with UCB1 action selection and rollout evaluation \\citep{silver2010}, DESPOT searches regularized sparse belief trees \\citep{ye2017}, and POMCPOW uses progressive widening for continuous spaces \\citep{sunberg2018}. Value of Information Monte Carlo planning selectively skips observation branches with low expected decision value \\citep{laouar2026voi}. Our planner instead adds expected information gain to the objective. These are different uses of information within planning, and our comparisons do not establish superiority over state-of-the-art POMDP solvers generally."
+        }
+      ]
+    },
+    {
+      "key": "silver2010",
+      "type": "inproceedings",
+      "bib_line": 456,
+      "entry": "@inproceedings{silver2010,\n  author    = {Silver, D. and Veness, J.},\n  title     = {{Monte-Carlo} planning in large {POMDP}s},\n  booktitle = {Advances in Neural Information Processing Systems},\n  year      = {2010}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "paragraph": "POMDPs formalize decision-making under state uncertainty \\citep{smallwood1973,kaelbling1998}. Point-based offline solvers approximate the value function on reachable beliefs, including PBVI, HSVI, and SARSOP \\citep{pineau2003,smith2004,kurniawati2008,shani2013}. Online solvers plan from the current belief. POMCP uses Monte Carlo tree search with UCB1 action selection and rollout evaluation \\citep{silver2010}, DESPOT searches regularized sparse belief trees \\citep{ye2017}, and POMCPOW uses progressive widening for continuous spaces \\citep{sunberg2018}. Value of Information Monte Carlo planning selectively skips observation branches with low expected decision value \\citep{laouar2026voi}. Our planner instead adds expected information gain to the objective. These are different uses of information within planning, and our comparisons do not establish superiority over state-of-the-art POMDP solvers generally."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 958,
+          "paragraph": "The observe-then-commit POMCP adaptation \\citep{silver2010} has two fidelity gaps absent from the separate RockSample implementation. The depth-cap leaf uses the best commit reward for the sampled state, an optimistic clairvoyant value. Rollout commits instead receive their belief-expected reward, replacing sampled payoff with conditional expectation. Their separate policy effects are not isolated. Rollouts start from the simulated path's updated belief, choose tests uniformly and commit to the belief-optimal action with probability $0.3$ per step."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1234,
+          "paragraph": "Exact enumeration costs $\\mathcal O((K|\\mathcal O|)^H)$ for $K$ sensing actions with $|\\mathcal O|$ outcomes each. MCTS-EFE uses UCB1 over observe/commit actions, enumerates each observation action's outcomes, adds exact per-node information gain, and backs up maxima. EFE-greedy leaf rollouts compare immediate commitment with the best one-step EFE observation. Commit-child values are exact belief-expected rewards. The default exploration constant is the fixed commit-reward range, $110$ on Tiger, rather than the preliminary-return range used by \\citet{silver2010}. Appendix~\\ref{app:pomcp} reports exploration tuning, informed rollouts, the ablation and a separate compute-matched Tiger control."
+        }
+      ]
+    },
+    {
+      "key": "sims2003",
+      "type": "article",
+      "bib_line": 463,
+      "entry": "@article{sims2003,\n  author  = {Sims, C.~A.},\n  title   = {Implications of rational inattention},\n  journal = {Journal of Monetary Economics},\n  volume  = {50},\n  number  = {3},\n  pages   = {665--690},\n  year    = {2003}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "paragraph": "Rational inattention constrains or prices information capacity \\citep{sims2003,matejka2015}. Constrained MDPs use Lagrange multipliers on expected resource costs \\citep{altman1999}, and constrained POMDP methods track admissible cost alongside belief \\citep{kim2011cpomdp}. Automatic temperature tuning in soft actor-critic drives policy entropy toward a target \\citep{haarnoja2018sac}. These provide close conceptual precedents for resource control. Our weight multiplies information gain, however, while the target concerns observation count or cost. It is not generally the multiplier of a sensing-cap constraint. Section~\\ref{sec:budget_positioning} gives the detailed distinctions, including the difference from a dual formulation of EFE itself \\citep{kouw2026bethe}. The contribution is an operational calibration for this policy family, its exact scale transformation under stated assumptions, and explicit treatment of finite-grid crossings and usage gaps."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "paragraph": "Resource-price adaptation is classical in constrained MDPs \\citep{altman1999}, rational inattention \\citep{sims2003,matejka2015}, and SAC \\citep{haarnoja2018sac}. Here one information weight controls sensing usage across episodes. It differs from an information constraint internal to EFE \\citep{kouw2026bethe} and per-node constrained-POMDP dual ascent \\citep{stocco2024recursive}. The contribution is the calibration procedure for this policy family, with count/cost equivariance, grid crossings, endpoint mixtures and conditional stationary convergence."
+        }
+      ]
+    },
+    {
+      "key": "smallwood1973",
+      "type": "article",
+      "bib_line": 473,
+      "entry": "@article{smallwood1973,\n  author  = {Smallwood, R.~D. and Sondik, E.~J.},\n  title   = {The optimal control of partially observable {M}arkov processes over a finite horizon},\n  journal = {Operations Research},\n  volume  = {21},\n  number  = {5},\n  pages   = {1071--1088},\n  year    = {1973}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "paragraph": "POMDPs formalize decision-making under state uncertainty \\citep{smallwood1973,kaelbling1998}. Point-based offline solvers approximate the value function on reachable beliefs, including PBVI, HSVI, and SARSOP \\citep{pineau2003,smith2004,kurniawati2008,shani2013}. Online solvers plan from the current belief. POMCP uses Monte Carlo tree search with UCB1 action selection and rollout evaluation \\citep{silver2010}, DESPOT searches regularized sparse belief trees \\citep{ye2017}, and POMCPOW uses progressive widening for continuous spaces \\citep{sunberg2018}. Value of Information Monte Carlo planning selectively skips observation branches with low expected decision value \\citep{laouar2026voi}. Our planner instead adds expected information gain to the objective. These are different uses of information within planning, and our comparisons do not establish superiority over state-of-the-art POMDP solvers generally."
+        }
+      ]
+    },
+    {
+      "key": "smith2004",
+      "type": "inproceedings",
+      "bib_line": 483,
+      "entry": "@inproceedings{smith2004,\n  author    = {Smith, T. and Simmons, R.},\n  title     = {Heuristic search value iteration for {POMDP}s},\n  booktitle = {Uncertainty in Artificial Intelligence},\n  year      = {2004}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "paragraph": "POMDPs formalize decision-making under state uncertainty \\citep{smallwood1973,kaelbling1998}. Point-based offline solvers approximate the value function on reachable beliefs, including PBVI, HSVI, and SARSOP \\citep{pineau2003,smith2004,kurniawati2008,shani2013}. Online solvers plan from the current belief. POMCP uses Monte Carlo tree search with UCB1 action selection and rollout evaluation \\citep{silver2010}, DESPOT searches regularized sparse belief trees \\citep{ye2017}, and POMCPOW uses progressive widening for continuous spaces \\citep{sunberg2018}. Value of Information Monte Carlo planning selectively skips observation branches with low expected decision value \\citep{laouar2026voi}. Our planner instead adds expected information gain to the objective. These are different uses of information within planning, and our comparisons do not establish superiority over state-of-the-art POMDP solvers generally."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 244,
+          "paragraph": "Observe-then-commit is the special case with no navigation and a trivial visible state. Our RockSample variant \\citep{smith2004} holds rock qualities fixed, makes position and sampling status visible, and classifies checks, moves, and sample/exit actions as observation, navigation, and exploitation respectively. The original RockSample changes a good rock to bad on sampling. Our variant differs in that respect."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 469,
+          "paragraph": "Our RockSample variant \\citep{smith2004} has known rock positions and hidden binary qualities. Checking is noisy, movement changes sensor range, and sampling and exit yield reward. It differs materially from the original benchmark. Every action costs $0.5$, maps are our own, returns are undiscounted with an episode cap, exit is available from any cell, hidden rock qualities remain fixed after sampling, and sensor accuracy starts at $0.95$ and reaches chance at finite range. Sample history is observable and prevents a collected rock from yielding a second reward. These choices support the fixed-hidden-state analysis and make sensing use directly interpretable, but absolute returns are not comparable to published RockSample values. Appendix~\\ref{app:experimental_protocol} gives the six differences in full. We evaluate RS[5,3], RS[7,4], RS[7,8], and RS[11,11], where the pair denotes grid width and rock count. Hidden-state counts exclude observable position."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1137,
+          "paragraph": "Our RockSample variant differs from \\citet{smith2004} in six ways. Every action costs $0.5$, maps are fixed but our own, returns are undiscounted with cap $N^2+10K$, exit pays $+10$ from any cell, sampled rock qualities remain fixed, and sensor accuracy is $\\max(0.5,0.95\\,2^{-d/4})$ at Euclidean distance $d$. The original has free moves and checks, east-edge exit, a good rock becomes bad after sampling, and its sensor starts perfect and approaches chance asymptotically. Here the sensor reaches chance at about $3.7$ cells. Observable sample history prevents repeated sampling rewards. Good/bad sampling pays $+10/-10$, before action cost. These choices preserve hidden state but prevent comparison of absolute returns with published RockSample results. State counts include only the $2^K$ hidden quality vectors, not observable position."
+        }
+      ]
+    },
+    {
+      "key": "spaan2015",
+      "type": "article",
+      "bib_line": 490,
+      "entry": "@article{spaan2015,\n  author  = {Spaan, M.~T.~J. and Veiga, T.~S. and Lima, P.~U.},\n  title   = {Decision-theoretic planning under uncertainty with information rewards for active cooperative perception},\n  journal = {Autonomous Agents and Multi-Agent Systems},\n  volume  = {29},\n  number  = {6},\n  pages   = {1157--1185},\n  year    = {2015}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 139,
+          "paragraph": "POMDPs with information rewards were developed for active cooperative perception \\citep{spaan2015}, and their relation to $\\rho$-POMDPs is discussed by \\citet{satsangi2018}. Earlier preference-elicitation work selected queries by sequential value of information while retaining state-dependent rewards \\citep{boutilier2002}. These approaches establish the motivation for valuing information explicitly. Our focus is the coefficient on that value and its relation to expected sensing usage."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 293,
+          "paragraph": "Planning+IG is the central baseline and represents the familiar information-reward construction in POMDP-IR and $\\rho$-POMDPs \\citep{spaan2015,araya2010,satsangi2018}. By Proposition~\\ref{prop:equivalence}, its difference from EFE is the chosen weight."
+        }
+      ]
+    },
+    {
+      "key": "stocco2024recursive",
+      "type": "inproceedings",
+      "bib_line": 500,
+      "entry": "@inproceedings{stocco2024recursive,\n  author    = {Stocco, P. and Chundi, S. and Jamgochian, A. and Kochenderfer, M.~J.},\n  title     = {Addressing myopic constrained {POMDP} planning with recursive dual ascent},\n  booktitle = {International Conference on Automated Planning and Scheduling},\n  pages     = {565--569},\n  year      = {2024}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "paragraph": "Resource-price adaptation is classical in constrained MDPs \\citep{altman1999}, rational inattention \\citep{sims2003,matejka2015}, and SAC \\citep{haarnoja2018sac}. Here one information weight controls sensing usage across episodes. It differs from an information constraint internal to EFE \\citep{kouw2026bethe} and per-node constrained-POMDP dual ascent \\citep{stocco2024recursive}. The contribution is the calibration procedure for this policy family, with count/cost equivariance, grid crossings, endpoint mixtures and conditional stationary convergence."
+        }
+      ]
+    },
+    {
+      "key": "sunberg2018",
+      "type": "inproceedings",
+      "bib_line": 508,
+      "entry": "@inproceedings{sunberg2018,\n  author    = {Sunberg, Z.~N. and Kochenderfer, M.~J.},\n  title     = {Online algorithms for {POMDP}s with continuous state, action, and observation spaces},\n  booktitle = {International Conference on Automated Planning and Scheduling},\n  year      = {2018}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "paragraph": "POMDPs formalize decision-making under state uncertainty \\citep{smallwood1973,kaelbling1998}. Point-based offline solvers approximate the value function on reachable beliefs, including PBVI, HSVI, and SARSOP \\citep{pineau2003,smith2004,kurniawati2008,shani2013}. Online solvers plan from the current belief. POMCP uses Monte Carlo tree search with UCB1 action selection and rollout evaluation \\citep{silver2010}, DESPOT searches regularized sparse belief trees \\citep{ye2017}, and POMCPOW uses progressive widening for continuous spaces \\citep{sunberg2018}. Value of Information Monte Carlo planning selectively skips observation branches with low expected decision value \\citep{laouar2026voi}. Our planner instead adds expected information gain to the objective. These are different uses of information within planning, and our comparisons do not establish superiority over state-of-the-art POMDP solvers generally."
+        }
+      ]
+    },
+    {
+      "key": "sweeney2026equivalences",
+      "type": "article",
+      "bib_line": 515,
+      "entry": "@article{sweeney2026equivalences,\n  author  = {Sweeney, P. and Ruiz-Serra, J. and Harr\\'{e}, M.~S.},\n  title   = {Decision, inference, and information: Formal equivalences under active inference},\n  journal = {Entropy},\n  volume  = {28},\n  number  = {1},\n  pages   = {1},\n  year    = {2026}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "paragraph": "Several distinct constructions occur under the EFE name. \\citet{millidge2021} distinguish EFE from a naive future extension of variational free energy and propose Free Energy of the Expected Future (FEEF). \\citet{champion2024} examine which EFE expressions follow from common root definitions and the restrictions those roots impose on prior preferences. \\citet{devries2025} derive EFE-based planning from a model augmented with preference and epistemic priors. The generalised free energy of \\citet{parr2019} is another distinct functional. Our equivalence concerns only the recursive, reward-based objective defined in Section~\\ref{sec:methodology}, with expected information gain about the hidden state as its epistemic term. It does not assert an unchanged coefficient for these alternative constructions. Broader comparisons with decision-theoretic objectives include an EFE optimality-gap analysis \\citep{wei2024voi} and a survey of formal equivalences \\citep{sweeney2026equivalences}."
+        }
+      ]
+    },
+    {
+      "key": "todorov2007",
+      "type": "inproceedings",
+      "bib_line": 525,
+      "entry": "@inproceedings{todorov2007,\n  author    = {Todorov, E.},\n  title     = {Linearly-solvable {M}arkov decision problems},\n  booktitle = {Advances in Neural Information Processing Systems},\n  year      = {2006}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "paragraph": "Control-as-inference relates maximum-entropy control to probabilistic inference \\citep{todorov2007,levine2018}, with soft actor-critic and KL-minimizing control as algorithmic instances \\citep{haarnoja2018,rawlik2012}. Its treatment of value differs from active inference \\citep{millidge2020}. EFE can produce intrinsic-motivation behavior \\citep{sajid2021}, while curiosity, count-based exploration, VIME, and random network distillation use weighted exploration bonuses \\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}. \\citet{oudeyer2007} survey these intrinsic signals. Bayes-adaptive planning and Bayesian reinforcement learning primarily address uncertainty about the model \\citep{duff2002,guez2013,ghavamzadeh2015}. Our planners treat the observation model as fixed, either supplied by a simulator or fitted once from training records. They do not plan to learn that model. Describing $w=1$ as untuned still depends on a shared reward convention."
+        }
+      ]
+    },
+    {
+      "key": "towers2024",
+      "type": "misc",
+      "bib_line": 532,
+      "entry": "@misc{towers2024,\n  author        = {Towers, M. and Kwiatkowski, A. and Terry, J. and Balis, J.~U. and De~Cola, G. and Deleu, T. and Goul{\\~a}o, M. and Kallinteris, A. and Krimmel, M. and KG, A. and Perez-Vicente, R. and Pierr{\\'e}, A. and Schulhoff, S. and Tai, J.~J. and Tan, H. and Younis, O.~G.},\n  title         = {Gymnasium: A standard interface for reinforcement learning environments},\n  eprint        = {2407.17032},\n  archivePrefix = {arXiv},\n  year          = {2024}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1135,
+          "paragraph": "Sections~\\ref{sec:experiments} and Appendix~\\ref{app:envs} specify the environments, episode counts and statistical protocol. Battery-specific counts and seeding differ, so estimates are not interchangeable. All simulators use the Gymnasium Python interface \\citep{towers2024}."
+        }
+      ]
+    },
+    {
+      "key": "tschantz2020",
+      "type": "inproceedings",
+      "bib_line": 540,
+      "entry": "@inproceedings{tschantz2020,\n  author    = {Tschantz, A. and Millidge, B. and Seth, A.~K. and Buckley, C.~L.},\n  title     = {Reinforcement learning through active inference},\n  booktitle = {ICLR Workshop on Bridging AI and Cognitive Science},\n  year      = {2020}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 153,
+          "paragraph": "Scaling work combines active inference with deep models, reinforcement-learning objectives, and Monte Carlo tree search \\citep{fountas2020,tschantz2020,maisto2025}. Our MCTS-EFE variant follows this direction. Its controls test exploration constants, rollout choices, and two internal components, while leaving exact beliefs, exact commit values, and EFE leaf evaluation coupled (Appendix~\\ref{app:pomcp})."
+        }
+      ]
+    },
+    {
+      "key": "walraven2024",
+      "type": "article",
+      "bib_line": 547,
+      "entry": "@article{walraven2024,\n  author  = {Walraven, E. and Sijs, J. and Burghouts, G.~J.},\n  title   = {Information gathering in {POMDP}s using active inference},\n  journal = {Autonomous Agents and Multi-Agent Systems},\n  volume  = {39},\n  number  = {1},\n  pages   = {3},\n  year    = {2025}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 146,
+          "paragraph": "Information-directed sampling (IDS) trades instantaneous regret against information gain through their ratio, rather than through a fixed additive coefficient \\citep{russo2014}. \\citet{walraven2024} connect active inference with information gathering in POMDPs. Our contribution within this setting is to define and evaluate a calibration procedure for the weight in a specified $\\rho$-POMDP policy family."
+        }
+      ]
+    },
+    {
+      "key": "wei2024voi",
+      "type": "misc",
+      "bib_line": 557,
+      "entry": "@misc{wei2024voi,\n  author        = {Wei, R.},\n  title         = {Value of information and reward specification in active inference and {POMDP}s},\n  eprint        = {2408.06542},\n  archivePrefix = {arXiv},\n  year          = {2024}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "paragraph": "Several distinct constructions occur under the EFE name. \\citet{millidge2021} distinguish EFE from a naive future extension of variational free energy and propose Free Energy of the Expected Future (FEEF). \\citet{champion2024} examine which EFE expressions follow from common root definitions and the restrictions those roots impose on prior preferences. \\citet{devries2025} derive EFE-based planning from a model augmented with preference and epistemic priors. The generalised free energy of \\citet{parr2019} is another distinct functional. Our equivalence concerns only the recursive, reward-based objective defined in Section~\\ref{sec:methodology}, with expected information gain about the hidden state as its epistemic term. It does not assert an unchanged coefficient for these alternative constructions. Broader comparisons with decision-theoretic objectives include an EFE optimality-gap analysis \\citep{wei2024voi} and a survey of formal equivalences \\citep{sweeney2026equivalences}."
+        }
+      ]
+    },
+    {
+      "key": "ye2017",
+      "type": "article",
+      "bib_line": 565,
+      "entry": "@article{ye2017,\n  author  = {Ye, N. and Somani, A. and Hsu, D. and Lee, W.~S.},\n  title   = {{DESPOT}: Online {POMDP} planning with regularization},\n  journal = {Journal of Artificial Intelligence Research},\n  volume  = {58},\n  pages   = {231--266},\n  year    = {2017}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "paragraph": "POMDPs formalize decision-making under state uncertainty \\citep{smallwood1973,kaelbling1998}. Point-based offline solvers approximate the value function on reachable beliefs, including PBVI, HSVI, and SARSOP \\citep{pineau2003,smith2004,kurniawati2008,shani2013}. Online solvers plan from the current belief. POMCP uses Monte Carlo tree search with UCB1 action selection and rollout evaluation \\citep{silver2010}, DESPOT searches regularized sparse belief trees \\citep{ye2017}, and POMCPOW uses progressive widening for continuous spaces \\citep{sunberg2018}. Value of Information Monte Carlo planning selectively skips observation branches with low expected decision value \\citep{laouar2026voi}. Our planner instead adds expected information gain to the objective. These are different uses of information within planning, and our comparisons do not establish superiority over state-of-the-art POMDP solvers generally."
+        }
+      ]
+    },
+    {
+      "key": "kushner1978",
+      "type": "book",
+      "bib_line": 574,
+      "entry": "@book{kushner1978,\n  author    = {Kushner, Harold J. and Clark, Dean S.},\n  title     = {Stochastic Approximation Methods for Constrained and Unconstrained Systems},\n  series    = {Applied Mathematical Sciences},\n  volume    = {26},\n  publisher = {Springer-Verlag},\n  address   = {New York},\n  year      = {1978},\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 447,
+          "paragraph": "The update is a projected Robbins--Monro recursion \\citep{robbins1951}, with classical almost-sure extensions due to \\citet{blum1954} and constrained treatments in \\citet{kushner1978}. Appendix~\\ref{app:theory_controller} proves this bounded scalar case directly by a supermartingale argument, including discontinuous curves. Kronecker's lemma gives the running-average result for the harmonic schedule above. The theorem is conditional on one sign-consistent crossing and does not cover an arbitrary nonmonotone usage curve."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1263,
+          "paragraph": "\\item Appropriate citations are given for all non-trivial theoretical tools and techniques. \\textbf{Yes.} Log scoring \\citep{bernardo1979}, the Robbins--Monro recursion \\citep{robbins1951}, classical almost-sure extensions \\citep{blum1954}, background on constrained stochastic approximation \\citep{kushner1978}, and the sophisticated-inference Bellman-optimality result \\citep{dacosta2020b} that the recursive agent is built on."
+        }
+      ]
+    },
+    {
+      "key": "vergara2012data",
+      "type": "misc",
+      "bib_line": 585,
+      "entry": "@misc{vergara2012data,\n  author = {Vergara, Alexander},\n  title = {Gas Sensor Array Drift Dataset},\n  year = {2012},\n  publisher = {UCI Machine Learning Repository},\n  note = {Dataset},\n  doi = {10.24432/C5RP6W}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 628,
+          "paragraph": "We next test calibration on recorded observations with a learned model. The UCI Gas Sensor Array Drift dataset contains $13{,}910$ exposures to six gases, measured by sixteen sensors \\citep{vergara2012data,vergara2012}. Acquiring a sensor reveals its eight stored descriptors once. This is retrospective access to recordings, not selective operation of the original instruments. Before evaluating policies or inspecting usage curves, we fixed targets $B\\in\\{2,4,8\\}$ accesses per case. They are researcher-defined requirements, not operator-supplied needs or measured energy budgets."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1146,
+          "paragraph": "The protocol for Section~\\ref{sec:real_sensor} was committed before calibration or held-out evaluation. Targets, model, grids, split rules and inferential margins were fixed together. The sensor archive's ten chronological batches and consecutive eight-descriptor sensor blocks follow its primary documentation \\citep{vergara2012data}. All sixteen sensors originally operated together. This study masks access to their stored records and does not measure physical sensing costs."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1275,
+          "paragraph": "\\item The unaggregated data comes with a license that allows free usage for reproducibility purposes. \\textbf{Yes.} The repository's MIT License covers its code and generated simulation outputs. The external sensor measurements retain the primary source's license and attribution terms \\citep{vergara2012data}."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1294,
+          "paragraph": "Does this work rely on one or more data sets (possibly obtained from a benchmark generator or similar software artifact)? \\textbf{Yes.} Section~\\ref{sec:real_sensor} uses the public UCI Gas Sensor Array Drift dataset \\citep{vergara2012data,vergara2012}. The primary source, download checksum, original row identities, deterministic training/calibration/test split and later-batch holdout are archived. Appendix~\\ref{app:real_sensor} describes the sensor grouping, training-only transforms, fixed targets and model restrictions. There are no exact duplicate or cross-period overlapping feature vectors. Access costs are benchmark conventions, not measured physical costs. Other environments are simulators defined generatively in code (Appendix~\\ref{app:envs}). Our cost-modified RockSample is not the standard generator and its absolute returns are not comparable to published RockSample numbers."
+        }
+      ]
+    },
+    {
+      "key": "vergara2012",
+      "type": "article",
+      "bib_line": 594,
+      "entry": "@article{vergara2012,\n  author = {Vergara, Alexander and Vembu, Shankar and Ayhan, Tuba and Ryan, Margaret A. and Homer, Margie L. and Huerta, Ram{\\'o}n},\n  title = {Chemical gas sensor drift compensation using classifier ensembles},\n  journal = {Sensors and Actuators B: Chemical},\n  volume = {166--167},\n  pages = {320--329},\n  year = {2012},\n  doi = {10.1016/j.snb.2012.01.074}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 628,
+          "paragraph": "We next test calibration on recorded observations with a learned model. The UCI Gas Sensor Array Drift dataset contains $13{,}910$ exposures to six gases, measured by sixteen sensors \\citep{vergara2012data,vergara2012}. Acquiring a sensor reveals its eight stored descriptors once. This is retrospective access to recordings, not selective operation of the original instruments. Before evaluating policies or inspecting usage curves, we fixed targets $B\\in\\{2,4,8\\}$ accesses per case. They are researcher-defined requirements, not operator-supplied needs or measured energy budgets."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1294,
+          "paragraph": "Does this work rely on one or more data sets (possibly obtained from a benchmark generator or similar software artifact)? \\textbf{Yes.} Section~\\ref{sec:real_sensor} uses the public UCI Gas Sensor Array Drift dataset \\citep{vergara2012data,vergara2012}. The primary source, download checksum, original row identities, deterministic training/calibration/test split and later-batch holdout are archived. Appendix~\\ref{app:real_sensor} describes the sensor grouping, training-only transforms, fixed targets and model restrictions. There are no exact duplicate or cross-period overlapping feature vectors. Access costs are benchmark conventions, not measured physical costs. Other environments are simulators defined generatively in code (Appendix~\\ref{app:envs}). Our cost-modified RockSample is not the standard generator and its absolute returns are not comparable to published RockSample numbers."
+        }
+      ]
+    },
+    {
+      "key": "covert2023",
+      "type": "inproceedings",
+      "bib_line": 604,
+      "entry": "@inproceedings{covert2023,\n  author = {Covert, Ian Connick and Qiu, Wei and Lu, Mingyu and Kim, Na Yoon and White, Nathan J. and Lee, Su-In},\n  title = {Learning to Maximize Mutual Information for Dynamic Feature Selection},\n  booktitle = {Proceedings of the 40th International Conference on Machine Learning},\n  series = {Proceedings of Machine Learning Research},\n  volume = {202},\n  pages = {6424--6447},\n  publisher = {PMLR},\n  year = {2023},\n  url = {https://proceedings.mlr.press/v202/covert23a.html}\n}",
+      "uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 144,
+          "paragraph": "Dynamic feature acquisition can greedily select features by conditional mutual information, with learned approximations to the required distributions \\citep{covert2023}. Our sensor-record study uses this established greedy rule as a fixed-count comparator. Its purpose is to test usage calibration within an information-weighted family, not introduce a new feature-selection principle."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 630,
+          "paragraph": "Batches 1--6 provide $3{,}550$ training, $1{,}175$ calibration and $1{,}208$ test cases, stratified by batch and class. Training alone determines eight categories per sensor, class priors and smoothed categorical likelihoods. Policies assume conditional independence of sensors given gas identity, use one-observation lookahead, and cannot reacquire a sensor. Each action reveals the case's actual category. Correct classification earns $1$, with a benchmark cost of $0.02$ per access. All methods share this fitted model. We compare the crossing mixture with calibration-selected equality mixtures from a direct usage-penalty family, a best equality mixture within the weight grid, and greedy conditional-information acquisition that takes exactly $B$ sensors. Greedy information acquisition is an established approach \\citep{covert2023}, and this comparison does not reproduce a learned neural acquisition method. Appendix~\\ref{app:real_sensor} gives the frozen grids, splits and uncertainty procedure."
+        }
+      ]
+    }
+  ]
+}

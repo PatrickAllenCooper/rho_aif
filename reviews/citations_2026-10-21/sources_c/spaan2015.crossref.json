@@ -1,0 +1,197 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1007/s10458-014-9279-8",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "c364eef42848285a8160fcf3d5a3d28096eea02bfaa482f13ef323250a65fe52",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          9,
+          30
+        ]
+      ],
+      "date-time": "2026-09-30T23:33:40Z",
+      "timestamp": 1790811220019,
+      "version": "4.1.0"
+    },
+    "publisher": "Springer Science and Business Media LLC",
+    "issue": "6",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2014,
+              12,
+              23
+            ]
+          ],
+          "date-time": "2014-12-23T00:00:00Z",
+          "timestamp": 1419292800000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "http://www.springer.com/tdm"
+      }
+    ],
+    "short-container-title": [
+      "Auton Agent Multi-Agent Syst"
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          2015,
+          11
+        ]
+      ]
+    },
+    "DOI": "10.1007/s10458-014-9279-8",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2014,
+          12,
+          22
+        ]
+      ],
+      "date-time": "2014-12-22T10:46:52Z",
+      "timestamp": 1419245212000
+    },
+    "page": "1157-1185",
+    "title": [
+      "Decision-theoretic planning under uncertainty with information rewards for active cooperative perception"
+    ],
+    "prefix": "10.1007",
+    "volume": "29",
+    "author": [
+      {
+        "given": "Matthijs T. J.",
+        "family": "Spaan",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Tiago S.",
+        "family": "Veiga",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Pedro U.",
+        "family": "Lima",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "297",
+    "published-online": {
+      "date-parts": [
+        [
+          2014,
+          12,
+          23
+        ]
+      ]
+    },
+    "container-title": [
+      "Autonomous Agents and Multi-Agent Systems"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "http://link.springer.com/content/pdf/10.1007/s10458-014-9279-8.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://link.springer.com/article/10.1007/s10458-014-9279-8/fulltext.html",
+        "content-type": "text/html",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://link.springer.com/content/pdf/10.1007/s10458-014-9279-8",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2023,
+          7,
+          30
+        ]
+      ],
+      "date-time": "2023-07-30T21:09:46Z",
+      "timestamp": 1690751386000
+    },
+    "resource": {
+      "primary": {
+        "URL": "http://link.springer.com/10.1007/s10458-014-9279-8"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2014,
+          12,
+          23
+        ]
+      ]
+    },
+    "journal-issue": {
+      "issue": "6",
+      "published-print": {
+        "date-parts": [
+          [
+            2015,
+            11
+          ]
+        ]
+      }
+    },
+    "alternative-id": [
+      "9279"
+    ],
+    "URL": "https://doi.org/10.1007/s10458-014-9279-8",
+    "relation": {},
+    "ISSN": [
+      "1387-2532",
+      "1573-7454"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2014,
+          12,
+          23
+        ]
+      ]
+    }
+  }
+}

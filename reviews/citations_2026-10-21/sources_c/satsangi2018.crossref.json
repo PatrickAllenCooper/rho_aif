@@ -1,0 +1,209 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1007/s10514-017-9666-5",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "cbc892eeeb3958441c4a162e2573217b02fe1b474f7f69627f71da49b066e1c2",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          8,
+          17
+        ]
+      ],
+      "date-time": "2026-08-17T15:32:06Z",
+      "timestamp": 1786980726886,
+      "version": "build-2736575974"
+    },
+    "publisher": "Springer Science and Business Media LLC",
+    "issue": "2",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2017,
+              8,
+              29
+            ]
+          ],
+          "date-time": "2017-08-29T00:00:00Z",
+          "timestamp": 1503964800000
+        },
+        "content-version": "unspecified",
+        "delay-in-days": 0,
+        "URL": "http://creativecommons.org/licenses/by/4.0"
+      }
+    ],
+    "short-container-title": [
+      "Auton Robot"
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          2018,
+          2
+        ]
+      ]
+    },
+    "DOI": "10.1007/s10514-017-9666-5",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2017,
+          8,
+          28
+        ]
+      ],
+      "date-time": "2017-08-28T23:33:44Z",
+      "timestamp": 1503963224000
+    },
+    "page": "209-233",
+    "title": [
+      "Exploiting submodular value functions for scaling up active perception"
+    ],
+    "prefix": "10.1007",
+    "volume": "42",
+    "author": [
+      {
+        "given": "Yash",
+        "family": "Satsangi",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Shimon",
+        "family": "Whiteson",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Frans A.",
+        "family": "Oliehoek",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Matthijs T. J.",
+        "family": "Spaan",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "297",
+    "published-online": {
+      "date-parts": [
+        [
+          2017,
+          8,
+          29
+        ]
+      ]
+    },
+    "container-title": [
+      "Autonomous Robots"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "http://link.springer.com/article/10.1007/s10514-017-9666-5/fulltext.html",
+        "content-type": "text/html",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://link.springer.com/content/pdf/10.1007/s10514-017-9666-5.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "http://link.springer.com/content/pdf/10.1007/s10514-017-9666-5.pdf",
+        "content-type": "application/pdf",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2023,
+          8,
+          25
+        ]
+      ],
+      "date-time": "2023-08-25T04:38:38Z",
+      "timestamp": 1692938318000
+    },
+    "resource": {
+      "primary": {
+        "URL": "http://link.springer.com/10.1007/s10514-017-9666-5"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2017,
+          8,
+          29
+        ]
+      ]
+    },
+    "journal-issue": {
+      "issue": "2",
+      "published-print": {
+        "date-parts": [
+          [
+            2018,
+            2
+          ]
+        ]
+      }
+    },
+    "alternative-id": [
+      "9666"
+    ],
+    "URL": "https://doi.org/10.1007/s10514-017-9666-5",
+    "relation": {},
+    "ISSN": [
+      "0929-5593",
+      "1573-7527"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2017,
+          8,
+          29
+        ]
+      ]
+    }
+  }
+}

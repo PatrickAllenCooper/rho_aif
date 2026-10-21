@@ -1,0 +1,1225 @@
+{
+  "audit_date": "2026-10-21",
+  "completed_at_utc": "2026-10-21T16:43:24.593985+00:00",
+  "auditor": "citations_c_20261021",
+  "baseline_commit": "68a9c137c4529675b3fe097ccda351e464dc3afc",
+  "baseline_sha256": {
+    "paper/full_paper_jair.bib": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592",
+    "paper/full_paper_jair.tex": "c260180b50f5845132a6aeba50150373cf5ae5f74331feb9d5490aeae77d65c2"
+  },
+  "scope": {
+    "entries": 23,
+    "manuscript_citation_occurrences": 38,
+    "inputs_checked": [
+      "paper/tables/rocksample_main.tex"
+    ],
+    "input_citations": 0,
+    "source_edits": false
+  },
+  "summary": {
+    "real_works": 23,
+    "fabricated_references_found": 0,
+    "unsupported_manuscript_attributions_found": 0,
+    "required_fixes": 0,
+    "unresolved_minor_primary_metadata_discrepancies": 1
+  },
+  "method": "Fresh primary-source checks for every entry. Prior reports supplied URL leads only. Publisher metadata, primary abstracts and full text were read at the depth needed for each use. Availability and repository-generated numbers are not inferred from citation authenticity. Case, TeX protection, journal-name abbreviations and author initials are normalized for comparison.",
+  "records": [
+    {
+      "key": "sajid2021",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1162/neco_a_01357"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Sajid, N. and Ball, P.~J. and Parr, T. and Friston, K.~J.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Active inference: Demystified and compared",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Neural Computation",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "33",
+          "verdict": "verified"
+        },
+        "number": {
+          "bibliography_value": "3",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "674--712",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2021",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "citation": "\\citep{sajid2021}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher-deposited abstract explicitly describes epistemic exploration and reward-free environments. Supports the limited claim that EFE can produce intrinsic-motivation behavior; manuscript does not import all claims of this source."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": [
+        "Metadata and relevant claim checked against publisher-deposited Crossref abstract; full article not needed for the narrow attribution."
+      ]
+    },
+    {
+      "key": "satsangi2018",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1007/s10514-017-9666-5",
+        "https://link.springer.com/article/10.1007/s10514-017-9666-5"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Satsangi, Y. and Whiteson, S. and Oliehoek, F.~A. and Spaan, M.~T.~J.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Exploiting submodular value functions for scaling up active perception",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Autonomous Robots",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "42",
+          "verdict": "verified"
+        },
+        "number": {
+          "bibliography_value": "2",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "209--233",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2018",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 139,
+          "citation": "\\citet{satsangi2018}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher abstract explicitly establishes reductions between rho-POMDP and POMDP-IR and equality of corresponding policy values. Supports the stated relationship."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 293,
+          "citation": "\\citep{spaan2015,araya2010,satsangi2018}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher abstract/full text concerns explicit information rewards and the rho-POMDP/POMDP-IR construction. Supports historical lineage of information-reward planning; manuscript proves its own particular weight equivalence separately."
+        }
+      ],
+      "findings": [
+        "Printed issue February 2018, online August 29, 2017. Current 2018 year is correct."
+      ],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "schmidhuber1991",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.7551/mitpress/3115.003.0030",
+        "https://people.idsia.ch/~juergen/curiositysab/curiositysab.html",
+        "https://people.idsia.ch/~juergen/curiositysab/node2.html"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Schmidhuber, J.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "A possibility for implementing curiosity and boredom in model-building neural controllers",
+          "verdict": "verified"
+        },
+        "booktitle": {
+          "bibliography_value": "Proc.\\ International Conference on Simulation of Adaptive Behavior",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "222--228",
+          "verdict": "matches_publisher_deposit_conflicts_with_author_html"
+        },
+        "year": {
+          "bibliography_value": "1991",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "citation": "\\citep{schmidhuber1991,pathak2017,bellemare2016,houthooft2016,burda2019}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Author full text, Section 2, adds curiosity reinforcement from prediction mismatch and discusses relative strengths of goal-directed and curiosity reinforcement. Supports the weighted exploration-bonus lineage."
+        }
+      ],
+      "findings": [
+        "Publisher-deposited Crossref page range is 222–228, matching the bibliography. The author-hosted HTML lists 222–227. Both are real primary records for the same work. Retain publisher metadata unless the printed chapter itself resolves this one-page discrepancy. No claim or authenticity issue."
+      ],
+      "required_fixes": [],
+      "access_limitations": [
+        "Publisher PDF returned HTTP 403. Thus the physical last page is unresolved between publisher metadata 228 and author HTML 227."
+      ]
+    },
+    {
+      "key": "schuirmann1987",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1007/bf01068419",
+        "https://link.springer.com/article/10.1007/BF01068419"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Schuirmann, D.~J.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "A comparison of the two one-sided tests procedure and the power approach for assessing the equivalence of average bioavailability",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Journal of Pharmacokinetics and Biopharmaceutics",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "15",
+          "verdict": "verified"
+        },
+        "number": {
+          "bibliography_value": "6",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "657--680",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "1987",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 552,
+          "citation": "\\citep{schuirmann1987}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher abstract describes the two one-sided test procedure and its relation to a 1−2α interval for the mean difference. Supports naming/using TOST, while margins, Welch formulation and multiplicity are this study’s methods."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1290,
+          "citation": "\\citep{schuirmann1987}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Same methodological attribution to TOST is supported. The paper’s own numeric outcomes are not attributed to Schuirmann."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "shani2013",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1007/s10458-012-9200-2",
+        "https://link.springer.com/article/10.1007/s10458-012-9200-2"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Shani, G. and Pineau, J. and Kaplow, R.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "A survey of point-based {POMDP} solvers",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Autonomous Agents and Multi-Agent Systems",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "27",
+          "verdict": "verified"
+        },
+        "number": {
+          "bibliography_value": "1",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "1--51",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2013",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "citation": "\\citep{pineau2003,smith2004,kurniawati2008,shani2013}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher abstract describes restricting value computations to a finite belief subset, local updates, and surveying point-based methods. Supports the grouped point-based-solver context."
+        }
+      ],
+      "findings": [
+        "Printed issue July 2013, online June 8, 2012. Current 2013 year is correct."
+      ],
+      "required_fixes": [],
+      "access_limitations": [
+        "Publisher full text is subscription content; metadata and relevant general claim were verified on the accessible publisher abstract."
+      ]
+    },
+    {
+      "key": "silver2010",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://papers.nips.cc/paper_files/paper/2010/hash/edfbe1afcf9246bb0d40eb4d8027d90f-Abstract.html",
+        "https://papers.nips.cc/paper_files/paper/2010/file/edfbe1afcf9246bb0d40eb4d8027d90f-Paper.pdf"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Silver, D. and Veness, J.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "{Monte-Carlo} planning in large {POMDP}s",
+          "verdict": "verified"
+        },
+        "booktitle": {
+          "bibliography_value": "Advances in Neural Information Processing Systems",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2010",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "citation": "\\citep{silver2010}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Full paper Section 3.1 (PDF page 3 onward) explicitly uses UCB1 for tree selection and rollout simulation. Supports the algorithm description."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 958,
+          "citation": "\\citep{silver2010}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Citation marks the original POMCP algorithm. Manuscript explicitly labels its observe-then-commit implementation an adaptation and discloses its different leaf/rollout choices, rather than attributing those choices to Silver and Veness."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1234,
+          "citation": "\\citet{silver2010}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Full paper PDF page 6 sets c=R_hi−R_lo from preliminary POMCP and rollout returns. Confirms the manuscript’s distinction from its fixed commit-reward-range constant."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "sims2003",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1016/s0304-3932(03)00029-1",
+        "https://collaborate.princeton.edu/en/publications/implications-of-rational-inattention/"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Sims, C.~A.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Implications of rational inattention",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Journal of Monetary Economics",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "50",
+          "verdict": "verified"
+        },
+        "number": {
+          "bibliography_value": "3",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "665--690",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2003",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 159,
+          "citation": "\\citep{sims2003,matejka2015}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Author’s university record reproduces the abstract’s finite Shannon-capacity constraint. Supports the information-capacity background; pricing is jointly cited with Matejka and McKay."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "citation": "\\citep{sims2003,matejka2015}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Same primary abstract supports rational-inattention resource-constraint precedent in the grouped resource-control sentence. No claim that Sims supplies the manuscript’s projected controller theorem."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "smallwood1973",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1287/opre.21.5.1071"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Smallwood, R.~D. and Sondik, E.~J.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "The optimal control of partially observable {M}arkov processes over a finite horizon",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Operations Research",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "21",
+          "verdict": "verified"
+        },
+        "number": {
+          "bibliography_value": "5",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "1071--1088",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "1973",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "citation": "\\citep{smallwood1973,kaelbling1998}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher-deposited abstract formulates finite-state Markov control with probabilistic observations of hidden state and finite-horizon policy computation. Supports the POMDP foundations statement."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "smith2004",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://arxiv.org/abs/1207.4166",
+        "https://arxiv.org/pdf/1207.4166"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Smith, T. and Simmons, R.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Heuristic search value iteration for {POMDP}s",
+          "verdict": "verified"
+        },
+        "booktitle": {
+          "bibliography_value": "Uncertainty in Artificial Intelligence",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2004",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "citation": "\\citep{pineau2003,smith2004,kurniawati2008,shani2013}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Author paper describes HSVI as a point-based value-iteration approach with heuristic belief search. Supports its inclusion among point-based offline solvers."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 244,
+          "citation": "\\citep{smith2004}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Full paper Section 5, printed page 525, says sampled good rocks become bad. Confirms the disclosed fixed-quality variant difference."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 469,
+          "citation": "\\citep{smith2004}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Full paper Section 5 defines visible position, binary hidden qualities, noisy checks, sampling rewards and east-side exit. Manuscript explicitly distinguishes its altered benchmark."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1137,
+          "citation": "\\citet{smith2004}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Full paper Section 5, printed pages 524–525, supports free non-sampling moves/checks, east-edge exit, good-to-bad sampling, and exponential distance-dependent sensing tending toward chance. Exact 0.5 cost, modified sensor and cap are openly stated as this project’s changes."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "spaan2015",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1007/s10458-014-9279-8",
+        "https://link.springer.com/article/10.1007/s10458-014-9279-8"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Spaan, M.~T.~J. and Veiga, T.~S. and Lima, P.~U.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Decision-theoretic planning under uncertainty with information rewards for active cooperative perception",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Autonomous Agents and Multi-Agent Systems",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "29",
+          "verdict": "verified"
+        },
+        "number": {
+          "bibliography_value": "6",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "1157--1185",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2015",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 139,
+          "citation": "\\citep{spaan2015}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher abstract introduces POMDP-IR for active cooperative perception and real robot-assisted surveillance. Directly supports attribution."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 293,
+          "citation": "\\citep{spaan2015,araya2010,satsangi2018}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher abstract describes explicit information rewards in the standard POMDP framework. Supports lineage; not asserted to prove the present EFE coefficient theorem."
+        }
+      ],
+      "findings": [
+        "Printed issue November 2015, online December 23, 2014. Current 2015 year is correct."
+      ],
+      "required_fixes": [],
+      "access_limitations": [
+        "Publisher full text is subscription content; metadata and the two limited lineage claims were verified on the accessible publisher abstract."
+      ]
+    },
+    {
+      "key": "stocco2024recursive",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1609/icaps.v34i1.31518",
+        "https://ojs.aaai.org/index.php/ICAPS/article/view/31518"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Stocco, P. and Chundi, S. and Jamgochian, A. and Kochenderfer, M.~J.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Addressing myopic constrained {POMDP} planning with recursive dual ascent",
+          "verdict": "verified"
+        },
+        "booktitle": {
+          "bibliography_value": "International Conference on Automated Planning and Scheduling",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "565--569",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2024",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 454,
+          "citation": "\\citep{stocco2024recursive}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher abstract explicitly introduces history-dependent dual variables optimized by recursive dual ascent inside Lagrangian-guided CPOMDP Monte Carlo planning. Supports the per-node versus across-episode distinction."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "sunberg2018",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1609/icaps.v28i1.13882",
+        "https://arxiv.org/abs/1709.06196",
+        "https://arxiv.org/pdf/1709.06196"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Sunberg, Z.~N. and Kochenderfer, M.~J.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Online algorithms for {POMDP}s with continuous state, action, and observation spaces",
+          "verdict": "verified"
+        },
+        "booktitle": {
+          "bibliography_value": "International Conference on Automated Planning and Scheduling",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2018",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "citation": "\\citep{sunberg2018}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Author full text introduction and Sections 3–4 explicitly define POMCPOW with double progressive widening and weighted particle filtering. Supports continuous-space planner summary."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": [
+        "AAAI landing-page fetch returned HTTP 503. Publisher-deposited metadata and author-hosted arXiv full text were successfully checked."
+      ]
+    },
+    {
+      "key": "sweeney2026equivalences",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.3390/e28010001",
+        "https://pubmed.ncbi.nlm.nih.gov/41593908/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC12840411/"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Sweeney, P. and Ruiz-Serra, J. and Harr\\'{e}, M.~S.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Decision, inference, and information: Formal equivalences under active inference",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Entropy",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "28",
+          "verdict": "verified"
+        },
+        "number": {
+          "bibliography_value": "1",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "1",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2026",
+          "verdict": "verified",
+          "evidence": "Crossref journal-issue.published-online.date-parts = [[2026,1]], PMC collection date January 2026; online article date is 2025-12-19."
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "citation": "\\citep{sweeney2026equivalences}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher-deposited abstract and full article Section 1.2 describe a structured review of formal correspondences between EFE and six decision-theoretic frameworks. Supports the survey description without asserting all forms have the manuscript’s coefficient."
+        }
+      ],
+      "findings": [
+        "Crossref journal-issue.published-online is January 2026 and PMC gives collection date January 2026. Article online publication is December 19, 2025. Current journal-issue year 2026 is correct. Page 1 is the article number."
+      ],
+      "required_fixes": [],
+      "access_limitations": [
+        "MDPI direct page/PDF returned HTTP 429/403. Publisher Crossref deposit and publisher-deposited PMC full text were successfully checked, including January 2026 collection date."
+      ]
+    },
+    {
+      "key": "todorov2007",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://papers.nips.cc/paper_files/paper/2006/hash/d806ca13ca3449af72a1ea5aedbed26a-Abstract.html",
+        "https://papers.nips.cc/paper_files/paper/2006/file/d806ca13ca3449af72a1ea5aedbed26a-Paper.pdf"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Todorov, E.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Linearly-solvable {M}arkov decision problems",
+          "verdict": "verified"
+        },
+        "booktitle": {
+          "bibliography_value": "Advances in Neural Information Processing Systems",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2006",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 156,
+          "citation": "\\citep{todorov2007,levine2018}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Official paper introduces KL-regularized controlled versus passive transition probabilities and an exponential transform of the value function. It is appropriate foundational background in the grouped control-as-inference citation with Levine, rather than a claimed source of the present theorem."
+        }
+      ],
+      "findings": [
+        "The key suffix is 2007, but the entry correctly uses the 2006 conference year, explicitly identified by official NeurIPS proceedings."
+      ],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "towers2024",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://arxiv.org/abs/2407.17032"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Towers, M. and Kwiatkowski, A. and Terry, J. and Balis, J.~U. and De~Cola, G. and Deleu, T. and Goul{\\~a}o, M. and Kallinteris, A. and Krimmel, M. and KG, A. and Perez-Vicente, R. and Pierr{\\'e}, A. and Schulhoff, S. and Tai, J.~J. and Tan, H. and Younis, O.~G.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Gymnasium: A standard interface for reinforcement learning environments",
+          "verdict": "verified"
+        },
+        "eprint": {
+          "bibliography_value": "2407.17032",
+          "verdict": "verified"
+        },
+        "archivePrefix": {
+          "bibliography_value": "arXiv",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2024",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1135,
+          "citation": "\\citep{towers2024}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Author arXiv abstract identifies Gymnasium as a standard environment API for reinforcement learning. Supports naming the interface. This is not evidence that the project itself uses it; that implementation fact belongs to the repository audit."
+        }
+      ],
+      "findings": [
+        "All sixteen authors and their order match arXiv. The record now notes acceptance at NeurIPS Datasets and Benchmarks 2025. Citing the genuine 2024 arXiv preprint remains accurate."
+      ],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "tschantz2020",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://arxiv.org/abs/2002.12636",
+        "https://baicsworkshop.github.io/papers.html"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Tschantz, A. and Millidge, B. and Seth, A.~K. and Buckley, C.~L.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Reinforcement learning through active inference",
+          "verdict": "verified"
+        },
+        "booktitle": {
+          "bibliography_value": "ICLR Workshop on Bridging AI and Cognitive Science",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2020",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 153,
+          "citation": "\\citep{fountas2020,tschantz2020,maisto2025}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Author arXiv abstract explicitly combines active-inference ideas with reinforcement learning and demonstrates the resulting objective on RL benchmarks. Supports its role in the grouped scaling-work sentence; MCTS is supplied by the other grouped citations, not falsely assigned solely to this paper."
+        }
+      ],
+      "findings": [
+        "Workshop programme and arXiv both verify the work. The workshop webpage misspells Tschantz as Tschanz; author-uploaded arXiv uses Tschantz, as does the manuscript."
+      ],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "walraven2024",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1007/s10458-024-09683-4",
+        "https://link.springer.com/article/10.1007/s10458-024-09683-4"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Walraven, E. and Sijs, J. and Burghouts, G.~J.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Information gathering in {POMDP}s using active inference",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Autonomous Agents and Multi-Agent Systems",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "39",
+          "verdict": "verified"
+        },
+        "number": {
+          "bibliography_value": "1",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "3",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2025",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 146,
+          "citation": "\\citet{walraven2024}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher abstract explicitly bridges active inference and POMDP information gathering and introduces a tailored information-gathering approach. Direct support."
+        }
+      ],
+      "findings": [
+        "The key suffix is 2024 but the entry correctly prints the 2025 issue year. Publisher identifies volume 39, article 3 (2025), online November 7, 2024. Crossref confirms issue 1."
+      ],
+      "required_fixes": [],
+      "access_limitations": [
+        "Publisher full text is subscription content; all bibliographic fields and the general attribution are available in primary metadata/abstract."
+      ]
+    },
+    {
+      "key": "wei2024voi",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://arxiv.org/abs/2408.06542"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Wei, R.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Value of information and reward specification in active inference and {POMDP}s",
+          "verdict": "verified"
+        },
+        "eprint": {
+          "bibliography_value": "2408.06542",
+          "verdict": "verified"
+        },
+        "archivePrefix": {
+          "bibliography_value": "arXiv",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2024",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 151,
+          "citation": "\\citep{wei2024voi}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Author arXiv abstract explicitly asks about EFE’s optimality gap against a reward-driven RL agent using belief-MDP analysis. Directly supports the limited optimality-gap-analysis description."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "ye2017",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1613/jair.5328"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Ye, N. and Somani, A. and Hsu, D. and Lee, W.~S.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "{DESPOT}: Online {POMDP} planning with regularization",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Journal of Artificial Intelligence Research",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "58",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "231--266",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2017",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 135,
+          "citation": "\\citep{ye2017}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher-deposited abstract explicitly defines DESPOT as a sparse belief-tree approximation and describes optimizing a regularized objective. Direct support."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "kushner1978",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1007/978-1-4684-9352-8",
+        "https://link.springer.com/book/10.1007/978-1-4684-9352-8",
+        "https://link.springer.com/content/pdf/bfm:978-1-4684-9352-8/1"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Kushner, Harold J. and Clark, Dean S.",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Stochastic Approximation Methods for Constrained and Unconstrained Systems",
+          "verdict": "verified"
+        },
+        "series": {
+          "bibliography_value": "Applied Mathematical Sciences",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "26",
+          "verdict": "verified"
+        },
+        "publisher": {
+          "bibliography_value": "Springer-Verlag",
+          "verdict": "verified",
+          "evidence": "Publisher front matter explicitly prints Springer-Verlag New York Heidelberg Berlin."
+        },
+        "address": {
+          "bibliography_value": "New York",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "1978",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 447,
+          "citation": "\\citet{kushner1978}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Publisher front-matter preface states constrained extensions and projection forms of stochastic-approximation algorithms; contents list projection algorithms at pages 189 and 223. Supports historical/background citation. Manuscript supplies its own proof rather than importing unverified theorem hypotheses."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1263,
+          "citation": "\\citep{kushner1978}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Same front matter and contents support constrained stochastic-approximation background. No blanket equivalence to an external convergence theorem is claimed."
+        }
+      ],
+      "findings": [
+        "Publisher front matter verifies Springer-Verlag New York, first edition 1978, Applied Mathematical Sciences volume 26. Ebook date 2012 is not the book year."
+      ],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "vergara2012data",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://archive.ics.uci.edu/dataset/224/gas+sensor+array+drift+dataset"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Vergara, Alexander",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Gas Sensor Array Drift Dataset",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2012",
+          "verdict": "verified"
+        },
+        "publisher": {
+          "bibliography_value": "UCI Machine Learning Repository",
+          "verdict": "verified"
+        },
+        "doi": {
+          "bibliography_value": "10.24432/C5RP6W",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 628,
+          "citation": "\\citep{vergara2012data,vergara2012}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "UCI primary page directly gives 13,910 measurements, 16 sensors, six gases and the eight-feature-per-sensor ordering. Supports dataset facts."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1146,
+          "citation": "\\citep{vergara2012data}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "UCI primary documentation gives all ten chronological batch ranges and the consecutive eight-descriptor sensor grouping. Supports these protocol premises."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1275,
+          "citation": "\\citep{vergara2012data}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "UCI primary page licenses research use in legacy text and CC BY 4.0 in its current panel. The manuscript defers external-data terms to UCI and does not apply the repository MIT license to measurements."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1294,
+          "citation": "\\citep{vergara2012data,vergara2012}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "UCI page verifies the named public dataset and original documentation. Split, checksum, duplicate checks and retrospective-access limitations are the authors’ protocol, not claims attributed to the dataset paper."
+        }
+      ],
+      "findings": [
+        "The UCI page simultaneously contains a legacy research-only/noncommercial sentence and a current CC BY 4.0 license panel. Manuscript accurately limits its wording to research reproducibility and source attribution terms. This is a source-level license inconsistency, not a fabricated citation or a required manuscript correction."
+      ],
+      "required_fixes": [],
+      "access_limitations": []
+    },
+    {
+      "key": "vergara2012",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://api.crossref.org/works/10.1016/j.snb.2012.01.074",
+        "https://archive.ics.uci.edu/dataset/224/gas+sensor+array+drift+dataset"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Vergara, Alexander and Vembu, Shankar and Ayhan, Tuba and Ryan, Margaret A. and Homer, Margie L. and Huerta, Ram{\\'o}n",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Chemical gas sensor drift compensation using classifier ensembles",
+          "verdict": "verified"
+        },
+        "journal": {
+          "bibliography_value": "Sensors and Actuators B: Chemical",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "166--167",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "320--329",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2012",
+          "verdict": "verified"
+        },
+        "doi": {
+          "bibliography_value": "10.1016/j.snb.2012.01.074",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 628,
+          "citation": "\\citep{vergara2012data,vergara2012}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Crossref verifies the associated article’s identity and full author list. Co-cited UCI primary dataset record independently supplies all quantitative facts in this sentence. Publisher full-text fetch was blocked, so article-only verification of those numbers is not claimed."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 1294,
+          "citation": "\\citep{vergara2012data,vergara2012}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Article authenticity and role as the dataset’s originating study are consistent with the co-cited primary UCI documentation. This citation is not used to assert an uninspected theorem or result."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": [
+        "ScienceDirect article and abstract pages returned HTTP 403. Bibliographic metadata were checked from the publisher Crossref deposit; quantitative dataset facts from the co-cited UCI primary documentation."
+      ]
+    },
+    {
+      "key": "covert2023",
+      "authenticity_status": "verified_real_work",
+      "primary_urls_checked": [
+        "https://proceedings.mlr.press/v202/covert23a.html"
+      ],
+      "metadata_field_verdicts": {
+        "author": {
+          "bibliography_value": "Covert, Ian Connick and Qiu, Wei and Lu, Mingyu and Kim, Na Yoon and White, Nathan J. and Lee, Su-In",
+          "verdict": "verified"
+        },
+        "title": {
+          "bibliography_value": "Learning to Maximize Mutual Information for Dynamic Feature Selection",
+          "verdict": "verified"
+        },
+        "booktitle": {
+          "bibliography_value": "Proceedings of the 40th International Conference on Machine Learning",
+          "verdict": "verified"
+        },
+        "series": {
+          "bibliography_value": "Proceedings of Machine Learning Research",
+          "verdict": "verified"
+        },
+        "volume": {
+          "bibliography_value": "202",
+          "verdict": "verified"
+        },
+        "pages": {
+          "bibliography_value": "6424--6447",
+          "verdict": "verified"
+        },
+        "publisher": {
+          "bibliography_value": "PMLR",
+          "verdict": "verified"
+        },
+        "year": {
+          "bibliography_value": "2023",
+          "verdict": "verified"
+        },
+        "url": {
+          "bibliography_value": "https://proceedings.mlr.press/v202/covert23a.html",
+          "verdict": "verified"
+        }
+      },
+      "manuscript_uses": [
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 144,
+          "citation": "\\citep{covert2023}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "PMLR abstract explicitly proposes greedy conditional-mutual-information dynamic feature selection and amortized learned approximation. Direct support."
+        },
+        {
+          "file": "paper/full_paper_jair.tex",
+          "line": 630,
+          "citation": "\\citep{covert2023}",
+          "verdict": "supported_with_stated_scope",
+          "evidence": "Same primary abstract supports the greedy-information comparator lineage. Manuscript explicitly states that it does not reproduce the neural acquisition method, avoiding over-attribution."
+        }
+      ],
+      "findings": [],
+      "required_fixes": [],
+      "access_limitations": []
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+[
+  {
+    "filename": "champion2024_crossref.json",
+    "size_bytes": 18302,
+    "sha256": "b49801d1941e0a797407ac3b6807404906c9c17a0eea7c71ef7c338b8ad27f54",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1162/neco.a.1491",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "altman1999_toc.txt",
+    "size_bytes": 5086,
+    "sha256": "67a4502d202532143ca3e38fe67b194f73b4e37019e26d138fdd310aabad04cb",
+    "retrieved_date": "2026-10-21",
+    "url": "https://www-sop.inria.fr/members/Eitan.Altman/PAPERS/cont.txt",
+    "retained_in_repo": false,
+    "temporary_path": "/tmp/citation_a_pdf/source_payloads/altman1999_toc.txt"
+  },
+  {
+    "filename": "dacosta2020_crossref.json",
+    "size_bytes": 74624,
+    "sha256": "30c0ade4f8eac9d874fd5e7e2a2cab42b00269cabf46f24edb3337fd7586f4d9",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1016/j.jmp.2020.102447",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "friston2015_crossref.json",
+    "size_bytes": 25895,
+    "sha256": "aee35b40483e62d41d92facd51dac769dbd3398ca5ab1022e9990f499b82dc20",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1080/17588928.2015.1020053",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "bernardo1979_crossref.json",
+    "size_bytes": 3801,
+    "sha256": "2da94d192daac0db6a693a06fb02ce3f762ec1fa17e2564eb2a5c1f4900f1497",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1214/aos/1176344689",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "cooper2026_html.html",
+    "size_bytes": 708593,
+    "sha256": "73ed2ea6634ea1ac5a1275f81db2c94d97412c1bf3df099b123610a09d818aad",
+    "retrieved_date": "2026-10-21",
+    "url": "https://arxiv.org/html/2607.16981v1",
+    "retained_in_repo": false,
+    "temporary_path": "/tmp/citation_a_pdf/source_payloads/cooper2026_html.html"
+  },
+  {
+    "filename": "gundersen2024jair_crossref.json",
+    "size_bytes": 4970,
+    "sha256": "2464651169166fd90c93d99c3011df7fe0d3791cf37767bdf6cd69726cbd0f12",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1613/jair.1.16905",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "blum1954_pdf.html",
+    "size_bytes": 1163,
+    "sha256": "8fcf930d6524317de95dab36893803c402c782770820ef06738f92745361b268",
+    "retrieved_date": "2026-10-21",
+    "url": "https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-25/issue-2/Approximation-Methods-which-Converge-with-Probability-one/10.1214/aoms/1177728794.pdf",
+    "retained_in_repo": false,
+    "temporary_path": "/tmp/citation_a_pdf/source_payloads/blum1954_pdf.html",
+    "content_status": "Anti-bot HTML response, NOT paper text; not used as evidence."
+  },
+  {
+    "filename": "friston2021_crossref.json",
+    "size_bytes": 22140,
+    "sha256": "b1a757774aa415fe90a37d38a89b943336a2235050884df0135e98413710780c",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1162/neco_a_01351",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "guez2013_crossref.json",
+    "size_bytes": 4588,
+    "sha256": "a999263d5049216ac5fc23053e8f6cefacb0ce0aa1ad7dfdd36d39d238245443",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1613/jair.4117",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "downloads.json",
+    "size_bytes": 3115,
+    "sha256": "a31dab2d585f41ebc4b6f7cddb51dc41f84bd6917a06bf6bc8cc0f2394f61219",
+    "retrieved_date": "2026-10-21",
+    "retained_in_repo": true,
+    "description": "Retrieval log, includes failed and successful URLs."
+  },
+  {
+    "filename": "dacosta2020_pdf.txt",
+    "size_bytes": 162192,
+    "sha256": "44a5c2e69246c65c73f3a4f6e29ff46c6070f75a58cdfe88649bbbd6d1f30ff3",
+    "retrieved_date": "2026-10-21",
+    "url": "https://arxiv.org/pdf/2001.07203",
+    "retained_in_repo": false,
+    "temporary_path": "/tmp/citation_a_pdf/source_payloads/dacosta2020_pdf.txt"
+  },
+  {
+    "filename": "bernardo_home.html",
+    "size_bytes": 4112,
+    "sha256": "4aa8429f259663d6fbd4d5b6f326d375d3f2477ca2372c0e91ee8a27ebd90863",
+    "retrieved_date": "2026-10-21",
+    "url": "https://www.uv.es/~bernardo/publications.html",
+    "retained_in_repo": false,
+    "temporary_path": "/tmp/citation_a_pdf/source_payloads/bernardo_home.html"
+  },
+  {
+    "filename": "blum1954_crossref.json",
+    "size_bytes": 2827,
+    "sha256": "b99decfe1d54357caf1c11abda66dca921bf7f40c2cdbdac1a251419989f7f87",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1214/aoms/1177728794",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "devries2025_html.html",
+    "size_bytes": 261495,
+    "sha256": "47234834782b213a10cc9592960de1ca3fe8ec99bc3e7ceee89183bffe1dacc4",
+    "retrieved_date": "2026-10-21",
+    "url": "https://arxiv.org/html/2504.14898v4",
+    "retained_in_repo": false,
+    "temporary_path": "/tmp/citation_a_pdf/source_payloads/devries2025_html.html"
+  },
+  {
+    "filename": "friston2010_crossref.json",
+    "size_bytes": 64226,
+    "sha256": "324fd071dd74b76c1307001a586fd1852b2ba9a6991997c27c8f3f3c3b293373",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1038/nrn2787",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "dacosta2020_pdf.pdf",
+    "size_bytes": 7216059,
+    "sha256": "66bfbf026448835f5f4641859794d2f766a50690778fd91738a3b45f88c3a6e9",
+    "retrieved_date": "2026-10-21",
+    "url": "https://arxiv.org/pdf/2001.07203",
+    "retained_in_repo": false,
+    "temporary_path": "/tmp/citation_a_pdf/source_payloads/dacosta2020_pdf.pdf"
+  },
+  {
+    "filename": "ghavamzadeh2015_crossref.json",
+    "size_bytes": 61133,
+    "sha256": "465f2de2b3f23ba77ce27e76cea80c4025fa3b12712da6dc794ae972caa344b9",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1561/2200000049",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "dacosta2020b_crossref.json",
+    "size_bytes": 6820,
+    "sha256": "4a975c1aa37bfceb08dd4940862f529582bd9d660bf8ee57bf260be864c1ff8b",
+    "retrieved_date": "2026-10-21",
+    "url": "https://api.crossref.org/works/10.1162/neco_a_01574",
+    "retained_in_repo": true
+  },
+  {
+    "filename": "bernardo1979_pdf.html",
+    "size_bytes": 1163,
+    "sha256": "b6f29a58f878a965b3612c472a2626b4548eb0011b58c362560a9fb864f30889",
+    "retrieved_date": "2026-10-21",
+    "url": "https://projecteuclid.org/journals/annals-of-statistics/volume-7/issue-3/Expected-Information-as-Expected-Utility/10.1214/aos/1176344689.pdf",
+    "retained_in_repo": false,
+    "temporary_path": "/tmp/citation_a_pdf/source_payloads/bernardo1979_pdf.html",
+    "content_status": "Anti-bot HTML response, NOT paper text; not used as evidence."
+  },
+  {
+    "filename": "bernardo.pdf",
+    "url": "https://www.uv.es/~bernardo/1979AS.pdf",
+    "retrieved_date": "2026-10-21",
+    "size_bytes": 512571,
+    "sha256": "6987a4ab31e1f09bf16644f043ef5308592ccc6f934ed791dc0727ec50a6c058",
+    "retained_in_repo": false,
+    "temporary_path": "/tmp/citation_a_pdf/bernardo.pdf"
+  },
+  {
+    "filename": "friston2015_europepmc.json",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A25689102&format=json&resultType=core",
+    "retrieved_date": "2026-10-21",
+    "size_bytes": 13993,
+    "sha256": "2c74aa4dbc8f40c9fd660556001582d647622f6c7ce3595619f3020af7bf0108",
+    "retained_in_repo": false,
+    "temporary_path": "/tmp/citation_a_pdf/friston2015_europepmc.json"
+  }
+]

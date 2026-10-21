@@ -1,0 +1,116 @@
+{
+  "source_url": "https://api.crossref.org/works/10.7551/mitpress/3115.003.0030",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "7b6bf16c6163499a16ed0cb115475fc19b162bed2f094493c6a3460673609b2f",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          20
+        ]
+      ],
+      "date-time": "2026-10-20T00:07:16Z",
+      "timestamp": 1792454836244,
+      "version": "4.5.0"
+    },
+    "publisher": "The MIT Press",
+    "short-container-title": [],
+    "published-print": {
+      "date-parts": [
+        [
+          1991,
+          2,
+          4
+        ]
+      ]
+    },
+    "DOI": "10.7551/mitpress/3115.003.0030",
+    "type": "book-chapter",
+    "created": {
+      "date-parts": [
+        [
+          2019,
+          3,
+          29
+        ]
+      ],
+      "date-time": "2019-03-29T18:07:56Z",
+      "timestamp": 1553882876000
+    },
+    "page": "222-228",
+    "title": [
+      "A Possibility for Implementing Curiosity and Boredom in Model-Building Neural Controllers"
+    ],
+    "prefix": "10.7551",
+    "author": [
+      {
+        "given": "Juergen",
+        "family": "Schmidhuber",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "281",
+    "container-title": [
+      "From Animals to Animats"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://direct.mit.edu/books/edited-volume/chapter-pdf/2311948/9780262256674_caz.pdf",
+        "content-type": "unspecified",
+        "content-version": "vor",
+        "intended-application": "similarity-checking"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2024,
+          1,
+          31
+        ]
+      ],
+      "date-time": "2024-01-31T11:44:07Z",
+      "timestamp": 1706701447000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://direct.mit.edu/books/book/3865/chapter/162771/A-Possibility-for-Implementing-Curiosity-and"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          1991,
+          2,
+          4
+        ]
+      ]
+    },
+    "ISBN": [
+      "9780262256674"
+    ],
+    "URL": "https://doi.org/10.7551/mitpress/3115.003.0030",
+    "relation": {},
+    "published": {
+      "date-parts": [
+        [
+          1991,
+          2,
+          4
+        ]
+      ]
+    }
+  }
+}

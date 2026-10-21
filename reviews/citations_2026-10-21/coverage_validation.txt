@@ -1,0 +1,2 @@
+PASS: 69 references, 84 citation clusters, 111 uses; complete audit coverage.
+Only three mirrored attribution edits and one JAIR-only policy deletion.

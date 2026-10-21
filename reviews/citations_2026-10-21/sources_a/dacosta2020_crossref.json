@@ -1,0 +1,236 @@
+{
+  "source_url": "https://api.crossref.org/works/10.1016/j.jmp.2020.102447",
+  "audit_date": "2026-10-21",
+  "original_response_sha256": "30c0ade4f8eac9d874fd5e7e2a2cab42b00269cabf46f24edb3337fd7586f4d9",
+  "retained_bibliographic_metadata": {
+    "indexed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          21
+        ]
+      ],
+      "date-time": "2026-10-21T15:47:12Z",
+      "timestamp": 1792597632264,
+      "version": "4.5.0"
+    },
+    "publisher": "Elsevier BV",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2020,
+              12,
+              1
+            ]
+          ],
+          "date-time": "2020-12-01T00:00:00Z",
+          "timestamp": 1606780800000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "https://www.elsevier.com/tdm/userlicense/1.0/"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2020,
+              12,
+              1
+            ]
+          ],
+          "date-time": "2020-12-01T00:00:00Z",
+          "timestamp": 1606780800000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "https://www.elsevier.com/legal/tdmrep-license"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2020,
+              10,
+              10
+            ]
+          ],
+          "date-time": "2020-10-10T00:00:00Z",
+          "timestamp": 1602288000000
+        },
+        "content-version": "vor",
+        "delay-in-days": 0,
+        "URL": "http://creativecommons.org/licenses/by/4.0/"
+      }
+    ],
+    "short-container-title": [
+      "Journal of Mathematical Psychology"
+    ],
+    "published-print": {
+      "date-parts": [
+        [
+          2020,
+          12
+        ]
+      ]
+    },
+    "DOI": "10.1016/j.jmp.2020.102447",
+    "type": "journal-article",
+    "created": {
+      "date-parts": [
+        [
+          2020,
+          11,
+          5
+        ]
+      ],
+      "date-time": "2020-11-05T23:00:56Z",
+      "timestamp": 1604617256000
+    },
+    "page": "102447",
+    "title": [
+      "Active inference on discrete state-spaces: A synthesis"
+    ],
+    "prefix": "10.1016",
+    "volume": "99",
+    "author": [
+      {
+        "given": "Lancelot",
+        "family": "Da Costa",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Thomas",
+        "family": "Parr",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Noor",
+        "family": "Sajid",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Sebastijan",
+        "family": "Veselic",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Victorita",
+        "family": "Neacsu",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Karl",
+        "family": "Friston",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "member": "78",
+    "container-title": [
+      "Journal of Mathematical Psychology"
+    ],
+    "original-title": [],
+    "link": [
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S0022249620300857?httpAccept=text/xml",
+        "content-type": "text/xml",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      },
+      {
+        "URL": "https://api.elsevier.com/content/article/PII:S0022249620300857?httpAccept=text/plain",
+        "content-type": "text/plain",
+        "content-version": "vor",
+        "intended-application": "text-mining"
+      }
+    ],
+    "deposited": {
+      "date-parts": [
+        [
+          2025,
+          9,
+          19
+        ]
+      ],
+      "date-time": "2025-09-19T20:12:28Z",
+      "timestamp": 1758312748000
+    },
+    "resource": {
+      "primary": {
+        "URL": "https://linkinghub.elsevier.com/retrieve/pii/S0022249620300857"
+      }
+    },
+    "subtitle": [],
+    "short-title": [],
+    "issued": {
+      "date-parts": [
+        [
+          2020,
+          12
+        ]
+      ]
+    },
+    "alternative-id": [
+      "S0022249620300857"
+    ],
+    "URL": "https://doi.org/10.1016/j.jmp.2020.102447",
+    "relation": {},
+    "ISSN": [
+      "0022-2496"
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2020,
+          12
+        ]
+      ]
+    },
+    "article-number": "102447"
+  }
+}
