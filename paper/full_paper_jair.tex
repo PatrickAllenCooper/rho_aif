@@ -5,14 +5,27 @@
 \documentclass[manuscript, screen, review]{jair}
 
 \setcopyright{cc}
-\acmDOI{10.1613/jair.1.xxxxx}
-
+% Publication metadata will be supplied by JAIR after acceptance.
+\acmDOI{}
+\settopmatter{printacmref=false}
 \JAIRAE{}
 \JAIRTrack{}
-\acmVolume{1}
-\acmArticle{1}
-\acmMonth{8}
+\acmVolume{}
+\acmArticle{}
 \acmYear{2026}
+% The class otherwise prints a bare DOI label for an unassigned identifier.
+\makeatletter
+\renewcommand{\@formatdoi}[1]{%
+  \ifx\@acmDOI\@empty\else\textsc{doi:} \href{https://doi.org/#1}{#1}\fi}
+\makeatother
+\pdfstringdefDisableCommands{\def\rho{rho}}
+\AtBeginDocument{%
+  \fancyfoot[RO,LE]{\footnotesize Manuscript prepared for JAIR review.}%
+  \fancypagestyle{firstpagestyle}{%
+    \fancyhf{}%
+    \fancyfoot[RO,LE]{\footnotesize Manuscript prepared for JAIR review.}%
+  }%
+}
 
 %% The acmauthoryear citation style defines \citep and \citet itself
 %% (acmauthoryear.cbx), so biblatex's natbib compatibility module must NOT
@@ -51,7 +64,7 @@
 
 \begin{document}
 
-\title{Pricing the Sensing Budget in $\rho$-POMDPs,\\
+\title[Pricing the Sensing Budget in $\rho$-POMDPs]{Pricing the Sensing Budget in $\rho$-POMDPs,\\
 with Expected Free Energy as the Canonical Information Weight}
 
 \author{Patrick Cooper}
@@ -188,7 +201,7 @@ Writing $d$ for search depth and setting $V=-\mathcal G$ gives
 V(\mathrm{observe}_k,b,d)&=-c_k+I_k(b)+\mathbb E_o\!\left[\max_a V(a,b'_o,d+1)\right],\label{eq:bellman_obs}\\
 V(\mathrm{commit}_i,b,d)&=\mathbb E_b[R_i].\label{eq:bellman_commit}
 \end{align}
-At $d=H$, the value is the best commit value. Write $R(b,a):=\sum_s b(s)R(s,a)$ for expected immediate reward and $V^*(b,d):=\max_a V(a,b,d)$ for the optimal belief-state value. This is a $\rho$-POMDP Bellman recursion with an action-dependent belief utility, as permitted by \citet{araya2010}. The proposition identifies the two recursions when $\beta=1$ fixes the exchange rate at one reward unit per nat of log preference. A separately normalized preference distribution needs the qualification following the proof.
+At $d=H$, the value is the best commit value. Write $R(b,a):=\sum_s b(s)R(s,a)$ for expected immediate reward and $V^*(b,d):=\max_a V(a,b,d)$ for the optimal belief-state value. This is a $\rho$-POMDP Bellman recursion with an action-dependent belief utility, as permitted by \citet{araya2010}. The proposition identifies the two recursions when $\beta=1$ fixes the exchange rate at one reward unit per nat of log preference. A separately normalized preference distribution needs the qualification following the proposition.
 
 \begin{proposition}
 \label{prop:equivalence}
@@ -326,7 +339,7 @@ Fix the implemented family's usage curve $U(w)$ on $w\ge0$ and a target $B$.
 \[
 D_B=\{w\ge0:U(w)<B,\ \exists v>w\text{ with }U(v)\ge B\}.
 \]
-When $D_B$ is nonempty and bounded, the operational shadow price is $w^*(B):=w^{\dagger}(B):=\sup D_B$, the final crossing location. Selecting the last crossing is a convention for nonmonotone curves. At a jump it is a single weight, even if no weight attains $B$. It is undefined if the curve never crosses from below, or has no finite final crossing. A level set can therefore exist without a shadow price.
+When $D_B$ is nonempty and bounded, the operational shadow price is $w^*(B):=\sup D_B$, the final crossing location. Selecting the last crossing is a convention for nonmonotone curves. At a jump it is a single weight, even if no weight attains $B$. It is undefined if the curve never crosses from below, or has no finite final crossing. A level set can therefore exist without a shadow price.
 
 \emph{Grid bracket.} On an ordered finite grid, let $w_{\mathrm{lo}}$ be the largest sampled weight with $U(w_{\mathrm{lo}})<B$, and let $w_{\mathrm{hi}}$ be the first subsequent sampled weight with $U(w_{\mathrm{hi}})\ge B$. If both exist, the solver reports $(w_{\mathrm{lo}},w_{\mathrm{hi}}]$. Its closed enclosure $[w_{\mathrm{lo}},w_{\mathrm{hi}}]$ contains the population threshold provided the grid misses no crossing, either between samples or beyond its final point. The enclosure is closed because the threshold can equal $w_{\mathrm{lo}}$ when usage rises immediately after it. The bracket's width measures grid resolution, not uncertainty, and its interior weights need not attain $B$. Without straddling endpoints, the solver flags its fallback as unbracketed, even if an unsampled population crossing exists.
 
@@ -416,10 +429,10 @@ The proposition covers the projected decaying-step controller, with finite $w_{\
 
 \begin{proposition}[Stationary convergence of the dual controller]
 \label{prop:pi5}
-Consider the projected decaying-step recursion~\eqref{eq:dual_update} with finite $w_{\max}$ and step sizes satisfying $\sum_t a_t=\infty$ and $\sum_t a_t^2<\infty$. The schedule in~\eqref{eq:dual_update} satisfies these conditions when $\delta>0$. Assume:
+Consider the projected decaying-step recursion~\eqref{eq:dual_update} with finite $w_{\max}$ and step sizes satisfying $\sum_t a_t=\infty$ and $\sum_t a_t^2<\infty$. The schedule in~\eqref{eq:dual_update} satisfies these conditions when $\eta_0>0$ and $\delta>0$. Assume:
 \begin{enumerate}
 \item[(i)] The environment, agent family, and target $B$ are stationary, with $\mathbb{E}[U_t\mid w_t]=U(w_t)$ for a fixed usage curve $U$.
-\item[(ii)] Per-episode usage is bounded by the episode step cap. Each episode uses an independent environment reset and fresh seed, so $U_t-U(w_t)$ is a martingale difference with bounded conditional second moment.
+\item[(ii)] Per-episode usage is uniformly bounded. For counts, the episode step cap gives this bound. For cost usage, multiply it by a bound on the cost per sensing action. Each episode uses an independent environment reset and fresh seed, so $U_t-U(w_t)$ is a martingale difference with bounded conditional second moment.
 \item[(iii)] There is a single crossing $w^*\in(0,w_{\max})$, with $U(w)<B$ for $w<w^*$ and $U(w)>B$ for $w>w^*$.
 \item[(iv)] Usage stays away from $B$ outside every neighborhood of the crossing: for every $0<\epsilon_1<\epsilon_2$,
 \[
@@ -918,7 +931,7 @@ Primary comparisons use independent two-sample Welch $t$-tests on per-seed means
 
 RockSample corrects within metric, with $21$ comparisons per instance over seven agents. A single correction across metrics would use a larger family, reject fewer differences, and could bold more rows under the table's non-rejection rule. Bolding does not assert equality. The discount sweep pools $24$ tests across environments, discounts and metrics. The MCTS ablation corrects within metric across its three environments, and the exploration sweep within metric within each of its three comparison families. The separate Tileworld scaling battery reports seed-level SEs without a Welch companion file.
 
-Main tables report seed-level SE, which describes between-seed replicability. Pooled episode-level SEs and tests remain in the companion CSVs as supplementary descriptions, since episodes within a seed are not independent. The six core observe-then-commit and Tileworld statistics files use equal-variance pooled tests. Substituting Welch changes no non-degenerate decision at $\alpha=0.05$ among their $510$ comparisons. RockSample and Inspection use Welch at both levels. Bootstrap $95\%$ intervals use $10{,}000$ resamples and a fixed seed unless a study states otherwise.
+Main tables report seed-level SE, which describes between-seed replicability. Pooled episode-level SEs and tests remain in the companion CSVs as supplementary descriptions. The primary analysis treats independently seeded runs as the replication units. The six core observe-then-commit and Tileworld statistics files use equal-variance pooled tests. Substituting Welch changes no non-degenerate decision at $\alpha=0.05$ among their $510$ comparisons. RockSample and Inspection use Welch at both levels. Bootstrap $95\%$ intervals use $10{,}000$ resamples and a fixed seed unless a study states otherwise.
 
 Interpreted effect sizes use the pooled episode-level standard deviation. EFE's reward effects against Planning are $d=0.08$ on Diagnosis and $d=0.14$ on Bandit, small despite their detectable seed-level differences. We do not interpret Cohen's $d$ computed from five seed means. Equal episodes per seed make pooled and seed-level mean differences identical, so their sign agreement supplies no independent evidence. A failure to reject a difference is not equivalence. The fixed-margin TOST comparisons are reported separately.
 
@@ -1017,14 +1030,10 @@ Information is measured in nats. Part (a) concerns one observation followed by c
 \end{equation*}
 For any $w > w^*_{\mathrm{thresh}}$ the agent observes before committing at $H{=}1$. The threshold $w^*_{\mathrm{thresh}}$ is negative, making $w{=}1$ sufficient for at least one observation, whenever $\alpha > c / [(p - \tfrac{1}{2})\,R^+] - 1$. In particular, $w^*_{\mathrm{thresh}} \to -\infty$ as $\alpha \to \infty$ for any fixed $p > \tfrac{1}{2}$ and $c > 0$.
 
-\textbf{Part (b): One observation at $H{=}2$.} At the post-first-observation belief $b{=}(p, 1{-}p)$, define the instrumental value of a second observation $\mathrm{VoI}_2(b)$ and the expected information gain $I(b)$ of one further observation. The upper (over-observation) threshold is
+\textbf{Part (b): One observation at $H{=}2$.} At the post-first-observation belief $b{=}(p, 1{-}p)$, define the instrumental value of a second observation $\mathrm{VoI}_2(b)$ and the expected information gain $I(b)$ of one further observation. In this symmetric model $\mathrm{VoI}_2(b)=0$, because a disconfirming second observation returns the posterior to the tie point. The upper (over-observation) threshold therefore simplifies to
 \begin{equation*}
-    w^*_{\mathrm{over}} = \begin{cases}
-    (c - \mathrm{VoI}_2(b)) / I(b) & \text{if } \mathrm{VoI}_2(b) < c, \\
-    +\infty & \text{otherwise.}
-    \end{cases}
-\end{equation*}
-In this symmetric model $\mathrm{VoI}_2(b)=0$, because a disconfirming second observation returns the posterior to the tie point. Thus the finite branch applies. If $w^*_{\mathrm{thresh}}\le0$, every $w\in(w^*_{\mathrm{thresh}},w^*_{\mathrm{over}})\cap[0,\infty)$ reproduces the reward-optimal single observation. We call this the single-observation interval. Weights above $w^*_{\mathrm{over}}$ buy an instrumentally unprofitable second observation. If $w^*_{\mathrm{thresh}}>0$, immediate commitment is reward-optimal. Weights inside the interval instead buy one observation at reward loss $c-(p-\tfrac12)(R^+-R^-)$, strictly between zero and $c$. These statements do not extend to longer horizons. Part (a) includes perfect sensing under $0\ln0=0$, giving $I_{\max}=\ln2$. Part (b) excludes it because $I(b)=0$ makes the upper ratio undefined.
+    w^*_{\mathrm{over}} = \frac{c-\mathrm{VoI}_2(b)}{I(b)} = \frac{c}{I(b)}.
+\end{equation*} If $w^*_{\mathrm{thresh}}\le0$, every $w\in(w^*_{\mathrm{thresh}},w^*_{\mathrm{over}})\cap[0,\infty)$ reproduces the reward-optimal single observation. We call this the single-observation interval. Weights above $w^*_{\mathrm{over}}$ buy an instrumentally unprofitable second observation. If $w^*_{\mathrm{thresh}}>0$, immediate commitment is reward-optimal. Weights inside the interval instead buy one observation at reward loss $c-(p-\tfrac12)(R^+-R^-)$, strictly between zero and $c$. These statements do not extend to longer horizons. Part (a) includes perfect sensing under $0\ln0=0$, giving $I_{\max}=\ln2$. Part (b) excludes it because $I(b)=0$ makes the upper ratio undefined.
 \end{proposition}
 
 \begin{proof}
@@ -1069,7 +1078,7 @@ Immediate commitment has expected value zero. For $1<c<2$, the naive value recom
 strictly worse than immediate commitment for every $c>0$. The example is checked in \texttt{tests/\allowbreak test\_\allowbreak destructive\_\allowbreak boundary.py}.
 \end{example}
 
-\begin{proof}[Proof sketch]
+\begin{proof}[Proof sketch for Proposition~\ref{prop:factored}]
 When action $a$ preserves $s_{\mathrm{hid}}$, the transition on the hidden component is $T_{\mathrm{hid}}(s'_{\mathrm{hid}} | s_{\mathrm{hid}}, a) = \delta(s'_{\mathrm{hid}} = s_{\mathrm{hid}})$. The belief update over $s_{\mathrm{hid}}$ is then $b'(s_{\mathrm{hid}}) \propto O(o \mid s_{\mathrm{hid}}, a)\, b(s_{\mathrm{hid}})$, depending only on the observation likelihood, identical to the observe-then-commit case. The posterior that would incorporate transitions, $b'_{o,T}$, coincides with the observation-only posterior $b'_o$, so $D_{\mathrm{KL}}[b'_{o,T} \| b'_o] = 0$. For observation actions, EFE reduces to cost minus information gain plus expected continuation, matching the $\rho$-POMDP Bellman equation with $\rho = I_a(b)$. For navigation actions, the observation is uninformative ($I_a(b) = 0$), giving $\rho = 0$.
 \end{proof}
 
@@ -1112,7 +1121,7 @@ Let $\mathcal{F}_t$ be the history before episode $t$, $e_t=w_t-w^*$, and $M(w)=
 \]
 Condition (iii) gives $e_t M(w_t)\ge0$, also when $w_t=w^*$ without requiring $M(w^*)=0$. Thus $Y_t=e_t^2+C\sum_{k\ge t}a_k^2$ is a nonnegative supermartingale and converges almost surely. Summing the expected drift inequality gives $2\,\mathbb{E}[\sum_t a_t e_t M(w_t)]\le\mathbb{E}[Y_0]<\infty$, so that nonnegative series is finite almost surely. Since the tail $\sum_{k\ge t}a_k^2$ vanishes, $e_t^2$ has an almost-sure limit. If it were positive, the bounded interval and condition (iv) would keep $e_t M(w_t)$ bounded away from zero eventually, contradicting $\sum_t a_t=\infty$. Hence $w_t\to w^*$ almost surely.
 
-The running-average claim follows from that convergence. Because $w^*$ is interior and the increments $a_t (B - U_t)$ vanish, usage being bounded by (ii), the projection is inactive from some episode on, so $\sum_t a_t (B - U_t)$ converges, its partial sums being differences of the convergent iterates. Since $1/a_t = (1 + \delta t)/\eta_0$ increases to infinity, Kronecker's lemma gives $a_n \sum_{t<n} (B - U_t) \to 0$, and because $n\,a_n \to \eta_0/\delta > 0$ under that schedule, the one property of it the running-average claim uses, this is $\frac{1}{n}\sum_{t<n} (B - U_t) \to 0$ almost surely. The constant-step default and reset-on-shift runs require separate arguments (Section~\ref{sec:pi5}). The re-adaptation results of Section~\ref{sec:dual_multiseed} are empirical. The proof requires a single sign-consistent crossing and does not cover arbitrary nonmonotone usage curves.
+The running-average claim follows from that convergence. Because $w^*$ is interior and the increments $a_t (B - U_t)$ vanish, usage being bounded by (ii), the projection is inactive from some episode on, so $\sum_t a_t (B - U_t)$ converges, its partial sums being differences of the convergent iterates. Since $1/a_t = (1 + \delta t)/\eta_0$ increases to infinity, Kronecker's lemma gives $a_n \sum_{t<n} (B - U_t) \to 0$ almost surely. Under the harmonic schedule, $n\,a_n \to \eta_0/\delta > 0$. Dividing by $n\,a_n$ therefore gives $\frac{1}{n}\sum_{t<n} (B - U_t) \to 0$ almost surely. The constant-step default and reset-on-shift runs require separate arguments (Section~\ref{sec:pi5}). The re-adaptation results of Section~\ref{sec:dual_multiseed} are empirical. The proof requires a single sign-consistent crossing and does not cover arbitrary nonmonotone usage curves.
 
 \subsection{Limit of the RockSample Constrained Reference}
 \label{app:theory_positioning}
@@ -1278,7 +1287,7 @@ Sensor-study split/quantizer, mixture-check and bootstrap seeds are $20261001$, 
 \item Analysis of results goes beyond single-dimensional summaries of performance (e.g., average, median) to include measures of variation, confidence, or other distributional information. \textbf{Yes.} Standard errors and confidence intervals are reported throughout Sections~\ref{sec:budget_experiments} and~\ref{sec:results} (e.g., the paired Student-$t$ interval for the recovery-time difference in Section~\ref{sec:dual_multiseed} and the usage/reward SEs in Table~\ref{tab:budget_frontier_main}).
 \item All (hyper-)parameter settings for the algorithms/methods used in experiments have been reported, along with the rationale or method for determining them. \textbf{Yes.} Planning horizons and discount factors are reported per environment (Appendix~\ref{app:envs}) and the tuned Planning+IG weight search protocol is stated in Section~\ref{sec:methodology}, with discount-factor sensitivity swept explicitly in Appendix~\ref{app:discount}.
 \item The number and range of (hyper-)parameter settings explored prior to conducting final experiments have been indicated, along with the effort spent on (hyper-)parameter optimisation. \textbf{Yes.} The Pareto sweep (Section~\ref{sec:pareto}) reports every searched weight. Appendix~\ref{app:pomcp} states the exploration grid, selection rule, tuning seeds and retrospective design qualification. Appendix~\ref{app:real_sensor} gives the frozen sensor-study grids.
-\item Appropriately chosen statistical hypothesis tests are used to establish statistical significance in the presence of noise effects. \textbf{Yes.} Confidence intervals and seed-level $t$-tests (\texttt{tests/\allowbreak test\_\allowbreak stats\_\allowbreak seed.py}) are used rather than point-estimate comparisons alone. The SARSOP comparison of Section~\ref{sec:sarsop} is additionally backed by a fixed-margin TOST equivalence test \citep{schuirmann1987}. The near-optimal CPOMDP reference of Section~\ref{sec:cpomdp} estimates the optimality gap directly via a Lagrangian-penalized SARSOP sweep, evaluated by simulation rather than a certified bound, in place of an informal consistency argument.
+\item Appropriately chosen statistical hypothesis tests are used to establish statistical significance in the presence of noise effects. \textbf{Yes.} Confidence intervals and seed-level $t$-tests (\texttt{tests/\allowbreak test\_\allowbreak stats\_\allowbreak seed.py}) are used rather than point-estimate comparisons alone. The SARSOP comparison of Section~\ref{sec:sarsop} is additionally backed by a fixed-margin TOST equivalence test \citep{schuirmann1987}. The near-optimal CPOMDP reference of Section~\ref{sec:cpomdp} reports the measured reward gap to a sampled cap-feasible reference from a Lagrangian-penalized SARSOP sweep. It is evaluated by simulation and is not a certified optimality bound.
 \end{enumerate}
 
 \subsection*{Articles using data sets:}

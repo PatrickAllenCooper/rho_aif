@@ -1,0 +1,37 @@
+[
+  {
+    "file": "paper/full_paper_jair.tex",
+    "before_sha256": "db283e6949d6a018a1bbed7fb93c4291b0b5b25dbf0fab63d2b43978da4fb9a9",
+    "after_sha256": "c260180b50f5845132a6aeba50150373cf5ae5f74331feb9d5490aeae77d65c2",
+    "edits": [
+      "qualification pointer",
+      "positive initial step",
+      "named proof sketch",
+      "Kronecker argument",
+      "symmetric upper threshold",
+      "submission metadata",
+      "unused price alias",
+      "count/cost usage bound",
+      "replication-unit wording",
+      "checklist sampled-reference wording",
+      "short running title",
+      "suppress empty DOI label",
+      "rho PDF string"
+    ]
+  },
+  {
+    "file": "paper/full_paper.tex",
+    "before_sha256": "4aed0485371b1186953c13956d87232b3da8b14dac6e19bfd45867333e87953f",
+    "after_sha256": "10b6a0c8921de1c0840ad76b8f93c92e6db93b3f15215ebb754768eb52b8347a",
+    "edits": [
+      "qualification pointer",
+      "positive initial step",
+      "named proof sketch",
+      "Kronecker argument",
+      "symmetric upper threshold",
+      "unused price alias",
+      "count/cost usage bound",
+      "replication-unit wording"
+    ]
+  }
+]

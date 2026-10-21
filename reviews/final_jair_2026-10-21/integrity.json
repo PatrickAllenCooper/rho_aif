@@ -1,0 +1,32 @@
+{
+  "bibliography_entries": 69,
+  "cited_entries": 69,
+  "missing_citations": [],
+  "uncited_entries": [],
+  "missing_labels": [],
+  "duplicate_labels": [],
+  "diagnostics": {
+    "full_paper_jair.log": {
+      "overfull": 0,
+      "undefined_reference_or_citation": 0,
+      "missing_character": 0,
+      "latex_error": 0,
+      "headheight": 0
+    },
+    "full_paper.log": {
+      "overfull": 0,
+      "undefined_reference_or_citation": 0,
+      "missing_character": 0,
+      "latex_error": 0,
+      "headheight": 0
+    }
+  },
+  "placeholder_DOI_absent": true,
+  "publication_date_absent": true,
+  "bare_DOI_absent": true,
+  "jair_pages": 51,
+  "sources": {
+    "paper/full_paper_jair.tex": "c260180b50f5845132a6aeba50150373cf5ae5f74331feb9d5490aeae77d65c2",
+    "paper/full_paper.tex": "10b6a0c8921de1c0840ad76b8f93c92e6db93b3f15215ebb754768eb52b8347a"
+  }
+}

@@ -1,0 +1,12 @@
+[
+  [
+    "unused price alias",
+    "$w^*(B):=w^{\\dagger}(B):=\\sup D_B$",
+    "$w^*(B):=\\sup D_B$"
+  ],
+  [
+    "count/cost usage bound",
+    "Per-episode usage is bounded by the episode step cap.",
+    "Per-episode usage is uniformly bounded. For counts, the episode step cap gives this bound. For cost usage, multiply it by a bound on the cost per sensing action."
+  ]
+]

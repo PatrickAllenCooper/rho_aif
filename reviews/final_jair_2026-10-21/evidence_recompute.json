@@ -1,0 +1,333 @@
+{
+  "recovery": {
+    "decay": [
+      152,
+      180,
+      141,
+      133,
+      180,
+      145,
+      151,
+      137,
+      174,
+      180
+    ],
+    "reset": [
+      47,
+      64,
+      43,
+      41,
+      64,
+      44,
+      55,
+      48,
+      52,
+      54
+    ],
+    "means": [
+      157.3,
+      51.2
+    ],
+    "difference": 106.1,
+    "ci95": [
+      96.77014421060109,
+      115.4298557893989
+    ],
+    "all_favor_reset": true,
+    "max_weight": 3.089681323771305,
+    "observed_recoveries": {
+      "decay": 9,
+      "reset": 10
+    }
+  },
+  "endogenous": [
+    {
+      "env": "Tiger",
+      "R_ref": 5.016,
+      "EFE_gap": 0.0,
+      "maximum_reward_policy_feasible": true
+    },
+    {
+      "env": "Diagnosis",
+      "R_ref": -1.2653333333333332,
+      "EFE_gap": 0.041333333333333444,
+      "maximum_reward_policy_feasible": true
+    },
+    {
+      "env": "Bandit",
+      "R_ref": 6.314333333333333,
+      "EFE_gap": 0.005333333333333634,
+      "maximum_reward_policy_feasible": true
+    }
+  ],
+  "usage": {
+    "rows": 12,
+    "max_absolute_error": 0.12299999999999933,
+    "overspend_rows": 3
+  },
+  "references": {
+    "cap_negative_ci": [
+      {
+        "env": "Tiger",
+        "budget": 4.719
+      },
+      {
+        "env": "Tiger",
+        "budget": 5.07
+      },
+      {
+        "env": "Tiger",
+        "budget": 5.421
+      },
+      {
+        "env": "Diagnosis",
+        "budget": 9.534
+      },
+      {
+        "env": "Diagnosis",
+        "budget": 11.348999999999998
+      },
+      {
+        "env": "Bandit",
+        "budget": 7.787999999999999
+      },
+      {
+        "env": "Bandit",
+        "budget": 10.066
+      },
+      {
+        "env": "Bandit",
+        "budget": 4.712
+      }
+    ],
+    "target_heldout_negative_ci": [
+      {
+        "env": "Diagnosis",
+        "budget": 9.534,
+        "heldout_gap": -0.7573580742226684
+      },
+      {
+        "env": "Bandit",
+        "budget": 4.712,
+        "heldout_gap": -0.5867360000000001
+      }
+    ],
+    "target_fresh_negative_ci": [
+      {
+        "env": "Diagnosis",
+        "budget": 7.718999999999999,
+        "fresh_gap": -0.5601554663991974
+      },
+      {
+        "env": "Bandit",
+        "budget": 4.712,
+        "fresh_gap": -0.5026079999999997
+      }
+    ]
+  },
+  "tost": [
+    {
+      "env": "Bandit",
+      "n": 20,
+      "diff": 0.04349999999999996,
+      "se": 0.03132835440098449,
+      "p_tost_paired": 4.5771762405518045e-12
+    },
+    {
+      "env": "Diagnosis",
+      "n": 20,
+      "diff": 0.11179999999999994,
+      "se": 0.0899124603506977,
+      "p_tost_paired": 3.2030924059701387e-09
+    },
+    {
+      "env": "Tiger",
+      "n": 20,
+      "diff": 0.0,
+      "se": 0.0,
+      "p_tost_paired": 0.0
+    }
+  ],
+  "pomcp_selections": [
+    {
+      "env": "Diagnosis-N4",
+      "agent": "MCTS-EFE",
+      "label": "MCTS-EFE c=5"
+    },
+    {
+      "env": "Diagnosis-N4",
+      "agent": "POMCP",
+      "label": "POMCP c=5 uniform"
+    },
+    {
+      "env": "Tiger",
+      "agent": "MCTS-EFE",
+      "label": "MCTS-EFE c=5"
+    },
+    {
+      "env": "Tiger",
+      "agent": "POMCP",
+      "label": "POMCP c=50 uniform"
+    },
+    {
+      "env": "Tileworld-6x6",
+      "agent": "MCTS-EFE",
+      "label": "MCTS-EFE c=60 (default)"
+    },
+    {
+      "env": "Tileworld-6x6",
+      "agent": "POMCP",
+      "label": "POMCP c=5 info-gain"
+    }
+  ],
+  "selected_pomcp_welch_pvalues": [
+    1.0617510853543255e-05,
+    6.604004834129006e-05,
+    0.00010002859718112103,
+    0.0005104196073987138,
+    1.4016019161093314e-13,
+    5.592729665053587e-10
+  ],
+  "sensor": {
+    "max_per_case_summary_error": 1.7763568394002505e-15,
+    "recomputed_cells": 345,
+    "usage_intervals": [
+      {
+        "B": 2,
+        "valid": 0,
+        "failed": 2000,
+        "usage_error_ci": null
+      },
+      {
+        "B": 4,
+        "valid": 2000,
+        "failed": 0,
+        "usage_error_ci": [
+          -0.20969009607422479,
+          0.2553966271871885
+        ]
+      },
+      {
+        "B": 8,
+        "valid": 2000,
+        "failed": 0,
+        "usage_error_ci": [
+          -0.36179539771959784,
+          0.410857064577971
+        ]
+      }
+    ],
+    "test_values": [
+      {
+        "method": "crossing_B2",
+        "usage": "unavailable",
+        "correctness": "unavailable"
+      },
+      {
+        "method": "weight_target_B2",
+        "usage": "unavailable",
+        "correctness": "unavailable"
+      },
+      {
+        "method": "direct_target_B2",
+        "usage": 1.9767091749183308,
+        "correctness": 0.8007564731603768
+      },
+      {
+        "method": "cmi_B2",
+        "usage": 2.0,
+        "correctness": 0.8104304635761589
+      },
+      {
+        "method": "crossing_B4",
+        "usage": 4.005626513694628,
+        "correctness": 0.8022655373164697
+      },
+      {
+        "method": "weight_target_B4",
+        "usage": 3.998633049039419,
+        "correctness": 0.8212089210097928
+      },
+      {
+        "method": "direct_target_B4",
+        "usage": 3.965361704088451,
+        "correctness": 0.8211472543563462
+      },
+      {
+        "method": "cmi_B4",
+        "usage": 4.0,
+        "correctness": 0.8170529801324503
+      },
+      {
+        "method": "crossing_B8",
+        "usage": 8.018887401183395,
+        "correctness": 0.7627860269711206
+      },
+      {
+        "method": "weight_target_B8",
+        "usage": 8.041899758637712,
+        "correctness": 0.78407790382063
+      },
+      {
+        "method": "direct_target_B8",
+        "usage": 7.976907802725634,
+        "correctness": 0.8018465139417583
+      },
+      {
+        "method": "cmi_B8",
+        "usage": 8.0,
+        "correctness": 0.7947019867549668
+      }
+    ],
+    "candidate_hash_checks": 106
+  },
+  "scale_collapse": {
+    "cells": 52,
+    "max_spread": 0.0,
+    "environments": [
+      "Diagnosis",
+      "Bandit",
+      "Tiger",
+      "Tileworld-6x6"
+    ]
+  },
+  "bracket_stability": {
+    "rows": 25,
+    "all_samples_agree": 19,
+    "at_least_99pct_agree": 21,
+    "min_agreement": 0.789
+  },
+  "pareto_reward_maximum_weights": {
+    "Bandit": [
+      1.0,
+      2.0
+    ],
+    "Diagnosis": [
+      0.5,
+      1.0,
+      2.0,
+      5.0,
+      10.0,
+      20.0
+    ],
+    "Testbed": [
+      0.01,
+      0.1,
+      0.5
+    ],
+    "Tiger": [
+      0.01,
+      0.1,
+      0.5,
+      1.0,
+      2.0,
+      5.0,
+      10.0,
+      20.0
+    ],
+    "Tileworld": [
+      20.0
+    ]
+  },
+  "source_sha256": "bc8871292a3070c36c015cbca4b2e7229dd4bb737fe752c989ff2604e5672bcd"
+}

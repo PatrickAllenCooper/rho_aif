@@ -1,0 +1,12 @@
+[
+  [
+    "replication-unit wording",
+    "Pooled episode-level SEs and tests remain in the companion CSVs as supplementary descriptions, since episodes within a seed are not independent.",
+    "Pooled episode-level SEs and tests remain in the companion CSVs as supplementary descriptions. The primary analysis treats independently seeded runs as the replication units."
+  ],
+  [
+    "checklist sampled-reference wording",
+    "Pooled episode-level SEs and tests remain in the companion CSVs as supplementary descriptions, since episodes within a seed are not independent.",
+    "Pooled episode-level SEs and tests remain in the companion CSVs as supplementary descriptions. The primary analysis treats independently seeded runs as the replication units."
+  ]
+]

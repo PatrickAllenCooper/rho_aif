@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-21",
+  "verdict": "ACCEPT",
+  "required_revisions_remaining": 0,
+  "source_sha256": {
+    "paper/full_paper_jair.tex": "c260180b50f5845132a6aeba50150373cf5ae5f74331feb9d5490aeae77d65c2",
+    "paper/full_paper.tex": "10b6a0c8921de1c0840ad76b8f93c92e6db93b3f15215ebb754768eb52b8347a"
+  },
+  "form_word_counts": {
+    "question_1": 123,
+    "question_2": 144,
+    "question_3": 216
+  },
+  "cover_ai_statement_matches_manuscript": true,
+  "previous_reviewed_jair_sha256": "bc8871292a3070c36c015cbca4b2e7229dd4bb737fe752c989ff2604e5672bcd",
+  "delivery_metadata_only_delta_verified": true
+}
