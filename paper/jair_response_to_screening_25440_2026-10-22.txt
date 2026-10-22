@@ -1,0 +1,17 @@
+Response to administrative screening
+Previous JAIR submission 25440
+October 22, 2026
+
+Pricing the Sensing Budget in ρ-POMDPs, with Expected Free Energy as the Canonical Information Weight
+
+Previous submission: JAIR 25440. Submitted October 21, 2026. Administrative screening decision dated October 22, 2026.
+
+Authors: Patrick Cooper and Alvaro Velasquez. No handling Associate Editor was identified in the screening notice, which was issued by the JAIR Production Team.
+
+The screening notice reported that it could not locate a reproducibility checklist and requested a completed checklist compiled as an appendix. The original 51-page PDF contained Appendix M on pages 49-51, but our subsequent comparison with the official JAIR template identified a real completeness defect. Seven individual dataset questions were missing, and two computational-experiment prompts omitted follow-on criteria. We have corrected these omissions.
+
+The revised Appendix M restores the full text of all 33 official questions and supplies an explicit answer to each. The added dataset answers cover availability and preservation, citation and licensing, public access, preprocessing, data splits, exclusions and modifications, and inherited labels. The computational prompts now include their documentation and long-term accessibility clauses. Answers distinguish available artifacts from incomplete records and unestablished long-term preservation. Hardware omissions are stated explicitly. The checklist contains 27 Yes and 6 Partially answers, and all three applicability questions are answered.
+
+The corrected manuscript is 52 pages. The completed checklist is headed “Reproducibility Checklist for JAIR” in Appendix M on pages 49-52. A separate four-page extract is also available. The source preceding Appendix M and the rendered text of pages 1-48 are unchanged. No scientific claims, experiments, data, figures or references have been revised for this resubmission.
+
+This response addresses the administrative screening issue. The previous submission did not undergo peer review. We request consideration of the corrected manuscript. The editor comments separately disclose the earlier IWAI paper and explain the journal extension.

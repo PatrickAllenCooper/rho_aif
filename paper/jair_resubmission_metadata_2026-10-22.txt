@@ -1,0 +1,24 @@
+TITLE
+
+Pricing the Sensing Budget in ρ-POMDPs, with Expected Free Energy as the Canonical Information Weight
+
+ABSTRACT
+
+Background: Information-gain utilities make sensing valuable directly, but introduce a weight that is usually tuned per task. An engineer may instead need to specify expected sensing usage.
+Objectives: We calibrate the information weight of a ρ-POMDP policy family to a sensing target and identify the role of Expected Free Energy (EFE) within that family.
+Methods: We define an operational shadow price as a crossing threshold of the usage curve, distinguish it from a finite-grid bracket, and construct an endpoint mixture for targets inside usage gaps. We prove scale equivariance of the receding-horizon planner and stationary convergence of a projected controller under stated conditions. Minimizing the specified recursive, reward-based EFE objective is equivalent to maximizing reward plus information gain at w=1 for observe-then-commit problems and hidden-state-preserving actions in a factored extension. The reward–information identification is exact under log scoring and otherwise depends on the declared reward convention.
+Results: Usage curves collapse after rescaling, and the controller re-adapts empirically after a tenfold reward shift. Targets selected by a predeclared rule from calibration curves are met on held-out seeds to within 0.13 observations. Calibration can nevertheless sacrifice reward relative to spending less or choosing another mixture. Comparisons against usage-capped and target-matched references distinguish the cost of extra sensing from shortfalls within the family. On real sensor records with learned likelihoods, two independently fixed targets transfer within the represented collection period, one lies below the sampled range, and later batches defeat frozen calibration. Direct-penalty and fixed-count policies achieve better classification accuracy.
+Conclusions: Usage calibration is appropriate when expected sensing usage is the design requirement. It does not maximize reward under a cap. EFE supplies an information-unit anchor under specified assumptions, while usage, reward, and success must be evaluated separately.
+
+AUTHORS (in this order)
+
+Patrick Cooper | patrick.cooper@colorado.edu | Primary contact
+Alvaro Velasquez | alvaro.velasquez@colorado.edu
+Both: Department of Computer Science, University of Colorado Boulder, Boulder, CO, USA
+
+KEYWORDS (enter each separately)
+
+markov decision processes
+planning
+decision theory
+probabilistic reasoning
