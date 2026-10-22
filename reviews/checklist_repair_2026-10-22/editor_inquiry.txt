@@ -1,0 +1,22 @@
+To: editors@jair.org
+Subject: REJQUERY - Submission 25440 - reproducibility checklist correction
+
+Dear JAIR Production Team,
+
+Thank you for the screening notice for submission 25440, "Pricing the Sensing Budget in rho-POMDPs, with Expected Free Energy as the Canonical Information Weight."
+
+The decision states that no reproducibility checklist was found. The PDF stored in the submission system contains Appendix M, "Reproducibility Checklist for JAIR," on pages 49-51. However, comparison with the current Author Kit identified seven omitted dataset-specific items and incomplete wording in some checklist prompts.
+
+We have corrected these omissions and answered all 33 official items, retaining qualifications where appropriate. The revised 52-page manuscript contains the completed checklist on pages 49-52. Pages 1-48 are unchanged. I attach the corrected manuscript and a separate extract of the completed checklist.
+
+Could you please advise whether the corrected files can be considered under submission 25440, or whether we should start a new submission as directed in the notice? If a new submission is required, please clarify how this administrative screening decision affects the resubmission policy, given that the manuscript has not undergone peer review.
+
+Thank you for your guidance.
+
+Patrick Cooper
+On behalf of the authors
+
+---
+Draft only; not sent. Attach:
+1. paper/full_paper_jair.pdf (corrected, 52 pages)
+2. paper/jair_reproducibility_checklist_2026-10-22.pdf (four-page extract)

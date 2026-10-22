@@ -1,0 +1,230 @@
+{
+  "pdf_pages": 52,
+  "checklist_pages": [
+    49,
+    50,
+    51,
+    52
+  ],
+  "official_item_counts": [
+    5,
+    6,
+    15,
+    7
+  ],
+  "all_33_prompts_match": true,
+  "pre_checklist_pdf_text_unchanged_pages": 48,
+  "submitted_pdf_sha256": "33960e5470c56eff03b4d612baa8a7a3e9ff8912b7b10c9c49b1e9a269af22ee",
+  "corrected_pdf_sha256": "6cb6a8bb2b08b89449a828cc8e8ed1392a386c4c1e2a53f0292fff49b7cedd97",
+  "checklist_extract_sha256": "ead9c7154608c36c26c7fee212a150f39627cc2c541c69cba16a915f6ebe16a5",
+  "items": [
+    {
+      "group": 1,
+      "item": 1,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 1,
+      "item": 2,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 1,
+      "item": 3,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 1,
+      "item": 4,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 1,
+      "item": 5,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 2,
+      "item": 1,
+      "official_prompt_match": true,
+      "answer": "Partially"
+    },
+    {
+      "group": 2,
+      "item": 2,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 2,
+      "item": 3,
+      "official_prompt_match": true,
+      "answer": "Partially"
+    },
+    {
+      "group": 2,
+      "item": 4,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 2,
+      "item": 5,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 2,
+      "item": 6,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 1,
+      "official_prompt_match": true,
+      "answer": "Partially"
+    },
+    {
+      "group": 3,
+      "item": 2,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 3,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 4,
+      "official_prompt_match": true,
+      "answer": "Partially"
+    },
+    {
+      "group": 3,
+      "item": 5,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 6,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 7,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 8,
+      "official_prompt_match": true,
+      "answer": "Partially"
+    },
+    {
+      "group": 3,
+      "item": 9,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 10,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 11,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 12,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 13,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 14,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 3,
+      "item": 15,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 4,
+      "item": 1,
+      "official_prompt_match": true,
+      "answer": "Partially"
+    },
+    {
+      "group": 4,
+      "item": 2,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 4,
+      "item": 3,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 4,
+      "item": 4,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 4,
+      "item": 5,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 4,
+      "item": 6,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    },
+    {
+      "group": 4,
+      "item": 7,
+      "official_prompt_match": true,
+      "answer": "Yes"
+    }
+  ],
+  "overleaf_zip_sha256": "04abdbb8635766974d61223bb99e6310c1574aa3dc02aa89c7b28516f23b70d2",
+  "overleaf_build_directory": "/var/folders/rp/5fry8hzd6r79lbs65w92n8b00000gn/T/jair_checklist_package_zj7h8dkk",
+  "fresh_extracted_package_pdf_text_matches": true,
+  "submitted_archive_manifest_valid": true,
+  "code_changed": "Only Overleaf builder default output date: 2026-10-21 to 2026-10-22",
+  "tests": {
+    "passed": 541,
+    "warnings": 26,
+    "elapsed_seconds": 171.03
+  }
+}

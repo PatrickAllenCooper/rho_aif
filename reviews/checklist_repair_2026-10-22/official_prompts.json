@@ -1,0 +1,48 @@
+{
+  "retrieved": "2026-10-22",
+  "url": "https://www.jair.org/index.php/jair/libraryFiles/downloadPublic/6",
+  "kit_sha256": "5e91f9f12c1793c97c36e9d16e0822347e0c66e01a5cb35f93913468af784826",
+  "groups": [
+    [
+      "All claims investigated in this work are clearly stated.",
+      "Clear explanations are given how the work reported substantiates the claims.",
+      "Limitations or technical assumptions are stated clearly and explicitly.",
+      "Conceptual outlines and/or pseudo-code descriptions of the AI methods introduced in this work are provided, and important implementation details are discussed.",
+      "Motivation is provided for all design choices, including algorithms, implementation choices, parameters, data sets and experimental protocols beyond metrics."
+    ],
+    [
+      "All assumptions and restrictions are stated clearly and formally.",
+      "All novel claims are stated formally (e.g., in theorem statements).",
+      "Proofs of all non-trivial claims are provided in sufficient detail to permit verification by readers with a reasonable degree of expertise (e.g., that expected from a PhD candidate in the same area of AI).",
+      "Complex formalism, such as definitions or proofs, is motivated and explained clearly.",
+      "The use of mathematical notation and formalism serves the purpose of enhancing clarity and precision; gratuitous use of mathematical formalism (i.e., use that does not enhance clarity or precision) is avoided.",
+      "Appropriate citations are given for all non-trivial theoretical tools and techniques."
+    ],
+    [
+      "All source code required for conducting experiments is included in an online appendix or will be made publicly available upon publication of the paper. The online appendix follows best practices for source code readability and documentation as well as for long-term accessibility.",
+      "The source code comes with a license that allows free usage for reproducibility purposes.",
+      "The source code comes with a license that allows free usage for research purposes in general.",
+      "Raw, unaggregated data from all experiments is included in an online appendix or will be made publicly available upon publication of the paper. The online appendix follows best practices for long-term accessibility.",
+      "The unaggregated data comes with a license that allows free usage for reproducibility purposes.",
+      "The unaggregated data comes with a license that allows free usage for research purposes in general.",
+      "If an algorithm depends on randomness, then the method used for generating random numbers and for setting seeds is described in a way sufficient to allow replication of results.",
+      "The execution environment for experiments, the computing infrastructure (hardware and software) used for running them, is described, including GPU/CPU makes and models; amount of memory (cache and RAM); make and version of operating system; names and versions of relevant software libraries and frameworks.",
+      "The evaluation metrics used in experiments are clearly explained and their choice is explicitly motivated.",
+      "The number of algorithm runs used to compute each result is reported.",
+      "Reported results have not been ``cherry-picked'' by silently ignoring unsuccessful or unsatisfactory experiments.",
+      "Analysis of results goes beyond single-dimensional summaries of performance (e.g., average, median) to include measures of variation, confidence, or other distributional information.",
+      "All (hyper-) parameter settings for the algorithms/methods used in experiments have been reported, along with the rationale or method for determining them.",
+      "The number and range of (hyper-) parameter settings explored prior to conducting final experiments have been indicated, along with the effort spent on (hyper-) parameter optimisation.",
+      "Appropriately chosen statistical hypothesis tests are used to establish statistical significance in the presence of noise effects."
+    ],
+    [
+      "All newly introduced data sets are included in an online appendix or will be made publicly available upon publication of the paper. The online appendix follows best practices for long-term accessibility with a license that allows free usage for research purposes.",
+      "The newly introduced data set comes with a license that allows free usage for reproducibility purposes.",
+      "The newly introduced data set comes with a license that allows free usage for research purposes in general.",
+      "All data sets drawn from the literature or other public sources (potentially including authors' own previously published work) are accompanied by appropriate citations.",
+      "All data sets drawn from the existing literature (potentially including authors’ own previously published work) are publicly available.",
+      "All new data sets and data sets that are not publicly available are described in detail, including relevant statistics, the data collection process and annotation process if relevant.",
+      "All methods used for preprocessing, augmenting, batching or splitting data sets (e.g., in the context of hold-out or cross-validation) are described in detail."
+    ]
+  ]
+}

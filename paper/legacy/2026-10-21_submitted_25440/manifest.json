@@ -1,0 +1,16 @@
+{
+  "submission_id": 25440,
+  "submission_file_id": 60672,
+  "submission_date": "2026-10-21",
+  "verification_date": "2026-10-22",
+  "source_commit": "5780dd143673220760b86d141b4871c044977e76",
+  "portal_download": "/Users/pat/Downloads/full_paper_jair (2).pdf",
+  "portal_pdf_byte_identical": true,
+  "sha256": {
+    "full_paper_jair.pdf": "33960e5470c56eff03b4d612baa8a7a3e9ff8912b7b10c9c49b1e9a269af22ee",
+    "full_paper_jair.tex": "13d8f156691cd3029426e861d58e9afc966ca2f5d65dc1cd689b0ad139adff2d",
+    "full_paper_jair.bib": "e16f1d97e713b71498540c05f30b8f7ad4088ea777c1960162be1111bbfb6592",
+    "jair.cls": "b203f8fe198a82afececa5fc5c2641fa529e3aa05b82b329bcf5891be339fc68",
+    "rho_aif_jair_overleaf_2026-10-21.zip": "5e01ba3fcab0f3321de7c987fd4279cd09bc2ddd5badf9383dd13fd6ddef1b64"
+  }
+}
